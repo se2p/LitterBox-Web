@@ -1,0 +1,32 @@
+= Readme
+:icons: font
+:toc:
+:xrefstyle: short
+
+// links
+:url-litterbox: https://gitlab.infosun.fim.uni-passau.de/se2/litterbox
+
+
+[abstract]
+--
+REST API wrapper around link:{url-litterbox}[LitterBox] functionality.
+--
+
+
+== Building
+
+[source,bash]
+----
+mvn install -DskipTests  # <1>
+cd litterbox-web
+mvn package spring-boot:repackage
+----
+<1> Needed for Maven to be able to find the LitterBox dependency in litterbox-web.
+
+Afterwards, you can start the litterbox-web server using
+[source,bash]
+----
+java -jar litterbox-web/target/litterbox-web-${version}.jar
+----
+
+Starting the application directly via your IDE from the main class in litterbox-web should also work.
