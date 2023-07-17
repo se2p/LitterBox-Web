@@ -1,0 +1,47 @@
+image: maven:3-eclipse-temurin-17
+
+stages:
+  - build
+  - test
+  - lint
+
+cache:
+  paths:
+    - .m2/repository/
+    - litterbox/target/
+    - litterbox-web/target/
+
+before_script:
+  - pushd litterbox
+  - mvn install -DskipTests
+  - popd
+  - cd litterbox-web
+
+build:
+  stage: build
+  script:
+    - mvn compile
+
+test:
+  stage: test
+  coverage: '/Total.*?([0-9]{1,3})%./'
+  script:
+    - mvn test
+    - mvn jacoco:report
+    - cat target/site/jacoco/index.html | grep -o '<tfoot>.*</tfoot>'
+  artifacts:
+    paths:
+      - litterbox-web/target/site/jacoco/
+    reports:
+      junit:
+        - litterbox-web/target/surefire-reports/TEST-*.xml
+
+check-license-headers:
+  stage: lint
+  script:
+    - mvn license:check
+
+check-formatting:
+  stage: lint
+  script:
+    - mvn spotless:check

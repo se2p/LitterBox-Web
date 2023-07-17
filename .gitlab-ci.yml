@@ -1,0 +1,9 @@
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+  MAVEN_ARGS: "--no-transfer-progress -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+
+litterbox-web:
+  trigger:
+    include:
+      - local: litterbox-web/.gitlab-ci.yml
+    strategy: depend
