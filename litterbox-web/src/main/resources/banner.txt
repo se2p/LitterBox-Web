@@ -1,0 +1,20 @@
+${AnsiStyle.BOLD}
+${AnsiColor.BLUE}                                                     ${AnsiColor.YELLOW}            .-'''-.
+${AnsiColor.BLUE}.---.                                                ${AnsiColor.YELLOW}           '   _    \
+${AnsiColor.BLUE}|   |.--.                       __.....__            ${AnsiColor.YELLOW}/|       /   /` '.   \
+${AnsiColor.BLUE}|   ||__|                   .-''         '.          ${AnsiColor.YELLOW}||      .   |     \  '
+${AnsiColor.BLUE}|   |.--.     .|      .|   /     .-''"'-.  `. .-,.--.${AnsiColor.YELLOW}||      |   '      |  '
+${AnsiColor.BLUE}|   ||  |   .' |_   .' |_ /     /________\   \|  .-. ${AnsiColor.YELLOW}||  __  \    \     / /____     _____
+${AnsiColor.BLUE}|   ||  | .'     |.'     ||                  || |  | ${AnsiColor.YELLOW}||/'__ '.`.   ` ..' /`.   \  .'    /
+${AnsiColor.BLUE}|   ||  |'--.  .-'--.  .-'\    .-------------'| |  | ${AnsiColor.YELLOW}|:/`  '. '  '-...-'`   `.  `'    .'
+${AnsiColor.BLUE}|   ||  |   |  |    |  |   \    '-.____...---.| |  '-${AnsiColor.YELLOW}||     | |               '.    .'
+${AnsiColor.BLUE}|   ||__|   |  |    |  |    `.             .' | |    ${AnsiColor.YELLOW}||\    / '               .'     `.
+${AnsiColor.BLUE}'---'       |  '.'  |  '.'    `''-...... -'   | |    ${AnsiColor.YELLOW}|/\'..' /              .'  .'`.   `.
+${AnsiColor.BLUE}            |   /   |   /                     |_|    ${AnsiColor.YELLOW}'  `'-'`             .'   /    `.   `.
+${AnsiColor.BLUE}            `'-'    `'-'                             ${AnsiColor.YELLOW}                    '----'  ${AnsiColor.BLUE}__${AnsiColor.YELLOW}   '----'
+${AnsiColor.BLUE}                                                                  _      _____  / /_
+${AnsiColor.BLUE}                                                                 | | /| / / _ \/ __ \
+${AnsiColor.BLUE}                                                                 | |/ |/ /  __/ /_/ /
+${AnsiColor.BLUE}                                                                 |__/|__/\___/_.___/
+${AnsiStyle.NORMAL}
+Spring Boot v${spring-boot.version}
