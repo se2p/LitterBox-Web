@@ -12,6 +12,21 @@
 REST API wrapper around link:{url-litterbox}[LitterBox] functionality.
 --
 
+== Cloning the repository
+
+LitterBox is included as a submodule.
+You either need to clone the repository using
+[source,bash]
+----
+git clone --recursive URL
+----
+or run
+[source,bash]
+----
+git submodule update --init
+----
+afterwards when having cloned with `--recursive`.
+
 
 == Building
 
@@ -30,3 +45,14 @@ java -jar litterbox-web/target/litterbox-web-${version}.jar
 ----
 
 Starting the application directly via your IDE from the main class in litterbox-web should also work.
+
+[NOTE]
+--
+LitterBox is included as a Git submodule.
+If the build fails because it cannot find LitterBox (e.g., after the release version changed), you might have to run
+[souce,bash]
+----
+git submodule update --init
+----
+again.
+--
