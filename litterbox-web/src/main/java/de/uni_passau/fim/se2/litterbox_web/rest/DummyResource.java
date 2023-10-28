@@ -1,20 +1,20 @@
 /*
- * Copyright (C) 2023 LitterBox contributors
+ * Copyright (C) 2023 LitterBox-Web contributors
  *
- * This file is part of LitterBox.
+ * This file is part of LitterBox-Web.
  *
- * LitterBox is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at
+ * LitterBox-Web is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public Licence as published by
+ * the Free Software Foundation, either version 3 of the Licence, or (at
  * your option) any later version.
  *
- * LitterBox is distributed in the hope that it will be useful, but
+ * LitterBox-Web is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * General Public License for more details.
+ * General Public Licence for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with LitterBox. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public Licence
+ * along with LitterBox-Web. If not, see <http://www.gnu.org/licenses/>.
  */
 package de.uni_passau.fim.se2.litterbox_web.rest;
 
