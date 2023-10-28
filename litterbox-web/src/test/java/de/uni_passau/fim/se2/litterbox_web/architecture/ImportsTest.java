@@ -16,16 +16,21 @@
  * You should have received a copy of the GNU General Public Licence
  * along with LitterBox-Web. If not, see <http://www.gnu.org/licenses/>.
  */
-package de.uni_passau.fim.se2.litterbox_web;
+package de.uni_passau.fim.se2.litterbox_web.architecture;
+
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.*;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class LitterboxWebApplicationTests {
+import com.tngtech.archunit.lang.ArchRule;
+
+class ImportsTest extends ArchitectureTest {
 
     @Test
-    void contextLoads() {
+    void forbidJavaLoggerImport() {
+        final ArchRule rule = noClasses().should()
+            .dependOnClassesThat().haveNameMatching("java.util.logging.Logger")
+            .because("the slf4j Logger and LoggerFactory should be used instead");
+        rule.check(allClasses);
     }
-
 }
