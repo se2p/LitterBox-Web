@@ -27,7 +27,7 @@ or run
 ----
 git submodule update --init
 ----
-afterwards when having cloned without `--recursive`.
+afterwards when having cloned without `--recurse-submodules`.
 
 
 == Building
@@ -48,15 +48,17 @@ java -jar litterbox-web/target/litterbox-web-${version}.jar
 
 Starting the application directly via your IDE from the main class in litterbox-web should also work.
 
+.LitterBox submodule changes
 [NOTE]
 --
 LitterBox is included as a Git submodule.
-If the build fails because it cannot find LitterBox (e.g., after the release version changed), you might have to run
+If the build fails because it cannot find LitterBox or some of its classes/methods, you might have to run
 [souce,bash]
 ----
 git submodule update --init
+mvn install -DskipTests
 ----
-again.
+again to update the submodule.
 --
 
 
@@ -76,6 +78,36 @@ mvn spring-boot:build-image -Pnative
 ----
 mvn native:compile -Pnative
 ----
+
+
+== Linting
+
+=== Licence headers
+
+You can automatically add missing licence headers using
+[source,bash]
+----
+mvn license:format
+----
+
+
+=== Code formatting
+
+Automatically format the code and sort imports using
+[source,bash]
+----
+mvn spotless:apply
+----
+
+
+=== Checkstyle
+
+Run the Checkstyle linter using
+[source,bash]
+----
+mvn checkstyle:check
+----
+
 
 
 == Licence
