@@ -1,5 +1,7 @@
 = Readme
 :icons: font
+:lang: en-GB
+:sectnums:
 :toc:
 :xrefstyle: short
 
@@ -18,7 +20,7 @@ LitterBox is included as a submodule.
 You either need to clone the repository using
 [source,bash]
 ----
-git clone --recursive URL
+git clone --recurse-submodules URL
 ----
 or run
 [source,bash]
@@ -56,3 +58,32 @@ git submodule update --init
 ----
 again.
 --
+
+
+=== Building a container image
+
+[source,bash]
+----
+mvn spring-boot:build-image
+# or for an image that precompiles using GraalVM
+mvn spring-boot:build-image -Pnative
+----
+
+
+=== Building a GraalVM binary
+
+[source,bash]
+----
+mvn native:compile -Pnative
+----
+
+
+== Licence
+
+LitterBox-Web is free software: you can redistribute it and/or modify it under the terms of the GNU General Public Licence as published by the Free Software Foundation, either version 3 of the Licence, or (at your option) any later version.
+
+LitterBox-Web is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public Licence for more details.
+
+You should have received a copy of the GNU General Public Licence along with LitterBox-Web.
+If not, see http://www.gnu.org/licenses/.
