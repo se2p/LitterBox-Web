@@ -16,29 +16,15 @@
  * You should have received a copy of the GNU General Public Licence
  * along with LitterBox-Web. If not, see <http://www.gnu.org/licenses/>.
  */
-package de.uni_passau.fim.se2.litterbox_web.configuration;
+package de.uni_passau.fim.se2.litterbox_web;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.filter.CommonsRequestLoggingFilter;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@Configuration
-public class RequestLoggingFilterConfig {
-
-    /**
-     * Returns the logging filter.
-     *
-     * @return the logging filter
-     */
-    @Bean
-    public CommonsRequestLoggingFilter loggingFilter() {
-        final CommonsRequestLoggingFilter filter = new CommonsRequestLoggingFilter();
-
-        filter.setIncludeQueryString(true);
-        filter.setIncludePayload(false);
-        filter.setIncludeHeaders(false);
-
-        return filter;
-    }
-
+@SpringBootTest
+@AutoConfigureMockMvc
+@ExtendWith(SpringExtension.class)
+public abstract class LitterboxWebIntegrationTest {
 }

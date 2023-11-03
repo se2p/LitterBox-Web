@@ -1,0 +1,136 @@
+/*
+ * Copyright (C) 2023 LitterBox-Web contributors
+ *
+ * This file is part of LitterBox-Web.
+ *
+ * LitterBox-Web is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public Licence as published by
+ * the Free Software Foundation, either version 3 of the Licence, or (at
+ * your option) any later version.
+ *
+ * LitterBox-Web is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public Licence for more details.
+ *
+ * You should have received a copy of the GNU General Public Licence
+ * along with LitterBox-Web. If not, see <http://www.gnu.org/licenses/>.
+ */
+package de.uni_passau.fim.se2.litterbox_web.util;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.net.URI;
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.util.LinkedMultiValueMap;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+@Service
+public class RequestUtilService {
+
+    private final MockMvc mvc;
+    private final ObjectMapper mapper;
+
+    public RequestUtilService(MockMvc mvc, ObjectMapper objectMapper) {
+        this.mvc = mvc;
+        this.mapper = objectMapper;
+    }
+
+    /**
+     * Sends a post request with the given body object converted to JSON.
+     *
+     * @param path           The REST endpoint to send the data to.
+     * @param body           The body of the POST request.
+     * @param responseType   Type of the response body.
+     * @param expectedStatus The expected HTTP status of the request.
+     * @return The response body for the request, already parsed.
+     * @param <T> The type of the body that is sent to the endpoint.
+     * @param <R> The type of the body that is received back from the endpoint.
+     * @throws Exception In case parsing to/from JSON fails or the request is invalid in some other way.
+     */
+    public <T, R> R postWithResponseBody(String path, T body, Class<R> responseType, HttpStatus expectedStatus)
+        throws Exception {
+        return postWithResponseBody(path, body, responseType, expectedStatus, null);
+    }
+
+    /**
+     * Sends a post request with the given body object converted to JSON.
+     *
+     * @param path           The REST endpoint to send the data to.
+     * @param body           The body of the POST request.
+     * @param responseType   Type of the response body.
+     * @param expectedStatus The expected HTTP status of the request.
+     * @param params         Additional request URL parameters.
+     * @return The response body for the request, already parsed.
+     * @param <T> The type of the body that is sent to the endpoint.
+     * @param <R> The type of the body that is received back from the endpoint.
+     * @throws Exception In case parsing to/from JSON fails or the request is invalid in some other way.
+     */
+    public <T, R> R postWithResponseBody(
+        String path, T body, Class<R> responseType, HttpStatus expectedStatus,
+        LinkedMultiValueMap<String, String> params
+    ) throws Exception {
+        final String res = postWithResponseBodyString(path, body, expectedStatus, params);
+        if (res == null || res.isEmpty() || res.trim().isEmpty()) {
+            return null;
+        }
+
+        return mapper.readValue(res, responseType);
+    }
+
+    /**
+     * Sends a post request with the given body object converted to JSON as List of objects.
+     *
+     * @param path            The REST endpoint to send the data to.
+     * @param body            The body of the POST request.
+     * @param listElementType Class of a single list element of the response.
+     * @param expectedStatus  The expected HTTP status of the request.
+     * @return The response body for the request, already parsed.
+     * @param <T> The type of the body that is sent to the endpoint.
+     * @param <R> The type of the list element that is received back from the endpoint.
+     * @throws Exception In case parsing to/from JSON fails or the request is invalid in some other way.
+     */
+    public <T, R> List<R> postWithResponseBodyList(
+        String path, T body, Class<R> listElementType, HttpStatus expectedStatus
+    ) throws Exception {
+        final String res = postWithResponseBodyString(path, body, expectedStatus, null);
+        if (res == null || res.isEmpty() || res.trim().isEmpty()) {
+            return null;
+        }
+
+        return mapper.readValue(res, mapper.getTypeFactory().constructCollectionType(List.class, listElementType));
+    }
+
+    private <T> String postWithResponseBodyString(
+        String path, T body, HttpStatus expectedStatus, LinkedMultiValueMap<String, String> params
+    ) throws Exception {
+        final String jsonBody;
+        if (body instanceof String sBody) {
+            jsonBody = sBody;
+        }
+        else {
+            jsonBody = mapper.writeValueAsString(body);
+        }
+
+        var request = MockMvcRequestBuilders.post(new URI(path)).contentType(MediaType.APPLICATION_JSON)
+            .content(jsonBody);
+        if (params != null) {
+            request = request.params(params);
+        }
+
+        final MvcResult res = mvc.perform(request).andExpect(status().is(expectedStatus.value())).andReturn();
+        if (!expectedStatus.is2xxSuccessful()) {
+            return null;
+        }
+
+        return res.getResponse().getContentAsString();
+    }
+}

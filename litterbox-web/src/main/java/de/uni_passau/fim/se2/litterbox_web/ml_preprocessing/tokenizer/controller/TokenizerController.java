@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public Licence
  * along with LitterBox-Web. If not, see <http://www.gnu.org/licenses/>.
  */
-package de.uni_passau.fim.se2.litterbox_web.ml_preprocessing.tokenizer.controllers;
+package de.uni_passau.fim.se2.litterbox_web.ml_preprocessing.tokenizer.controller;
 
 import java.util.List;
 
@@ -25,27 +25,31 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import de.uni_passau.fim.se2.litterbox_web.ml_preprocessing.tokenizer.models.MaskedTokenizationRequest;
-import de.uni_passau.fim.se2.litterbox_web.ml_preprocessing.tokenizer.services.CompleteProgramTokenizerService;
+import de.uni_passau.fim.se2.litterbox_web.ml_preprocessing.tokenizer.model.MaskedTokenizationRequest;
+import de.uni_passau.fim.se2.litterbox_web.ml_preprocessing.tokenizer.service.TokenizerService;
 
 @RestController
-@RequestMapping("tokenizer/complete-program/tokenize")
-public class CompleteProgramTokenizerController {
+@RequestMapping("tokenizer")
+public class TokenizerController {
 
-    private final CompleteProgramTokenizerService completeProgramTokenizerService;
+    private final TokenizerService tokenizerService;
 
-    public CompleteProgramTokenizerController(CompleteProgramTokenizerService completeProgramTokenizerService) {
-        this.completeProgramTokenizerService = completeProgramTokenizerService;
+    public TokenizerController(TokenizerService tokenizerService) {
+        this.tokenizerService = tokenizerService;
     }
 
-    @PostMapping("expression-masking")
+    @PostMapping("complete-program/tokenize/expression-masking")
     public List<String> tokenizeMaskingExpression(@RequestBody final MaskedTokenizationRequest request) {
-        return completeProgramTokenizerService.tokenizeMaskingExpression(request.jsonProgram(), request.blockId());
+        return tokenizerService.tokenizeMaskingExpression(request.program(), request.blockId());
     }
 
-    @PostMapping("fixed-option-masking")
+    @PostMapping("complete-program/tokenize/fixed-option-masking")
     public List<String> tokenizeMaskingFixedOption(@RequestBody final MaskedTokenizationRequest request) {
-        return completeProgramTokenizerService.tokenizeMaskingFixedOption(request.jsonProgram(), request.blockId());
+        return tokenizerService.tokenizeMaskingFixedOption(request.program(), request.blockId());
     }
 
+    @PostMapping("statement-level/tokenize/statement-masking")
+    public List<String> tokenize(@RequestBody final MaskedTokenizationRequest request) {
+        return tokenizerService.tokenizeStatementLevel(request.program(), request.blockId());
+    }
 }

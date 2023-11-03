@@ -22,6 +22,7 @@ import static com.tngtech.archunit.base.DescribedPredicate.not;
 import static com.tngtech.archunit.core.domain.JavaClass.Predicates.resideInAPackage;
 import static com.tngtech.archunit.core.domain.JavaClass.Predicates.simpleName;
 import static com.tngtech.archunit.core.domain.JavaClass.Predicates.simpleNameContaining;
+import static com.tngtech.archunit.core.domain.properties.HasModifiers.Predicates.modifier;
 import static com.tngtech.archunit.lang.conditions.ArchPredicates.are;
 import static com.tngtech.archunit.lang.conditions.ArchPredicates.have;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
@@ -34,6 +35,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 
+import com.tngtech.archunit.core.domain.JavaModifier;
 import com.tngtech.archunit.lang.ArchRule;
 
 class TestStructureTest extends ArchitectureTest {
@@ -50,6 +52,7 @@ class TestStructureTest extends ArchitectureTest {
     void noPublicTestClasses() {
         final ArchRule noPublicTestClasses = noClasses()
             .that().haveNameMatching(".*Test")
+            .and(have(not(modifier(JavaModifier.ABSTRACT))))
             .should().bePublic()
             .because("JUnit 5 does not require test classes to be public");
         noPublicTestClasses.check(testClasses.that(are(not(simpleNameContaining("Abstract")))));
