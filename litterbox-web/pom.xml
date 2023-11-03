@@ -82,7 +82,11 @@
                     <execution>
                         <configuration>
                             <mainClass>de.uni_passau.fim.se2.litterbox_web.LitterboxWebApplication</mainClass>
+                            <layout>JAR</layout>
                         </configuration>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
