@@ -1,4 +1,4 @@
-image: docker.io/library/maven:3-eclipse-temurin-17
+image: docker.io/library/maven:3-eclipse-temurin-21
 
 stages:
   - build

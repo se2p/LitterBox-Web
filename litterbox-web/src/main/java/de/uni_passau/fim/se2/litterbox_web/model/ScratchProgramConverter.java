@@ -30,6 +30,7 @@ import de.uni_passau.fim.se2.litterbox.ast.ParsingException;
 import de.uni_passau.fim.se2.litterbox.ast.model.Program;
 import de.uni_passau.fim.se2.litterbox.ast.parser.Scratch3Parser;
 import de.uni_passau.fim.se2.litterbox.jsoncreation.JSONStringCreator;
+import io.micrometer.core.annotation.Timed;
 
 // @formatter:off
 // Spotless mangles the `@` inside the {@code } blocks
@@ -38,7 +39,7 @@ import de.uni_passau.fim.se2.litterbox.jsoncreation.JSONStringCreator;
  * <p>
  * With this you can add the {@link Program} directly as the {@code RequestBody} of a REST endpoint.
  * <p>
- * <h3>Example</h3>
+ * <h2>Example</h2>
  * <p>Defining a data container class with the converter annotations on the attribute that holds the
  * {@link Program}
  *
@@ -83,6 +84,7 @@ public class ScratchProgramConverter {
 
     public static class SerializeConverter implements Converter<Program, String> {
 
+        @Timed
         @Override
         public String convert(Program program) {
             return JSONStringCreator.createProgramJSONString(program);
@@ -101,6 +103,7 @@ public class ScratchProgramConverter {
 
     public static class DeserializeConverter implements Converter<String, Program> {
 
+        @Timed
         @Override
         public Program convert(String string) {
             try {

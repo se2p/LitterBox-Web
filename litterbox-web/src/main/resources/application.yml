@@ -5,7 +5,14 @@ logging:
 spring:
   application:
     name: litterbox-web
+  threads:
+    virtual:
+      enabled: true
 
 management:
   endpoints:
     enabled-by-default: false
+
+server:
+  error:
+    include-stacktrace: never
