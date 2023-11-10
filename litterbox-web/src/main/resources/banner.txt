@@ -17,4 +17,4 @@ ${AnsiColor.BLUE}                                                               
 ${AnsiColor.BLUE}                                                                 | |/ |/ /  __/ /_/ /
 ${AnsiColor.BLUE}                                                                 |__/|__/\___/_.___/
 ${AnsiStyle.NORMAL}
-Spring Boot v${spring-boot.version}
+Spring Boot v${spring-boot.version}, Active profiles: ${spring.profiles.active}
