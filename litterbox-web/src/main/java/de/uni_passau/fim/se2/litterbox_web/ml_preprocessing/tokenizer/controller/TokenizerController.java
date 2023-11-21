@@ -29,7 +29,7 @@ import de.uni_passau.fim.se2.litterbox_web.ml_preprocessing.tokenizer.model.Mask
 import de.uni_passau.fim.se2.litterbox_web.ml_preprocessing.tokenizer.service.TokenizerService;
 
 @RestController
-@RequestMapping("tokenizer")
+@RequestMapping("ml/masking-tokenizer/tokenize")
 public class TokenizerController {
 
     private final TokenizerService tokenizerService;
@@ -38,17 +38,17 @@ public class TokenizerController {
         this.tokenizerService = tokenizerService;
     }
 
-    @PostMapping("complete-program/tokenize/expression-masking")
+    @PostMapping("complete-program/expression-masking")
     public List<String> tokenizeMaskingExpression(@RequestBody final MaskedTokenizationRequest request) {
         return tokenizerService.tokenizeMaskingExpression(request.program(), request.blockId());
     }
 
-    @PostMapping("complete-program/tokenize/fixed-option-masking")
+    @PostMapping("complete-program/fixed-option-masking")
     public List<String> tokenizeMaskingFixedOption(@RequestBody final MaskedTokenizationRequest request) {
         return tokenizerService.tokenizeMaskingFixedOption(request.program(), request.blockId());
     }
 
-    @PostMapping("statement-level/tokenize/statement-masking")
+    @PostMapping("statement-level/statement-masking")
     public List<String> tokenize(@RequestBody final MaskedTokenizationRequest request) {
         return tokenizerService.tokenizeStatementLevel(request.program(), request.blockId());
     }

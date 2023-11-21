@@ -45,7 +45,7 @@ class TokenizerControllerTest extends LitterboxWebIntegrationTest {
         final MaskedTokenizationRequest request = new MaskedTokenizationRequest(programJson, "6f:0*dekkAiR0o@/B1P]");
 
         final List<String> tokens = requestUtilService.postWithResponseBodyList(
-            "/tokenizer/complete-program/tokenize/expression-masking", request, String.class, HttpStatus.OK
+            "/ml/masking-tokenizer/tokenize/complete-program/expression-masking", request, String.class, HttpStatus.OK
         );
 
         assertThat(tokens)
@@ -60,7 +60,7 @@ class TokenizerControllerTest extends LitterboxWebIntegrationTest {
         final MaskedTokenizationRequest request = new MaskedTokenizationRequest(programJson, "cB8O}wnQ}MC!R_XxB24.");
 
         final List<String> tokens = requestUtilService.postWithResponseBodyList(
-            "/tokenizer/complete-program/tokenize/fixed-option-masking", request, String.class, HttpStatus.OK
+            "/ml/masking-tokenizer/tokenize/complete-program/fixed-option-masking", request, String.class, HttpStatus.OK
         );
 
         assertThat(tokens)
@@ -75,7 +75,7 @@ class TokenizerControllerTest extends LitterboxWebIntegrationTest {
         final MaskedTokenizationRequest request = new MaskedTokenizationRequest(programJson, "6f:0*dekkAiR0o@/B1P]");
 
         final List<String> tokens = requestUtilService.postWithResponseBodyList(
-            "/tokenizer/statement-level/tokenize/statement-masking", request, String.class, HttpStatus.OK
+            "/ml/masking-tokenizer/tokenize/statement-level/statement-masking", request, String.class, HttpStatus.OK
         );
 
         assertThat(tokens)
@@ -87,9 +87,9 @@ class TokenizerControllerTest extends LitterboxWebIntegrationTest {
     @ParameterizedTest
     @ValueSource(
         strings = {
-            "/tokenizer/complete-program/tokenize/expression-masking",
-            "/tokenizer/complete-program/tokenize/fixed-option-masking",
-            "/tokenizer/statement-level/tokenize/statement-masking"
+            "/ml/masking-tokenizer/tokenize/complete-program/expression-masking",
+            "/ml/masking-tokenizer/tokenize/complete-program/fixed-option-masking",
+            "/ml/masking-tokenizer/tokenize/statement-level/statement-masking"
         }
     )
     void emptyResultIfTokenNotFound(final String tokenizingStrategy) throws Exception {
