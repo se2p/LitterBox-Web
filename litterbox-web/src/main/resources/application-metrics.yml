@@ -19,16 +19,20 @@ management:
     enable:
       http: true
       jvm: true
-    tags:
-      application: ${spring.application.name}
     distribution:
       percentiles-histogram:
         http:
           server:
             requests: true
+  observations:
+    key-values:
+      application: ${spring.application.name}
   prometheus:
     metrics:
       export:
         enabled: true
     # IPs that are allowed to scrape the metrics
-    monitoringIps: "127.0.0.1,0:0:0:0:0:0:0:1"
+    # if empty or not set: any IP is allowed to access the metrics
+    monitoring-ips:
+      - 127.0.0.1
+      - ::1

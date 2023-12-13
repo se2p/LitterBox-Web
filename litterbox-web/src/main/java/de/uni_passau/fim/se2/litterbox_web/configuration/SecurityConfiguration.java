@@ -18,9 +18,12 @@
  */
 package de.uni_passau.fim.se2.litterbox_web.configuration;
 
-import java.util.List;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authorization.AuthorizationDecision;
@@ -31,6 +34,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -38,8 +42,13 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfiguration {
 
-    @Value("#{'${spring.prometheus.monitoringIps:127.0.0.1}'.split(',')}")
-    private List<String> monitoringIpAddresses;
+    private static final Logger log = LoggerFactory.getLogger(SecurityConfiguration.class);
+
+    private final Set<InetAddress> monitoringIpAddresses;
+
+    public SecurityConfiguration(final MonitoringIpConfig monitoringIpAddresses) {
+        this.monitoringIpAddresses = monitoringIpAddresses.getIps();
+    }
 
     @Bean
     protected SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
@@ -56,13 +65,21 @@ public class SecurityConfiguration {
     ) {
         requests
             .requestMatchers(new AntPathRequestMatcher("/management/prometheus"))
-            .access(
-                (auth, context) -> {
-                    final String remoteAdds = context.getRequest().getRemoteAddr();
-                    final boolean granted = monitoringIpAddresses.contains(remoteAdds);
-                    return new AuthorizationDecision(granted);
-                }
-            )
+            .access((auth, context) -> checkMetricsAccess(context))
             .requestMatchers(new AntPathRequestMatcher("/**")).permitAll();
+    }
+
+    private AuthorizationDecision checkMetricsAccess(final RequestAuthorizationContext context) {
+        final InetAddress remoteAddr;
+        try {
+            remoteAddr = InetAddress.getByName(context.getRequest().getRemoteAddr());
+        }
+        catch (UnknownHostException e) {
+            return new AuthorizationDecision(false);
+        }
+
+        final boolean granted = monitoringIpAddresses.isEmpty() || monitoringIpAddresses.contains(remoteAddr);
+        log.debug("Allowing metrics scraping from {}: {}", remoteAddr, granted);
+        return new AuthorizationDecision(granted);
     }
 }
