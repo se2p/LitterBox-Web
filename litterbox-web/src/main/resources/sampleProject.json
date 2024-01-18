@@ -1,0 +1,380 @@
+{
+  "targets": [
+    {
+      "isStage": true,
+      "name": "Stage",
+      "variables": {},
+      "lists": {},
+      "broadcasts": {},
+      "blocks": {},
+      "comments": {},
+      "currentCostume": 3,
+      "costumes": [
+        {
+          "name": "backdrop1",
+          "bitmapResolution": 2,
+          "dataFormat": "png",
+          "assetId": "797b03bdb8cf6ccfc30c0692d533d998",
+          "md5ext": "797b03bdb8cf6ccfc30c0692d533d998.png",
+          "rotationCenterX": 480,
+          "rotationCenterY": 360
+        },
+        {
+          "name": "underwater3",
+          "bitmapResolution": 2,
+          "dataFormat": "png",
+          "assetId": "611045496f129bb32ac546fd9a4ddeb0",
+          "md5ext": "611045496f129bb32ac546fd9a4ddeb0.png",
+          "rotationCenterX": 480,
+          "rotationCenterY": 360
+        },
+        {
+          "name": "backdrop2",
+          "bitmapResolution": 1,
+          "dataFormat": "svg",
+          "assetId": "52ca6d92da6f75abd88bfe51854e7ee0",
+          "md5ext": "52ca6d92da6f75abd88bfe51854e7ee0.svg",
+          "rotationCenterX": 240,
+          "rotationCenterY": 180
+        },
+        {
+          "name": "Underwater 1",
+          "bitmapResolution": 1,
+          "dataFormat": "svg",
+          "assetId": "fb907f72b310acc8b95cbf2d2cccabc9",
+          "md5ext": "fb907f72b310acc8b95cbf2d2cccabc9.svg",
+          "rotationCenterX": 240,
+          "rotationCenterY": 180
+        }
+      ],
+      "sounds": [
+        {
+          "name": "pop",
+          "assetId": "83a9787d4cb6f3b7632b4ddfebf74367",
+          "dataFormat": "wav",
+          "format": "",
+          "rate": 48000,
+          "sampleCount": 1123,
+          "md5ext": "83a9787d4cb6f3b7632b4ddfebf74367.wav"
+        }
+      ],
+      "volume": 100,
+      "layerOrder": 0,
+      "tempo": 60,
+      "videoTransparency": 50,
+      "videoState": "off",
+      "textToSpeechLanguage": null
+    },
+    {
+      "isStage": false,
+      "name": "Crab",
+      "variables": {},
+      "lists": {},
+      "broadcasts": {},
+      "blocks": {
+        "RUyPYcIt;()HxW!YJxom": {
+          "opcode": "event_whenflagclicked",
+          "next": "lphVcf[(sM.q)N`p2(+S",
+          "parent": null,
+          "inputs": {},
+          "fields": {},
+          "shadow": false,
+          "topLevel": true,
+          "x": 99,
+          "y": 45
+        },
+        "lphVcf[(sM.q)N`p2(+S": {
+          "opcode": "motion_gotoxy",
+          "next": "UnwrUV.hjbA(Fk9;=8Lr",
+          "parent": "RUyPYcIt;()HxW!YJxom",
+          "inputs": { "X": [1, [4, "0"]], "Y": [1, [4, "0"]] },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "UnwrUV.hjbA(Fk9;=8Lr": {
+          "opcode": "motion_setrotationstyle",
+          "next": "RHgQt/Pz,n$E4`@.jO9A",
+          "parent": "lphVcf[(sM.q)N`p2(+S",
+          "inputs": {},
+          "fields": { "STYLE": ["don't rotate", null] },
+          "shadow": false,
+          "topLevel": false
+        },
+        "RHgQt/Pz,n$E4`@.jO9A": {
+          "opcode": "control_forever",
+          "next": null,
+          "parent": "UnwrUV.hjbA(Fk9;=8Lr",
+          "inputs": { "SUBSTACK": [2, "xH}Q2swu||S8IPTS6]X4"] },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false,
+          "comment": "25o_jxWlR[Uhf=hHx`n^"
+        },
+        "xH}Q2swu||S8IPTS6]X4": {
+          "opcode": "motion_turnright",
+          "next": "oC0*w*DaJd?G9FiXT3p4",
+          "parent": "RHgQt/Pz,n$E4`@.jO9A",
+          "inputs": { "DEGREES": [1, [4, "10"]] },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "oC0*w*DaJd?G9FiXT3p4": {
+          "opcode": "motion_movesteps",
+          "next": "FfVkv+Bx/.Dya6kAkc}L",
+          "parent": "xH}Q2swu||S8IPTS6]X4",
+          "inputs": { "STEPS": [3, "C#?bDr1DI$85:gjaBiXt", [4, "10"]] },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "C#?bDr1DI$85:gjaBiXt": {
+          "opcode": "operator_random",
+          "next": null,
+          "parent": "oC0*w*DaJd?G9FiXT3p4",
+          "inputs": { "FROM": [1, [4, "1"]], "TO": [1, [4, "3"]] },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "FfVkv+Bx/.Dya6kAkc}L": {
+          "opcode": "motion_turnleft",
+          "next": "a*cB2MgPcHNR{%2@BJn2",
+          "parent": "oC0*w*DaJd?G9FiXT3p4",
+          "inputs": { "DEGREES": [1, [4, "15"]] },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "a*cB2MgPcHNR{%2@BJn2": {
+          "opcode": "motion_ifonedgebounce",
+          "next": null,
+          "parent": "FfVkv+Bx/.Dya6kAkc}L",
+          "inputs": {},
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "Ndv)pyF`4f7J`]nK03#6": {
+          "opcode": "event_whenflagclicked",
+          "next": "3l^?H9wE9rk|d[A*7Z.C",
+          "parent": null,
+          "inputs": {},
+          "fields": {},
+          "shadow": false,
+          "topLevel": true,
+          "x": 103,
+          "y": 448,
+          "comment": "Cm5/TWme|N{h!XP65TFM"
+        },
+        "3l^?H9wE9rk|d[A*7Z.C": {
+          "opcode": "looks_switchcostumeto",
+          "next": "?#x#9S,9)a$%%.3~Gg7x",
+          "parent": "Ndv)pyF`4f7J`]nK03#6",
+          "inputs": { "COSTUME": [1, "C$nEnGeo4]+q#Akl-!1g"] },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "C$nEnGeo4]+q#Akl-!1g": {
+          "opcode": "looks_costume",
+          "next": null,
+          "parent": "3l^?H9wE9rk|d[A*7Z.C",
+          "inputs": {},
+          "fields": { "COSTUME": ["crab legs", null] },
+          "shadow": true,
+          "topLevel": false
+        },
+        "?#x#9S,9)a$%%.3~Gg7x": {
+          "opcode": "control_forever",
+          "next": null,
+          "parent": "3l^?H9wE9rk|d[A*7Z.C",
+          "inputs": { "SUBSTACK": [2, "3vs5C{9)%sE2,6Yz^gz{"] },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "3vs5C{9)%sE2,6Yz^gz{": {
+          "opcode": "looks_nextcostume",
+          "next": "Q]UX$zXR7HgDYK`obHBA",
+          "parent": "?#x#9S,9)a$%%.3~Gg7x",
+          "inputs": {},
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "Q]UX$zXR7HgDYK`obHBA": {
+          "opcode": "control_wait",
+          "next": null,
+          "parent": "3vs5C{9)%sE2,6Yz^gz{",
+          "inputs": { "DURATION": [1, [5, "1"]] },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "-e~bGNwuL@f6J/(]Gk.O": {
+          "opcode": "event_whenflagclicked",
+          "next": "~@TtLL*m~BgVeGwSvofC",
+          "parent": null,
+          "inputs": {},
+          "fields": {},
+          "shadow": false,
+          "topLevel": true,
+          "x": 113,
+          "y": 811,
+          "comment": "g?2=x}`;`35THXvz#d5s"
+        },
+        "~@TtLL*m~BgVeGwSvofC": {
+          "opcode": "control_forever",
+          "next": null,
+          "parent": "-e~bGNwuL@f6J/(]Gk.O",
+          "inputs": { "SUBSTACK": [2, ",P=%Y~X-90Fa$Vt{ut7,"] },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        ",P=%Y~X-90Fa$Vt{ut7,": {
+          "opcode": "sound_playuntildone",
+          "next": null,
+          "parent": "~@TtLL*m~BgVeGwSvofC",
+          "inputs": { "SOUND_MENU": [1, "l|l*v+!1)Bb}Z[jK1s=D"] },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "l|l*v+!1)Bb}Z[jK1s=D": {
+          "opcode": "sound_sounds_menu",
+          "next": null,
+          "parent": ",P=%Y~X-90Fa$Vt{ut7,",
+          "inputs": {},
+          "fields": { "SOUND_MENU": ["Human Beatbox1", null] },
+          "shadow": true,
+          "topLevel": false
+        }
+      },
+      "comments": {
+        "25o_jxWlR[Uhf=hHx`n^": {
+          "blockId": "RHgQt/Pz,n$E4`@.jO9A",
+          "x": 484.03703703703707,
+          "y": 198.4814814814815,
+          "width": 198.5185546875,
+          "height": 99.25924682617188,
+          "minimized": false,
+          "text": "Move around randomly."
+        },
+        "Cm5/TWme|N{h!XP65TFM": {
+          "blockId": "Ndv)pyF`4f7J`]nK03#6",
+          "x": 386.55401258115415,
+          "y": 457.48148148148147,
+          "width": 165.9259033203125,
+          "height": 87.40740966796875,
+          "minimized": false,
+          "text": "Switch costumes."
+        },
+        "g?2=x}`;`35THXvz#d5s": {
+          "blockId": "-e~bGNwuL@f6J/(]Gk.O",
+          "x": 301.368827395969,
+          "y": 772,
+          "width": 117.0369873046875,
+          "height": 82.96295166015625,
+          "minimized": false,
+          "text": "Play music."
+        }
+      },
+      "currentCostume": 2,
+      "costumes": [
+        {
+          "name": "crab legs",
+          "bitmapResolution": 1,
+          "dataFormat": "svg",
+          "assetId": "17dfa9532d03444f6c7755479ca37151",
+          "md5ext": "17dfa9532d03444f6c7755479ca37151.svg",
+          "rotationCenterX": 175.52337227873664,
+          "rotationCenterY": 119.74375682246482
+        },
+        {
+          "name": "crab legs2",
+          "bitmapResolution": 1,
+          "dataFormat": "svg",
+          "assetId": "5f3a166b60cc73e0bac97a7fe2bd22a9",
+          "md5ext": "5f3a166b60cc73e0bac97a7fe2bd22a9.svg",
+          "rotationCenterX": 175.5233854776498,
+          "rotationCenterY": 119.7437603082164
+        },
+        {
+          "name": "cheerful crab",
+          "bitmapResolution": 1,
+          "dataFormat": "svg",
+          "assetId": "b5273c9480341671425e24dee606b79b",
+          "md5ext": "b5273c9480341671425e24dee606b79b.svg",
+          "rotationCenterX": 175.52340222387244,
+          "rotationCenterY": 118.5187559112324
+        },
+        {
+          "name": "elated crab",
+          "bitmapResolution": 1,
+          "dataFormat": "svg",
+          "assetId": "d2486f80232e8e18b9905b845df6ebc7",
+          "md5ext": "d2486f80232e8e18b9905b845df6ebc7.svg",
+          "rotationCenterX": 176.4618152215615,
+          "rotationCenterY": 119.45716801388238
+        },
+        {
+          "name": "upset crab",
+          "bitmapResolution": 1,
+          "dataFormat": "svg",
+          "assetId": "f25e85949cf17ea6008947e02642d2d0",
+          "md5ext": "f25e85949cf17ea6008947e02642d2d0.svg",
+          "rotationCenterX": 177.8682798868295,
+          "rotationCenterY": 120.86364098448593
+        },
+        {
+          "name": "mischevious crab",
+          "bitmapResolution": 1,
+          "dataFormat": "svg",
+          "assetId": "ffccda2e3b37e0a91032bc1b3b17246c",
+          "md5ext": "ffccda2e3b37e0a91032bc1b3b17246c.svg",
+          "rotationCenterX": 91.99989857982655,
+          "rotationCenterY": 61.79757379646617
+        },
+        {
+          "name": "dazed crab",
+          "bitmapResolution": 1,
+          "dataFormat": "svg",
+          "assetId": "af99310ceddf7b0483eb16053d902b1a",
+          "md5ext": "af99310ceddf7b0483eb16053d902b1a.svg",
+          "rotationCenterX": 62.50340858194235,
+          "rotationCenterY": 39.58692423820739
+        }
+      ],
+      "sounds": [
+        {
+          "name": "Human Beatbox1",
+          "assetId": "37f37455c35fea71449926eb0bff05dd",
+          "dataFormat": "wav",
+          "format": "adpcm",
+          "rate": 22050,
+          "sampleCount": 103633,
+          "md5ext": "37f37455c35fea71449926eb0bff05dd.wav"
+        }
+      ],
+      "volume": 100,
+      "layerOrder": 1,
+      "visible": true,
+      "x": 67.87235190199894,
+      "y": 19.542221440946484,
+      "size": 100,
+      "direction": 8.56284207201142,
+      "draggable": false,
+      "rotationStyle": "don't rotate"
+    }
+  ],
+  "monitors": [],
+  "extensions": [],
+  "meta": {
+    "semver": "3.0.0",
+    "vm": "2.0.5",
+    "agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36"
+  }
+}
