@@ -1,3 +1,6 @@
+cors:
+  allowed-origins: []
+
 logging:
   level:
     de.uni_passau.fim.se2: DEBUG

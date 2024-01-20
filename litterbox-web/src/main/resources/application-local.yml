@@ -1,3 +1,11 @@
+cors:
+  allowed-origins:
+    - http://localhost:8601
+
 logging:
   level:
     de.uni_passau.fim.se2: DEBUG
+
+management:
+  endpoints:
+    enabled-by-default: true
