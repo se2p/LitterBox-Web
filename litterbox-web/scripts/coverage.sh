@@ -1,6 +1,6 @@
 #! /usr/bin/env sh
 #
-# Copyright (C) 2023 LitterBox-Web contributors
+# Copyright (C) 2024 LitterBox-Web contributors
 #
 # This file is part of LitterBox-Web.
 #
