@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 LitterBox-Web contributors
+ * Copyright (C) 2024 LitterBox-Web contributors
  *
  * This file is part of LitterBox-Web.
  *
@@ -21,7 +21,6 @@ package de.uni_passau.fim.se2.litterbox_web.architecture;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;

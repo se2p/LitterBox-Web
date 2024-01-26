@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 LitterBox-Web contributors
+ * Copyright (C) 2024 LitterBox-Web contributors
  *
  * This file is part of LitterBox-Web.
  *
@@ -19,10 +19,8 @@
 package de.uni_passau.fim.se2.litterbox_web;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class LitterboxWebApplicationTest {
+class LitterboxWebApplicationTest extends LitterboxWebIntegrationTest {
 
     @Test
     void contextLoads() {

@@ -1,0 +1,21 @@
+cors:
+  allowed-origins: []
+
+logging:
+  level:
+    de.uni_passau.fim.se2: INFO
+
+spring:
+  application:
+    name: litterbox-web
+  threads:
+    virtual:
+      enabled: true
+
+management:
+  endpoints:
+    enabled-by-default: false
+
+server:
+  error:
+    include-stacktrace: never

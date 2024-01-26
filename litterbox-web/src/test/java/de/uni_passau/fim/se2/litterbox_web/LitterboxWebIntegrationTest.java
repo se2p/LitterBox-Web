@@ -18,14 +18,13 @@
  */
 package de.uni_passau.fim.se2.litterbox_web;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@SpringBootApplication
-@SuppressWarnings("checkstyle:HideUtilityClassConstructor")
-public class LitterboxWebApplication {
-
-    public static void main(String[] args) {
-        SpringApplication.run(LitterboxWebApplication.class, args);
-    }
+@SpringBootTest
+@AutoConfigureMockMvc
+@ExtendWith(SpringExtension.class)
+public abstract class LitterboxWebIntegrationTest {
 }

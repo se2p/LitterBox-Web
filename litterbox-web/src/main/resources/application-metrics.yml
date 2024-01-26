@@ -1,0 +1,38 @@
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      base-path: /management
+      exposure:
+        include:
+          - health
+          - prometheus
+  endpoint:
+    health:
+      enabled: true
+    prometheus:
+      enabled: true
+  health:
+    livenessstate:
+      enabled: true
+  metrics:
+    enable:
+      http: true
+      jvm: true
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            requests: true
+  observations:
+    key-values:
+      application: ${spring.application.name}
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+    # IPs that are allowed to scrape the metrics
+    # if empty or not set: any IP is allowed to access the metrics
+    monitoring-ips:
+      - 127.0.0.1
+      - ::1

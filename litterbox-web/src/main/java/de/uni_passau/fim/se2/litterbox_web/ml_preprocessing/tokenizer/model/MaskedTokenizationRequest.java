@@ -16,16 +16,18 @@
  * You should have received a copy of the GNU General Public Licence
  * along with LitterBox-Web. If not, see <http://www.gnu.org/licenses/>.
  */
-package de.uni_passau.fim.se2.litterbox_web;
+package de.uni_passau.fim.se2.litterbox_web.ml_preprocessing.tokenizer.model;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-@SpringBootApplication
-@SuppressWarnings("checkstyle:HideUtilityClassConstructor")
-public class LitterboxWebApplication {
+import de.uni_passau.fim.se2.litterbox.ast.model.Program;
+import de.uni_passau.fim.se2.litterbox_web.model.ScratchProgramConverter;
 
-    public static void main(String[] args) {
-        SpringApplication.run(LitterboxWebApplication.class, args);
-    }
+public record MaskedTokenizationRequest(
+    @JsonSerialize(converter = ScratchProgramConverter.SerializeConverter.class) @JsonDeserialize(
+        converter = ScratchProgramConverter.DeserializeConverter.class
+    ) Program program,
+    String blockId
+) {
 }

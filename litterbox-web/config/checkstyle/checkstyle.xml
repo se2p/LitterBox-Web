@@ -27,19 +27,38 @@
 
         <!-- Class Design -->
         <module name="HideUtilityClassConstructor"/>
+        <module name="MutableException"/>
         <module name="OneTopLevelClass"/>
 
         <!-- Coding -->
+        <module name="AvoidDoubleBraceInitialization"/>
+        <module name="AvoidInlineConditionals"/>
         <module name="CovariantEquals"/>
+        <module name="DefaultComesLast"/>
         <module name="EmptyStatement"/>
         <module name="EqualsAvoidNull"/>
         <module name="EqualsHashCode"/>
+        <module name="HiddenField">
+            <property name="ignoreConstructorParameter" value="true"/>
+            <property name="ignoreSetter" value="true"/>
+        </module>
         <module name="InnerAssignment"/>
+        <module name="MultipleStringLiterals">
+            <property name="allowedDuplicates" value="4"/>
+        </module>
+        <module name="MultipleVariableDeclarations"/>
         <module name="OneStatementPerLine"/>
+        <module name="PackageDeclaration">
+            <property name="matchDirectoryStructure" value="true"/>
+        </module>
         <module name="SimplifyBooleanExpression"/>
         <module name="SimplifyBooleanReturn"/>
         <module name="StringLiteralEquality"/>
         <module name="UnnecessaryParentheses"/>
+        <module name="UnnecessarySemicolonAfterOuterTypeDeclaration"/>
+        <module name="UnnecessarySemicolonAfterTypeMemberDeclaration"/>
+        <module name="UnnecessarySemicolonInEnumeration"/>
+        <module name="UnnecessarySemicolonInTryWithResources"/>
         <module name="UnusedLocalVariable"/>
 
         <!-- Imports -->
@@ -47,6 +66,7 @@
         <module name="UnusedImports"/>
 
         <!-- Javadoc -->
+        <module name="InvalidJavadocPosition"/>
         <module name="JavadocMethod">
             <property name="accessModifiers" value="public"/>
             <property name="tokens" value="METHOD_DEF,ANNOTATION_FIELD_DEF"/>
@@ -54,6 +74,8 @@
             <property name="allowedAnnotations"
                       value="Override,Test,ParameterizedTest,BeforeEach,AfterEach,BeforeAll,AfterAll"/>
         </module>
+        <module name="JavadocMissingLeadingAsterisk"/>
+        <module name="JavadocMissingWhitespaceAfterAsterisk"/>
         <module name="MissingJavadocMethod">
             <property name="scope" value="public"/>
             <property name="allowMissingPropertyJavadoc" value="true"/>
@@ -65,6 +87,7 @@
         </module>
 
         <!-- Metrics -->
+        <module name="BooleanExpressionComplexity"/>
         <module name="CyclomaticComplexity">
             <property name="severity" value="info"/>
         </module>
@@ -87,6 +110,7 @@
         </module>
 
         <!-- Size Violations -->
+        <module name="LambdaBodyLength"/>
         <module name="MethodLength">
             <property name="max" value="60"/>
         </module>
