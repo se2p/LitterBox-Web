@@ -26,12 +26,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import de.uni_passau.fim.se2.litterbox.ast.model.Program;
 import de.uni_passau.fim.se2.litterbox.ml.MLPreprocessorCommonOptions;
 import de.uni_passau.fim.se2.litterbox.ml.shared.ActorNameNormalizer;
 import de.uni_passau.fim.se2.litterbox.ml.tokenizer.Token;
 import de.uni_passau.fim.se2.litterbox.ml.tokenizer.TokenizingAnalyzer;
 import de.uni_passau.fim.se2.litterbox.ml.util.MaskingStrategy;
-import de.uni_passau.fim.se2.litterbox.ast.model.Program;
 
 @Service
 public class TokenizerService {
