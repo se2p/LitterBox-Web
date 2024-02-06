@@ -27,7 +27,7 @@
         <!-- has to match version in pom.xml of LitterBox submodule -->
         <litterbox.version>1.9-SNAPSHOT</litterbox.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <checkstyle.version>10.12.7</checkstyle.version>
+        <checkstyle.version>10.13.0</checkstyle.version>
         <!-- Spring boot version defined in parent pom.xml -->
     </properties>
 
@@ -108,7 +108,7 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.25.1</version>
+            <version>3.25.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -139,7 +139,7 @@
             <plugin>
                 <groupId>org.graalvm.buildtools</groupId>
                 <artifactId>native-maven-plugin</artifactId>
-                <version>0.9.28</version>
+                <version>0.10.0</version>
                 <configuration>
                     <mainClass>de.uni_passau.fim.se2.litterbox_web.LitterboxWebApplication</mainClass>
                 </configuration>
@@ -201,7 +201,7 @@
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
-                <version>2.42.0</version>
+                <version>2.43.0</version>
                 <configuration>
                     <java>
                         <eclipse>
