@@ -31,6 +31,25 @@
         <!-- Spring boot version defined in parent pom.xml -->
     </properties>
 
+    <repositories>
+        <repository>
+            <id>gitlab-litterbox-ml</id>
+            <url>https://gitlab.infosun.fim.uni-passau.de/api/v4/projects/1245/packages/maven</url>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>gitlab-litterbox-ml</id>
+            <url>https://gitlab.infosun.fim.uni-passau.de/api/v4/projects/1245/packages/maven</url>
+        </repository>
+
+        <snapshotRepository>
+            <id>gitlab-litterbox-ml</id>
+            <url>https://gitlab.infosun.fim.uni-passau.de/api/v4/projects/1245/packages/maven</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -68,6 +87,11 @@
             <groupId>de.uni_passau.fim.se2</groupId>
             <artifactId>Litterbox</artifactId>
             <version>${litterbox.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.uni_passau.fim.se2</groupId>
+            <artifactId>litterbox-ml</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
 
         <!-- test dependencies -->
