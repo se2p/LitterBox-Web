@@ -30,7 +30,7 @@ import de.uni_passau.fim.se2.litterbox.ast.model.Program;
 import de.uni_passau.fim.se2.litterbox.ml.MLPreprocessorCommonOptions;
 import de.uni_passau.fim.se2.litterbox.ml.shared.ActorNameNormalizer;
 import de.uni_passau.fim.se2.litterbox.ml.tokenizer.Token;
-import de.uni_passau.fim.se2.litterbox.ml.tokenizer.TokenizingAnalyzer;
+import de.uni_passau.fim.se2.litterbox.ml.tokenizer.TokenizingProgramPreprocessor;
 import de.uni_passau.fim.se2.litterbox.ml.util.MaskingStrategy;
 
 @Service
@@ -62,9 +62,9 @@ public class TokenizerService {
      * @return The token sequence. Empty in case the block that should be masked could not be found.
      */
     private List<String> tokenize(final Program program, final MaskingStrategy strategy, final boolean statementLevel) {
-        final TokenizingAnalyzer analyzer = buildAnalyzer(strategy, statementLevel);
+        final TokenizingProgramPreprocessor preprocessor = buildPreprocessor(strategy, statementLevel);
 
-        final Optional<List<String>> tokens = analyzer.check(program)
+        final Optional<List<String>> tokens = preprocessor.process(program)
             .flatMap(sequence -> sequence.tokens().stream().findFirst().stream())
             .filter(sequence -> sequence.contains(Token.MASK.getStrRep()))
             .findFirst();
@@ -82,13 +82,15 @@ public class TokenizerService {
         }
     }
 
-    private TokenizingAnalyzer buildAnalyzer(final MaskingStrategy strategy, final boolean statementLevel) {
+    private TokenizingProgramPreprocessor buildPreprocessor(
+        final MaskingStrategy strategy, final boolean statementLevel
+    ) {
         final MLPreprocessorCommonOptions options = new MLPreprocessorCommonOptions(
-            null, null, false, true, false, true, true, ActorNameNormalizer.getDefault()
+            null, true, false, true, true, ActorNameNormalizer.getDefault()
         );
 
-        return new TokenizingAnalyzer(
-            options, false, false, statementLevel, strategy
+        return new TokenizingProgramPreprocessor(
+            options, strategy, false, statementLevel, false
         );
     }
 }

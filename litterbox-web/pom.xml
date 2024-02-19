@@ -26,6 +26,7 @@
         <maven.compiler.release>21</maven.compiler.release>
         <!-- has to match version in pom.xml of LitterBox submodule -->
         <litterbox.version>1.9-SNAPSHOT</litterbox.version>
+        <litterbox.ml.version>1.0-20240219.174107-8</litterbox.ml.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <checkstyle.version>10.13.0</checkstyle.version>
         <!-- Spring boot version defined in parent pom.xml -->
@@ -91,7 +92,7 @@
         <dependency>
             <groupId>de.uni_passau.fim.se2</groupId>
             <artifactId>litterbox-ml</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${litterbox.ml.version}</version>
         </dependency>
 
         <!-- test dependencies -->
