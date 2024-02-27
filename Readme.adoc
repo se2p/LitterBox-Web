@@ -1,3 +1,22 @@
+////
+  // Copyright (C) 2024 LitterBox-Web contributors
+  //
+  // This file is part of LitterBox-Web.
+  //
+  // LitterBox-Web is free software: you can redistribute it and/or modify
+  // it under the terms of the GNU General Public Licence as published by
+  // the Free Software Foundation, either version 3 of the Licence, or (at
+  // your option) any later version.
+  //
+  // LitterBox-Web is distributed in the hope that it will be useful, but
+  // WITHOUT ANY WARRANTY; without even the implied warranty of
+  // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  // General Public Licence for more details.
+  //
+  // You should have received a copy of the GNU General Public Licence
+  // along with LitterBox-Web. If not, see <http://www.gnu.org/licenses/>.
+////
+
 = Readme
 :icons: font
 :lang: en-GB
@@ -14,31 +33,13 @@
 REST API wrapper around link:{url-litterbox}[LitterBox] functionality.
 --
 
-== Cloning the repository
-
-LitterBox is included as a submodule.
-You either need to clone the repository using
-[source,bash]
-----
-git clone --recurse-submodules URL
-----
-or run
-[source,bash]
-----
-git submodule update --init
-----
-afterwards when having cloned without `--recurse-submodules`.
-
 
 == Building
 
 [source,bash]
 ----
-mvn install -DskipTests  # <1>
-cd litterbox-web
 mvn package spring-boot:repackage
 ----
-<1> Needed for Maven to be able to find the LitterBox dependency in litterbox-web.
 
 Afterwards, you can start the litterbox-web server using
 [source,bash]
@@ -47,19 +48,6 @@ java -jar litterbox-web/target/litterbox-web-${version}.jar
 ----
 
 Starting the application directly via your IDE from the main class in litterbox-web should also work.
-
-.LitterBox submodule changes
-[NOTE]
---
-LitterBox is included as a Git submodule.
-If the build fails because it cannot find LitterBox or some of its classes/methods, you might have to run
-[souce,bash]
-----
-git submodule update --init
-mvn install -DskipTests
-----
-again to update the submodule.
---
 
 
 === Building a container image
