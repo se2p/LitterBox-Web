@@ -29,7 +29,6 @@ import de.uni_passau.fim.se2.litterbox.ast.model.metadata.block.TopNonDataBlockM
 import de.uni_passau.fim.se2.litterbox.ast.parser.Scratch3Parser;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
@@ -44,7 +43,6 @@ import java.util.logging.Logger;
 public class linterService {
     private static final Scratch3Parser PARSER = new Scratch3Parser();
     private static final Logger log = Logger.getLogger(IssueTool.class.getName());
-
 
     public List<IssueInfo> getIssues(File file) throws ParsingException, IOException {
         try {
@@ -65,7 +63,7 @@ public class linterService {
                 String blockId = extractblockId(issue);
 
                 IssueInfo issueInfo = new IssueInfo(
-                        blockId,  issue.getIssueType().toString(),issue.getFinderName(), parsedIssueHint);
+                        blockId, issue.getIssueType().toString(), issue.getFinderName(), parsedIssueHint);
 
                 issueList.add(issueInfo);
             }
@@ -96,17 +94,18 @@ public class linterService {
             }
         } catch (NullPointerException npe) {
             // Log the NullPointerException or handle it as needed
-            // For now, just log the exception and proceed with the default value
-            log.log(Level.FINE,"NullPointerException in extractBlockId:");
+            // Todo: For now, just log the exception and proceed with the default value
+            log.log(Level.FINE, "NullPointerException in extractBlockId:");
         } catch (Exception e) {
             // Log other exceptions or handle them as needed
-            // For now, just log the exception and proceed with the default value
-            log.log(Level.FINE,"Exception in extractBlockId: " );
+            // Todo: For now, just log the exception and proceed with the default value
+            log.log(Level.FINE, "Exception in extractBlockId: ");
         }
 
         return blockId;
     }
 }
+
 class IssueGenerationException extends ResponseStatusException {
 
     IssueGenerationException(final String message, final Throwable cause) {

@@ -20,7 +20,6 @@
 package de.uni_passau.fim.se2.litterbox_web.rest.linter.linter;
 
 import de.uni_passau.fim.se2.litterbox.ast.ParsingException;
-import de.uni_passau.fim.se2.litterbox.ast.parser.Scratch3Parser;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
