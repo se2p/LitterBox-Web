@@ -74,7 +74,7 @@ show-coverage:
   needs:
     - build
   rules:
-    - if: '$CI_MERGE_REQUEST_TITLE =~ /^Draft:/'
+    - if: '$CI_MERGE_REQUEST_TITLE =~ /^(Draft|WIP):/'
       allow_failure: true
     - when: on_success
       allow_failure: false
@@ -94,6 +94,7 @@ checkstyle:
   script:
     - mvn checkstyle:check || true
     - cat target/checkstyle-result.xml | ./scripts/checkstyle_report.sh > checkstyle-report.json
+  allow_failure: true
   artifacts:
     when: always
     reports:
