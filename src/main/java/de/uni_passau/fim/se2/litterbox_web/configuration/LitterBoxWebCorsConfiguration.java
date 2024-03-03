@@ -27,26 +27,23 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 @Configuration
-public class LitterBoxWebCorsConfiguration {
-
-    private final List<String> allowedOrigins;
-
-    public LitterBoxWebCorsConfiguration(@Value("${cors.allowed-origins}") String[] allowedOrigins) {
-        this.allowedOrigins = List.of(allowedOrigins);
-    }
+class LitterBoxWebCorsConfiguration {
 
     @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        final CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(allowedOrigins);
-        configuration.setAllowedHeaders(List.of("content-type"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST"));
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
 
-        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
+        config.addAllowedOrigin("http://localhost:8601");
 
-        return source;
+        config.addAllowedMethod("*");
+
+        config.addAllowedHeader("*");
+
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
     }
 }
