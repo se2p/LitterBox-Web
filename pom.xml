@@ -117,11 +117,6 @@
             <version>1.2.1</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>33.0.0-jre</version>
-        </dependency>
     </dependencies>
 
     <build>

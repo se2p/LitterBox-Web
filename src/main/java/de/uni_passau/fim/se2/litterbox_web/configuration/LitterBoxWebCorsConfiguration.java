@@ -18,32 +18,47 @@
  */
 package de.uni_passau.fim.se2.litterbox_web.configuration;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 class LitterBoxWebCorsConfiguration {
+    /*
+    // todo: see #7
+    
+    private final List<String> allowedOrigins;
+    
+    public LitterBoxWebCorsConfiguration(@Value("${cors.allowed-origins}") String[] allowedOrigins) {
+        this.allowedOrigins = List.of(allowedOrigins);
+    }
+    
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        final CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(allowedOrigins);
+        configuration.setAllowedHeaders(List.of("content-type"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST"));
+    
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+    
+        return source;
+    }
+     */
 
     @Bean
     public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-
+        final CorsConfiguration config = new CorsConfiguration();
         config.addAllowedOrigin("http://localhost:8601");
-
         config.addAllowedMethod("*");
-
         config.addAllowedHeader("*");
 
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
+
         return new CorsFilter(source);
     }
 }
