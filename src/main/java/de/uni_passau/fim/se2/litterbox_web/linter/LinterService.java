@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 LitterBox-Web contributors
+ * Copyright (C) 2024 LitterBox-Web contributors
  *
  * This file is part of LitterBox-Web.
  *
@@ -16,69 +16,61 @@
  * You should have received a copy of the GNU General Public Licence
  * along with LitterBox-Web. If not, see <http://www.gnu.org/licenses/>.
  */
-package de.uni_passau.fim.se2.litterbox_web.rest.linter.linter;
-
-import de.uni_passau.fim.se2.litterbox.analytics.BugAnalyzer;
-import de.uni_passau.fim.se2.litterbox.analytics.Issue;
-import de.uni_passau.fim.se2.litterbox.analytics.IssueTool;
-import de.uni_passau.fim.se2.litterbox.ast.ParsingException;
-import de.uni_passau.fim.se2.litterbox.ast.model.Program;
-import de.uni_passau.fim.se2.litterbox.ast.model.Script;
-import de.uni_passau.fim.se2.litterbox.ast.model.metadata.Metadata;
-import de.uni_passau.fim.se2.litterbox.ast.model.metadata.block.TopNonDataBlockMetadata;
-import de.uni_passau.fim.se2.litterbox.ast.parser.Scratch3Parser;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+package de.uni_passau.fim.se2.litterbox_web.linter;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import de.uni_passau.fim.se2.litterbox.analytics.Issue;
+import de.uni_passau.fim.se2.litterbox.analytics.IssueTool;
+import de.uni_passau.fim.se2.litterbox.analytics.ProgramBugAnalyzer;
+import de.uni_passau.fim.se2.litterbox.ast.ParsingException;
+import de.uni_passau.fim.se2.litterbox.ast.model.Program;
+import de.uni_passau.fim.se2.litterbox.ast.model.Script;
+import de.uni_passau.fim.se2.litterbox.ast.model.metadata.Metadata;
+import de.uni_passau.fim.se2.litterbox.ast.model.metadata.block.TopNonDataBlockMetadata;
+import de.uni_passau.fim.se2.litterbox.ast.parser.Scratch3Parser;
 
 @Service
-public class linterService {
+public class LinterService {
+
     private static final Scratch3Parser PARSER = new Scratch3Parser();
-    private static final Logger log = Logger.getLogger(IssueTool.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(IssueTool.class);
 
     public List<IssueInfo> getIssues(File file) throws ParsingException, IOException {
-        try {
-            final Program program = PARSER.parseSB3File(file);
-            BugAnalyzer bugAnalyzer = new BugAnalyzer(
-                    null,
-                    null,
-                    "all",
-                    false, false, true);
+        final Program program = PARSER.parseSB3File(file);
+        ProgramBugAnalyzer bugAnalyzer = new ProgramBugAnalyzer("all", false);
+        Set<Issue> issues = bugAnalyzer.analyze(program);
 
-            Set<Issue> issues = bugAnalyzer.check(program);
+        List<IssueInfo> issueList = new ArrayList<>();
 
-            List<IssueInfo> issueList = new ArrayList<>();
+        for (Issue issue : issues) {
+            String parsedIssueHint = parseIssueHint(issue.getHint());
 
-            for (Issue issue : issues) {
-                String parsedIssueHint = parseIssueHint(issue.getHint());
+            String blockId = extractBlockId(issue);
 
-                String blockId = extractblockId(issue);
+            IssueInfo issueInfo = new IssueInfo(
+                blockId, issue.getIssueType().toString(), issue.getFinderName(), parsedIssueHint
+            );
 
-                IssueInfo issueInfo = new IssueInfo(
-                        blockId, issue.getIssueType().toString(), issue.getFinderName(), parsedIssueHint);
-
-                issueList.add(issueInfo);
-            }
-
-            return issueList;
-        } catch (Exception e) {
-            throw new IssueGenerationException(e.getMessage(), e);
+            issueList.add(issueInfo);
         }
+
+        return issueList;
     }
 
     private String parseIssueHint(String originalIssueHint) {
         return originalIssueHint.replaceAll("\\[.*?]", "").replaceAll("Problem:", "").trim();
     }
 
-    private String extractblockId(Issue issue) {
+    private String extractBlockId(Issue issue) {
         String blockId = " ";
         try {
             if (issue != null && issue.getScript() != null) {
@@ -92,23 +84,18 @@ public class linterService {
                     }
                 }
             }
-        } catch (NullPointerException npe) {
+        }
+        catch (NullPointerException npe) {
             // Log the NullPointerException or handle it as needed
             // Todo: For now, just log the exception and proceed with the default value
-            log.log(Level.FINE, "NullPointerException in extractBlockId:");
-        } catch (Exception e) {
+            log.warn("NullPointerException in extractBlockId.", npe);
+        }
+        catch (Exception e) {
             // Log other exceptions or handle them as needed
             // Todo: For now, just log the exception and proceed with the default value
-            log.log(Level.FINE, "Exception in extractBlockId: ");
+            log.warn("Exception in extractBlockId.", e);
         }
 
         return blockId;
-    }
-}
-
-class IssueGenerationException extends ResponseStatusException {
-
-    IssueGenerationException(final String message, final Throwable cause) {
-        super(HttpStatus.INTERNAL_SERVER_ERROR, message, cause);
     }
 }

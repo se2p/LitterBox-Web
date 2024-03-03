@@ -22,14 +22,7 @@ variables:
 cache:
   paths:
     - .m2/repository/
-    - litterbox/target/
-    - litterbox-web/target/
-
-before_script:
-  - pushd litterbox
-  - mvn install -DskipTests
-  - popd
-  - cd litterbox-web
+    - target/
 
 ################################################################################
 # build
@@ -51,29 +44,27 @@ test:
     - sh ./scripts/coverage.sh $JACOCO_CSV_LOCATION
     - sh ./scripts/coverage_metrics.sh $JACOCO_CSV_LOCATION >> metrics.txt
   variables:
-    JACOCO_CSV_LOCATION: "$CI_PROJECT_DIR/litterbox-web/target/site/jacoco/jacoco.csv"
+    JACOCO_CSV_LOCATION: "$CI_PROJECT_DIR/target/site/jacoco/jacoco.csv"
   artifacts:
     paths:
-      - litterbox-web/target/site/jacoco/
+      - target/site/jacoco/
     reports:
-      metrics: litterbox-web/metrics.txt
+      metrics: metrics.txt
       junit:
-        - litterbox-web/target/surefire-reports/TEST-*.xml
+        - target/surefire-reports/TEST-*.xml
 
 show-coverage:
   stage: test
   needs:
     - test
   image: registry.gitlab.com/haynes/jacoco2cobertura:1.0.9
-  before_script:
-    - cd litterbox-web
   script:
-    - python /opt/cover2cover.py target/site/jacoco/jacoco.xml $CI_PROJECT_DIR/litterbox-web/src/main/java/ > coverage.xml
+    - python /opt/cover2cover.py target/site/jacoco/jacoco.xml $CI_PROJECT_DIR/src/main/java/ > coverage.xml
   artifacts:
     reports:
       coverage_report:
         coverage_format: cobertura
-        path: litterbox-web/coverage.xml
+        path: coverage.xml
 
 ################################################################################
 # lint
@@ -107,4 +98,4 @@ checkstyle:
     when: always
     reports:
       codequality:
-        - litterbox-web/checkstyle-report.json
+        - checkstyle-report.json

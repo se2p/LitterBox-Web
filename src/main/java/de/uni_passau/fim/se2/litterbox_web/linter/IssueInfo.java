@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 LitterBox-Web contributors
+ * Copyright (C) 2024 LitterBox-Web contributors
  *
  * This file is part of LitterBox-Web.
  *
@@ -16,16 +16,17 @@
  * You should have received a copy of the GNU General Public Licence
  * along with LitterBox-Web. If not, see <http://www.gnu.org/licenses/>.
  */
-package de.uni_passau.fim.se2.litterbox_web.rest.linter.linter;
+package de.uni_passau.fim.se2.litterbox_web.linter;
 
 public class IssueInfo {
+
     private String blockId;
     private String issueType;
     private String finderName;
     private String issueHint;
 
-    public IssueInfo(String blockId, String issueType,String finderName,String issueHint){
-        this.blockId=blockId;
+    public IssueInfo(String blockId, String issueType, String finderName, String issueHint) {
+        this.blockId = blockId;
         this.issueType = issueType;
         this.finderName = finderName;
         this.issueHint = issueHint;
