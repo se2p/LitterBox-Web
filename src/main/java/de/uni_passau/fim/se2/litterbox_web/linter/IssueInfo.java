@@ -18,49 +18,5 @@
  */
 package de.uni_passau.fim.se2.litterbox_web.linter;
 
-public class IssueInfo {
-
-    private String blockId;
-    private String issueType;
-    private String finderName;
-    private String issueHint;
-
-    public IssueInfo(String blockId, String issueType, String finderName, String issueHint) {
-        this.blockId = blockId;
-        this.issueType = issueType;
-        this.finderName = finderName;
-        this.issueHint = issueHint;
-    }
-
-    public String getBlockId() {
-        return blockId;
-    }
-
-    public void setBlockId(String blockId) {
-        this.blockId = blockId;
-    }
-
-    public String getIssueType() {
-        return issueType;
-    }
-
-    public void setIssueType(String issueType) {
-        this.issueType = issueType;
-    }
-
-    public String getFinderName() {
-        return finderName;
-    }
-
-    public void setFinderName(String finderName) {
-        this.finderName = finderName;
-    }
-
-    public String getIssueHint() {
-        return issueHint;
-    }
-
-    public void setIssueHint(String issueHint) {
-        this.issueHint = issueHint;
-    }
+public record IssueInfo(String blockId, String issueType, String finderName, String issueHint) {
 }
