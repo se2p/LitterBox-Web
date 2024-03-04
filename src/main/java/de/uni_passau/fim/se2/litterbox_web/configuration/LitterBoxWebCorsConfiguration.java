@@ -18,6 +18,9 @@
  */
 package de.uni_passau.fim.se2.litterbox_web.configuration;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -25,36 +28,25 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 @Configuration
-class LitterBoxWebCorsConfiguration {
-    /*
-    // todo: see #7
-    
-    private final List<String> allowedOrigins;
-    
-    public LitterBoxWebCorsConfiguration(@Value("${cors.allowed-origins}") String[] allowedOrigins) {
-        this.allowedOrigins = List.of(allowedOrigins);
-    }
-    
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        final CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(allowedOrigins);
-        configuration.setAllowedHeaders(List.of("content-type"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST"));
-    
-        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-    
-        return source;
-    }
-     */
+public class LitterBoxWebCorsConfiguration {
 
+    private final CorsConfigurationProperties configProps;
+
+    public LitterBoxWebCorsConfiguration(final CorsConfigurationProperties configuration) {
+        this.configProps = configuration;
+    }
+
+    /**
+     * Configures the CORS filter to allow cross-origin requests from the origins permitted in the configuration.
+     *
+     * @return A Spring CORS filter that will be applied as default to all endpoints.
+     */
     @Bean
     public CorsFilter corsFilter() {
         final CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOrigin("http://localhost:8601");
-        config.addAllowedMethod("*");
-        config.addAllowedHeader("*");
+        config.setAllowedOrigins(configProps.getAllowedOrigins());
+        config.setAllowedHeaders(List.of("content-type"));
+        config.setAllowedMethods(Arrays.asList("GET", "POST"));
 
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
