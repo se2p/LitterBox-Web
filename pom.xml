@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-License-Identifier: CC0-1.0
+
+SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
+-->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -253,17 +258,18 @@
                         <licenseSet>
                             <header>src/etc/header.txt</header>
                             <excludes>
-                                <exclude>**/README</exclude>
-                                <exclude>**/.gitlab-ci.yml</exclude>
-                                <exclude>**/pom.xml</exclude>
-                                <exclude>**/.editorconfig</exclude>
-                                <exclude>**/Jenkinsfile</exclude>
-                                <exclude>src/test/resources/**</exclude>
-                                <exclude>src/main/resources/**</exclude>
                                 <exclude>**/*.properties</exclude>
+                                <exclude>**/.editorconfig</exclude>
+                                <exclude>**/.gitlab-ci.yml</exclude>
                                 <exclude>**/.m2/repository/**</exclude>
-                                <exclude>config/**</exclude>
+                                <exclude>**/Jenkinsfile</exclude>
+                                <exclude>**/README</exclude>
+                                <exclude>**/pom.xml</exclude>
                                 <exclude>LICENSE.txt</exclude>
+                                <exclude>LICENSES/*</exclude>
+                                <exclude>config/**</exclude>
+                                <exclude>src/main/resources/**</exclude>
+                                <exclude>src/test/resources/**</exclude>
                             </excludes>
                         </licenseSet>
                     </licenseSets>

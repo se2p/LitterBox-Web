@@ -3,6 +3,9 @@
  *
  * This file is part of LitterBox-Web.
  *
+ * SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
  * LitterBox-Web is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public Licence as published by
  * the Free Software Foundation, either version 3 of the Licence, or (at

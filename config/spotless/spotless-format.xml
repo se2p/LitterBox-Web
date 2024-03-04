@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+SPDX-License-Identifier: CC0-1.0
+
+SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
+-->
 
 <profiles version="21">
     <profile kind="CodeFormatterProfile" name="Spotless Code Style" version="21">
