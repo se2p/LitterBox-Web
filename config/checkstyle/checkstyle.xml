@@ -62,6 +62,7 @@
         <module name="UnusedLocalVariable"/>
 
         <!-- Imports -->
+        <module name="AvoidStarImport"/>
         <module name="RedundantImport"/>
         <module name="UnusedImports"/>
 
