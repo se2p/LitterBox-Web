@@ -41,8 +41,8 @@ public class TokenizerService {
 
     private static final Logger log = LoggerFactory.getLogger(TokenizerService.class);
 
-    public List<String> tokenizeMaskingExpression(final Program program, final String expressionBlockId) {
-        MaskingStrategy maskingStrategy = MaskingStrategy.block(expressionBlockId);
+    public List<String> tokenizeMaskingBlock(final Program program, final String blockID) {
+        MaskingStrategy maskingStrategy = MaskingStrategy.block(blockID);
         return tokenize(program, maskingStrategy, false);
     }
 

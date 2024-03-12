@@ -41,9 +41,9 @@ public class TokenizerController {
         this.tokenizerService = tokenizerService;
     }
 
-    @PostMapping("complete-program/expression-masking")
+    @PostMapping("complete-program/block-masking")
     public List<String> tokenizeMaskingExpression(@RequestBody final MaskedTokenizationRequest request) {
-        return tokenizerService.tokenizeMaskingExpression(request.program(), request.blockId());
+        return tokenizerService.tokenizeMaskingBlock(request.program(), request.blockId());
     }
 
     @PostMapping("complete-program/fixed-option-masking")
@@ -51,7 +51,7 @@ public class TokenizerController {
         return tokenizerService.tokenizeMaskingFixedOption(request.program(), request.blockId());
     }
 
-    @PostMapping("statement-level/statement-masking")
+    @PostMapping("statement-level/block-masking")
     public List<String> tokenize(@RequestBody final MaskedTokenizationRequest request) {
         return tokenizerService.tokenizeStatementLevel(request.program(), request.blockId());
     }
