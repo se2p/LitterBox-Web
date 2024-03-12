@@ -52,7 +52,7 @@ class TokenizerControllerTest extends LitterboxWebIntegrationTest {
         );
 
         assertThat(tokens)
-            .hasSize(9)
+            .hasSize(11)
             .contains("[MASK]")
             .doesNotContain("operator_random");
     }
@@ -67,7 +67,7 @@ class TokenizerControllerTest extends LitterboxWebIntegrationTest {
         );
 
         assertThat(tokens)
-            .hasSize(12)
+            .hasSize(20)
             .contains("[MASK]")
             .doesNotContain("COLOR");
     }

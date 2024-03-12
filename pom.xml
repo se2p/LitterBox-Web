@@ -35,7 +35,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
         <!-- check https://gitlab.infosun.fim.uni-passau.de/se2/litterbox/-/packages/38 for available versions -->
         <litterbox.version>1.9-20240303.134152-20</litterbox.version>
         <!-- check https://gitlab.infosun.fim.uni-passau.de/se2/scratch/litterbox-ml/-/packages/49 for available versions -->
-        <litterbox.ml.version>1.0-20240303.134037-13</litterbox.ml.version>
+        <litterbox.ml.version>1.0-20240312.110426-15</litterbox.ml.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <checkstyle.version>10.13.0</checkstyle.version>
         <!-- Spring boot version defined in parent pom.xml -->

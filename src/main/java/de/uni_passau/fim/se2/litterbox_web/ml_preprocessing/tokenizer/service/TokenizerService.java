@@ -42,7 +42,7 @@ public class TokenizerService {
     private static final Logger log = LoggerFactory.getLogger(TokenizerService.class);
 
     public List<String> tokenizeMaskingExpression(final Program program, final String expressionBlockId) {
-        MaskingStrategy maskingStrategy = MaskingStrategy.expression(expressionBlockId);
+        MaskingStrategy maskingStrategy = MaskingStrategy.block(expressionBlockId);
         return tokenize(program, maskingStrategy, false);
     }
 
@@ -52,7 +52,7 @@ public class TokenizerService {
     }
 
     public List<String> tokenizeStatementLevel(final Program program, final String statementBlockId) {
-        MaskingStrategy maskingStrategy = MaskingStrategy.statement(statementBlockId);
+        MaskingStrategy maskingStrategy = MaskingStrategy.block(statementBlockId);
         return tokenize(program, maskingStrategy, true);
     }
 
