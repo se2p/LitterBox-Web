@@ -47,6 +47,14 @@ public class LinterService {
     private static final Scratch3Parser PARSER = new Scratch3Parser();
     private static final Logger log = LoggerFactory.getLogger(IssueTool.class);
 
+    /**
+     * Analyses the Scratch program using LitterBox.
+     *
+     * @param file A Scratch sb3 file.
+     * @return The found LitterBox issues.
+     * @throws ParsingException In case parsing the given program fails.
+     * @throws IOException      In case handling the file fails.
+     */
     public List<IssueInfo> getIssues(File file) throws ParsingException, IOException {
         final Program program = PARSER.parseSB3File(file);
         ProgramBugAnalyzer bugAnalyzer = new ProgramBugAnalyzer("all", false);

@@ -43,6 +43,13 @@ public class LinterController {
         this.linterService = linterService;
     }
 
+    /**
+     * Analyses a Scratch 3 program using LitterBox and returns the found issues.
+     *
+     * @param sb3file A Scratch 3 program in sb3 file format.
+     * @return The found LitterBox issues.
+     * @throws IOException In case processing the file fails.
+     */
     @PostMapping("analyze")
     public List<IssueInfo> analyze(@RequestPart("file") MultipartFile sb3file) throws IOException {
         File tempFile = File.createTempFile("temp-", ".sb3");
