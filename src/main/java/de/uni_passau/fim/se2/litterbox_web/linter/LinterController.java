@@ -21,8 +21,9 @@
  */
 package de.uni_passau.fim.se2.litterbox_web.linter;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.time.Duration;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,14 +33,18 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import de.uni_passau.fim.se2.litterbox.ast.ParsingException;
+import de.uni_passau.fim.se2.litterbox_web.shared.TemporaryFileService;
 
 @RestController
 @RequestMapping("/linter")
 public class LinterController {
 
+    private final TemporaryFileService temporaryFileService;
+
     private final LinterService linterService;
 
-    public LinterController(LinterService linterService) {
+    public LinterController(final TemporaryFileService temporaryFileService, final LinterService linterService) {
+        this.temporaryFileService = temporaryFileService;
         this.linterService = linterService;
     }
 
@@ -50,13 +55,13 @@ public class LinterController {
      * @return The found LitterBox issues.
      * @throws IOException In case processing the file fails.
      */
+    // todo: possible to receive only the project.json instead of the full SB33? -> see issue #8
     @PostMapping("analyze")
     public List<IssueInfo> analyze(@RequestPart("file") MultipartFile sb3file) throws IOException {
-        File tempFile = File.createTempFile("temp-", ".sb3");
-        sb3file.transferTo(tempFile);
+        final Path tempFile = temporaryFileService.createTemporaryFile(sb3file, "project.sb3", Duration.ofSeconds(600));
 
         try {
-            return linterService.getIssues(tempFile);
+            return linterService.getIssues(tempFile.toFile());
         }
         catch (ParsingException e) {
             throw new IssueGenerationException("Could not lint the given file.", e);

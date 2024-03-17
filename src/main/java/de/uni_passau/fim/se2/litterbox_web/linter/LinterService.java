@@ -55,6 +55,7 @@ public class LinterService {
      * @throws ParsingException In case parsing the given program fails.
      * @throws IOException      In case handling the file fails.
      */
+    // todo: refactor to use a parsed project directly instead of an SB3, see issue #8
     public List<IssueInfo> getIssues(File file) throws ParsingException, IOException {
         final Program program = PARSER.parseSB3File(file);
         ProgramBugAnalyzer bugAnalyzer = new ProgramBugAnalyzer("all", false);
