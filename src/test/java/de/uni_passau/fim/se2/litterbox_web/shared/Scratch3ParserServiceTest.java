@@ -48,7 +48,8 @@ class Scratch3ParserServiceTest extends LitterboxWebIntegrationTest {
     @ParameterizedTest
     @ValueSource(strings = { "non-existing.sb3", "non-existing.json" })
     void handleErrorNonExistingFile(final String filename) {
-        assertThatThrownBy(() -> parserService.parseFromFile(Path.of(filename)))
+        final Path file = Path.of(filename);
+        assertThatThrownBy(() -> parserService.parseFromFile(file))
             .isInstanceOf(IOStatusException.class);
     }
 

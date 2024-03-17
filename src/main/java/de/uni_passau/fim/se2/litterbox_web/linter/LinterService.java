@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import de.uni_passau.fim.se2.litterbox.analytics.Issue;
-import de.uni_passau.fim.se2.litterbox.analytics.IssueTool;
 import de.uni_passau.fim.se2.litterbox.analytics.ProgramBugAnalyzer;
 import de.uni_passau.fim.se2.litterbox.ast.model.Program;
 import de.uni_passau.fim.se2.litterbox.ast.model.Script;
@@ -40,7 +39,7 @@ import de.uni_passau.fim.se2.litterbox.ast.model.metadata.block.TopNonDataBlockM
 @Service
 public class LinterService {
 
-    private static final Logger log = LoggerFactory.getLogger(IssueTool.class);
+    private static final Logger log = LoggerFactory.getLogger(LinterService.class);
 
     /**
      * Analyses the Scratch program using LitterBox.
@@ -70,7 +69,7 @@ public class LinterService {
     }
 
     private String parseIssueHint(String originalIssueHint) {
-        return originalIssueHint.replaceAll("\\[.*?]", "").replaceAll("Problem:", "").trim();
+        return originalIssueHint.replaceAll("\\[.*?]", "").replace("Problem:", "").trim();
     }
 
     private String extractBlockId(Issue issue) {
@@ -82,8 +81,8 @@ public class LinterService {
                 if (script.getEvent() != null) {
                     Metadata headBlockMetadata = script.getEvent().getMetadata();
 
-                    if (headBlockMetadata instanceof TopNonDataBlockMetadata) {
-                        blockId = ((TopNonDataBlockMetadata) headBlockMetadata).getBlockId();
+                    if (headBlockMetadata instanceof TopNonDataBlockMetadata headMeta) {
+                        blockId = headMeta.getBlockId();
                     }
                 }
             }
