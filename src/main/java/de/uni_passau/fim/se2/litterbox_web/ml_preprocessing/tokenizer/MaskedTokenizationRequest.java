@@ -19,13 +19,13 @@
  * You should have received a copy of the GNU General Public Licence
  * along with LitterBox-Web. If not, see <http://www.gnu.org/licenses/>.
  */
-package de.uni_passau.fim.se2.litterbox_web.ml_preprocessing.tokenizer.model;
+package de.uni_passau.fim.se2.litterbox_web.ml_preprocessing.tokenizer;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import de.uni_passau.fim.se2.litterbox.ast.model.Program;
-import de.uni_passau.fim.se2.litterbox_web.model.ScratchProgramConverter;
+import de.uni_passau.fim.se2.litterbox_web.shared.ScratchProgramConverter;
 
 public record MaskedTokenizationRequest(
     @JsonSerialize(converter = ScratchProgramConverter.SerializeConverter.class) @JsonDeserialize(

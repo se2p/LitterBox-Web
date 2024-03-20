@@ -19,7 +19,7 @@
  * You should have received a copy of the GNU General Public Licence
  * along with LitterBox-Web. If not, see <http://www.gnu.org/licenses/>.
  */
-package de.uni_passau.fim.se2.litterbox_web.model;
+package de.uni_passau.fim.se2.litterbox_web.shared;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;

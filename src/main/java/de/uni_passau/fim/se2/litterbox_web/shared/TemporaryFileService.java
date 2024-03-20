@@ -40,8 +40,7 @@ import org.springframework.web.multipart.MultipartFile;
  * <p>
  * Note: please use temporary files only when really necessary. For example, LitterBox can also parse the project JSON
  * directly from a String instead of having to read from an SB3. Alternatively, you can make use of the automatic Spring
- * JSON to object conversion as outlined in {@link de.uni_passau.fim.se2.litterbox_web.model.ScratchProgramConverter} to
- * process parsed programs directly.
+ * JSON to object conversion as outlined in {@link ScratchProgramConverter} to process parsed programs directly.
  */
 @Service
 public class TemporaryFileService {

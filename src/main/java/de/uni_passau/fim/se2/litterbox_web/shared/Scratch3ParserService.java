@@ -36,7 +36,7 @@ import de.uni_passau.fim.se2.litterbox_web.shared.exceptions.ParseStatusExceptio
  * Provides methods to parse Scratch SB3 and project JSON files.
  * <p>
  * Please use an automatic conversion from Scratch JSON into a program object instead if possible. See
- * {@link de.uni_passau.fim.se2.litterbox_web.model.ScratchProgramConverter} for more details.
+ * {@link ScratchProgramConverter} for more details.
  */
 @Service
 public class Scratch3ParserService {

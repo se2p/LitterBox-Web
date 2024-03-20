@@ -19,7 +19,7 @@
  * You should have received a copy of the GNU General Public Licence
  * along with LitterBox-Web. If not, see <http://www.gnu.org/licenses/>.
  */
-package de.uni_passau.fim.se2.litterbox_web.ml_preprocessing.tokenizer.controller;
+package de.uni_passau.fim.se2.litterbox_web.ml_preprocessing.tokenizer;
 
 import java.util.List;
 
@@ -27,9 +27,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import de.uni_passau.fim.se2.litterbox_web.ml_preprocessing.tokenizer.model.MaskedTokenizationRequest;
-import de.uni_passau.fim.se2.litterbox_web.ml_preprocessing.tokenizer.service.TokenizerService;
 
 @RestController
 @RequestMapping("ml/masking-tokenizer/tokenize")

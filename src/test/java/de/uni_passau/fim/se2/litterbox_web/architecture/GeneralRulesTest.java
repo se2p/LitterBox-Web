@@ -37,8 +37,8 @@ import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.library.GeneralCodingRules;
 
 import de.uni_passau.fim.se2.litterbox.ast.parser.Scratch3Parser;
-import de.uni_passau.fim.se2.litterbox_web.model.ScratchProgramConverter;
 import de.uni_passau.fim.se2.litterbox_web.shared.Scratch3ParserService;
+import de.uni_passau.fim.se2.litterbox_web.shared.ScratchProgramConverter;
 import de.uni_passau.fim.se2.litterbox_web.shared.TemporaryFileService;
 
 class GeneralRulesTest extends ArchitectureTest {
