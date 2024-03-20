@@ -1,0 +1,150 @@
+////
+  // Copyright (C) 2024 LitterBox-Web contributors
+  //
+  // This file is part of LitterBox-Web.
+  //
+  // SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
+  // SPDX-License-Identifier: GPL-3.0-or-later
+  //
+  // LitterBox-Web is free software: you can redistribute it and/or modify
+  // it under the terms of the GNU General Public Licence as published by
+  // the Free Software Foundation, either version 3 of the Licence, or (at
+  // your option) any later version.
+  //
+  // LitterBox-Web is distributed in the hope that it will be useful, but
+  // WITHOUT ANY WARRANTY; without even the implied warranty of
+  // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  // General Public Licence for more details.
+  //
+  // You should have received a copy of the GNU General Public Licence
+  // along with LitterBox-Web. If not, see <http://www.gnu.org/licenses/>.
+////
+
+= Architecture
+:icons: font
+:lang: en-GB
+:sectnums:
+:toc:
+:xrefstyle: full
+
+[abstract]
+--
+This document gives a high-level overview over the project’s code structure and general cross-cutting patterns used in all areas of the application.
+--
+
+Since this application is created using the Spring framework, we use mechanisms provided by the framework to structure the application.
+The main area where you will probably encounter this are annotated classes that can be automatically provided in constructors via the dependency injection mechanism.
+
+.Dependency injection
+[NOTE]
+--
+We only use dependency injection via constructors rather than injecting via `@Autowired` attributes in production code.
+This makes it easier to test such classes without dependency injection by providing manually instantiated classes or mocks.
+--
+
+
+== Package structure
+
+The top-level package structure represents different functionalities exposed to the user via the API.
+For example, the `ml_preprocessing` package contains code related to the conversion of Scratch programs into the format as required for machine learning models.
+Further subpackages may be created for subgroups of related functionality.
+
+There is no need to group the classes inside into further subpackages based on their role (see xref:section_class_types[]).
+If there are subjectively too many classes inside a single package or if a separate logical group can be formed, further packages can still be created as needed.
+For example, the `shared` package declares a subpackage only for `exceptions`.
+
+Common functionality that is useful across the top-level functional package split should be placed in the top-level `shared` package.
+One example is the `TemporaryFileService` that provides a way to handle the automatic deletion of received files that are only needed while processing a request.
+
+
+[#section_class_types]
+== Class types
+
+Domain objects, DTOs::
+Domain objects can be representation-independent types in the Java library, LitterBox(-ML) types, or DTOs.
+For example, objects of the type `IfThenStmt` and `List<AstNode>` are domain objects, a `JsonList` is not.
++
+Data transfer objects (DTOs) can be declared to group multiple inputs/outputs of a REST endpoint together.
+They can also be automatically converted from/to JSON in most cases.
+They should be declared as Java ``record``s and not contain any additional logic apart from convenience constructors and attribute accessors.
++
+[CAUTION]
+--
+Additional getters might have to be annotated with `@JsonIgnore` to ensure they are not part of the JSON when using the DTO as return type for a REST endpoint.
+--
+
+`@RestController`::
+These classes are used to group related REST-API endpoints together.
+Each controller method should only handle the conversion of the received data into a domain object and validate it.
+The actual domain logic should happen in a service.
++
+[#example_controller_bugs]
+.A controller for an endpoint to get LitterBox bugs.
+[example]
+--
+The client sends a Scratch project JSON to this application.
+A controller method can directly specify `Program` as input parameter by using the automatic conversion operations in `ScratchProgramConverted`.
+Alternatively, the `Scratch3ParserService` could also be used.
+The program is then given to a service class that for example runs the code through LitterBox to extract the bug patterns.
+--
+
+[#class_types_service]
+`@Service`::
+These classes implement the actual logic (like the extraction of issues in the example above).
+Service methods should both receive and also return only domain objects.
++
+Exceptions to this rule are utility services that implement code frequently needed for the conversion and validation operations in controllers.
+The `Scratch3ParserService` is used for the conversion of JSON or SB3 inputs into the `Program` domain object for example.
++
+[NOTE]
+--
+In the context of the machine learning model preprocessing we also often use the terminology of ‘conversion’ to mean the transformation of Scratch programs into the format required by the model.
+Those kind of conversions are not covered by this exception, since they convert between domain objects (e.g. a Scratch program into a list of textual tokens), rather than from a raw input (i.e. JSON/SB3) into a domain object.
+--
+
+
+== Exception handling
+
+Services should bubble-up relevant exception types to the controller.
+There they can be caught and converted into error response codes using exceptions that extend `ResponseStatusException`.
+Since they extend `RuntimeException`, they do not have to be declared as part of the method header.
+
+When encountering the same exception type repeatedly in the same controller, you can use the Spring `@ExceptionHandler` mechanism to define a common shared handler/conversion for those.
+
+.ExceptionHandler usage
+[example]
+--
+[source,java]
+----
+@RestController
+class ExampleController {
+    @GetMapping("foo")
+    public SomeDomainObject getFoo(int bar) throws SpecialException {
+         return fooService.getSomeDomainObject(bar);
+    }
+
+    @ExceptionHandler(SpecialException.class)
+    public void handleException(final SpecialException e) {
+        // ^ could also be implemented to return some alternative response instead of `void`
+        throw new SpecialStatusException(e);
+    }
+
+    private static class SpecialStatusException extends ResponseStatusException {
+        public SpecialStatusException(Throwable cause /*, message, other params as needed */) {
+            super(HttpStatus.INTERNAL_SERVER_ERROR, cause);
+        }
+    }
+}
+----
+--
+
+Shared utility services used for the conversion and validation of inputs (see xref:class_types_service[`@Service`]) can also use such status exceptions directly to avoid repetitive error-handling code in the controllers.
+
+
+== Configuration management
+
+The Spring configuration management is used to select the application configuration from `application-.*.yml` files placed next to the deployed JAR and options provided via environment variables (keyword to search for online: ‘relaxed binding’).
+
+Spring `@ConfigurationProperties` should be used to group related configuration options and automatically convert them as a together into a single configuration-providing object (e.g. `CorsConfigurationProperties` and the related config values in `application-local.yml`).
+Additional validation can be implemented in a method annotated with `@PostConstruct`.
+Throwing an exception from this method will abort the application start.

@@ -39,15 +39,31 @@ REST API wrapper around link:{url-litterbox}[LitterBox] functionality.
 
 == Development
 
-=== General
+=== Contribution process
 
-In general, we prefer short-lived branches that each implement a specific feature/bugfix/refactoring.
-This makes it easier to merge the branches together, notice when conflicts exist when multiple people work on similar problems, and it makes it easier to fix problems only once when updating dependencies.
+Issues for feature suggestions, bug reports, questions, and other suggestions are always welcome.
+Code contributions are welcome, too.
 
+If you want to implement your idea as part of this project and are unsure where/how to do so, please open an issue outlining what you want to achieve.
+We can then discuss beforehand what would make the most sense.
+This avoids having to spend time on restructuring later-on.
+
+For contributing code, we prefer short-lived branches that each implement a specific feature/bugfix/refactoring.
+This makes it easier to merge the branches together, notice when conflicts exist when multiple people work on similar problems, and it makes it easier to fix problems only once for example when updating dependencies.
+
+.Tests
 [NOTE]
 --
-Please add at least some tests for your new features so that there is some indication if it still works after other changes.
+Please add at least some unit/integration tests for your new/changed features.
+We do not enforce a minimum coverage.
+Do note however, that code not covered by tests may break without notice.
+When using the code as part of an experiment or evaluation it should therefore be in your own interest to ensure a reproducibly working implementation.
 --
+
+
+=== Project structure
+
+The package structure and commonly used cross-cutting patterns are described in `Architecture.adoc`.
 
 
 === Running & Debugging
