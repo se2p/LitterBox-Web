@@ -76,11 +76,7 @@ public class TokenizerService {
             return tokens.get();
         }
         else {
-            log.warn(
-                "Tokenizing with strategy (masking={}, block={}) did not produce any results.",
-                strategy.getMaskingType(),
-                strategy.getBlockId()
-            );
+            log.warn("Tokenizing with strategy (masking={}) did not produce any results.", strategy);
             return Collections.emptyList();
         }
     }

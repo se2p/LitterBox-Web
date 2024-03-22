@@ -13,7 +13,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.3</version>
+        <version>3.2.4</version>
         <relativePath/>
     </parent>
 
@@ -33,11 +33,11 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
         <java.version>21</java.version>
         <maven.compiler.release>21</maven.compiler.release>
         <!-- check https://gitlab.infosun.fim.uni-passau.de/se2/litterbox/-/packages/38 for available versions -->
-        <litterbox.version>1.9-20240303.134152-20</litterbox.version>
+        <litterbox.version>1.9-20240320.180201-22</litterbox.version>
         <!-- check https://gitlab.infosun.fim.uni-passau.de/se2/scratch/litterbox-ml/-/packages/49 for available versions -->
-        <litterbox.ml.version>1.0-20240312.110426-15</litterbox.ml.version>
+        <litterbox.ml.version>1.0-20240322.140300-17</litterbox.ml.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <checkstyle.version>10.13.0</checkstyle.version>
+        <checkstyle.version>10.14.2</checkstyle.version>
         <!-- Spring boot version defined in parent pom.xml -->
     </properties>
 
@@ -135,7 +135,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.12.1</version>
+                <version>3.13.0</version>
                 <configuration>
                     <release>${maven.compiler.release}</release>
                 </configuration>
@@ -176,7 +176,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
                         <configuration>
                             <rules>
                                 <requireMavenVersion>
-                                    <version>3.2.5</version>
+                                    <version>3.6.3</version>
                                 </requireMavenVersion>
                             </rules>
                         </configuration>
