@@ -19,16 +19,8 @@
  * You should have received a copy of the GNU General Public Licence
  * along with LitterBox-Web. If not, see <http://www.gnu.org/licenses/>.
  */
-package de.uni_passau.fim.se2.litterbox_web.shared.exceptions;
 
-import java.io.IOException;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
-
-public class IOStatusException extends ResponseStatusException {
-
-    public IOStatusException(final String message, final IOException cause) {
-        super(HttpStatus.INTERNAL_SERVER_ERROR, message, cause);
-    }
-}
+/**
+ * Spring application-level configuration.
+ */
+package de.uni_passau.fim.se2.litterbox_web.configuration;
