@@ -21,37 +21,28 @@
  */
 package de.uni_passau.fim.se2.litterbox_web.linter;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.time.Duration;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import de.uni_passau.fim.se2.litterbox.ast.model.Program;
 import de.uni_passau.fim.se2.litterbox_web.shared.Scratch3ParserService;
-import de.uni_passau.fim.se2.litterbox_web.shared.TemporaryFileService;
 
 @RestController
 @RequestMapping("/linter")
 public class LinterController {
-
-    private final TemporaryFileService temporaryFileService;
 
     private final Scratch3ParserService parserService;
 
     private final LinterService linterService;
 
     public LinterController(
-        final TemporaryFileService temporaryFileService,
         final Scratch3ParserService parserService,
         final LinterService linterService
     ) {
-        this.temporaryFileService = temporaryFileService;
         this.parserService = parserService;
         this.linterService = linterService;
     }
@@ -59,15 +50,12 @@ public class LinterController {
     /**
      * Analyses a Scratch 3 program using LitterBox and returns the found issues.
      *
-     * @param sb3file A Scratch 3 program in sb3 file format.
+     * @param projectJson A Scratch 3 program in json file format.
      * @return The found LitterBox issues.
-     * @throws IOException In case processing the file fails.
      */
-    // todo: possible to receive only the project.json instead of the full SB33? -> see issue #8
     @PostMapping("analyze")
-    public List<IssueInfo> analyze(@RequestPart("file") MultipartFile sb3file) throws IOException {
-        final Path tempFile = temporaryFileService.createTemporaryFile(sb3file, "project.sb3", Duration.ofSeconds(600));
-        final Program program = parserService.parseFromFile(tempFile);
+    public List<IssueInfo> analyze(@RequestBody String projectJson) {
+        final Program program = parserService.parseFromString(projectJson);
         return linterService.getIssues(program);
     }
 }

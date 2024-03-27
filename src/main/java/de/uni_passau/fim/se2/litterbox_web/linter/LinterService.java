@@ -25,21 +25,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import de.uni_passau.fim.se2.litterbox.analytics.Issue;
 import de.uni_passau.fim.se2.litterbox.analytics.ProgramBugAnalyzer;
+import de.uni_passau.fim.se2.litterbox.ast.model.ASTNode;
 import de.uni_passau.fim.se2.litterbox.ast.model.Program;
-import de.uni_passau.fim.se2.litterbox.ast.model.Script;
-import de.uni_passau.fim.se2.litterbox.ast.model.metadata.Metadata;
-import de.uni_passau.fim.se2.litterbox.ast.model.metadata.block.TopNonDataBlockMetadata;
+import de.uni_passau.fim.se2.litterbox.ast.util.AstNodeUtil;
 
 @Service
 public class LinterService {
-
-    private static final Logger log = LoggerFactory.getLogger(LinterService.class);
 
     /**
      * Analyses the Scratch program using LitterBox.
@@ -52,14 +47,16 @@ public class LinterService {
         Set<Issue> issues = bugAnalyzer.analyze(program);
 
         List<IssueInfo> issueList = new ArrayList<>();
-
         for (Issue issue : issues) {
-            String parsedIssueHint = parseIssueHint(issue.getHint());
+            String blockId = null;
+            if (issue.getCodeLocation() != null) {
+                ASTNode location = issue.getCodeLocation();
+                blockId = AstNodeUtil.getBlockId(location);
+            }
 
-            String blockId = extractBlockId(issue);
-
+            String issueHint = issue.getHint();
             IssueInfo issueInfo = new IssueInfo(
-                blockId, issue.getIssueType().toString(), issue.getFinderName(), parsedIssueHint
+                blockId, issue.getIssueType().toString(), issue.getFinderName(), issueHint
             );
 
             issueList.add(issueInfo);
@@ -68,36 +65,4 @@ public class LinterService {
         return issueList;
     }
 
-    private String parseIssueHint(String originalIssueHint) {
-        return originalIssueHint.replaceAll("\\[.*?]", "").replace("Problem:", "").trim();
-    }
-
-    private String extractBlockId(Issue issue) {
-        String blockId = " ";
-        try {
-            if (issue != null && issue.getScript() != null) {
-                Script script = issue.getScript();
-
-                if (script.getEvent() != null) {
-                    Metadata headBlockMetadata = script.getEvent().getMetadata();
-
-                    if (headBlockMetadata instanceof TopNonDataBlockMetadata headMeta) {
-                        blockId = headMeta.getBlockId();
-                    }
-                }
-            }
-        }
-        catch (NullPointerException npe) {
-            // Log the NullPointerException or handle it as needed
-            // Todo: For now, just log the exception and proceed with the default value
-            log.warn("NullPointerException in extractBlockId.", npe);
-        }
-        catch (Exception e) {
-            // Log other exceptions or handle them as needed
-            // Todo: For now, just log the exception and proceed with the default value
-            log.warn("Exception in extractBlockId.", e);
-        }
-
-        return blockId;
-    }
 }
