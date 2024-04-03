@@ -74,6 +74,8 @@ import io.micrometer.core.annotation.Timed;
  * }</pre>
  *
  * to automatically handle the parsing of the Scratch program from and to JSON.
+ *
+ * @see JsonScratchProgram
  */
 // @formatter:on
 public class ScratchProgramConverter {

@@ -21,16 +21,8 @@
  */
 package de.uni_passau.fim.se2.litterbox_web.ml_preprocessing.tokenizer;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import de.uni_passau.fim.se2.litterbox.ast.model.Program;
-import de.uni_passau.fim.se2.litterbox_web.shared.ScratchProgramConverter;
+import de.uni_passau.fim.se2.litterbox_web.shared.JsonScratchProgram;
 
-public record MaskedTokenizationRequest(
-    @JsonSerialize(converter = ScratchProgramConverter.SerializeConverter.class) @JsonDeserialize(
-        converter = ScratchProgramConverter.DeserializeConverter.class
-    ) Program program,
-    String blockId
-) {
+public record MaskedTokenizationRequest(@JsonScratchProgram Program program, String blockId) {
 }
