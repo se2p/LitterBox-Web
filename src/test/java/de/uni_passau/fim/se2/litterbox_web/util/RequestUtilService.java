@@ -25,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -78,8 +79,7 @@ public class RequestUtilService {
      * @throws Exception In case parsing to/from JSON fails or the request is invalid in some other way.
      */
     public <T, R> R postWithResponseBody(
-        String path, T body, Class<R> responseType, HttpStatus expectedStatus,
-        LinkedMultiValueMap<String, String> params
+        String path, T body, Class<R> responseType, HttpStatus expectedStatus, Map<String, String> params
     ) throws Exception {
         final String res = postWithResponseBodyString(path, body, expectedStatus, params);
         if (res == null || res.isEmpty() || res.trim().isEmpty()) {
@@ -104,7 +104,27 @@ public class RequestUtilService {
     public <T, R> List<R> postWithResponseBodyList(
         String path, T body, Class<R> listElementType, HttpStatus expectedStatus
     ) throws Exception {
-        final String res = postWithResponseBodyString(path, body, expectedStatus, null);
+        return postWithResponseBodyList(path, body, null, listElementType, expectedStatus);
+    }
+
+    /**
+     * Sends a post request with the given body object converted to JSON as List of objects.
+     *
+     * @param path            The REST endpoint to send the data to.
+     * @param body            The body of the POST request.
+     * @param params          Additional request parameters.
+     * @param listElementType Class of a single list element of the response.
+     * @param expectedStatus  The expected HTTP status of the request.
+     * @return The response body for the request, already parsed.
+     * @param <T> The type of the body that is sent to the endpoint.
+     * @param <R> The type of the list element that is received back from the endpoint.
+     * @throws Exception In case parsing to/from JSON fails or the request is invalid in some other way.
+     */
+    public <T, R> List<R> postWithResponseBodyList(
+        String path, T body, Map<String, String> params, Class<R> listElementType,
+        HttpStatus expectedStatus
+    ) throws Exception {
+        final String res = postWithResponseBodyString(path, body, expectedStatus, params);
         if (res == null || res.isEmpty() || res.trim().isEmpty()) {
             return null;
         }
@@ -113,7 +133,7 @@ public class RequestUtilService {
     }
 
     private <T> String postWithResponseBodyString(
-        String path, T body, HttpStatus expectedStatus, LinkedMultiValueMap<String, String> params
+        String path, T body, HttpStatus expectedStatus, Map<String, String> params
     ) throws Exception {
         final String jsonBody;
         if (body instanceof String sBody) {
@@ -126,7 +146,7 @@ public class RequestUtilService {
         var request = MockMvcRequestBuilders.post(new URI(path)).contentType(MediaType.APPLICATION_JSON)
             .content(jsonBody);
         if (params != null) {
-            request = request.params(params);
+            request = request.params(buildParams(params));
         }
 
         final MvcResult res = mvc.perform(request).andExpect(status().is(expectedStatus.value())).andReturn();
@@ -135,5 +155,13 @@ public class RequestUtilService {
         }
 
         return res.getResponse().getContentAsString();
+    }
+
+    private static LinkedMultiValueMap<String, String> buildParams(final Map<String, String> params) {
+        final LinkedMultiValueMap<String, String> result = new LinkedMultiValueMap<>();
+        for (final Map.Entry<String, String> entry : params.entrySet()) {
+            result.put(entry.getKey(), List.of(entry.getValue()));
+        }
+        return result;
     }
 }

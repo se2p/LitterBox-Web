@@ -56,7 +56,14 @@ public class LinterController {
      * @return The found LitterBox issues.
      */
     @PostMapping("analyze")
-    public List<IssueInfo> analyze(@RequestParam("locale") String locale, @RequestBody String projectJson) {
+    public List<IssueInfo> analyze(
+        @RequestParam(
+            value = "locale",
+            required = false,
+            defaultValue = "en"
+        ) String locale,
+        @RequestBody String projectJson
+    ) {
         final Program program = parserService.parseFromString(projectJson);
         return linterService.getIssues(program, locale);
     }
