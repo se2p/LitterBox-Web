@@ -26,6 +26,7 @@ import java.util.List;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import de.uni_passau.fim.se2.litterbox.ast.model.Program;
@@ -51,11 +52,12 @@ public class LinterController {
      * Analyses a Scratch 3 program using LitterBox and returns the found issues.
      *
      * @param projectJson A Scratch 3 program in json file format.
+     * @param locale      Language/locale used for analysis
      * @return The found LitterBox issues.
      */
     @PostMapping("analyze")
-    public List<IssueInfo> analyze(@RequestBody String projectJson) {
+    public List<IssueInfo> analyze(@RequestParam("locale") String locale, @RequestBody String projectJson) {
         final Program program = parserService.parseFromString(projectJson);
-        return linterService.getIssues(program);
+        return linterService.getIssues(program, locale);
     }
 }

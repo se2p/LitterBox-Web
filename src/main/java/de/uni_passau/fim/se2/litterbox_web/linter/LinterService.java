@@ -32,6 +32,7 @@ import de.uni_passau.fim.se2.litterbox.analytics.ProgramBugAnalyzer;
 import de.uni_passau.fim.se2.litterbox.ast.model.ASTNode;
 import de.uni_passau.fim.se2.litterbox.ast.model.Program;
 import de.uni_passau.fim.se2.litterbox.ast.util.AstNodeUtil;
+import de.uni_passau.fim.se2.litterbox.utils.IssueTranslator;
 
 @Service
 public class LinterService {
@@ -40,9 +41,12 @@ public class LinterService {
      * Analyses the Scratch program using LitterBox.
      *
      * @param program A Scratch program.
+     * @param locale  Language/locale used for analysis
      * @return The found LitterBox issues.
      */
-    public List<IssueInfo> getIssues(final Program program) {
+    public synchronized List<IssueInfo> getIssues(final Program program, String locale) {
+        // synchronized method: we are mutating global state in the singleton here
+        IssueTranslator.getInstance().setLanguage(locale);
         ProgramBugAnalyzer bugAnalyzer = new ProgramBugAnalyzer("all", false);
         Set<Issue> issues = bugAnalyzer.analyze(program);
 
@@ -56,7 +60,8 @@ public class LinterService {
 
             String issueHint = issue.getHint();
             IssueInfo issueInfo = new IssueInfo(
-                blockId, issue.getIssueType().toString(), issue.getFinderName(), issueHint
+                blockId, issue.getIssueType().toString(), issue.getFinderName(), issue.getTranslatedFinderName(),
+                issueHint
             );
 
             issueList.add(issueInfo);

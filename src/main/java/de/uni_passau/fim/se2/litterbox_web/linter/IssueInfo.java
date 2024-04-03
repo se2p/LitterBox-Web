@@ -21,5 +21,7 @@
  */
 package de.uni_passau.fim.se2.litterbox_web.linter;
 
-public record IssueInfo(String blockId, String issueType, String finderName, String issueHint) {
+public record IssueInfo(
+    String blockId, String issueType, String finderName, String translatedFinderName, String issueHint
+) {
 }
