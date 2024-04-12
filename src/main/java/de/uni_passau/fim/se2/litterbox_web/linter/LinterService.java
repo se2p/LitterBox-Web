@@ -31,6 +31,8 @@ import de.uni_passau.fim.se2.litterbox.analytics.Issue;
 import de.uni_passau.fim.se2.litterbox.analytics.ProgramBugAnalyzer;
 import de.uni_passau.fim.se2.litterbox.ast.model.ASTNode;
 import de.uni_passau.fim.se2.litterbox.ast.model.Program;
+import de.uni_passau.fim.se2.litterbox.ast.model.metadata.Metadata;
+import de.uni_passau.fim.se2.litterbox.ast.model.metadata.block.TopNonDataBlockMetadata;
 import de.uni_passau.fim.se2.litterbox.ast.util.AstNodeUtil;
 import de.uni_passau.fim.se2.litterbox.utils.IssueTranslator;
 
@@ -40,14 +42,15 @@ public class LinterService {
     /**
      * Analyses the Scratch program using LitterBox.
      *
-     * @param program A Scratch program.
-     * @param locale  Language/locale used for analysis
+     * @param program   A Scratch program.
+     * @param locale    Language/locale used for analysis
+     * @param detectors Programm analyzer detectors for filtering found issues.
      * @return The found LitterBox issues.
      */
-    public synchronized List<IssueInfo> getIssues(final Program program, String locale) {
+    public synchronized List<IssueInfo> getIssues(final Program program, String locale, String detectors) {
         // synchronized method: we are mutating global state in the singleton here
         IssueTranslator.getInstance().setLanguage(locale);
-        ProgramBugAnalyzer bugAnalyzer = new ProgramBugAnalyzer("all", false);
+        ProgramBugAnalyzer bugAnalyzer = new ProgramBugAnalyzer(detectors, false);
         Set<Issue> issues = bugAnalyzer.analyze(program);
 
         List<IssueInfo> issueList = new ArrayList<>();
@@ -59,9 +62,19 @@ public class LinterService {
             }
 
             String issueHint = issue.getHint();
+
+            // Extract id of hat block if the detected flaw can be located within a script.
+            String hatBlockId = "";
+            if (issue.getScript() != null) {
+                Metadata headBlockMetadata = issue.getScript().getEvent().getMetadata();
+                if (headBlockMetadata instanceof TopNonDataBlockMetadata) {
+                    hatBlockId = ((TopNonDataBlockMetadata) headBlockMetadata).getBlockId();
+                }
+            }
+
             IssueInfo issueInfo = new IssueInfo(
                 blockId, issue.getIssueType().toString(), issue.getFinderName(), issue.getTranslatedFinderName(),
-                issueHint
+                issueHint, hatBlockId
             );
 
             issueList.add(issueInfo);

@@ -19,10 +19,8 @@
  * You should have received a copy of the GNU General Public Licence
  * along with LitterBox-Web. If not, see <http://www.gnu.org/licenses/>.
  */
-package de.uni_passau.fim.se2.litterbox_web.linter;
 
-public record IssueInfo(
-    String blockId, String issueType, String finderName, String translatedFinderName, String issueHint,
-    String hatBlockId
-) {
-}
+/**
+ * Functionality related to converting Scratch programs to different formats.
+ */
+package de.uni_passau.fim.se2.litterbox_web.converter;

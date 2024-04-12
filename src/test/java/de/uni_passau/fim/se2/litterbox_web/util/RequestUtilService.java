@@ -132,7 +132,18 @@ public class RequestUtilService {
         return mapper.readValue(res, mapper.getTypeFactory().constructCollectionType(List.class, listElementType));
     }
 
-    private <T> String postWithResponseBodyString(
+    /**
+     * Sends a post request with the given body object converted to JSON.
+     *
+     * @param path           The REST endpoint to send the data to.
+     * @param body           The body of the POST request.
+     * @param expectedStatus The expected HTTP status of the request.
+     * @param params         Additional request parameters.
+     * @param <T>            The type of the body that is sent to the endpoint.
+     * @return The response body for the request as string.
+     * @throws Exception In case parsing to/from JSON fails or the request is invalid in some other way.
+     */
+    public <T> String postWithResponseBodyString(
         String path, T body, HttpStatus expectedStatus, Map<String, String> params
     ) throws Exception {
         final String jsonBody;

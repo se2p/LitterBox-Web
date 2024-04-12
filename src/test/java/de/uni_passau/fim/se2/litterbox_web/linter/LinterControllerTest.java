@@ -49,7 +49,8 @@ class LinterControllerTest extends LitterboxWebIntegrationTest {
 
         assertThat(issues)
             .hasSize(3)
-            .anyMatch(issue -> "Sprite Naming".equals(issue.translatedFinderName()));
+            .anyMatch(issue -> "Sprite Naming".equals(issue.translatedFinderName()))
+            .anyMatch(issue -> "xbZ^vS,ML7Dqi,H3G=rc".equals(issue.hatBlockId()));
     }
 
     @Test
@@ -62,6 +63,20 @@ class LinterControllerTest extends LitterboxWebIntegrationTest {
 
         assertThat(issues)
             .hasSize(3)
-            .anyMatch(issue -> "Bedeutungsloser Figurenname".equals(issue.translatedFinderName()));
+            .anyMatch(issue -> "Bedeutungsloser Figurenname".equals(issue.translatedFinderName()))
+            .anyMatch(issue -> "xbZ^vS,ML7Dqi,H3G=rc".equals(issue.hatBlockId()));
+    }
+
+    @Test
+    void getIssuesBugDetector() throws Exception {
+        final String programJson = FixtureLoader.loadFixture("tokenizingTest.json");
+
+        final List<IssueInfo> issues = requestUtilService.postWithResponseBodyList(
+            "/linter/analyze", programJson, Map.of("locale", "de", "detectors", "bugs"), IssueInfo.class, HttpStatus.OK
+        );
+
+        assertThat(issues)
+            .hasSize(2)
+            .allMatch(issue -> issue.issueType().equals("BUG"));
     }
 }

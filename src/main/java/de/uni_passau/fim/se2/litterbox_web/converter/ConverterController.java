@@ -19,58 +19,31 @@
  * You should have received a copy of the GNU General Public Licence
  * along with LitterBox-Web. If not, see <http://www.gnu.org/licenses/>.
  */
-package de.uni_passau.fim.se2.litterbox_web.linter;
-
-import java.util.List;
+package de.uni_passau.fim.se2.litterbox_web.converter;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import de.uni_passau.fim.se2.litterbox.analytics.ProgramScratchBlocksAnalyzer;
 import de.uni_passau.fim.se2.litterbox.ast.model.Program;
 import de.uni_passau.fim.se2.litterbox_web.shared.Scratch3ParserService;
 
 @RestController
-@RequestMapping("/linter")
-public class LinterController {
+@RequestMapping("/converter")
+public class ConverterController {
 
     private final Scratch3ParserService parserService;
 
-    private final LinterService linterService;
-
-    public LinterController(
-        final Scratch3ParserService parserService,
-        final LinterService linterService
-    ) {
+    public ConverterController(final Scratch3ParserService parserService) {
         this.parserService = parserService;
-        this.linterService = linterService;
     }
 
-    /**
-     * Analyses a Scratch 3 program using LitterBox and returns the found issues.
-     *
-     * @param projectJson A Scratch 3 program in json file format.
-     * @param locale      Language/locale used for analysis
-     * @param detectors   Programm analyzer detectors for filtering found issues.
-     * @return The found LitterBox issues.
-     */
-    @PostMapping("analyze")
-    public List<IssueInfo> analyze(
-        @RequestParam(
-            value = "locale",
-            required = false,
-            defaultValue = "en"
-        ) String locale,
-        @RequestParam(
-            value = "detectors",
-            required = false,
-            defaultValue = "all"
-        ) String detectors,
-        @RequestBody String projectJson
-    ) {
+    @PostMapping("scratchblocks")
+    public String scratchBlocks(@RequestBody String projectJson) {
         final Program program = parserService.parseFromString(projectJson);
-        return linterService.getIssues(program, locale, detectors);
+        ProgramScratchBlocksAnalyzer scratchBlocksAnalyzer = new ProgramScratchBlocksAnalyzer();
+        return scratchBlocksAnalyzer.analyze(program);
     }
 }
