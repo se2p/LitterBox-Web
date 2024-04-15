@@ -86,6 +86,11 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.5.0</version>
+        </dependency>
 
         <!-- other dependencies -->
         <dependency>

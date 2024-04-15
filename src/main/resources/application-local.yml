@@ -13,3 +13,10 @@ logging:
 management:
   endpoints:
     enabled-by-default: true
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+  auto-tag-classes: true

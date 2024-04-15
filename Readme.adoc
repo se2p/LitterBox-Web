@@ -84,6 +84,10 @@ cors:
     - http://localhost:0000
 ----
 
+When running locally, you can view the available REST endpoints at http://localhost:8080/swagger-ui/index.html.
+The machine-readable specification of the API is available at http://localhost:8080/v3/api-docs.
+You can import this in link:https://www.postman.com/[Postman], link:https://github.com/usebruno/bruno/[Bruno], or other similar API testing tools.
+
 
 == Running the application
 

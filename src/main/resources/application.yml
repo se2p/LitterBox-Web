@@ -27,3 +27,10 @@ management:
 server:
   error:
     include-stacktrace: never
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: false
+  auto-tag-classes: false
