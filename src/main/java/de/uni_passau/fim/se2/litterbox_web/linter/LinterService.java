@@ -21,7 +21,6 @@
  */
 package de.uni_passau.fim.se2.litterbox_web.linter;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -47,40 +46,41 @@ public class LinterService {
      * @param detectors Programm analyzer detectors for filtering found issues.
      * @return The found LitterBox issues.
      */
-    public synchronized List<IssueInfo> getIssues(final Program program, String locale, String detectors) {
+    public List<IssueInfo> getIssues(final Program program, final String locale, final String detectors) {
+        final Set<Issue> issues = getLitterBoxIssues(program, locale, detectors);
+        return issues.stream().map(this::convertToIssueInfo).toList();
+    }
+
+    private synchronized Set<Issue> getLitterBoxIssues(
+        final Program program, final String locale, final String detectors
+    ) {
         // synchronized method: we are mutating global state in the singleton here
         IssueTranslator.getInstance().setLanguage(locale);
         ProgramBugAnalyzer bugAnalyzer = new ProgramBugAnalyzer(detectors, false);
-        Set<Issue> issues = bugAnalyzer.analyze(program);
-
-        List<IssueInfo> issueList = new ArrayList<>();
-        for (Issue issue : issues) {
-            String blockId = null;
-            if (issue.getCodeLocation() != null) {
-                ASTNode location = issue.getCodeLocation();
-                blockId = AstNodeUtil.getBlockId(location);
-            }
-
-            String issueHint = issue.getHint();
-
-            // Extract id of hat block if the detected flaw can be located within a script.
-            String hatBlockId = "";
-            if (issue.getScript() != null) {
-                Metadata headBlockMetadata = issue.getScript().getEvent().getMetadata();
-                if (headBlockMetadata instanceof TopNonDataBlockMetadata) {
-                    hatBlockId = ((TopNonDataBlockMetadata) headBlockMetadata).getBlockId();
-                }
-            }
-
-            IssueInfo issueInfo = new IssueInfo(
-                blockId, issue.getIssueType().toString(), issue.getFinderName(), issue.getTranslatedFinderName(),
-                issueHint, hatBlockId
-            );
-
-            issueList.add(issueInfo);
-        }
-
-        return issueList;
+        return bugAnalyzer.analyze(program);
     }
 
+    private IssueInfo convertToIssueInfo(final Issue issue) {
+        String blockId = null;
+        if (issue.getCodeLocation() != null) {
+            ASTNode location = issue.getCodeLocation();
+            blockId = AstNodeUtil.getBlockId(location);
+        }
+
+        // Extract id of hat block if the detected flaw can be located within a script.
+        String hatBlockId = null;
+        if (issue.getScript() != null) {
+            Metadata headBlockMetadata = issue.getScript().getEvent().getMetadata();
+            if (headBlockMetadata instanceof TopNonDataBlockMetadata nonDataBlockMetadata) {
+                hatBlockId = nonDataBlockMetadata.getBlockId();
+            }
+        }
+
+        String issueHint = issue.getHint();
+
+        return new IssueInfo(
+            blockId, issue.getIssueType().toString(), issue.getFinderName(), issue.getTranslatedFinderName(),
+            issueHint, hatBlockId
+        );
+    }
 }
