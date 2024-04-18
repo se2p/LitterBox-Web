@@ -46,16 +46,17 @@ public class LinterService {
      * @param detectors Programm analyzer detectors for filtering found issues.
      * @return The found LitterBox issues.
      */
-    public List<IssueInfo> getIssues(final Program program, final String locale, final String detectors) {
-        final Set<Issue> issues = getLitterBoxIssues(program, locale, detectors);
+    public synchronized List<IssueInfo> getIssues(final Program program, final String locale, final String detectors) {
+        // synchronized method: we are mutating global state in the singleton here
+        // NOTE: convertToIssueInfo also uses the translator with `issue.getTranslatedFinderName()`. Therefore, we
+        // cannot limit the synchronized block to only `getLitterBoxIssues()`.
+        IssueTranslator.getInstance().setLanguage(locale);
+
+        final Set<Issue> issues = getLitterBoxIssues(program, detectors);
         return issues.stream().map(this::convertToIssueInfo).toList();
     }
 
-    private synchronized Set<Issue> getLitterBoxIssues(
-        final Program program, final String locale, final String detectors
-    ) {
-        // synchronized method: we are mutating global state in the singleton here
-        IssueTranslator.getInstance().setLanguage(locale);
+    private Set<Issue> getLitterBoxIssues(final Program program, final String detectors) {
         ProgramBugAnalyzer bugAnalyzer = new ProgramBugAnalyzer(detectors, false);
         return bugAnalyzer.analyze(program);
     }
