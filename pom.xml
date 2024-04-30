@@ -24,8 +24,8 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
     <description>REST API for LitterBox functionality</description>
     <licenses>
         <license>
-            <name>GPL-3.0-or-later</name>
-            <url>https://www.gnu.org/licenses/gpl-3.0.txt</url>
+            <name>EUPL-1.2-or-later</name>
+            <url>https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12</url>
             <distribution>repo</distribution>
         </license>
     </licenses>

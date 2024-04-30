@@ -17,7 +17,7 @@ As per [Scratch Terms of Use](https://scratch.mit.edu/terms_of_use) section 4.3 
 
 Small demo projects created yourself specifically to use as a test fixture should use
 ```
-SPDX-License-Identifier: GPL-3.0-or-later
+SPDX-License-Identifier: EUPL-1.2
 
 SPDX-FileCopyrightText: CURRENT_YEAR LitterBox-Web contributors
 ```
