@@ -1,0 +1,7 @@
+litterbox-web:
+  code-completion:
+    models:
+      transformer:
+        url: http://localhost:8081/
+      n-gram:
+        url: http://localhost:8082/

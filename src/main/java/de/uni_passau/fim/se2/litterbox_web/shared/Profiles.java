@@ -14,6 +14,8 @@ package de.uni_passau.fim.se2.litterbox_web.shared;
  */
 public final class Profiles {
 
+    public static final String CODE_COMPLETION = "code-completion";
+
     private Profiles() {
         throw new IllegalCallerException("utility class");
     }
