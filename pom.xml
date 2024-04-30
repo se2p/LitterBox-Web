@@ -13,7 +13,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.4</version>
+        <version>3.2.5</version>
         <relativePath/>
     </parent>
 
@@ -37,7 +37,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
         <!-- check https://gitlab.infosun.fim.uni-passau.de/se2/scratch/litterbox-ml/-/packages/49 for available versions -->
         <litterbox.ml.version>1.0-20240322.140300-17</litterbox.ml.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <checkstyle.version>10.14.2</checkstyle.version>
+        <checkstyle.version>10.16.0</checkstyle.version>
         <!-- Spring boot version defined in parent pom.xml -->
     </properties>
 
@@ -124,7 +124,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
         <dependency>
             <groupId>com.tngtech.archunit</groupId>
             <artifactId>archunit</artifactId>
-            <version>1.2.1</version>
+            <version>1.3.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -203,7 +203,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.11</version>
+                <version>0.8.12</version>
                 <executions>
                     <execution>
                         <id>default-prepare-agent</id>
