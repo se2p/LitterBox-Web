@@ -1,0 +1,39 @@
+# SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
+#
+# SPDX-License-Identifier: EUPL-1.2
+
+[tool.poetry]
+name = "code-completion-dummy"
+version = "0.1.0"
+description = "Dummy implementation for a code completion service"
+authors = ["Benedikt Fein <fein@fim.uni-passau.de>"]
+license = "EUPL-1.2"
+readme = "README.md"
+packages = [
+    { include = "code_completion_dummy", from = "src" }
+]
+
+[tool.poetry.dependencies]
+python = ">=3.12,<4"
+fastapi = "0.110.3"
+litterbox-web-api = { version = "~0.1.0", source = "litterbox-web-gitlab" }
+uvicorn = {extras = ["standard"], version = "0.29.0"}
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.4.2"
+
+[[tool.poetry.source]]
+name = "litterbox-web-gitlab"
+url = "https://gitlab.infosun.fim.uni-passau.de/api/v4/projects/1140/packages/pypi/simple"
+priority = "explicit"
+
+
+[tool.black]
+line-length = 88
+target_version = ["py312"]
+include = '\.pyi?$'
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
