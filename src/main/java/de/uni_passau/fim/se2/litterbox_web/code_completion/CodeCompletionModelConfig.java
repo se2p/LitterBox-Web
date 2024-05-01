@@ -9,7 +9,7 @@
  */
 package de.uni_passau.fim.se2.litterbox_web.code_completion;
 
-import java.net.URL;
+import java.net.URI;
 import java.util.Map;
 import java.util.Optional;
 
@@ -34,7 +34,7 @@ public class CodeCompletionModelConfig {
         return Optional.ofNullable(models.get(modelType));
     }
 
-    public record ModelConfig(URL url) {
+    public record ModelConfig(URI url) {
     }
 
     public enum CodeCompletionModelType {

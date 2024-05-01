@@ -8,4 +8,4 @@ litterbox-web:
       transformer:
         url: http://localhost:8081/
       n-gram:
-        url: http://localhost:8082/
+        url: http://localhost:8000/code-completion
