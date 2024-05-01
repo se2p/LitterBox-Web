@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
+#
+# SPDX-License-Identifier: EUPL-1.2
+
+[tool.poetry]
+name = "litterbox-web-api"
+version = "0.1.0"
+description = ""
+authors = ["Benedikt Fein <fein@fim.uni-passau.de>"]
+license = "EUPL-1.2"
+readme = "README.md"
+packages = [
+    { include = "litterbox_web_api", from = "src" }
+]
+
+[tool.poetry.dependencies]
+python = ">=3.8,<4"
+pydantic = "2.7.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
