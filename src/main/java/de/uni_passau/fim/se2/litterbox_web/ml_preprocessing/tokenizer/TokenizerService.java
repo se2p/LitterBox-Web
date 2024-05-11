@@ -55,7 +55,7 @@ public class TokenizerService {
     private List<String> tokenize(final Program program, final MaskingStrategy strategy, final boolean statementLevel) {
         final TokenizingProgramPreprocessor preprocessor = buildPreprocessor(strategy, statementLevel);
 
-        final Optional<List<String>> tokens = preprocessor.process(program)
+        final Optional<List<String>> tokens = preprocessor.processSprites(program)
             .flatMap(sequence -> sequence.tokens().stream().findFirst().stream())
             .filter(sequence -> sequence.contains(Token.MASK.getStrRep()))
             .findFirst();
@@ -73,7 +73,7 @@ public class TokenizerService {
         final MaskingStrategy strategy, final boolean statementLevel
     ) {
         final MLPreprocessorCommonOptions options = new MLPreprocessorCommonOptions(
-            null, true, false, true, true, ActorNameNormalizer.getDefault()
+            null, true, true, false, ActorNameNormalizer.getDefault()
         );
 
         return new TokenizingProgramPreprocessor(
