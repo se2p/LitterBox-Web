@@ -88,6 +88,14 @@ check-licence-headers:
   script:
     - mvn license:check
 
+check-licence-headers-reuse:
+  <<: *lint-template
+  image:
+    name: docker.io/fsfe/reuse
+    entrypoint: [""]
+  script:
+    - reuse lint
+
 check-formatting:
   <<: *lint-template
   script:
