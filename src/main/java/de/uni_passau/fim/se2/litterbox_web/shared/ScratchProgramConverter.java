@@ -37,7 +37,7 @@ import io.micrometer.core.annotation.Timed;
  * <pre>{@code
  * record Data(
  *     @JsonSerialize(converter = ScratchProgramConverter.SerializeConverter.class)
- *     @JsonDeserialize( converter = ScratchProgramConverter.DeserializeConverter.class)
+ *     @JsonDeserialize(converter = ScratchProgramConverter.DeserializeConverter.class)
  *     Program program,
  *     // other attributes
  * ) {}

@@ -71,6 +71,10 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
         <dependency>
@@ -269,6 +273,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
                         <licenseSet>
                             <header>src/etc/header.txt</header>
                             <excludes>
+                                <exclude>**/*.license</exclude>
                                 <exclude>**/*.properties</exclude>
                                 <exclude>**/.editorconfig</exclude>
                                 <exclude>**/.gitlab-ci.yml</exclude>

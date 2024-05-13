@@ -136,3 +136,10 @@ The Spring configuration management is used to select the application configurat
 Spring `@ConfigurationProperties` should be used to group related configuration options and automatically convert them as a together into a single configuration-providing object (e.g. `CorsConfigurationProperties` and the related config values in `application-local.yml`).
 Additional validation can be implemented in a method annotated with `@PostConstruct`.
 Throwing an exception from this method will abort the application start.
+
+
+== Connectors to external services
+
+Features that need a connection to external services (e.g. machine learning models) should be feature-gated behind appropriate Spring profiles.
+This way LitterBox-Web can be started with only the actual set of required external services (or none, if not needed).
+See the `code_completion` feature for an example on how to use the `@Profile` annotations.
