@@ -7,7 +7,7 @@
  * SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
  * SPDX-License-Identifier: EUPL-1.2
  */
-package de.uni_passau.fim.se2.litterbox_web.tutorial_system.code_analyzer.model;
+package de.uni_passau.fim.se2.litterbox_web.tutorial_system;
 
 import java.util.Locale;
 

@@ -7,7 +7,7 @@
  * SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
  * SPDX-License-Identifier: EUPL-1.2
  */
-package de.uni_passau.fim.se2.litterbox_web.tutorial_system.code_analyzer.service;
+package de.uni_passau.fim.se2.litterbox_web.tutorial_system;
 
 import java.util.List;
 import java.util.Locale;
@@ -24,7 +24,6 @@ import de.uni_passau.fim.se2.litterbox.ast.model.Program;
 import de.uni_passau.fim.se2.litterbox.ast.model.metadata.resources.ImageMetadata;
 import de.uni_passau.fim.se2.litterbox.ast.visitor.ScratchBlocksVisitor;
 import de.uni_passau.fim.se2.litterbox.utils.IssueTranslator;
-import de.uni_passau.fim.se2.litterbox_web.tutorial_system.code_analyzer.model.TutorialIssueInfo;
 
 /**
  * Used to analyze a SCRATCH program.

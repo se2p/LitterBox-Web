@@ -21,8 +21,6 @@ import org.springframework.http.HttpStatus;
 
 import de.uni_passau.fim.se2.litterbox.ast.model.Program;
 import de.uni_passau.fim.se2.litterbox_web.LitterboxWebIntegrationTest;
-import de.uni_passau.fim.se2.litterbox_web.tutorial_system.code_analyzer.model.TutorialIssueInfo;
-import de.uni_passau.fim.se2.litterbox_web.tutorial_system.code_analyzer.model.TutorialRequest;
 import de.uni_passau.fim.se2.litterbox_web.util.FixtureLoader;
 import de.uni_passau.fim.se2.litterbox_web.util.RequestUtilService;
 
