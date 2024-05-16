@@ -3,6 +3,7 @@
 # SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
 
 .DS_Store
+.m2/
 
 application-local*.yml
 
