@@ -9,15 +9,15 @@
  */
 package de.uni_passau.fim.se2.litterbox_web.tutorial_system.code_analyzer.controller;
 
+import java.util.List;
 import java.util.Locale;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import de.uni_passau.fim.se2.litterbox_web.tutorial_system.code_analyzer.model.TutorialIssueInfo;
 import de.uni_passau.fim.se2.litterbox_web.tutorial_system.code_analyzer.model.TutorialRequest;
 import de.uni_passau.fim.se2.litterbox_web.tutorial_system.code_analyzer.service.ProgramAnalyzerService;
 
@@ -25,17 +25,11 @@ import de.uni_passau.fim.se2.litterbox_web.tutorial_system.code_analyzer.service
  * Controller for the handling code analysis requests from the tutorial system
  */
 @RestController
-@RequestMapping("tutorial-system/checker")
+@RequestMapping("tutorial-system")
 public class Controller {
 
-    private static final Logger log = LoggerFactory.getLogger(Controller.class);
     private final ProgramAnalyzerService programAnalyzerService;
 
-    /**
-     * Constructor of the Controller.
-     *
-     * @param programAnalyzerService instance of the ProgramAnalyzerService.
-     */
     public Controller(ProgramAnalyzerService programAnalyzerService) {
         this.programAnalyzerService = programAnalyzerService;
     }
@@ -47,16 +41,8 @@ public class Controller {
      * @return feedback for the submitted program as string.
      */
     @PostMapping("generate-feedback")
-    public String generateFeedback(@RequestBody final TutorialRequest request) {
-        log.debug("Received the following input: {}", request.toString());
-        String program = request.programAsString();
+    public List<TutorialIssueInfo> generateFeedback(@RequestBody final TutorialRequest request) {
         Locale language = request.languageAsLocale();
-        String result = programAnalyzerService.checkProgram(program, language, request.detectors());
-        log.debug("result: {}", result);
-        String noFeedbackMsg = "{\"issues\": []}";
-        if (result.isEmpty()) {
-            return noFeedbackMsg;
-        }
-        return result;
+        return programAnalyzerService.checkProgram(request.program(), language, request.detectors());
     }
 }

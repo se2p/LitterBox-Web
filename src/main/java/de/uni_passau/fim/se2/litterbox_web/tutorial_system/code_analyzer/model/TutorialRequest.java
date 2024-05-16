@@ -11,7 +11,11 @@ package de.uni_passau.fim.se2.litterbox_web.tutorial_system.code_analyzer.model;
 
 import java.util.Locale;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import de.uni_passau.fim.se2.litterbox.ast.model.Program;
+import de.uni_passau.fim.se2.litterbox_web.shared.ScratchProgramConverter;
 
 /**
  * Stores all required data to analyse a SCRATCH program submitted by the tutorial system.
@@ -23,17 +27,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 public record TutorialRequest(
     String language,
     String detectors,
-    JsonNode program
+    @JsonSerialize(converter = ScratchProgramConverter.SerializeConverter.class) @JsonDeserialize(
+        converter = ScratchProgramConverter.DeserializeConverter.class
+    ) Program program
 ) {
-
-    /**
-     * Converts the SCRATCH program from JSON to String.
-     *
-     * @return the program as String.
-     */
-    public String programAsString() {
-        return this.program.toString();
-    }
 
     /**
      * Converts the submitted language to {@link Locale}.
@@ -42,19 +39,5 @@ public record TutorialRequest(
      */
     public Locale languageAsLocale() {
         return Locale.of(language);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String toString() {
-        return "(language: " +
-            language +
-            ", detectors: " +
-            detectors +
-            ", program: " +
-            programAsString() +
-            ")";
     }
 }
