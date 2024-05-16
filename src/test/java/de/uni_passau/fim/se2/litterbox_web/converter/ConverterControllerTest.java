@@ -32,9 +32,10 @@ class ConverterControllerTest extends LitterboxWebIntegrationTest {
         );
 
         assertThat(scratchBlocks)
-            .contains("""
-                //Script: xbZ^vS,ML7Dqi,H3G=rc
-                when green flag clicked
-                move (pick random (1) to (10)) steps""");
+            .contains(
+                "//Script: xbZ^vS,ML7Dqi,H3G=rc" + System.lineSeparator() +
+                    "when green flag clicked" + System.lineSeparator() +
+                    "move (pick random (1) to (10)) steps"
+            );
     }
 }
