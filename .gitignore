@@ -3,7 +3,11 @@
 # SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
 
 .DS_Store
+.devenv/
+.direnv/
 .m2/
+.pre-commit-config.yaml
+result
 
 application-local*.yml
 
