@@ -30,21 +30,21 @@
           in
           {
             devenv-up = self.devShells.${system}.default.config.procfileScript;
-            default = pkgs.stdenv.mkDerivation {
-              name = "litterbox-web";
-              buildInputs = [
+            default = maven.buildMavenPackage rec {
+              pname = "litterbox-web";
+              version = "0.0.1-SNAPSHOT";
+              nativeBuildInputs = [
                 jdk
                 maven
+                pkgs.stripJavaArchivesHook
               ];
               src = ./.;
-              buildPhase = ''
-                export MAVEN_HOME=$(mktemp -d)
-                export MAVEN_OPTS="-DskipTests -Dmaven.repo.local=''${MAVEN_HOME}/repository"
-                ${maven}/bin/mvn package spring-boot:repackage
-              '';
+              buildOffline = true;
+              mvnHash = "sha256-TqeB+PX8qysMzpRZJexdAe4wq+6X2ifQnQHo3S0hVYo=";
+              mvnParameters = "-DskipTests";
               installPhase = ''
                 mkdir -p $out
-                cp target/litterbox-web*.jar $out/
+                cp target/litterbox-web-${version}.jar $out/
               '';
             };
           });

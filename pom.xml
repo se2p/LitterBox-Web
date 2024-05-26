@@ -141,6 +141,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
 
     <build>
         <plugins>
+            <!-- default plugins -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -149,6 +150,12 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
                     <release>${maven.compiler.release}</release>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.12.1</version>
+            </plugin>
+
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -187,6 +194,18 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
                                 <requireMavenVersion>
                                     <version>3.6.3</version>
                                 </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>require-all-plugin-versions-to-be-set</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requirePluginVersions/>
                             </rules>
                         </configuration>
                     </execution>
