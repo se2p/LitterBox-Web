@@ -24,3 +24,6 @@ ij_java_use_single_class_imports = true
 
 [{*.yml,*.yaml}]
 indent_size = 2
+
+[*.nix]
+indent_size = 2

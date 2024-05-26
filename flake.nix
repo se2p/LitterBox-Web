@@ -26,11 +26,14 @@
           let
             pkgs = nixpkgs.legacyPackages.${system};
             jdk = pkgs."jdk${toString javaVersion}_headless";
+            jre = (pkgs."temurin-jre-bin-${toString javaVersion}".override {
+              cups = null;
+              cairo = null;
+              glib = null;
+              gtk3 = null;
+            });
             maven = (pkgs.maven.override { jdk = jdk; });
-          in
-          {
-            devenv-up = self.devShells.${system}.default.config.procfileScript;
-            default = maven.buildMavenPackage rec {
+            litterbox-web-jar = maven.buildMavenPackage rec {
               pname = "litterbox-web";
               version = "0.0.1-SNAPSHOT";
               nativeBuildInputs = [
@@ -46,6 +49,28 @@
                 mkdir -p $out
                 cp target/litterbox-web-${version}.jar $out/
               '';
+            };
+          in
+          {
+            devenv-up = self.devShells.${system}.default.config.procfileScript;
+            default = litterbox-web-jar;
+            litterbox-web-container = pkgs.dockerTools.buildImage {
+              name = "litterbox-web";
+              tag = "${litterbox-web-jar.version}";
+              extraCommands = ''
+                mkdir -p -m 777 tmp
+              '';
+              config = {
+                ExposedPorts = {
+                  "8080/tcp" = { };
+                };
+                WorkingDir = "/app";
+                Entrypoint = [
+                  "${jre}/bin/java"
+                  "-jar"
+                  "${litterbox-web-jar}/litterbox-web-${litterbox-web-jar.version}.jar"
+                ];
+              };
             };
           });
 
