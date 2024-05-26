@@ -272,20 +272,10 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
                     <licenseSets>
                         <licenseSet>
                             <header>src/etc/header.txt</header>
+                            <basedir>src/</basedir>
                             <excludes>
-                                <exclude>**/*.license</exclude>
-                                <exclude>**/*.properties</exclude>
-                                <exclude>**/.editorconfig</exclude>
-                                <exclude>**/.gitlab-ci.yml</exclude>
-                                <exclude>**/.m2/repository/**</exclude>
-                                <exclude>**/Jenkinsfile</exclude>
-                                <exclude>**/README</exclude>
-                                <exclude>**/pom.xml</exclude>
-                                <exclude>LICENSE.txt</exclude>
-                                <exclude>LICENSES/*</exclude>
-                                <exclude>config/**</exclude>
-                                <exclude>src/main/resources/**</exclude>
-                                <exclude>src/test/resources/**</exclude>
+                                <exclude>main/resources/**</exclude>
+                                <exclude>test/resources/**</exclude>
                             </excludes>
                         </licenseSet>
                     </licenseSets>
