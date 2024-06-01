@@ -9,18 +9,13 @@
  */
 package de.uni_passau.fim.se2.litterbox_web.util;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.util.LinkedMultiValueMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,12 +23,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Service
 public class RequestUtilService {
 
-    private final MockMvc mvc;
+    private final WebTestClient testClient;
+
     private final ObjectMapper mapper;
 
-    public RequestUtilService(MockMvc mvc, ObjectMapper objectMapper) {
-        this.mvc = mvc;
-        this.mapper = objectMapper;
+    public RequestUtilService(WebTestClient testClient, ObjectMapper mapper) {
+        this.testClient = testClient;
+        this.mapper = mapper;
     }
 
     /**
@@ -46,10 +42,8 @@ public class RequestUtilService {
      * @return The response body for the request, already parsed.
      * @param <T> The type of the body that is sent to the endpoint.
      * @param <R> The type of the body that is received back from the endpoint.
-     * @throws Exception In case parsing to/from JSON fails or the request is invalid in some other way.
      */
-    public <T, R> R postWithResponseBody(String path, T body, Class<R> responseType, HttpStatus expectedStatus)
-        throws Exception {
+    public <T, R> R postWithResponseBody(String path, T body, Class<R> responseType, HttpStatus expectedStatus) {
         return postWithResponseBody(path, body, responseType, expectedStatus, null);
     }
 
@@ -64,17 +58,21 @@ public class RequestUtilService {
      * @return The response body for the request, already parsed.
      * @param <T> The type of the body that is sent to the endpoint.
      * @param <R> The type of the body that is received back from the endpoint.
-     * @throws Exception In case parsing to/from JSON fails or the request is invalid in some other way.
      */
     public <T, R> R postWithResponseBody(
         String path, T body, Class<R> responseType, HttpStatus expectedStatus, Map<String, String> params
-    ) throws Exception {
-        final String res = postWithResponseBodyString(path, body, expectedStatus, params);
-        if (res == null || res.isEmpty() || res.trim().isEmpty()) {
+    ) {
+        final var request = buildPostRequest(path, body, params);
+        final var response = request.exchange()
+            .expectStatus().isEqualTo(expectedStatus)
+            .expectBody(responseType)
+            .returnResult();
+
+        if (!expectedStatus.is2xxSuccessful()) {
             return null;
         }
 
-        return mapper.readValue(res, responseType);
+        return response.getResponseBody();
     }
 
     /**
@@ -112,55 +110,49 @@ public class RequestUtilService {
         String path, T body, Map<String, String> params, Class<R> listElementType,
         HttpStatus expectedStatus
     ) throws Exception {
-        final String res = postWithResponseBodyString(path, body, expectedStatus, params);
-        if (res == null || res.isEmpty() || res.trim().isEmpty()) {
+        final var request = buildPostRequest(path, body, params);
+        final var response = request.exchange()
+            .expectStatus().isEqualTo(expectedStatus)
+            .expectHeader().contentType(MediaType.APPLICATION_JSON)
+            .expectBodyList(listElementType)
+            .returnResult();
+
+        final List<R> responseBody = response.getResponseBody();
+
+        if (!expectedStatus.is2xxSuccessful() || responseBody == null) {
             return null;
         }
 
-        return mapper.readValue(res, mapper.getTypeFactory().constructCollectionType(List.class, listElementType));
-    }
-
-    /**
-     * Sends a post request with the given body object converted to JSON.
-     *
-     * @param path           The REST endpoint to send the data to.
-     * @param body           The body of the POST request.
-     * @param expectedStatus The expected HTTP status of the request.
-     * @param params         Additional request parameters.
-     * @param <T>            The type of the body that is sent to the endpoint.
-     * @return The response body for the request as string.
-     * @throws Exception In case parsing to/from JSON fails or the request is invalid in some other way.
-     */
-    public <T> String postWithResponseBodyString(
-        String path, T body, HttpStatus expectedStatus, Map<String, String> params
-    ) throws Exception {
-        final String jsonBody;
-        if (body instanceof String sBody) {
-            jsonBody = sBody;
+        // Why does parsing the String list does not work as expected?
+        // It returns a list containing one String like `["some","list","items"]` instead.
+        if (String.class.equals(listElementType) && !responseBody.isEmpty()) {
+            final String head = (String) response.getResponseBody().getFirst();
+            return mapper.readValue(head, mapper.getTypeFactory().constructCollectionType(List.class, String.class));
         }
         else {
-            jsonBody = mapper.writeValueAsString(body);
+            return responseBody;
         }
+    }
 
-        var request = MockMvcRequestBuilders.post(new URI(path)).contentType(MediaType.APPLICATION_JSON)
-            .content(jsonBody);
-        if (params != null) {
-            request = request.params(buildParams(params));
-        }
-
-        final MvcResult res = mvc.perform(request).andExpect(status().is(expectedStatus.value())).andReturn();
-        if (!expectedStatus.is2xxSuccessful()) {
-            return null;
-        }
-
-        return res.getResponse().getContentAsString();
+    private <T> WebTestClient.RequestHeadersSpec<?> buildPostRequest(
+        final String path, final T body, final Map<String, String> params
+    ) {
+        return testClient.post()
+            .uri(uriBuilder -> uriBuilder.path(path).queryParams(buildParams(params)).build())
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body);
     }
 
     private static LinkedMultiValueMap<String, String> buildParams(final Map<String, String> params) {
         final LinkedMultiValueMap<String, String> result = new LinkedMultiValueMap<>();
+        if (params == null) {
+            return result;
+        }
+
         for (final Map.Entry<String, String> entry : params.entrySet()) {
             result.put(entry.getKey(), List.of(entry.getValue()));
         }
+
         return result;
     }
 }

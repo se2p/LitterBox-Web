@@ -27,8 +27,8 @@ class ConverterControllerTest extends LitterboxWebIntegrationTest {
     @Test
     void convertToScratchblocks() throws Exception {
         final String programJson = FixtureLoader.loadFixture("tokenizingTest.json");
-        final String scratchBlocks = requestUtilService.postWithResponseBodyString(
-            "/converter/scratchblocks", programJson, HttpStatus.OK, null
+        final String scratchBlocks = requestUtilService.postWithResponseBody(
+            "/converter/scratchblocks", programJson, String.class, HttpStatus.OK
         );
 
         assertThat(scratchBlocks)
