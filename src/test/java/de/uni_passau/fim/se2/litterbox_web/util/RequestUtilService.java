@@ -12,24 +12,20 @@ package de.uni_passau.fim.se2.litterbox_web.util;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.util.LinkedMultiValueMap;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 @Service
 public class RequestUtilService {
 
     private final WebTestClient testClient;
 
-    private final ObjectMapper mapper;
-
-    public RequestUtilService(WebTestClient testClient, ObjectMapper mapper) {
+    public RequestUtilService(WebTestClient testClient) {
         this.testClient = testClient;
-        this.mapper = mapper;
     }
 
     /**
@@ -85,11 +81,10 @@ public class RequestUtilService {
      * @return The response body for the request, already parsed.
      * @param <T> The type of the body that is sent to the endpoint.
      * @param <R> The type of the list element that is received back from the endpoint.
-     * @throws Exception In case parsing to/from JSON fails or the request is invalid in some other way.
      */
     public <T, R> List<R> postWithResponseBodyList(
         String path, T body, Class<R> listElementType, HttpStatus expectedStatus
-    ) throws Exception {
+    ) {
         return postWithResponseBodyList(path, body, null, listElementType, expectedStatus);
     }
 
@@ -104,33 +99,39 @@ public class RequestUtilService {
      * @return The response body for the request, already parsed.
      * @param <T> The type of the body that is sent to the endpoint.
      * @param <R> The type of the list element that is received back from the endpoint.
-     * @throws Exception In case parsing to/from JSON fails or the request is invalid in some other way.
      */
     public <T, R> List<R> postWithResponseBodyList(
-        String path, T body, Map<String, String> params, Class<R> listElementType,
-        HttpStatus expectedStatus
-    ) throws Exception {
+        String path, T body, Map<String, String> params, Class<R> listElementType, HttpStatus expectedStatus
+    ) {
         final var request = buildPostRequest(path, body, params);
-        final var response = request.exchange()
+        final var responseSpec = request.exchange()
             .expectStatus().isEqualTo(expectedStatus)
-            .expectHeader().contentType(MediaType.APPLICATION_JSON)
-            .expectBodyList(listElementType)
-            .returnResult();
+            .expectHeader().contentType(MediaType.APPLICATION_JSON);
 
-        final List<R> responseBody = response.getResponseBody();
+        final List<R> response = getListResponse(listElementType, responseSpec);
 
-        if (!expectedStatus.is2xxSuccessful() || responseBody == null) {
+        if (!expectedStatus.is2xxSuccessful() || response == null) {
             return null;
         }
 
-        // Why does parsing the String list does not work as expected?
-        // It returns a list containing one String like `["some","list","items"]` instead.
-        if (String.class.equals(listElementType) && !responseBody.isEmpty()) {
-            final String head = (String) response.getResponseBody().getFirst();
-            return mapper.readValue(head, mapper.getTypeFactory().constructCollectionType(List.class, String.class));
+        return response;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <R> List<R> getListResponse(Class<R> listElementType, WebTestClient.ResponseSpec responseSpec) {
+        if (String.class.equals(listElementType)) {
+            // casting List<String> to List<R> is safe, since we check for R == String
+            return (List<R>) responseSpec
+                .expectBody(new ParameterizedTypeReference<List<String>>() {
+                })
+                .returnResult()
+                .getResponseBody();
         }
         else {
-            return responseBody;
+            return responseSpec
+                .expectBodyList(listElementType)
+                .returnResult()
+                .getResponseBody();
         }
     }
 
