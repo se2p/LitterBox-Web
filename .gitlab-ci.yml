@@ -8,6 +8,7 @@ stages:
   - build
   - test
   - lint
+  - nix
 
 .my-rules: &my-rules
   rules:
@@ -41,6 +42,8 @@ build:
 
 test:
   stage: test
+  needs:
+    - build
   coverage: '/Instruction Coverage: \d+.\d+ %/'
   script:
     - mvn clean test
@@ -114,3 +117,19 @@ checkstyle:
     reports:
       codequality:
         - checkstyle-report.json
+
+################################################################################
+# nix
+
+nix-build-jar:
+  stage: nix
+  needs:
+    - build
+  image: docker.io/nixos/nix:latest
+  script:
+    - >
+      nix
+      --extra-experimental-features nix-command
+      --extra-experimental-features flakes
+      build
+      --print-build-logs
