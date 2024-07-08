@@ -13,7 +13,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.0</version>
+        <version>3.3.1</version>
         <relativePath/>
     </parent>
 
@@ -37,7 +37,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
         <!-- check https://gitlab.infosun.fim.uni-passau.de/se2/scratch/litterbox-ml/-/packages/49 for available versions -->
         <litterbox.ml.version>1.0-20240511.070501-24</litterbox.ml.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <checkstyle.version>10.16.0</checkstyle.version>
+        <checkstyle.version>10.17.0</checkstyle.version>
         <!-- Spring boot version defined in parent pom.xml -->
     </properties>
 
@@ -93,7 +93,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.5.0</version>
+            <version>2.6.0</version>
         </dependency>
 
         <!-- other dependencies -->
@@ -122,7 +122,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.25.3</version>
+            <version>3.26.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -182,7 +182,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.4.1</version>
+                <version>3.5.0</version>
                 <executions>
                     <execution>
                         <id>enforce-maven</id>
@@ -216,12 +216,12 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.2.5</version>
+                <version>3.3.0</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>3.2.5</version>
+                <version>3.3.0</version>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
@@ -265,7 +265,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>3.3.1</version>
+                <version>3.4.0</version>
                 <configuration>
                     <configLocation>config/checkstyle/checkstyle.xml</configLocation>
                     <consoleOutput>true</consoleOutput>
@@ -315,7 +315,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
-                <version>2.16.2</version>
+                <version>2.17.0</version>
                 <configuration>
                     <onlyProjectDependencies>true</onlyProjectDependencies>
                     <onlyProjectPlugins>true</onlyProjectPlugins>
