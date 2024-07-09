@@ -133,3 +133,4 @@ nix-build-jar:
       --extra-experimental-features flakes
       build
       --print-build-logs
+      .#litterbox-web-jar

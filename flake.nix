@@ -30,9 +30,28 @@
         pkgs = nixpkgs.legacyPackages.${system};
         jdk = pkgs."jdk${toString javaVersion}_headless";
         maven = pkgs.maven.override {jdk = jdk;};
-        litterbox-web-jar = maven.buildMavenPackage rec {
+        litterboxWebVersion = "0.0.1-SNAPSHOT";
+      in rec {
+        devenv-up = self.devShells.${system}.default.config.procfileScript;
+
+        default = pkgs.stdenvNoCC.mkDerivation rec {
           pname = "litterbox-web";
-          version = "0.0.1-SNAPSHOT";
+          version = litterboxWebVersion;
+          nativeBuildInputs = [pkgs.makeWrapper];
+          src = ./.;
+          buildPhase = "";
+          installPhase = ''
+            makeWrapper ${pkgs.jre}/bin/java $out/bin/litterbox-web \
+              --add-flags "-jar ${litterbox-web-jar}/litterbox-web-${version}.jar"
+          '';
+          meta = with pkgs.lib; {
+            license = licenses.eupl12;
+          };
+        };
+
+        litterbox-web-jar = maven.buildMavenPackage rec {
+          pname = "litterbox-web-jar";
+          version = litterboxWebVersion;
           nativeBuildInputs = [
             jdk
             maven
@@ -47,9 +66,7 @@
             cp target/litterbox-web-${version}.jar $out/
           '';
         };
-      in {
-        devenv-up = self.devShells.${system}.default.config.procfileScript;
-        default = litterbox-web-jar;
+
         litterbox-web-container = import ./scripts/nix/container.nix {
           inherit pkgs jdk litterbox-web-jar;
         };
