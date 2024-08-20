@@ -12,7 +12,9 @@ package de.uni_passau.fim.se2.litterbox_web.architecture;
 import static com.tngtech.archunit.base.DescribedPredicate.not;
 import static com.tngtech.archunit.core.domain.JavaCall.Predicates.target;
 import static com.tngtech.archunit.core.domain.JavaClass.Predicates.assignableTo;
+import static com.tngtech.archunit.core.domain.JavaClass.Predicates.equivalentTo;
 import static com.tngtech.archunit.core.domain.properties.HasOwner.Predicates.With.owner;
+import static com.tngtech.archunit.lang.conditions.ArchPredicates.are;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 
 import java.nio.file.Files;
@@ -33,7 +35,13 @@ class GeneralRulesTest extends ArchitectureTest {
 
     @Test
     void doNotUseStandardStreams() {
-        GeneralCodingRules.NO_CLASSES_SHOULD_ACCESS_STANDARD_STREAMS.check(allClasses);
+        final var classes = allClasses.that(are(not(equivalentTo(ModulithTest.class))));
+        GeneralCodingRules.NO_CLASSES_SHOULD_ACCESS_STANDARD_STREAMS.check(classes);
+    }
+
+    @Test
+    void noFieldInjection() {
+        GeneralCodingRules.NO_CLASSES_SHOULD_USE_FIELD_INJECTION.check(productionClasses);
     }
 
     @Test

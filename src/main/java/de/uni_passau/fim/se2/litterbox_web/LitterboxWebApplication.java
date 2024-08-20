@@ -11,11 +11,16 @@ package de.uni_passau.fim.se2.litterbox_web;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.modulith.Modulithic;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
 @SuppressWarnings("checkstyle:HideUtilityClassConstructor")
+@Modulithic(
+    systemName = "LitterboxWeb",
+    sharedModules = { "shared" }
+)
 public class LitterboxWebApplication {
 
     public static void main(String[] args) {

@@ -10,4 +10,7 @@
 /**
  * Functionality shared between different other top-level packages.
  */
+@ApplicationModule(allowedDependencies = {})
 package de.uni_passau.fim.se2.litterbox_web.shared;
+
+import org.springframework.modulith.ApplicationModule;
