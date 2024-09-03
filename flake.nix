@@ -29,7 +29,7 @@
       (system: let
         pkgs = nixpkgs.legacyPackages.${system};
         jdk = pkgs."jdk${toString javaVersion}_headless";
-        maven = pkgs.maven.override {jdk = jdk;};
+        maven = pkgs.maven.override {jdk_headless = jdk;};
         litterboxWebVersion = "0.0.1-SNAPSHOT";
       in rec {
         devenv-up = self.devShells.${system}.default.config.procfileScript;
@@ -59,7 +59,7 @@
           ];
           src = ./.;
           buildOffline = true;
-          mvnHash = "sha256-s0V+v8gaKhFrOMuAkoa71c0eOwzbyRGO4PoMF6uHQ4I=";
+          mvnHash = "sha256-HR2ctUW3lCPuzGjlxMlck9Fsg4lLOxXtJ33h+7pL62s=";
           mvnParameters = "-DskipTests";
           installPhase = ''
             mkdir -p $out

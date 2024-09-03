@@ -13,7 +13,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.2</version>
+        <version>3.3.3</version>
         <relativePath/>
     </parent>
 
@@ -32,12 +32,12 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
     <properties>
         <java.version>21</java.version>
         <maven.compiler.release>21</maven.compiler.release>
-        <!-- check https://gitlab.infosun.fim.uni-passau.de/se2/litterbox/-/packages/38 for available versions -->
-        <litterbox.version>1.9-20240726.143518-10</litterbox.version>
+        <!-- check https://gitlab.infosun.fim.uni-passau.de/se2/litterbox/-/packages/64 for available versions -->
+        <litterbox.version>1.9-20240903.061809-12</litterbox.version>
         <!-- check https://gitlab.infosun.fim.uni-passau.de/se2/scratch/litterbox-ml/-/packages/49 for available versions -->
-        <litterbox.ml.version>1.0-20240620.113153-29</litterbox.ml.version>
+        <litterbox.ml.version>1.0-20240903.064413-30</litterbox.ml.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <checkstyle.version>10.17.0</checkstyle.version>
+        <checkstyle.version>10.18.1</checkstyle.version>
         <!-- Spring boot version defined in parent pom.xml -->
     </properties>
 
@@ -57,7 +57,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
             <dependency>
                 <groupId>org.springframework.modulith</groupId>
                 <artifactId>spring-modulith-bom</artifactId>
-                <version>1.2.2</version>
+                <version>1.2.3</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -155,7 +155,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
         <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
-            <version>4.2.1</version>
+            <version>4.2.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -174,7 +174,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
-                <version>3.12.1</version>
+                <version>3.20.0</version>
             </plugin>
 
             <plugin>
@@ -237,12 +237,12 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.3.1</version>
+                <version>3.5.0</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>3.3.1</version>
+                <version>3.5.0</version>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
@@ -286,7 +286,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>3.4.0</version>
+                <version>3.5.0</version>
                 <configuration>
                     <configLocation>config/checkstyle/checkstyle.xml</configLocation>
                     <consoleOutput>true</consoleOutput>
