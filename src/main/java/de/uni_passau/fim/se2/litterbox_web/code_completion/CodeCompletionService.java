@@ -48,19 +48,18 @@ public class CodeCompletionService {
     /**
      * Requests suggestions for possible next blocks from a code completion model.
      *
-     * @param program The program to request a code completion for.
-     * @param model   The model from which to request the code completion.
-     * @param topK    The number of suggestions for blocks.
+     * @param codeCompletionRequest A
      * @return The suggested blocks in descending likelihood order.
      */
     public Mono<CodeCompletionBlocks> getCodeCompletionSuggestions(
-        final Program program,
-        final CodeCompletionModelConfig.CodeCompletionModelType model,
-        final int topK
+        final CodeCompletionRequestDto codeCompletionRequest
     ) {
-        final String tokens = tokeniseProgram(program);
-        final CodeCompletionRequest request = new CodeCompletionRequest(tokens, "<MASK>", topK);
-        final URI modelUrl = codeCompletionModelConfig.getModelConfig(model).orElseThrow().url();
+        final String tokens = tokeniseProgram(codeCompletionRequest.program());
+        final CodeCompletionRequest request = new CodeCompletionRequest(
+            tokens, "<MASK>", codeCompletionRequest.topkPredictions()
+        );
+        final URI modelUrl = codeCompletionModelConfig.getModelConfig(codeCompletionRequest.model()).orElseThrow()
+            .url();
 
         return externalApiConnector
             .postEntity(modelUrl, request, CodeCompletionResponse.class)
