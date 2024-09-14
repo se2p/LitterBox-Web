@@ -81,12 +81,8 @@ public class ProgramAnalyzerService {
         }
 
         final ScratchBlocksVisitor blockVisitor = new ScratchBlocksVisitor(issue);
-        blockVisitor.begin();
         location.accept(blockVisitor);
-        blockVisitor.end();
 
-        return blockVisitor.getScratchBlocks()
-            .replace(ScratchBlocksVisitor.SCRATCHBLOCKS_START, "")
-            .replace(ScratchBlocksVisitor.SCRATCHBLOCKS_END, "");
+        return blockVisitor.getScratchBlocks();
     }
 }
