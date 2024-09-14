@@ -23,6 +23,11 @@ public record CodeCompletionRequestDto(
     ) Program program,
     CodeCompletionModelConfig.CodeCompletionModelType model,
     int topkPredictions
+    // note: probably needs some additional attributes to be actually usable
+    // e.g. ID of a block where something should be completed,
+    // (probably best to add some artificial block in the Scratch-VM and save the ID, then it can
+    // also be replaced by the response easily, and it may be easier to handle different block types
+    // like statements or expressions)
 ) {
 
     public CodeCompletionRequestDto {

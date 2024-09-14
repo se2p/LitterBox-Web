@@ -105,9 +105,9 @@ public class CodeCompletionService {
     private record CodeCompletionRequest(String tokens, String maskToken, int topK) {
     }
 
-    private record CodeCompletionResponse(List<CodeCompletionPrediction> predictions) {
+    record CodeCompletionResponse(List<CodeCompletionPrediction> predictions) {
     }
 
-    private record CodeCompletionPrediction(String token, double confidence) {
+    record CodeCompletionPrediction(String token, double confidence) {
     }
 }
