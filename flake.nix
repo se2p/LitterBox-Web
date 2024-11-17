@@ -59,7 +59,7 @@
           ];
           src = ./.;
           buildOffline = true;
-          mvnHash = "sha256-CP1CkCoZfeFRsGNZP6RRto70woWFcTfhABFNBh0Ca/Q=";
+          mvnHash = "sha256-UafY+GkUyWc3Gwt/8qKRXD6ShbTE2QU6GdWO/hM3w9M=";
           mvnParameters = "-DskipTests";
           installPhase = ''
             mkdir -p $out
