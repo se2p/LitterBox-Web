@@ -13,9 +13,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.modulith.Modulithic;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.web.reactive.config.EnableWebFlux;
 
 @SpringBootApplication
 @EnableScheduling
+@EnableWebFlux
 @SuppressWarnings("checkstyle:HideUtilityClassConstructor")
 @Modulithic(
     systemName = "LitterboxWeb",

@@ -10,7 +10,7 @@
 package de.uni_passau.fim.se2.litterbox_web.configuration;
 
 import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.net.InetSocketAddress;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -18,19 +18,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authorization.AuthorizationDecision;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.authorization.AuthorizationContext;
+
+import reactor.core.publisher.Mono;
 
 @Configuration
-@EnableWebSecurity
-@EnableMethodSecurity(securedEnabled = true)
+@EnableWebFluxSecurity
+@EnableReactiveMethodSecurity
 public class SecurityConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(SecurityConfiguration.class);
@@ -42,35 +40,32 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    protected SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
+    protected SecurityWebFilterChain filterChain(final ServerHttpSecurity http) {
         http
-            .csrf(AbstractHttpConfigurer::disable)
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(this::setupRequestMatchers);
+            .csrf(ServerHttpSecurity.CsrfSpec::disable)
+            .authorizeExchange(this::setupRequestMatchers);
 
         return http.build();
     }
 
     private void setupRequestMatchers(
-        final AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry requests
+        final ServerHttpSecurity.AuthorizeExchangeSpec requests
     ) {
         requests
-            .requestMatchers(new AntPathRequestMatcher("/management/prometheus"))
+            .pathMatchers("/management/prometheus")
             .access((auth, context) -> checkMetricsAccess(context))
-            .requestMatchers(new AntPathRequestMatcher("/**")).permitAll();
+            .pathMatchers("/**").permitAll();
     }
 
-    private AuthorizationDecision checkMetricsAccess(final RequestAuthorizationContext context) {
-        final InetAddress remoteAddr;
-        try {
-            remoteAddr = InetAddress.getByName(context.getRequest().getRemoteAddr());
-        }
-        catch (UnknownHostException e) {
-            return new AuthorizationDecision(false);
+    private Mono<AuthorizationDecision> checkMetricsAccess(final AuthorizationContext context) {
+        final InetSocketAddress remoteAddr = context.getExchange().getRequest().getRemoteAddress();
+        if (remoteAddr == null) {
+            return Mono.just(new AuthorizationDecision(false));
         }
 
-        final boolean granted = monitoringIpAddresses.isEmpty() || monitoringIpAddresses.contains(remoteAddr);
+        final boolean granted = monitoringIpAddresses.isEmpty()
+            || monitoringIpAddresses.contains(remoteAddr.getAddress());
         log.debug("Allowing metrics scraping from {}: {}", remoteAddr, granted);
-        return new AuthorizationDecision(granted);
+        return Mono.just(new AuthorizationDecision(granted));
     }
 }

@@ -80,6 +80,12 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -221,6 +227,11 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
                                 <requireMavenVersion>
                                     <version>3.6.3</version>
                                 </requireMavenVersion>
+                                <bannedDependencies>
+                                    <excludes>
+                                        <exclude>org.springframework.boot:spring-boot-starter-tomcat</exclude>
+                                    </excludes>
+                                </bannedDependencies>
                             </rules>
                         </configuration>
                     </execution>

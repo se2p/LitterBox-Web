@@ -15,8 +15,8 @@ import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.cors.reactive.CorsWebFilter;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 @Configuration
 public class LitterBoxWebCorsConfiguration {
@@ -33,7 +33,7 @@ public class LitterBoxWebCorsConfiguration {
      * @return A Spring CORS filter that will be applied as default to all endpoints.
      */
     @Bean
-    public CorsFilter corsFilter() {
+    public CorsWebFilter corsFilter() {
         final CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(configProps.getAllowedOrigins());
         config.setAllowedHeaders(List.of("content-type"));
@@ -42,6 +42,6 @@ public class LitterBoxWebCorsConfiguration {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
 
-        return new CorsFilter(source);
+        return new CorsWebFilter(source);
     }
 }
