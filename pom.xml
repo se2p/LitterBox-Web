@@ -13,7 +13,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.5</version>
+        <version>3.4.0</version>
         <relativePath/>
     </parent>
 
@@ -32,10 +32,10 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
     <properties>
         <java.version>21</java.version>
         <maven.compiler.release>21</maven.compiler.release>
-        <!-- check https://gitlab.infosun.fim.uni-passau.de/se2/litterbox/-/packages/64 for available versions -->
-        <litterbox.version>1.9-20240903.061809-12</litterbox.version>
-        <!-- check https://gitlab.infosun.fim.uni-passau.de/se2/scratch/litterbox-ml/-/packages/49 for available versions -->
-        <litterbox.ml.version>1.0-20240903.064413-30</litterbox.ml.version>
+        <!-- check https://gitlab.infosun.fim.uni-passau.de/se2/litterbox/litterbox/-/packages/ for available versions -->
+        <litterbox.version>1.10-20241121.154027-3</litterbox.version>
+        <!-- check https://gitlab.infosun.fim.uni-passau.de/se2/scratch/litterbox/embeddedkittens/-/packages/ for available versions -->
+        <embedded-kittens.version>1.1.0-20241121.153450-2</embedded-kittens.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <checkstyle.version>10.20.1</checkstyle.version>
         <!-- Spring boot version defined in parent pom.xml -->
@@ -47,7 +47,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
             <url>https://gitlab.infosun.fim.uni-passau.de/api/v4/projects/425/packages/maven</url>
         </repository>
         <repository>
-            <id>gitlab-litterbox-ml</id>
+            <id>gitlab-embedded-kittens</id>
             <url>https://gitlab.infosun.fim.uni-passau.de/api/v4/projects/1245/packages/maven</url>
         </repository>
     </repositories>
@@ -131,8 +131,8 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
         </dependency>
         <dependency>
             <groupId>de.uni_passau.fim.se2</groupId>
-            <artifactId>litterbox-ml</artifactId>
-            <version>${litterbox.ml.version}</version>
+            <artifactId>embedded-kittens</artifactId>
+            <version>${embedded-kittens.version}</version>
         </dependency>
 
         <!-- test dependencies -->
@@ -290,7 +290,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
                 <configuration>
                     <java>
                         <eclipse>
-                            <version>4.30</version>
+                            <version>4.33</version>
                             <file>${project.basedir}/config/spotless/spotless-format.xml</file>
                         </eclipse>
 

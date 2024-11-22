@@ -42,10 +42,12 @@ public class Scratch3ParserService {
             return parser.parseFile(file.toFile());
         }
         catch (ParsingException | NullPointerException e) {
-            throw new ParseStatusException("Could not parse Scratch project!", e);
-        }
-        catch (IOException e) {
-            throw new IOStatusException("Could not read Scratch project.", e);
+            if (e.getCause() instanceof IOException ioException) {
+                throw new IOStatusException("Could not read Scratch project.", ioException);
+            }
+            else {
+                throw new ParseStatusException("Could not parse Scratch project!", e);
+            }
         }
     }
 

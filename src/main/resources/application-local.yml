@@ -12,7 +12,8 @@ logging:
 
 management:
   endpoints:
-    enabled-by-default: true
+    access:
+      default: unrestricted
 
 springdoc:
   api-docs:

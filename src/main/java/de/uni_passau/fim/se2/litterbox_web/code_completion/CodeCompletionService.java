@@ -21,11 +21,12 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
+import de.uni_passau.fim.se2.embedded_kittens.MLPreprocessorCommonOptions;
+import de.uni_passau.fim.se2.embedded_kittens.shared.ActorNameNormalizer;
+import de.uni_passau.fim.se2.embedded_kittens.tokenizer.TokenizingMethod;
+import de.uni_passau.fim.se2.embedded_kittens.tokenizer.TokenizingProgramPreprocessor;
+import de.uni_passau.fim.se2.embedded_kittens.util.MaskingStrategy;
 import de.uni_passau.fim.se2.litterbox.ast.model.Program;
-import de.uni_passau.fim.se2.litterbox.ml.MLPreprocessorCommonOptions;
-import de.uni_passau.fim.se2.litterbox.ml.shared.ActorNameNormalizer;
-import de.uni_passau.fim.se2.litterbox.ml.tokenizer.TokenizingProgramPreprocessor;
-import de.uni_passau.fim.se2.litterbox.ml.util.MaskingStrategy;
 import de.uni_passau.fim.se2.litterbox_web.shared.Profiles;
 import de.uni_passau.fim.se2.litterbox_web.shared.connectors.ExternalApiConnector;
 import reactor.core.publisher.Mono;
@@ -86,7 +87,7 @@ public class CodeCompletionService {
         );
 
         return new TokenizingProgramPreprocessor(
-            options, strategy, false, false, false
+            options, strategy, false, TokenizingMethod.REGULAR, false
         );
     }
 

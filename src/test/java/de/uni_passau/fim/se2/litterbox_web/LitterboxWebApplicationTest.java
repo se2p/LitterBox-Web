@@ -9,11 +9,14 @@
  */
 package de.uni_passau.fim.se2.litterbox_web;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
 
 class LitterboxWebApplicationTest extends LitterboxWebIntegrationTest {
 
     @Test
     void contextLoads() {
+        assertTrue(true);
     }
 }
