@@ -14,8 +14,8 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.8,<4"
-pydantic = "2.7.1"
+python = ">=3.10,<4"
+pydantic = "^2.10.0"
 
 
 [build-system]
