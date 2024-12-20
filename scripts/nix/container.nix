@@ -29,7 +29,7 @@
     '';
   };
   jre = pkgs.jre_minimal.override {
-    jdk = jdk;
+    inherit jdk;
     modules = pkgs.lib.strings.splitString "," (
       pkgs.lib.strings.removeSuffix "\n" (
         builtins.readFile "${litterbox-web-jar-module-deps}/deps.info"

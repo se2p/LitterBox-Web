@@ -41,3 +41,14 @@ management:
     monitoring-ips:
       - 127.0.0.1
       - ::1
+  otlp:
+    logging:
+      export:
+        enabled: false
+    tracing:
+      export:
+        enabled: false
+    metrics:
+      export:
+        enabled: false
+        url: http://localhost:4318/v1/metrics

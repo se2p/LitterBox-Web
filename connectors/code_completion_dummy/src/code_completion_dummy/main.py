@@ -4,7 +4,9 @@
 
 import asyncio
 import logging
+import sys
 
+import uvicorn
 from fastapi import FastAPI
 from litterbox_web_api.code_completion import (
     CodeCompletionPrediction,
@@ -42,3 +44,14 @@ model = Model()
 @app.post("/code-completion")
 async def code_completion(request: CodeCompletionRequest) -> CodeCompletionResponse:
     return await model.code_completion(request)
+
+
+def main(argv: list[str] | None = None) -> None:
+    if argv is None:
+        argv = sys.argv
+
+    uvicorn.run(app, host="0.0.0.0", port=8080)
+
+
+if __name__ == "__main__":
+    main()

@@ -59,7 +59,7 @@
           ];
           src = ./.;
           buildOffline = true;
-          mvnHash = "sha256-EwlqKS4ldBqQSJ+U56K7WFcExfwceo9UmHFb7k5KdRw=";
+          mvnHash = "sha256-w6GqvNYj6Tqasxw9p7ErkXd8pco6noz2WeUpzVcX73Q=";
           mvnParameters = "-DskipTests";
           installPhase = ''
             mkdir -p $out
@@ -69,6 +69,18 @@
 
         litterbox-web-container = import ./scripts/nix/container.nix {
           inherit pkgs jdk litterbox-web-jar;
+        };
+
+        connector.api = import ./connectors/api/default.nix {
+          inherit pkgs;
+        };
+        connector.code-completion-dummy = import ./connectors/code_completion_dummy/default.nix {
+          inherit pkgs;
+          litterbox-web-api = connector.api;
+        };
+        connector-container.code-completion-dummy = import ./connectors/code_completion_dummy/container.nix {
+          inherit pkgs;
+          code-completion-dummy-app = connector.code-completion-dummy;
         };
       });
 
@@ -95,11 +107,6 @@
                 enable = true;
                 jdk.package = jdk;
                 maven.enable = true;
-              };
-              languages.python = {
-                enable = true;
-                package = pkgs.python313;
-                uv.enable = true;
               };
               pre-commit.hooks = {
                 alejandra.enable = true;
@@ -137,6 +144,12 @@
               };
             }
           ];
+        };
+        connectors.api = import ./connectors/api/shell.nix {
+          inherit inputs pkgs devenv;
+        };
+        connectors.code-completion-dummy = import ./connectors/code_completion_dummy/shell.nix {
+          inherit inputs pkgs devenv;
         };
       });
   };

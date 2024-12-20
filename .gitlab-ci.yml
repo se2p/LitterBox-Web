@@ -70,8 +70,7 @@ test:
 
 .lint: &lint-template
   stage: lint
-  needs:
-    - build
+  needs: []
   rules:
     - if: '$CI_MERGE_REQUEST_TITLE =~ /^(Draft|WIP):/'
       allow_failure: true
@@ -81,8 +80,7 @@ test:
 .python-lint: &python-lint-template
   stage: lint
   image: docker.io/library/python:$PYTHON_VERSION
-  needs:
-    - build
+  needs: []
   parallel:
     matrix:
       - PYTHON_VERSION:
@@ -184,6 +182,22 @@ nix-build-jar:
         - flake.nix
         - flake.lock
         - pom.xml
+
+nix-files-formatted:
+  stage: nix
+  needs: []
+  image: docker.io/nixos/nix:latest
+  script:
+    - >
+      nix
+      --extra-experimental-features nix-command
+      --extra-experimental-features flakes
+      run
+      nixpkgs#alejandra
+      .
+  rules:
+    - changes:
+        - "**/*.nix"
 
 ################################################################################
 # deploy
