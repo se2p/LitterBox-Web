@@ -14,11 +14,11 @@
     "screenshot": "src/index.js"
   },
   "dependencies": {
-    "express": "^4.21.2",
-    "jsdom": "^26.0.0",
-    "scratch-audio": "^2.0.107",
-    "scratch-blocks": "^1.1.206",
-    "scratch-vm": "^5.0.242"
+    "express": "5.1.0",
+    "jsdom": "26.1.0",
+    "scratch-audio": "2.0.133",
+    "scratch-blocks": "1.1.210",
+    "scratch-vm": "5.0.288"
   },
   "bundleDependencies": [
     "express",
@@ -28,6 +28,6 @@
     "scratch-vm"
   ],
   "devDependencies": {
-    "eslint": "^9.23.0"
+    "eslint": "9.25.1"
   }
 }

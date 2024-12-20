@@ -22,9 +22,9 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "isort>=5.13.2",
-    "mypy>=1.14.1",
-    "ruff>=0.8.0",
+    "isort>=6.0.1",
+    "mypy>=1.15.0",
+    "ruff>=0.11.7",
 ]
 
 [project.scripts]

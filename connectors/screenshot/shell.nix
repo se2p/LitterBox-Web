@@ -14,7 +14,7 @@ devenv.lib.mkShell {
     {
       languages.javascript = {
         enable = true;
-        package = pkgs.nodejs_18;
+        package = pkgs.nodejs_20;
         npm.enable = true;
         npm.install.enable = true;
       };
