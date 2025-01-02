@@ -135,15 +135,14 @@ publish-python-packages:
   needs: []
   image: docker.io/library/python:latest
   before_script:
-    - pip install poetry
-    - poetry config repositories.gitlab "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi"
+    - pip install uv
   script:
     - cd connectors/api/
     # generate a unique version number by using the pipeline ID as build number
     # e.g. replaces `version = "0.1.0"` by `version = "0.1.0-1234"` in pyproject.toml
     - sed -i "s#version = \"\(.*\)\"#version = \"\1-${CI_PIPELINE_IID}\"#" pyproject.toml
-    - poetry build
-    - poetry publish --repository gitlab --username "gitlab-ci-token" --password "${CI_JOB_TOKEN}"
+    - uv build
+    - uv publish --index litterbox-web-gitlab --username "gitlab-ci-token" --password "${CI_JOB_TOKEN}"
   rules:
     - if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"
     - changes:

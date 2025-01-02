@@ -2,22 +2,29 @@
 #
 # SPDX-License-Identifier: EUPL-1.2
 
-[tool.poetry]
+[project]
 name = "litterbox-web-api"
 version = "0.1.0"
 description = ""
-authors = ["Benedikt Fein <fein@fim.uni-passau.de>"]
-license = "EUPL-1.2"
+authors = [
+    { name = "Benedikt Fein", email = "fein@fim.uni-passau.de" }
+]
+classifiers = [
+    "License :: OSI Approved :: European Union Public Licence 1.2 (EUPL 1.2)",
+]
 readme = "README.md"
-packages = [
-    { include = "litterbox_web_api", from = "src" }
+requires-python = ">=3.10"
+dependencies = [
+    "pydantic>=2.10.0"
 ]
 
-[tool.poetry.dependencies]
-python = ">=3.10,<4"
-pydantic = "^2.10.0"
+
+[[tool.uv.index]]
+name = "litterbox-web-gitlab"
+url = "https://gitlab.infosun.fim.uni-passau.de/api/v4/projects/1140/packages/pypi/simple"
+publish-url = "https://gitlab.infosun.fim.uni-passau.de/api/v4/projects/1140/packages/pypi"
 
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools>=61.2"]
+build-backend = "setuptools.build_meta"

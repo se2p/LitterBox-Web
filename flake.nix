@@ -96,6 +96,11 @@
                 jdk.package = jdk;
                 maven.enable = true;
               };
+              languages.python = {
+                enable = true;
+                package = pkgs.python313;
+                uv.enable = true;
+              };
               pre-commit.hooks = {
                 alejandra.enable = true;
                 reuse-lint = {
