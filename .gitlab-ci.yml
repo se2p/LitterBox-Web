@@ -145,5 +145,6 @@ publish-python-packages:
     - uv publish --index litterbox-web-gitlab --username "gitlab-ci-token" --password "${CI_JOB_TOKEN}"
   rules:
     - if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"
-    - changes:
-        - connectors/api/**/*
+      changes:
+        paths:
+          - connectors/api/**/*
