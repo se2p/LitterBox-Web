@@ -78,6 +78,35 @@ test:
     - when: on_success
       allow_failure: false
 
+.python-lint: &python-lint-template
+  stage: lint
+  image: docker.io/library/python:$PYTHON_VERSION
+  needs:
+    - build
+  parallel:
+    matrix:
+      - PYTHON_VERSION:
+          - "3.13"
+        SUBPROJECT:
+          - api
+          - code_completion_dummy
+  before_script:
+    - pip install uv
+    - cd connectors/$SUBPROJECT
+    - uv sync --all-extras --dev
+  cache: []
+  rules:
+    - if: '$CI_MERGE_REQUEST_TITLE =~ /^(Draft|WIP):/'
+      allow_failure: true
+      changes:
+        paths:
+          - connectors/$SUBPROJECT/**/*
+    - when: on_success
+      allow_failure: false
+      changes:
+        paths:
+          - connectors/$SUBPROJECT/**/*
+
 check-licence-headers:
   <<: *lint-template
   script:
@@ -109,6 +138,29 @@ checkstyle:
     reports:
       codequality:
         - checkstyle-report.json
+
+isort:
+  <<: *python-lint-template
+  script:
+    - uv run isort --check-only .
+
+ruff:
+  <<: *python-lint-template
+  script:
+    - uv run ruff check --output-format=gitlab > $CI_PROJECT_DIR/ruff-report.json
+  artifacts:
+    reports:
+      codequality: $CI_PROJECT_DIR/ruff-report.json
+
+ruff-format:
+  <<: *python-lint-template
+  script:
+    - uv run ruff format --diff --check .
+
+mypy:
+  <<: *python-lint-template
+  script:
+    - uv run mypy .
 
 ################################################################################
 # nix
@@ -149,6 +201,7 @@ publish-python-packages:
     - sed -i "s#version = \"\(.*\)\"#version = \"\1-${CI_PIPELINE_IID}\"#" pyproject.toml
     - uv build
     - uv publish --index litterbox-web-gitlab --username "gitlab-ci-token" --password "${CI_JOB_TOKEN}"
+  cache: []
   rules:
     - if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"
       changes:

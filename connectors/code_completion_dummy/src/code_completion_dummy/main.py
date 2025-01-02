@@ -7,9 +7,9 @@ import logging
 
 from fastapi import FastAPI
 from litterbox_web_api.code_completion import (
+    CodeCompletionPrediction,
     CodeCompletionRequest,
     CodeCompletionResponse,
-    CodeCompletionPrediction,
 )
 
 

@@ -22,7 +22,9 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "ruff>=0.8.0"
+    "isort>=5.13.2",
+    "mypy>=1.14.1",
+    "ruff>=0.8.0",
 ]
 
 [[tool.uv.index]]
@@ -30,8 +32,25 @@ name = "litterbox-web-gitlab"
 url = "https://gitlab.infosun.fim.uni-passau.de/api/v4/projects/1140/packages/pypi/simple"
 
 
+[tool.isort]
+profile = "black"
+
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_untyped_defs = true
+ignore_errors = false
+ignore_missing_imports = true
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+
 [tool.ruff]
 line-length = 88
+output-format = "full"
 target-version = "py312"
 
 
