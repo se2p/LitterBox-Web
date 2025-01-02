@@ -126,6 +126,12 @@ nix-build-jar:
       build
       --print-build-logs
       .#litterbox-web-jar
+  rules:
+    - if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"
+    - changes:
+        - flake.nix
+        - flake.lock
+        - pom.xml
 
 ################################################################################
 # deploy
