@@ -24,6 +24,16 @@ management:
   endpoints:
     access:
       default: none
+  otlp:
+    logging:
+      export:
+        enabled: false
+    tracing:
+      export:
+        enabled: false
+    metrics:
+      export:
+        enabled: false
 
 server:
   error:
