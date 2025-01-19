@@ -57,6 +57,14 @@ class Scratch3ParserServiceTest extends LitterboxWebIntegrationTest {
     }
 
     @Test
+    void parseValidFile() throws IOException {
+        final Path fixture = FixtureLoader.getFixturePath("tokenizingTest.json");
+        final Program program = parserService.parseFromFile(fixture);
+
+        assertThat(program).isNotNull();
+    }
+
+    @Test
     void parseValidFileFromString() throws IOException {
         final String input = FixtureLoader.loadFixture("tokenizingTest.json");
 

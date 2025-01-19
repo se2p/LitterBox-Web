@@ -29,7 +29,19 @@ public class FixtureLoader {
     private static final Scratch3Parser PARSER = new Scratch3Parser();
 
     private FixtureLoader() {
-        throw new IllegalCallerException("utility class");
+        // utility class, intentionally empty
+    }
+
+    /**
+     * Tries to find the path of a fixture.
+     *
+     * @param fileName The path to the fixture within the {@code resources/fixtures/} directory.
+     * @return The path to the fixture.
+     * @throws IOException In case the file could not be found.
+     */
+    public static Path getFixturePath(final String fileName) throws IOException {
+        final Resource resource = RESOURCE_LOADER.getResource(Path.of("fixtures").resolve(fileName).toString());
+        return resource.getFile().toPath();
     }
 
     /**

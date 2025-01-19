@@ -1,0 +1,55 @@
+# SPDX-License-Identifier: CC0-1.0
+#
+# SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
+
+management:
+  endpoints:
+    web:
+      base-path: /management
+      exposure:
+        include:
+          - health
+          - prometheus
+    access:
+      default: none
+  endpoint:
+    health:
+      access: none
+    prometheus:
+      access: unrestricted
+  health:
+    livenessstate:
+      enabled: true
+  metrics:
+    enable:
+      http: true
+      jvm: true
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            requests: true
+  observations:
+    key-values:
+      application: ${spring.application.name}
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+    # IPs that are allowed to scrape the metrics
+    # if empty or not set: any IP is allowed to access the metrics
+    monitoring-ips:
+      - 127.0.0.1
+      - ::1
+      - invalid
+  otlp:
+    logging:
+      export:
+        enabled: false
+    tracing:
+      export:
+        enabled: false
+    metrics:
+      export:
+        enabled: false
+        url: http://localhost:4318/v1/metrics

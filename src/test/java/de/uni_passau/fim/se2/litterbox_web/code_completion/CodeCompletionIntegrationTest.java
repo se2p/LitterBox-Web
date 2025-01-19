@@ -19,6 +19,8 @@ import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
@@ -49,6 +51,17 @@ class CodeCompletionIntegrationTest extends LitterboxWebIntegrationTest {
                 new CodeCompletionModelConfig.ModelConfig(serverUri)
             )
         );
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { -10, -1, 0 })
+    void defaultToFiveCompletions(final int requestCount) throws ParsingException, IOException {
+        final Program fixture = FixtureLoader.loadProgramFixture("tokenizingTest.json");
+        final var request = new CodeCompletionRequestDto(
+            fixture, CodeCompletionModelConfig.CodeCompletionModelType.N_GRAM, requestCount
+        );
+
+        assertThat(request.topkPredictions()).isEqualTo(5);
     }
 
     @Test

@@ -17,6 +17,6 @@ public final class Profiles {
     public static final String CODE_COMPLETION = "code-completion";
 
     private Profiles() {
-        throw new IllegalCallerException("utility class");
+        // utility class, intentionally empty
     }
 }

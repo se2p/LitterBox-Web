@@ -72,7 +72,7 @@ public class ScratchProgramConverter {
     private static final Scratch3Parser PARSER = new Scratch3Parser();
 
     private ScratchProgramConverter() {
-        throw new IllegalCallerException("utility class");
+        // utility class, intentionally empty
     }
 
     public static class SerializeConverter implements Converter<Program, String> {
@@ -102,7 +102,7 @@ public class ScratchProgramConverter {
             try {
                 return PARSER.parseString("scratch-program", string);
             }
-            catch (ParsingException e) {
+            catch (NullPointerException | ParsingException e) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot parse Scratch program JSON.", e);
             }
         }

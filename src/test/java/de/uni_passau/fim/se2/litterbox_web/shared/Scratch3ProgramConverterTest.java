@@ -1,0 +1,27 @@
+/*
+ * Copyright (C) 2024 LitterBox-Web contributors
+ *
+ * This file is part of LitterBox-Web.
+ * Licenced under the EUPL-1.2 or later.
+ *
+ * SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
+ * SPDX-License-Identifier: EUPL-1.2
+ */
+package de.uni_passau.fim.se2.litterbox_web.shared;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.web.server.ResponseStatusException;
+
+class Scratch3ProgramConverterTest {
+
+    @Test
+    void throwHttpExceptionOnConversionFail() {
+        final var converter = new ScratchProgramConverter.DeserializeConverter();
+
+        assertThatThrownBy(() -> converter.convert("{}"))
+            .isInstanceOf(ResponseStatusException.class)
+            .hasMessageContaining("parse Scratch program");
+    }
+}

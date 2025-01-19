@@ -9,23 +9,82 @@
  */
 package de.uni_passau.fim.se2.litterbox_web.util;
 
+import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
 import org.springframework.stereotype.Service;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.ServerWebExchangeDecorator;
+import org.springframework.web.server.WebFilter;
+import org.springframework.web.server.WebFilterChain;
+
+import reactor.core.publisher.Mono;
 
 @Service
 public class RequestUtilService {
 
     private final WebTestClient testClient;
 
-    public RequestUtilService(WebTestClient testClient) {
+    @Autowired
+    public RequestUtilService(final ApplicationContext applicationContext) {
+        this.testClient = WebTestClient
+            .bindToApplicationContext(applicationContext)
+            .webFilter(new WithAddressFilter("127.0.0.1"))
+            .configureClient()
+            .build();
+    }
+
+    public RequestUtilService(final WebTestClient testClient) {
         this.testClient = testClient;
+    }
+
+    /**
+     * Sends a get request.
+     *
+     * @param path           The REST endpoint to send the data to.
+     * @param responseType   Type of the response body.
+     * @param expectedStatus The expected HTTP status of the request.
+     * @return The response body for the request, already parsed.
+     * @param <R> The type of the body that is received back from the endpoint.
+     */
+    public <R> R get(String path, Class<R> responseType, HttpStatus expectedStatus) {
+        return get(path, responseType, expectedStatus, null);
+    }
+
+    /**
+     * Sends a get request.
+     *
+     * @param path           The REST endpoint to send the data to.
+     * @param responseType   Type of the response body.
+     * @param expectedStatus The expected HTTP status of the request.
+     * @param params         Additional request URL parameters.
+     * @return The response body for the request, already parsed.
+     * @param <R> The type of the body that is received back from the endpoint.
+     */
+    public <R> R get(
+        String path, Class<R> responseType, HttpStatus expectedStatus, Map<String, String> params
+    ) {
+        final var request = buildGetRequest(path, params);
+        final var response = request.exchange()
+            .expectStatus().isEqualTo(expectedStatus)
+            .expectBody(responseType)
+            .returnResult();
+
+        if (!expectedStatus.is2xxSuccessful()) {
+            return null;
+        }
+
+        return response.getResponseBody();
     }
 
     /**
@@ -144,6 +203,11 @@ public class RequestUtilService {
             .bodyValue(body);
     }
 
+    private WebTestClient.RequestHeadersSpec<?> buildGetRequest(final String path, final Map<String, String> params) {
+        return testClient.get()
+            .uri(uriBuilder -> uriBuilder.path(path).queryParams(buildParams(params)).build());
+    }
+
     private static LinkedMultiValueMap<String, String> buildParams(final Map<String, String> params) {
         final LinkedMultiValueMap<String, String> result = new LinkedMultiValueMap<>();
         if (params == null) {
@@ -155,5 +219,31 @@ public class RequestUtilService {
         }
 
         return result;
+    }
+
+    public static class WithAddressFilter implements WebFilter {
+
+        private final InetSocketAddress address;
+
+        public WithAddressFilter(final String address) {
+            this.address = new InetSocketAddress(address, 80);
+        }
+
+        @Override
+        public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+            return chain.filter(new ServerWebExchangeDecorator(exchange) {
+
+                @Override
+                public ServerHttpRequest getRequest() {
+                    return new ServerHttpRequestDecorator(exchange.getRequest()) {
+
+                        @Override
+                        public InetSocketAddress getRemoteAddress() {
+                            return address;
+                        }
+                    };
+                }
+            });
+        }
     }
 }
