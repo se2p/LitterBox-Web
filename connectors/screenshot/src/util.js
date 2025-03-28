@@ -21,7 +21,7 @@ const defaultSVGSize = {
     height: 1080,
 };
 const defaultOptions = {
-    media: 'node_modules/scratch-blocks/media/',
+    media: __dirname + '/../node_modules/scratch-blocks/media/',
     readOnly: true,
     zoom: {
         controls: true,

@@ -10,6 +10,9 @@
   "author": "Tien Duc Nguyen",
   "license": "EUPL-1.2",
   "description": "Small service that extracts a sprite in SVG format from Scratch project json",
+  "bin": {
+    "screenshot": "src/index.js"
+  },
   "dependencies": {
     "express": "^4.21.2",
     "jsdom": "^26.0.0",
@@ -17,6 +20,13 @@
     "scratch-blocks": "^1.1.206",
     "scratch-vm": "^5.0.242"
   },
+  "bundleDependencies": [
+    "express",
+    "jsdom",
+    "scratch-audio",
+    "scratch-blocks",
+    "scratch-vm"
+  ],
   "devDependencies": {
     "eslint": "^9.23.0"
   }

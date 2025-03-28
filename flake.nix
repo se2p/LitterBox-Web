@@ -82,6 +82,13 @@
           inherit pkgs;
           code-completion-dummy-app = connector.code-completion-dummy;
         };
+        connector.screenshot = import ./connectors/screenshot/default.nix {
+          inherit pkgs;
+        };
+        connector-container.screenshot = import ./connectors/screenshot/container.nix {
+          inherit pkgs;
+          screenshot = connector.screenshot;
+        };
       });
 
     devShells =
@@ -149,6 +156,9 @@
           inherit inputs pkgs devenv;
         };
         connectors.code-completion-dummy = import ./connectors/code_completion_dummy/shell.nix {
+          inherit inputs pkgs devenv;
+        };
+        connectors.screenshot = import ./connectors/screenshot/shell.nix {
           inherit inputs pkgs devenv;
         };
       });
