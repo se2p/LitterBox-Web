@@ -74,7 +74,7 @@ public class CodeCompletionService {
      * @return The program as sequence of whitespace-separated tokens.
      */
     private String tokeniseProgram(final Program program) {
-        // todo: actual tokenisation with masking
+        // note: extension point here for actual tokenisation with masking
         final TokenizingProgramPreprocessor preprocessor = buildPreprocessor(MaskingStrategy.none());
         return preprocessor.processSprites(program)
             .flatMap(tokenSequence -> tokenSequence.tokens().stream().flatMap(Collection::stream))
