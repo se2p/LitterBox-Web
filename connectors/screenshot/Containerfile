@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: 2025 LitterBox-Web contributors
+#
+# SPDX-License-Identifier: EUPL-1.2
+
+FROM docker.io/library/node:22-alpine
+
+WORKDIR /app/
+
+COPY package.json package-lock.json /app/
+COPY src /app/src
+
+RUN npm ci --omit=dev
+
+ENTRYPOINT ["node", "/app/src/index.js"]
+EXPOSE 3001
