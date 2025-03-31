@@ -1,0 +1,23 @@
+{
+  "name": "screenshot",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "lint": "eslint src/*.js"
+  },
+  "author": "Tien Duc Nguyen",
+  "license": "EUPL-1.2",
+  "description": "Small service that extracts a sprite in SVG format from Scratch project json",
+  "dependencies": {
+    "express": "^4.21.2",
+    "jsdom": "^26.0.0",
+    "scratch-audio": "^2.0.107",
+    "scratch-blocks": "^1.1.206",
+    "scratch-vm": "^5.0.242"
+  },
+  "devDependencies": {
+    "eslint": "^9.23.0"
+  }
+}
