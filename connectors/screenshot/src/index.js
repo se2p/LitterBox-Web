@@ -33,6 +33,17 @@ app.post('/svg', (req, res) => {
         });
 });
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
     console.log(`Server running at http://${hostname}:${port}/`);
 })
+
+function shutdownHandler() {
+    setTimeout(() => {
+        server.close(function () {
+            process.exit();
+        });
+    }, 0);
+}
+
+process.on('SIGINT', shutdownHandler);
+process.on('SIGTERM', shutdownHandler);
