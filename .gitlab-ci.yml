@@ -8,6 +8,7 @@ stages:
   - build
   - test
   - lint
+  - connector-test
   - nix
   - deploy
 
@@ -65,6 +66,58 @@ test:
       junit:
         - target/surefire-reports/TEST-*.xml
 
+.python-test: &python-test-template
+  stage: connector-test
+  image: docker.io/library/python:$PYTHON_VERSION
+  before_script:
+    - pip install uv
+    - cd connectors/$SUBPROJECT
+    - uv sync --all-extras --all-groups
+  after_script:
+    - sed -i "s|/connectors/$SUBPROJECT/src</source>|</source>|" connectors/$SUBPROJECT/coverage.xml
+    - sed -i "s|filename=\"|filename=\"connectors/$SUBPROJECT/src/|" connectors/$SUBPROJECT/coverage.xml
+  cache: []
+  coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
+  artifacts:
+    when: always
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: connectors/$SUBPROJECT/coverage.xml
+      junit: connectors/$SUBPROJECT/test-report.xml
+  rules:
+    - when: on_success
+      allow_failure: false
+      changes:
+        paths:
+          - connectors/$SUBPROJECT/**/*
+
+test:code_readability:
+  <<: *python-test-template
+  parallel:
+    matrix:
+      - PYTHON_VERSION:
+          - "3.13"
+  variables:
+    MODEL_VERSION_ID: 5
+    SUBPROJECT: code_readability
+  script:
+    - apt-get update
+    - apt-get install -y libgl1-mesa-glx
+    - >
+      curl
+      --header "Authorization: Bearer $CI_JOB_TOKEN"
+      "$CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/ml_models/$MODEL_VERSION_ID/files/pytorch_model.bin"
+      >
+      pytorch_model.bin
+    - >
+      MODEL_PATH=$(pwd)/pytorch_model.bin
+      uv run pytest
+      --junitxml=test-report.xml
+      --cov=src --cov=tests --cov-branch
+      --cov-report=term-missing --cov-report xml:coverage.xml
+      tests
+
 ################################################################################
 # lint
 
@@ -88,6 +141,7 @@ test:
         SUBPROJECT:
           - api
           - code_completion_dummy
+          - code_readability
   before_script:
     - pip install uv
     - cd connectors/$SUBPROJECT

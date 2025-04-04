@@ -24,7 +24,6 @@ dependencies = [
     "pillow~=11.0.0",
     "pycairo>=1.27.0",
     "pydantic-settings>=2.8.1",
-    "pytest>=8.3.5",
     "reportlab>=4.2.2",
     "rlPyCairo>=0.3.0",
     "svglib>=1.5.1",
@@ -32,7 +31,7 @@ dependencies = [
     "torch>=2.2.2",
     "torchvision>=0.17.2",
     "transformers>=4.45.2",
-    "uvicorn[standard]>=0.34.0"
+    "uvicorn[standard]>=0.34.0",
 ]
 
 [dependency-groups]
@@ -40,6 +39,10 @@ dev = [
     "isort>=5.13.2",
     "mypy>=1.14.1",
     "ruff>=0.8.0",
+]
+test = [
+    "pytest>=8.3.5",
+    "pytest-cov>=6.1.0",
 ]
 
 [project.scripts]
@@ -70,6 +73,16 @@ warn_unused_ignores = true
 line-length = 88
 output-format = "full"
 target-version = "py312"
+
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+
+
+[tool.coverage.run]
+branch = true
+source = ["src/code_readability", "tests"]
+omit = ["tests/resources/*"]
 
 
 [build-system]
