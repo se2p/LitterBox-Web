@@ -5,7 +5,6 @@
 image: docker.io/library/maven:3-eclipse-temurin-21
 
 stages:
-  - build
   - test
   - lint
   - connector-test
@@ -35,20 +34,11 @@ cache:
     - target/
 
 ################################################################################
-# build
-
-build:
-  stage: build
-  script:
-    - mvn compile
-
-################################################################################
 # test
 
 test:
   stage: test
-  needs:
-    - build
+  needs: []
   coverage: '/Instruction Coverage: \d+.\d+ %/'
   script:
     - mvn clean test
@@ -219,8 +209,6 @@ mypy:
 
 nix-build-jar:
   stage: nix
-  needs:
-    - build
   image: docker.io/nixos/nix:latest
   script:
     - >
