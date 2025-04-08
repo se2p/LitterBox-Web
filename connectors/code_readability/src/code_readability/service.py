@@ -4,10 +4,13 @@
 
 import numpy as np
 import torch
+from litterbox_web_api.code_readability import (
+    CodeReadabilityRequest,
+    CodeReadabilityResponse,
+)
 
 from code_readability.model.towards_model import TowardsModel
 from code_readability.processing import scratch_towards
-from litterbox_web_api.code_readability import CodeReadabilityRequest, CodeReadabilityResponse
 
 
 class ReadabilityService:
@@ -21,9 +24,13 @@ class ReadabilityService:
         sample = scratch_towards.to_towards_sample(request=request)
 
         res = self.model.forward(
-            visual=torch.from_numpy(np.expand_dims(sample["visual"], axis=0)).float().to(self.model.device),
+            visual=torch.from_numpy(np.expand_dims(sample["visual"], axis=0))
+            .float()
+            .to(self.model.device),
             semantic=[sample["semantic"]],
-            structural=torch.from_numpy(np.expand_dims(sample["structural"], axis=0)).float().to(self.model.device),
+            structural=torch.from_numpy(np.expand_dims(sample["structural"], axis=0))
+            .float()
+            .to(self.model.device),
         )
         logits = res["logits"].detach().cpu()
         probs = torch.nn.functional.softmax(logits, dim=1).tolist()[0]

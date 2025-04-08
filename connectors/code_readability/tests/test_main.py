@@ -10,37 +10,41 @@ from fastapi.testclient import TestClient
 from code_readability.main import app
 
 client = TestClient(app)
-readable_sprite = json.loads((Path(__file__).parent / 'resources' / 'readable.json')
-                             .read_text(encoding='utf-8'))
-unreadable_sprite = json.loads((Path(__file__).parent / 'resources' / 'unreadable.json')
-                               .read_text(encoding='utf-8'))
+readable_sprite = json.loads(
+    (Path(__file__).parent / "resources" / "readable.json").read_text(encoding="utf-8")
+)
+unreadable_sprite = json.loads(
+    (Path(__file__).parent / "resources" / "unreadable.json").read_text(
+        encoding="utf-8"
+    )
+)
 
 
-def test_code_readability_readable():
+def test_code_readability_readable() -> None:
     response = client.post(
         "/code-readability",
         json=readable_sprite,
     )
     assert response.status_code == 200
     result = response.json()
-    assert result['readable'] is True, "Should be a readable sprite"
-    assert result['confidence'] > 0.
+    assert result["readable"] is True, "Should be a readable sprite"
+    assert result["confidence"] > 0.0
 
 
-def test_code_readability_unreadable():
+def test_code_readability_unreadable() -> None:
     response = client.post(
         "/code-readability",
         json=unreadable_sprite,
     )
     assert response.status_code == 200
     result = response.json()
-    assert result['readable'] is False, "Should be an unreadable sprite"
-    assert result['confidence'] > 0.
+    assert result["readable"] is False, "Should be an unreadable sprite"
+    assert result["confidence"] > 0.0
 
 
-def test_code_readability_invalid_body():
+def test_code_readability_invalid_body() -> None:
     invalid_svg = readable_sprite.copy()
-    invalid_svg['svg'] = 'blah blah blah'
+    invalid_svg["svg"] = "blah blah blah"
     response = client.post(
         "/code-readability",
         json=invalid_svg,
@@ -48,7 +52,7 @@ def test_code_readability_invalid_body():
     assert response.status_code == 422
 
     missing_field = readable_sprite.copy()
-    del missing_field['tokens']
+    del missing_field["tokens"]
     response = client.post(
         "/code-readability",
         json=missing_field,

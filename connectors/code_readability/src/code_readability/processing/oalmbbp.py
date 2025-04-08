@@ -21,7 +21,9 @@ def load_tokenizer() -> transformers.PreTrainedTokenizerBase:
 
 
 def load_roberta() -> transformers.RobertaModel:
-    config = transformers.AutoConfig.from_pretrained(constant.ROBERTA_CONFIG_PATH, local_files_only=True)
+    config = transformers.AutoConfig.from_pretrained(
+        constant.ROBERTA_CONFIG_PATH, local_files_only=True
+    )
     roberta = transformers.AutoModel.from_config(config=config)
     return roberta
 
@@ -40,17 +42,23 @@ def adapt_to_former_tokenizer(tokens: list[str]) -> list[str]:
     for token in tokens:
         if token in new_tokens_mapping:
             results.append(new_tokens_mapping[token])
-        elif (token in ["(", ")", ">", "<"]
-              or token.startswith("LITERAL_")
-              or token.startswith("BEGIN_")
-              or token.startswith("END_")):
+        elif (
+            token in ["(", ")", ">", "<"]
+            or token.startswith("LITERAL_")
+            or token.startswith("BEGIN_")
+            or token.startswith("END_")
+        ):
             continue
         elif token not in vocab:
             print(f"Ignore token not in vocabulary: {token}")
             continue
         else:
             results.append(token)
-        if token.startswith("operator_") and len(results) > 1 and results[-2] == "_VAR_":
+        if (
+            token.startswith("operator_")
+            and len(results) > 1
+            and results[-2] == "_VAR_"
+        ):
             # New version put operator blocks after VAR block, however, the older one do in the opposite
             # Need to swap the position of those 2 blocks
             tmp = results[-1]
@@ -64,8 +72,7 @@ def get_sentence_for_roberta(
     sep_token: str,
 ) -> str:
     new_tokens_lists = [adapt_to_former_tokenizer(tokens) for tokens in tokens_lists]
-    sentence = " ".join([
-        " ".join([t for t in tokens]) + f" {sep_token}"
-        for tokens in new_tokens_lists
-    ])
+    sentence = " ".join(
+        [" ".join([t for t in tokens]) + f" {sep_token}" for tokens in new_tokens_lists]
+    )
     return sentence

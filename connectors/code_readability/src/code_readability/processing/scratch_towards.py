@@ -8,14 +8,14 @@ from typing import Any
 
 import cv2
 import numpy as np
-
-from code_readability.processing import svg_util, oalmbbp, scratch_svg
 from litterbox_web_api.code_readability import CodeReadabilityRequest
+
+from code_readability.processing import oalmbbp, scratch_svg, svg_util
 
 
 def to_towards_sample(
     request: CodeReadabilityRequest,
-    sep_token: str = '[EOS]',
+    sep_token: str = "[EOS]",
     frame_size: tuple[int, int] = (478, 478),
     img_size: tuple[int, int] = (128, 128),
     structural_matrix_size: tuple[int, int] = (30, 110),
@@ -33,9 +33,9 @@ def to_towards_sample(
     )
 
     return {
-        'visual': image,
-        'semantic': sentence,
-        'structural': structural_matrix,
+        "visual": image,
+        "semantic": sentence,
+        "structural": structural_matrix,
     }
 
 
@@ -71,7 +71,7 @@ def _read_image(image_path: str) -> np.ndarray:
     """
     img = cv2.imread(image_path)
 
-    assert img is not None, f'Image is None: {image_path}'
+    assert img is not None, f"Image is None: {image_path}"
 
     # Remove the alpha channel
     img_array = img[:, :, :3]
@@ -87,17 +87,19 @@ def take_screen_shot(
     svg: str,
     size: tuple[int, int] = (478, 478),
     img_size: tuple[int, int] = (128, 128),
-):
+) -> np.ndarray:
     svg_tree = svg_util.parse_svg_tree(svg)
 
     # Align svg view to top-left of a script in which the number of captured blocks is the biggest
-    max_no_inside_blocks, total, align_to_script = scratch_svg.max_number_of_inside_blocks(svg_tree)
+    max_no_inside_blocks, total, align_to_script = (
+        scratch_svg.max_number_of_inside_blocks(svg_tree)
+    )
     svg_util.update_svg_size(svg_tree, width=size[0], height=size[1])
     scratch_svg.align_view_to_script(svg_tree, align_to_script)
 
     # Remove text and icons
-    svg_util.remove_by_xpath(svg_tree, '//text')
-    svg_util.remove_by_xpath(svg_tree, '//image')
+    svg_util.remove_by_xpath(svg_tree, "//text")
+    svg_util.remove_by_xpath(svg_tree, "//image")
 
     with tempfile.NamedTemporaryFile() as f:
         svg_util.export_image2(svg_tree, Path(f.name), size=img_size)

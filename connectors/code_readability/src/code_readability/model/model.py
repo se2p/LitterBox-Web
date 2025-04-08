@@ -7,21 +7,28 @@ from torch import nn
 
 
 class BaseModel(nn.Module):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         if torch.cuda.is_available():
             self.device = torch.device("cuda")
-        self.device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
+        self.device = torch.device(
+            "mps" if torch.backends.mps.is_available() else "cpu"
+        )
 
     @property
-    def total_params(self):
+    def total_params(self) -> int:
         return sum(p.numel() for p in self.parameters() if p.requires_grad)
 
 
 class MLP(BaseModel):
-    def __init__(self, layers_shapes: list[tuple[int, int]], dropout_positions=None, dropout=0.):
+    def __init__(
+        self,
+        layers_shapes: list[tuple[int, int]],
+        dropout_positions: list[int],
+        dropout: float = 0.0,
+    ) -> None:
         super().__init__()
-        layers = []
+        layers: list[nn.Module] = []
         for shape in layers_shapes[:-1]:
             layers.append(nn.Linear(*shape))
             layers.append(nn.ReLU())
@@ -43,6 +50,6 @@ class MLP(BaseModel):
         :return: The output.
         """
         if input_length != self.first_layer.in_features:
-            self.first_layer = nn.Linear(input_length, self.first_layer.out_features)
+            self.first_layer = nn.Linear(input_length, self.first_layer.out_features)  # type: ignore [arg-type]
             self.first_layer.to(self.device)
             self.model[0] = self.first_layer

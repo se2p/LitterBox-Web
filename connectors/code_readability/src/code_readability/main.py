@@ -9,13 +9,13 @@ from typing import Annotated
 
 import uvicorn
 from fastapi import Depends, FastAPI
-
-from code_readability.dependencies import get_readability_service
-from code_readability.service import ReadabilityService
 from litterbox_web_api.code_readability import (
     CodeReadabilityRequest,
     CodeReadabilityResponse,
 )
+
+from code_readability.dependencies import get_readability_service
+from code_readability.service import ReadabilityService
 
 
 class Model:
@@ -46,7 +46,9 @@ model = Model()
 @app.post("/code-readability", response_model=CodeReadabilityResponse)
 async def code_readability(
     request: CodeReadabilityRequest,
-    readability_service: Annotated[ReadabilityService, Depends(get_readability_service)],
+    readability_service: Annotated[
+        ReadabilityService, Depends(get_readability_service)
+    ],
 ) -> CodeReadabilityResponse:
     return await model.code_readability(request, readability_service)
 

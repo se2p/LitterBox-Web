@@ -3,13 +3,14 @@
 # SPDX-License-Identifier: EUPL-1.2
 
 from pathlib import Path
+from typing import Literal
 
 import torch
 import transformers
 from torch import nn
 
+from code_readability.model.model import MLP, BaseModel
 from code_readability.processing import oalmbbp
-from code_readability.model.model import BaseModel, MLP
 
 
 class StructuralEncoder(BaseModel):
@@ -17,22 +18,19 @@ class StructuralEncoder(BaseModel):
     A class for encoding code snippets as character matrices (ASCII values).
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.model = nn.Sequential(
             nn.Conv2d(in_channels=1, out_channels=32, kernel_size=3),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2),
-
             nn.Conv2d(in_channels=32, out_channels=32, kernel_size=3),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2),
-
             nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=3, stride=3),
-
-            nn.Flatten()
+            nn.Flatten(),
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -51,22 +49,19 @@ class VisualEncoder(BaseModel):
     The input is an image of size (3, 411, 478).
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.model = nn.Sequential(
             nn.Conv2d(in_channels=3, out_channels=32, kernel_size=3, padding="same"),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2),
-
             nn.Conv2d(in_channels=32, out_channels=32, kernel_size=3, padding="same"),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2),
-
             nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, padding="same"),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2),
-
-            nn.Flatten()
+            nn.Flatten(),
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -87,20 +82,25 @@ class RobertaSemanticEncoder(BaseModel):
 
     def forward(self, sentences: list[str]) -> torch.Tensor:
         batch_encoded = self.tokenizer(
-            sentences, return_tensors="pt", padding=transformers.utils.PaddingStrategy.MAX_LENGTH,
-            max_length=self.max_seq_len, truncation=True,
+            sentences,
+            return_tensors="pt",
+            padding=transformers.utils.PaddingStrategy.MAX_LENGTH,
+            max_length=self.max_seq_len,
+            truncation=True,
         )
         batch_encoded.to(self.device)
-        outputs = self.roberta_model(**batch_encoded)
+        outputs = self.roberta_model(**batch_encoded)  # type: ignore[operator]
         return outputs.last_hidden_state
 
 
 class TowardsModel(BaseModel):
-    def __init__(self, semantic_encoder: BaseModel, mode="all"):
+    def __init__(
+        self, semantic_encoder: BaseModel, mode: Literal["all", "tv", "sv"] = "all"
+    ) -> None:
         super().__init__()
-        self.semantic_encoder = semantic_encoder
-        self.visual_encoder = VisualEncoder()
-        self.structural_encoder = StructuralEncoder()
+        self.semantic_encoder: BaseModel | None = semantic_encoder
+        self.visual_encoder: VisualEncoder | None = VisualEncoder()
+        self.structural_encoder: StructuralEncoder | None = StructuralEncoder()
         self.mode = mode
 
         if mode == "st":
@@ -123,17 +123,19 @@ class TowardsModel(BaseModel):
         visual: torch.Tensor,
         semantic: list[str],
         structural: torch.Tensor,
-        labels: torch.Tensor = None,
+        labels: torch.Tensor | None = None,
     ) -> dict[str, torch.Tensor]:
         features_list = []
-        if self.mode != "tv":
+        if self.semantic_encoder is not None:
             semantic_features = self.semantic_encoder(semantic)
-            semantic_features = semantic_features.contiguous().view(semantic_features.shape[0], -1)
+            semantic_features = semantic_features.contiguous().view(
+                semantic_features.shape[0], -1
+            )
             features_list.append(semantic_features)
-        if self.mode != "st":
+        if self.visual_encoder is not None:
             visual_features = self.visual_encoder(visual)
             features_list.append(visual_features)
-        if self.mode != "sv":
+        if self.structural_encoder is not None:
             structural_features = self.structural_encoder(structural)
             features_list.append(structural_features)
 

@@ -9,16 +9,21 @@ from typing import Annotated
 from fastapi import Depends
 
 from code_readability.config import Settings
-from code_readability.model.towards_model import load_roberta_towards_model, TowardsModel
+from code_readability.model.towards_model import (
+    TowardsModel,
+    load_roberta_towards_model,
+)
 from code_readability.service import ReadabilityService
 
 
 @lru_cache
 def get_settings() -> Settings:
-    return Settings()
+    return Settings()  # type: ignore [call-arg]
 
 
-async def get_roberta_towards_model(settings: Annotated[Settings, Depends(get_settings)]) -> TowardsModel:
+async def get_roberta_towards_model(
+    settings: Annotated[Settings, Depends(get_settings)],
+) -> TowardsModel:
     model = load_roberta_towards_model(Path(settings.model_path))
     model.eval()
     return model

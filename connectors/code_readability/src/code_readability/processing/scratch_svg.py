@@ -3,15 +3,16 @@
 # SPDX-License-Identifier: EUPL-1.2
 
 import json
-from typing import Optional, Callable, Dict
-
 import math
+from collections.abc import Generator
+from typing import Callable, Optional
+
 from lxml import etree
 from svgpathtools import parse_path
 
 
 class BBox:
-    def __init__(self, x_min, x_max, y_min, y_max):
+    def __init__(self, x_min: float, x_max: float, y_min: float, y_max: float):
         self.x_min = x_min
         self.x_max = x_max
         self.y_min = y_min
@@ -29,13 +30,13 @@ class BBox:
     def area(self) -> float:
         return self.width * self.height
 
-    def scale(self, factor: float):
+    def scale(self, factor: float) -> None:
         self.x_min *= factor
         self.x_max *= factor
         self.y_min *= factor
         self.y_max *= factor
 
-    def translate(self, x, y):
+    def translate(self, x: float, y: float) -> None:
         self.x_min += x
         self.x_max += x
         self.y_min += y
@@ -57,39 +58,49 @@ class BBox:
         return overlap.area > cover_ratio * self.area if overlap is not None else False
 
     def count_inside_bboxes(self, cover_ratio: float, bboxes: list["BBox"]) -> int:
-        covered_bboxes = [bbox for bbox in bboxes if bbox.is_covered_by(cover_ratio, self)]
+        covered_bboxes = [
+            bbox for bbox in bboxes if bbox.is_covered_by(cover_ratio, self)
+        ]
         return len(covered_bboxes)
 
-    def __repr__(self):
-        return json.dumps({
-            "x_min": self.x_min,
-            "x_max": self.x_max,
-            "y_min": self.y_min,
-            "y_max": self.y_max,
-        })
+    def __repr__(self) -> str:
+        return json.dumps(
+            {
+                "x_min": self.x_min,
+                "x_max": self.x_max,
+                "y_min": self.y_min,
+                "y_max": self.y_max,
+            }
+        )
 
 
 class Block:
-    def __init__(self, block_id: str, op_code: str, bbox: BBox, parent: Optional["Block"] = None):
+    def __init__(
+        self,
+        block_id: str,
+        op_code: str | None,
+        bbox: BBox,
+        parent: Optional["Block"] = None,
+    ):
         self.block_id = block_id
         self.op_code = op_code
         self.bbox = bbox
         self.parent = parent
-        self.children = []
+        self.children: list["Block"] = []
 
-    def add_child(self, child: "Block"):
+    def add_child(self, child: "Block") -> None:
         self.children.append(child)
 
-    def traverse(self):
+    def traverse(self) -> Generator["Block"]:
         yield self
         for child in self.children:
             yield from child.traverse()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<Block {self.__dict__}>"
 
     @staticmethod
-    def get_root_block_element(svg_tree: etree.ElementTree):
+    def get_root_block_element(svg_tree: etree.ElementTree) -> etree.Element:
         return svg_tree.xpath('//g[@class="blocklyBlockCanvas"]')[0]
 
     @classmethod
@@ -108,7 +119,7 @@ class Block:
         for block_element in root_block_element.iterchildren():
             block = cls.from_block_element(
                 block_element,
-                {"x": 0., "y": 0.},
+                {"x": 0.0, "y": 0.0},
                 op_code_mapping=op_code_mapping,
             )
             if block is None:
@@ -126,9 +137,11 @@ class Block:
         parent: Optional["Block"] = None,
     ) -> Optional["Block"]:
         path_elements = element.xpath("./path")
-        if ("data-id" not in element.attrib
+        if (
+            "data-id" not in element.attrib
             or "data-argument-type" in element.attrib
-            or len(path_elements) == 0):
+            or len(path_elements) == 0
+        ):
             return None
         parsed_path = parse_path(path_elements[0].attrib["d"])
         position = _read_transform_attr(element.attrib["transform"])
@@ -139,13 +152,16 @@ class Block:
 
         block = Block(
             block_id=element.attrib["data-id"],
-            op_code=op_code_mapping(element.attrib["data-id"]) if op_code_mapping else None,
+            op_code=op_code_mapping(element.attrib["data-id"])
+            if op_code_mapping
+            else None,
             bbox=bbox,
             parent=parent,
         )
         for block_element in element.iterchildren():
             child_block = cls.from_block_element(
-                block_element, position,
+                block_element,
+                position,
                 parent=block,
                 op_code_mapping=op_code_mapping,
             )
@@ -156,16 +172,18 @@ class Block:
         return block
 
 
-def _read_transform_attr(transform_attr: str) -> Optional[Dict[str, float]]:
+def _read_transform_attr(transform_attr: str) -> dict[str, float]:
     functions = transform_attr.split()
     res = {}
     for func in functions:
         if func.startswith("translate(") and func[-1] == ")":
-            x, y = [float(v) for v in func[10: -1].split(",")]
-            res.update({
-                "x": x,
-                "y": y,
-            })
+            x, y = [float(v) for v in func[10:-1].split(",")]
+            res.update(
+                {
+                    "x": x,
+                    "y": y,
+                }
+            )
         elif func.startswith("scale(") and func[-1] == ")":
             res["scale"] = float(func[6:-1])
     return res
@@ -173,8 +191,8 @@ def _read_transform_attr(transform_attr: str) -> Optional[Dict[str, float]]:
 
 def max_number_of_inside_blocks(
     svg_tree: etree.ElementTree,
-    width: float = 478.,
-    height: float = 478.,
+    width: float = 478.0,
+    height: float = 478.0,
     cover_ratio: float = 0.9,
 ) -> tuple[int, int, str]:
     root_block = Block.from_svg_tree(svg_tree, None)
@@ -182,7 +200,9 @@ def max_number_of_inside_blocks(
     root_block_position = _read_transform_attr(root_block_element.attrib["transform"])
     scale = root_block_position["scale"]
 
-    scripts: list[list[Block]] = [[b for b in s.traverse()] for s in root_block.children]
+    scripts: list[list[Block]] = [
+        [b for b in s.traverse()] for s in root_block.children
+    ]
     if len(scripts) == 0:
         print("No scripts found")
         return -1, -1, ""
@@ -198,7 +218,9 @@ def max_number_of_inside_blocks(
             y_min=script[0].bbox.y_min,
             y_max=script[0].bbox.y_min + (height / scale),
         )
-        count = screenshot_bbox.count_inside_bboxes(cover_ratio=cover_ratio, bboxes=sprite_bboxes)
+        count = screenshot_bbox.count_inside_bboxes(
+            cover_ratio=cover_ratio, bboxes=sprite_bboxes
+        )
         if count > max_count:
             max_index = i
             max_count = count
@@ -208,13 +230,13 @@ def max_number_of_inside_blocks(
     return max_count, len(sprite_bboxes), scripts[max_index][0].block_id
 
 
-def _calculate_coord_to_align_tl(min_val, scale):
-    if math.isclose(min_val, 0.):
-        return 0.
-    return - min_val * scale
+def _calculate_coord_to_align_tl(min_val: float, scale: float) -> float:
+    if math.isclose(min_val, 0.0):
+        return 0.0
+    return -min_val * scale
 
 
-def align_view_to_script(svg_tree, script_id):
+def align_view_to_script(svg_tree: etree.ElementTree, script_id: str) -> None:
     root_block_element = Block.get_root_block_element(svg_tree)
     root_block_position = _read_transform_attr(root_block_element.attrib["transform"])
     scale = root_block_position["scale"]
@@ -235,4 +257,6 @@ def align_view_to_script(svg_tree, script_id):
     new_x = _calculate_coord_to_align_tl(xtl, scale)
     new_y = _calculate_coord_to_align_tl(ytl, scale)
 
-    root_block_element.attrib["transform"] = f"translate({new_x},{new_y}) scale({scale})"
+    root_block_element.attrib["transform"] = (
+        f"translate({new_x},{new_y}) scale({scale})"
+    )
