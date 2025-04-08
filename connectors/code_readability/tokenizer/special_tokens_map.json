@@ -1,0 +1,15 @@
+{
+  "bos_token": "[BOS]",
+  "cls_token": "[BOS]",
+  "eos_token": "[EOS]",
+  "mask_token": {
+    "content": "[MASK]",
+    "lstrip": true,
+    "normalized": false,
+    "rstrip": false,
+    "single_word": false
+  },
+  "pad_token": "[PAD]",
+  "sep_token": "[EOS]",
+  "unk_token": "[UNK]"
+}

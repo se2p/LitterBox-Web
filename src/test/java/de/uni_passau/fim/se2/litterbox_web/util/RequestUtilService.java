@@ -131,6 +131,52 @@ public class RequestUtilService {
     }
 
     /**
+     * Sends a post request with the given body object converted to JSON.
+     *
+     * @param path           The REST endpoint to send the data to.
+     * @param body           The body of the POST request.
+     * @param responseType   Type reference of the response body.
+     * @param expectedStatus The expected HTTP status of the request.
+     * @param <T>            The type of the body that is sent to the endpoint.
+     * @param <R>            The type of the body that is received back from the endpoint.
+     * @return The response body for the request, already parsed.
+     */
+    public <T, R> R postWithResponseBody(
+        String path, T body, ParameterizedTypeReference<R> responseType, HttpStatus expectedStatus
+    ) {
+        return postWithResponseBody(path, body, responseType, expectedStatus, null);
+    }
+
+    /**
+     * Sends a post request with the given body object converted to JSON.
+     *
+     * @param path           The REST endpoint to send the data to.
+     * @param body           The body of the POST request.
+     * @param responseType   Type reference of the response body.
+     * @param expectedStatus The expected HTTP status of the request.
+     * @param params         Additional request URL parameters.
+     * @param <T>            The type of the body that is sent to the endpoint.
+     * @param <R>            The type of the body that is received back from the endpoint.
+     * @return The response body for the request, already parsed.
+     */
+    public <T, R> R postWithResponseBody(
+        String path, T body, ParameterizedTypeReference<R> responseType,
+        HttpStatus expectedStatus, Map<String, String> params
+    ) {
+        final var request = buildPostRequest(path, body, params);
+        final var response = request.exchange()
+            .expectStatus().isEqualTo(expectedStatus)
+            .expectBody(responseType)
+            .returnResult();
+
+        if (!expectedStatus.is2xxSuccessful()) {
+            return null;
+        }
+
+        return response.getResponseBody();
+    }
+
+    /**
      * Sends a post request with the given body object converted to JSON as List of objects.
      *
      * @param path            The REST endpoint to send the data to.

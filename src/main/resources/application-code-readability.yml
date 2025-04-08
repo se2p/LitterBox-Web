@@ -1,0 +1,10 @@
+# SPDX-License-Identifier: CC0-1.0
+#
+# SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
+
+litterbox-web:
+  screenshot:
+    url: http://localhost:3001/
+  code-readability:
+    url: http://localhost:8080/
+    zoom-level: 0.5625
