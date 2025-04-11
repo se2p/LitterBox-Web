@@ -1,0 +1,43 @@
+# SPDX-FileCopyrightText: 2025 LitterBox-Web contributors
+#
+# SPDX-License-Identifier: EUPL-1.2
+
+FROM docker.io/library/python:3.13 AS base
+
+################################################################################
+
+FROM base as builder
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy
+WORKDIR /app
+
+# install dependencies first, so this layer is cached and only needs to be
+# rebuilt when dependencies change
+COPY uv.lock pyproject.toml /app/
+RUN uv sync --frozen --no-install-project --no-dev
+
+# now install our project
+COPY . /app
+RUN uv sync --frozen --no-dev
+
+################################################################################
+
+FROM base
+
+RUN : \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends libgl1-mesa-glx \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && :
+
+WORKDIR /app
+COPY --from=builder /app /app
+ENV PATH="/app/.venv/bin:$PATH"
+ENV MODEL_PATH=/pytorch_model.bin
+
+EXPOSE 8000
+
+ENTRYPOINT ["uvicorn", "code_readability.main:app"]
