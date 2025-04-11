@@ -158,6 +158,9 @@
         connectors.code-completion-dummy = import ./connectors/code_completion_dummy/shell.nix {
           inherit inputs pkgs devenv;
         };
+        connectors.code-readability = import ./connectors/code_readability/shell.nix {
+          inherit inputs pkgs devenv;
+        };
         connectors.screenshot = import ./connectors/screenshot/shell.nix {
           inherit inputs pkgs devenv;
         };
