@@ -11,15 +11,18 @@ package de.uni_passau.fim.se2.litterbox_web.screenshot;
 
 import java.net.URI;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import de.uni_passau.fim.se2.litterbox.ast.model.Program;
+import de.uni_passau.fim.se2.litterbox_web.shared.Profiles;
 import de.uni_passau.fim.se2.litterbox_web.shared.ScratchProgramConverter;
 import de.uni_passau.fim.se2.litterbox_web.shared.connectors.ExternalApiConnector;
 import reactor.core.publisher.Mono;
 
 @Service
+@Profile(Profiles.CODE_READABILITY)
 public class ScreenshotService {
 
     private final ScreenshotConfig screenshotConfig;
