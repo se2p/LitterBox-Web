@@ -2,6 +2,7 @@
 #
 # SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
 
+---
 image: docker.io/library/maven:3-eclipse-temurin-21
 
 stages:
@@ -13,6 +14,7 @@ stages:
 
 include:
   - template: Jobs/Dependency-Scanning.latest.gitlab-ci.yml
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
 
 .my-rules: &my-rules
   rules:
@@ -25,6 +27,7 @@ workflow:
   <<: *my-rules
 
 variables:
+  AST_ENABLE_MR_PIPELINES: "true"
   GIT_SUBMODULE_STRATEGY: recursive
   MAVEN_ARGS: "--no-transfer-progress -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
 
