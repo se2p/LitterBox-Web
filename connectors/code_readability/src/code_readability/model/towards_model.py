@@ -115,7 +115,7 @@ class TowardsModel(BaseModel):
             dropout_positions=[2],
             dropout=0.2,
         )
-        self.criterion = torch.nn.functional.cross_entropy
+        self.criterion = nn.CrossEntropyLoss()
         self.to(self.device)
 
     def forward(

@@ -33,7 +33,7 @@ class ReadabilityService:
             .to(self.model.device),
         )
         logits = res["logits"].detach().cpu()
-        probs = torch.nn.functional.softmax(logits, dim=1).tolist()[0]
+        probs = logits.softmax(dim=1).tolist()[0]
         prediction = np.argmax(logits.tolist(), axis=-1)[0]
 
         return CodeReadabilityResponse(

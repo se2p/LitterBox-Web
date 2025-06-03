@@ -34,7 +34,6 @@ class MLP(BaseModel):
             layers.append(nn.ReLU())
 
         layers.append(nn.Linear(*layers_shapes[-1]))
-        layers.append(nn.Sigmoid())
         for pos in dropout_positions:
             layers.insert(pos, nn.Dropout(dropout))
         self.first_layer = layers[0]
