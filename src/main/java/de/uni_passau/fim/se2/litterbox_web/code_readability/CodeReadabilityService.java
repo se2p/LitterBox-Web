@@ -79,6 +79,7 @@ public class CodeReadabilityService {
         return Flux.fromStream(
             tokenizingPreprocessor.processSprites(program)
                 .filter(tokenSequence -> !shouldFilter || requestSprites.contains(tokenSequence.label()))
+                .filter(tokenSequence -> !tokenSequence.tokens().isEmpty())
                 .parallel()
         ).flatMap(tokenSequence -> {
             String spriteName = tokenSequence.label();
