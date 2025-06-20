@@ -1,0 +1,41 @@
+# SPDX-FileCopyrightText: 2025 LitterBox-Web contributors
+#
+# SPDX-License-Identifier: EUPL-1.2
+
+---
+services:
+  code-readability:
+    build:
+      context: ./connectors/code_readability/
+      dockerfile: ./Containerfile
+    networks:
+      - litterbox-web
+    # only required when debugging from the host
+    # ports:
+    #   - 127.0.0.1:8000:8000
+    volumes:
+      - ./data/pytorch_model.bin:/pytorch_model.bin:ro
+  screenshot:
+    build:
+      context: ./connectors/screenshot/
+      dockerfile: ./Containerfile
+    networks:
+      - litterbox-web
+    # only required when debugging from the host
+    # ports:
+    #   - 127.0.0.1:3001:3001
+  litterbox-web:
+    build:
+      context: ./
+      dockerfile: ./Containerfile
+    networks:
+      - litterbox-web
+    ports:
+      - 127.0.0.1:8080:8080
+    environment:
+      SPRING_PROFILES_ACTIVE: code-readability
+      LITTERBOXWEB_SCREENSHOT_URL: http://screenshot:3001/
+      LITTERBOXWEB_CODEREADABILITY_URL: http://code-readability:8000/
+networks:
+  litterbox-web:
+...
