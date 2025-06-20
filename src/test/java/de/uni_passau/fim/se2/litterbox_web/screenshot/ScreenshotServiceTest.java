@@ -20,8 +20,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import de.uni_passau.fim.se2.litterbox.ast.ParsingException;
-import de.uni_passau.fim.se2.litterbox.ast.model.Program;
 import de.uni_passau.fim.se2.litterbox_web.LitterboxWebIntegrationTest;
 import de.uni_passau.fim.se2.litterbox_web.util.FixtureLoader;
 import okhttp3.mockwebserver.RecordedRequest;
@@ -41,8 +39,8 @@ class ScreenshotServiceTest extends LitterboxWebIntegrationTest {
     }
 
     @Test
-    void testGenerateSVGScreenshot() throws ParsingException, IOException, InterruptedException {
-        final Program fixture = FixtureLoader.loadProgramFixture("tokenizingTest.json");
+    void testGenerateSVGScreenshot() throws IOException, InterruptedException {
+        final String fixture = FixtureLoader.loadFixture("tokenizingTest.json");
         final String svg = FixtureLoader.loadFixture("screenshotTest.svg");
         final var screenshot = new ScreenshotService.SVGScreenshot(svg);
         enqueueMockWebServerJsonResponse(screenshot);

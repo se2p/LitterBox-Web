@@ -57,7 +57,7 @@ def main(argv: list[str] | None = None) -> None:
     if argv is None:
         argv = sys.argv
 
-    uvicorn.run(app, host="0.0.0.0", port=8080)
+    uvicorn.run(app, host="0.0.0.0", port=8000)
 
 
 if __name__ == "__main__":

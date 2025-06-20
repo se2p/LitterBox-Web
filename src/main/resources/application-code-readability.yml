@@ -6,5 +6,5 @@ litterbox-web:
   screenshot:
     url: http://localhost:3001/
   code-readability:
-    url: http://localhost:8080/
+    url: http://localhost:8000/
     zoom-level: 0.5625

@@ -32,6 +32,7 @@ import de.uni_passau.fim.se2.litterbox.ast.model.Program;
 import de.uni_passau.fim.se2.litterbox.ast.visitor.ScratchBlocksVisitor;
 import de.uni_passau.fim.se2.litterbox_web.screenshot.ScreenshotService;
 import de.uni_passau.fim.se2.litterbox_web.shared.Profiles;
+import de.uni_passau.fim.se2.litterbox_web.shared.Scratch3ParserService;
 import de.uni_passau.fim.se2.litterbox_web.shared.connectors.ExternalApiConnector;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -43,17 +44,20 @@ public class CodeReadabilityService {
     private final CodeReadabilityConfig codeReadabilityConfig;
     private final ExternalApiConnector externalApiConnector;
     private final ScreenshotService screenshotService;
+    private final Scratch3ParserService scratchParserService;
 
     private final TokenizingProgramPreprocessor tokenizingPreprocessor;
 
     public CodeReadabilityService(
         final CodeReadabilityConfig codeReadabilityConfig,
         final ExternalApiConnector externalApiConnector,
-        final ScreenshotService screenshotService
+        final ScreenshotService screenshotService,
+        final Scratch3ParserService scratchParserService
     ) {
         this.codeReadabilityConfig = codeReadabilityConfig;
         this.externalApiConnector = externalApiConnector;
         this.screenshotService = screenshotService;
+        this.scratchParserService = scratchParserService;
 
         this.tokenizingPreprocessor = buildPreprocessor();
     }
@@ -61,14 +65,16 @@ public class CodeReadabilityService {
     /**
      * Compute the readability of all sprites in the project or a given list of sprites.
      *
-     * @param program     Scratch Program
+     * @param programJSON Scratch Program
      * @param spriteNames Name of the sprites that you want to compute their readability. If not provided, compute all.
      * @return a map of sprite name and its prediction (readable or not) and decision confidence.
      */
     public Mono<Map<String, SpriteReadability>> computeReadability(
-        final Program program,
+        final String programJSON,
         final Optional<Collection<String>> spriteNames
     ) {
+        final Program program = scratchParserService.parseFromString(programJSON);
+
         final Map<String, ActorDefinition> actorDefinitionMap = program.getActorDefinitionList().getDefinitions()
             .stream()
             .collect(Collectors.toMap((ActorDefinition ad) -> ad.getIdent().getName(), ad -> ad));
@@ -86,7 +92,7 @@ public class CodeReadabilityService {
             ActorDefinition actorDefinition = actorDefinitionMap.get(spriteName);
             String spriteScratchBlocks = extractSpriteScratchBlocks(actorDefinition);
 
-            return computeReadability(program, tokenSequence, spriteScratchBlocks)
+            return computeReadability(programJSON, tokenSequence, spriteScratchBlocks)
                 .map(readability -> Map.entry(spriteName, readability));
         }).collectMap(Map.Entry::getKey, Map.Entry::getValue);
     }
@@ -94,17 +100,17 @@ public class CodeReadabilityService {
     /**
      * Compute readability by making a request to readability connector.
      *
-     * @param program             Some Scratch program.
+     * @param programJSON         Some Scratch program.
      * @param tokenSequence       The token sequence for a single sprite.
      * @param spriteScratchBlocks The same sprite in ScratchBlocks format.
      * @return The prediction (readable or not) and the decision confidence.
      */
     private Mono<SpriteReadability> computeReadability(
-        final Program program, final TokenSequence tokenSequence, final String spriteScratchBlocks
+        final String programJSON, final TokenSequence tokenSequence, final String spriteScratchBlocks
     ) {
         String spriteName = tokenSequence.label();
 
-        return screenshotService.generateSVGScreenshot(program, spriteName, codeReadabilityConfig.getZoomLevel())
+        return screenshotService.generateSVGScreenshot(programJSON, spriteName, codeReadabilityConfig.getZoomLevel())
             .map(ScreenshotService.SVGScreenshot::svg)
             .map(svg -> new CodeReadabilityRequest(tokenSequence.tokens(), svg, spriteScratchBlocks))
             .flatMap(this::computeReadability);

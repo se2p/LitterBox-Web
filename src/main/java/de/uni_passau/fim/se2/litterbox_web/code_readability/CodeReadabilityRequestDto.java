@@ -10,24 +10,12 @@
 package de.uni_passau.fim.se2.litterbox_web.code_readability;
 
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Optional;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
-import de.uni_passau.fim.se2.litterbox.ast.model.Program;
-import de.uni_passau.fim.se2.litterbox_web.shared.ScratchProgramConverter;
 import jakarta.validation.constraints.NotBlank;
 
 public record CodeReadabilityRequestDto(
-    @JsonSerialize(converter = ScratchProgramConverter.SerializeConverter.class) @JsonDeserialize(
-        converter = ScratchProgramConverter.DeserializeConverter.class
-    ) Program program,
+    @NotBlank String program,
     Optional<Collection<@NotBlank String>> spriteNames
 ) {
-
-    public CodeReadabilityRequestDto {
-        Objects.requireNonNull(program);
-    }
 }

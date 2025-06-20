@@ -28,8 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 
-import de.uni_passau.fim.se2.litterbox.ast.ParsingException;
-import de.uni_passau.fim.se2.litterbox.ast.model.Program;
 import de.uni_passau.fim.se2.litterbox_web.LitterboxWebIntegrationTest;
 import de.uni_passau.fim.se2.litterbox_web.screenshot.ScreenshotConfig;
 import de.uni_passau.fim.se2.litterbox_web.screenshot.ScreenshotService;
@@ -59,7 +57,7 @@ class CodeReadabilityControllerTest extends LitterboxWebIntegrationTest {
     @ParameterizedTest
     @MethodSource("spriteNameArguments")
     void testComputeReadability(Collection<String> spriteNames)
-        throws ParsingException, IOException, InterruptedException {
+        throws IOException, InterruptedException {
         final String svg = FixtureLoader.loadFixture("screenshotTest.svg");
         final var screenshotResponse = new ScreenshotService.SVGScreenshot(svg);
         enqueueMockWebServerJsonResponse(screenshotResponse);
@@ -67,7 +65,7 @@ class CodeReadabilityControllerTest extends LitterboxWebIntegrationTest {
         final var codeReadabilityResponse = new CodeReadabilityService.SpriteReadability(true, 0.76);
         enqueueMockWebServerJsonResponse(codeReadabilityResponse);
 
-        final Program fixture = FixtureLoader.loadProgramFixture("tokenizingTest.json");
+        final String fixture = FixtureLoader.loadFixture("tokenizingTest.json");
         final var request = new CodeReadabilityRequestDto(fixture, Optional.ofNullable(spriteNames));
 
         final var response = requestUtilService.postWithResponseBody(

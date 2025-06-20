@@ -15,9 +15,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import de.uni_passau.fim.se2.litterbox.ast.model.Program;
 import de.uni_passau.fim.se2.litterbox_web.shared.Profiles;
-import de.uni_passau.fim.se2.litterbox_web.shared.ScratchProgramConverter;
 import de.uni_passau.fim.se2.litterbox_web.shared.connectors.ExternalApiConnector;
 import reactor.core.publisher.Mono;
 
@@ -39,25 +37,23 @@ public class ScreenshotService {
     /**
      * Extract the SVG representation of a given sprite.
      *
-     * @param program    Scratch Program
-     * @param spriteName Name of the sprite that you want to take screenshot of.
-     * @param scale      The zoom level in which the screenshot will be taken.
+     * @param programJSON Scratch Program
+     * @param spriteName  Name of the sprite that you want to take screenshot of.
+     * @param scale       The zoom level in which the screenshot will be taken.
      * @return The SVGScreenshot that contains SVG string.
      */
     public Mono<SVGScreenshot> generateSVGScreenshot(
-        final Program program,
+        final String programJSON,
         final String spriteName,
         final double scale
     ) {
-        final var requestBody = new ScratchProgramConverter.SerializeConverter().convert(program);
         final URI url = UriComponentsBuilder.fromUri(screenshotConfig.getUrl())
             .path("/svg")
             .queryParam("sprite", spriteName)
             .queryParam("scale", scale)
             .build().toUri();
 
-        return externalApiConnector
-            .postEntity(url, requestBody, SVGScreenshot.class);
+        return externalApiConnector.postEntity(url, programJSON, SVGScreenshot.class);
     }
 
     public record SVGScreenshot(String svg) {
