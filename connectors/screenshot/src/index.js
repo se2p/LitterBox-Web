@@ -2,11 +2,11 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-const express = require('express')
+const express = require('express');
 const {convertToSVG} = require('./util');
 
-const app = express()
-app.use(express.json());
+const app = express();
+app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({extended: true}));
 
 const hostname = "127.0.0.1";
@@ -45,5 +45,17 @@ function shutdownHandler() {
     }, 0);
 }
 
+const ignoreUnhandleRejectionErrors = [
+    // scratch-vm loads all sounds when init Scratch3MusicBlocks.
+    // but it's not possible in JSDOM environment due to lack of AudioContext API.
+    'No Audio Context Detected',
+]
+
+process.on('unhandledRejection', (err, origin) => {
+    if (!ignoreUnhandleRejectionErrors.includes(err.message)) {
+        throw err;
+    }
+    console.log(`Ignore unhandled rejection: ${err}`);
+});
 process.on('SIGINT', shutdownHandler);
 process.on('SIGTERM', shutdownHandler);

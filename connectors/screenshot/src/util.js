@@ -62,7 +62,7 @@ async function convertToSVG(projectData, sprite, scale) {
 
     await vm.loadProject(projectData);
     const allTargets = vm.runtime.targets;
-    const target = allTargets.find((t) => t.sprite.name.trim() === sprite?.trim());
+    const target = allTargets.find((t) => t.sprite.name.trim().normalize("NFC") === sprite?.trim().normalize("NFC"));
 
     return new Promise((resolve, reject) => {
         if (sprite && !target) {
@@ -113,7 +113,10 @@ async function embedXlinkImages(svgElement) {
 
     for (const imgElement of images) {
         const xlinkHref = imgElement.getAttribute('xlink:href');
-        if (!xlinkHref || xlinkHref.startsWith('data:image/svg+xml;base64'))
+        if (!xlinkHref 
+            || xlinkHref.startsWith('data:image/svg+xml;base64')
+            || xlinkHref.startsWith('data:image/png;base64')
+        )
             continue;
         else {
             const svgString = fs.readFileSync(xlinkHref, 'utf8');
