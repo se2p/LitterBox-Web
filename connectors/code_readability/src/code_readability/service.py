@@ -7,8 +7,10 @@ import torch
 from litterbox_web_api.code_readability import (
     CodeReadabilityRequest,
     CodeReadabilityResponse,
+    VisualFeature,
 )
 
+from code_readability.metric import dorn
 from code_readability.model.towards_model import TowardsModel
 from code_readability.processing import scratch_towards
 
@@ -40,3 +42,17 @@ class ReadabilityService:
             readable=prediction == 1,
             confidence=probs[prediction],
         )
+
+    def compute_dorn_metrics(
+        self,
+        request: VisualFeature,
+    ) -> dict[str, float]:
+        # 478x478 image
+        raw_screenshot = scratch_towards.take_raw_screenshot(svg=request.svg)
+
+        metrics = dorn.get_all_metrics()
+        result = {}
+        for m in metrics:
+            result[m.name] = m.compute(raw_screenshot)
+
+        return result

@@ -9,6 +9,7 @@ from typing import Any
 import cv2
 import numpy as np
 from litterbox_web_api.code_readability import CodeReadabilityRequest
+from lxml import etree
 
 from code_readability.processing import oalmbbp, scratch_svg, svg_util
 
@@ -65,7 +66,7 @@ def to_structural_matrix(
 def _read_image(image_path: str) -> np.ndarray:
     """
     Opens a png image as rgb tensor. Removes the alpha channel and transforms the values
-    to float32. The shape of the tensor is (3, height, width).
+    to float32. The shape of the tensor is (height, width, 3).
     :param image_path: The path to the image
     :return: The image ndarray
     """
@@ -76,11 +77,20 @@ def _read_image(image_path: str) -> np.ndarray:
     # Remove the alpha channel
     img_array = img[:, :, :3]
 
-    # Transpose the array to get the shape (3, height, width)
-    img_array = np.transpose(img_array, (2, 0, 1)) / 255
-
-    # Convert NumPy array to tensor
     return img_array
+
+
+def align_view_for_best_screen_shot(
+    svg_tree: etree.ElementTree,
+    size: tuple[int, int] = (478, 478),
+) -> etree.ElementTree:
+    # Align svg view to top-left of a script in which the number of captured blocks is the biggest
+    max_no_inside_blocks, total, align_to_script = (
+        scratch_svg.max_number_of_inside_blocks(svg_tree)
+    )
+    svg_util.update_svg_size(svg_tree, width=size[0], height=size[1])
+    scratch_svg.align_view_to_script(svg_tree, align_to_script)
+    return svg_tree
 
 
 def take_screen_shot(
@@ -91,11 +101,7 @@ def take_screen_shot(
     svg_tree = svg_util.parse_svg_tree(svg)
 
     # Align svg view to top-left of a script in which the number of captured blocks is the biggest
-    max_no_inside_blocks, total, align_to_script = (
-        scratch_svg.max_number_of_inside_blocks(svg_tree)
-    )
-    svg_util.update_svg_size(svg_tree, width=size[0], height=size[1])
-    scratch_svg.align_view_to_script(svg_tree, align_to_script)
+    svg_tree = align_view_for_best_screen_shot(svg_tree, size=size)
 
     # Remove text and icons
     svg_util.remove_by_xpath(svg_tree, "//text")
@@ -103,4 +109,24 @@ def take_screen_shot(
 
     with tempfile.NamedTemporaryFile() as f:
         svg_util.export_image2(svg_tree, Path(f.name), size=img_size)
+        img_array = _read_image(f.name)
+        # Transpose the array to get the shape (3, height, width)
+        return np.transpose(img_array, (2, 0, 1)) / 255
+
+
+def take_raw_screenshot(
+    svg: str,
+    size: tuple[int, int] = (478, 478),
+) -> np.ndarray:
+    svg_tree = svg_util.parse_svg_tree(svg)
+
+    # Align svg view to top-left of a script in which the number of captured blocks is the biggest
+    svg_tree = align_view_for_best_screen_shot(svg_tree, size=size)
+
+    # Remove text and icons
+    svg_util.remove_by_xpath(svg_tree, "//text")
+    svg_util.remove_by_xpath(svg_tree, "//image")
+
+    with tempfile.NamedTemporaryFile() as f:
+        svg_util.export_image(svg_tree, Path(f.name))
         return _read_image(f.name)

@@ -58,3 +58,31 @@ def test_code_readability_invalid_body() -> None:
         json=missing_field,
     )
     assert response.status_code == 422
+
+
+def test_dorn_metrics_readable() -> None:
+    response = client.post(
+        "/dorn-metrics",
+        json={"svg": readable_sprite["svg"]},
+    )
+    assert response.status_code == 200
+    result = response.json()
+    print(result)
+
+    colors = [
+        "LOOKS_BLOCKs",
+        "EVENT_BLOCKs",
+        "CONTROL_BLOCKs",
+        "SENSING_BLOCKs",
+        "SENSING_SELECTs",
+    ]
+    for i in range(0, len(colors)):
+        assert result[f"Dorn Areas {colors[i]}"] > 0, (
+            f"Dorn Areas {colors[i]} must be greater than 0"
+        )
+        if i == len(colors) - 1:
+            break
+        for j in range(i + 1, len(colors)):
+            assert result[f"Dorn Areas {colors[i]} / {colors[j]}"] > 0, (
+                f"Dorn Areas {colors[i]} / {colors[j]} must be greater than 0"
+            )

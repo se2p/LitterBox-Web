@@ -5,9 +5,12 @@
 from pydantic import BaseModel, constr
 
 
-class CodeReadabilityRequest(BaseModel):
-    tokens: list[list[str]]
+class VisualFeature(BaseModel):
     svg: constr(pattern="^<svg.*</svg>$", strict=True)  # type: ignore[valid-type]
+
+
+class CodeReadabilityRequest(VisualFeature):
+    tokens: list[list[str]]
     scratchblocks: str
 
 

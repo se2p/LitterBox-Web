@@ -12,6 +12,7 @@ from fastapi import Depends, FastAPI
 from litterbox_web_api.code_readability import (
     CodeReadabilityRequest,
     CodeReadabilityResponse,
+    VisualFeature,
 )
 
 from code_readability.dependencies import get_readability_service
@@ -51,6 +52,16 @@ async def code_readability(
     ],
 ) -> CodeReadabilityResponse:
     return await model.code_readability(request, readability_service)
+
+
+@app.post("/dorn-metrics", response_model=dict[str, float])
+async def dorn_metrics(
+    request: VisualFeature,
+    readability_service: Annotated[
+        ReadabilityService, Depends(get_readability_service)
+    ],
+) -> dict[str, float]:
+    return readability_service.compute_dorn_metrics(request)
 
 
 def main(argv: list[str] | None = None) -> None:
