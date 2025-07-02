@@ -25,18 +25,21 @@ class ReadabilityService:
     ) -> CodeReadabilityResponse:
         sample = scratch_towards.to_towards_sample(request=request)
 
-        res = self.model.forward(
-            visual=torch.from_numpy(np.expand_dims(sample["visual"], axis=0))
-            .float()
-            .to(self.model.device),
-            semantic=[sample["semantic"]],
-            structural=torch.from_numpy(np.expand_dims(sample["structural"], axis=0))
-            .float()
-            .to(self.model.device),
-        )
-        logits = res["logits"].detach().cpu()
-        probs = logits.softmax(dim=1).tolist()[0]
-        prediction = np.argmax(logits.tolist(), axis=-1)[0]
+        with torch.inference_mode():
+            res = self.model.forward(
+                visual=torch.from_numpy(np.expand_dims(sample["visual"], axis=0))
+                .float()
+                .to(self.model.device),
+                semantic=[sample["semantic"]],
+                structural=torch.from_numpy(
+                    np.expand_dims(sample["structural"], axis=0)
+                )
+                .float()
+                .to(self.model.device),
+            )
+            logits = res["logits"].detach().cpu()
+            probs = logits.softmax(dim=1).tolist()[0]
+            prediction = np.argmax(logits.tolist(), axis=-1)[0]
 
         return CodeReadabilityResponse(
             readable=prediction == 1,
