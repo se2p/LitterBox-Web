@@ -115,7 +115,7 @@
                 jdk.package = jdk;
                 maven.enable = true;
               };
-              pre-commit.hooks = {
+              git-hooks.hooks = {
                 alejandra.enable = true;
                 reuse-lint = {
                   enable = true;
@@ -153,16 +153,16 @@
           ];
         };
         connectors.api = import ./connectors/api/shell.nix {
-          inherit inputs pkgs devenv;
+          inherit pkgs;
         };
         connectors.code-completion-dummy = import ./connectors/code_completion_dummy/shell.nix {
-          inherit inputs pkgs devenv;
+          inherit pkgs;
         };
         connectors.code-readability = import ./connectors/code_readability/shell.nix {
-          inherit inputs pkgs devenv;
+          inherit pkgs;
         };
         connectors.screenshot = import ./connectors/screenshot/shell.nix {
-          inherit inputs pkgs devenv;
+          inherit pkgs;
         };
       });
   };
