@@ -34,7 +34,13 @@
       in rec {
         devenv-up = self.devShells.${system}.default.config.procfileScript;
 
-        default = pkgs.stdenvNoCC.mkDerivation rec {
+        default = import ./default.nix {
+          inherit pkgs jdk litterboxWebVersion;
+        };
+
+        litterbox-web-jar = default;
+
+        litterbox-web = pkgs.stdenvNoCC.mkDerivation rec {
           pname = "litterbox-web";
           version = litterboxWebVersion;
           nativeBuildInputs = [pkgs.makeWrapper];
@@ -47,24 +53,6 @@
           meta = with pkgs.lib; {
             license = licenses.eupl12;
           };
-        };
-
-        litterbox-web-jar = maven.buildMavenPackage rec {
-          pname = "litterbox-web-jar";
-          version = litterboxWebVersion;
-          nativeBuildInputs = [
-            jdk
-            maven
-            pkgs.stripJavaArchivesHook
-          ];
-          src = ./.;
-          buildOffline = true;
-          mvnHash = "sha256-+BG7raZ2nq9568OQf8eOoqZ6U608kRA4JY77+oRvcm4=";
-          mvnParameters = "-DskipTests";
-          installPhase = ''
-            mkdir -p $out
-            cp target/litterbox-web-${version}.jar $out/
-          '';
         };
 
         litterbox-web-container = import ./scripts/nix/container.nix {
