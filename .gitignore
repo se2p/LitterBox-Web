@@ -2,6 +2,8 @@
 #
 # SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
 
+*.bin
+
 .DS_Store
 .devenv/
 .direnv/
