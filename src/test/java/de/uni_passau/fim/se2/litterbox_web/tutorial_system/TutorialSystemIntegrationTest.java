@@ -72,7 +72,7 @@ class TutorialSystemIntegrationTest extends LitterboxWebIntegrationTest {
     private List<TutorialIssueInfo> requestFeedback(final String fixture, final String language)
         throws ParsingException, IOException {
         final Program program = FixtureLoader.loadProgramFixture(fixture);
-        final TutorialRequest request = new TutorialRequest(language, "all", program);
+        final TutorialRequest request = new TutorialRequest(language, "flaws", program);
 
         return requestUtilService.postWithResponseBodyList(
             "/tutorial-system/generate-feedback", request, TutorialIssueInfo.class, HttpStatus.OK

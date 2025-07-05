@@ -65,7 +65,7 @@ public class LinterService {
             }
         }
 
-        String issueHint = issue.getHint();
+        String issueHint = issue.getHintText();
 
         return new IssueInfo(
             blockId, issue.getIssueType().toString(), issue.getFinderName(), issue.getTranslatedFinderName(),

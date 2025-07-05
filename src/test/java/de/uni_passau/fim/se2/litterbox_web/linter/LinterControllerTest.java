@@ -36,7 +36,7 @@ class LinterControllerTest extends LitterboxWebIntegrationTest {
         );
 
         assertThat(issues)
-            .hasSize(3)
+            .hasSize(10)
             .anyMatch(issue -> "Sprite Naming".equals(issue.translatedFinderName()))
             .anyMatch(issue -> "xbZ^vS,ML7Dqi,H3G=rc".equals(issue.hatBlockId()));
     }
@@ -50,7 +50,7 @@ class LinterControllerTest extends LitterboxWebIntegrationTest {
         );
 
         assertThat(issues)
-            .hasSize(3)
+            .hasSize(10)
             .anyMatch(issue -> "Bedeutungsloser Figurenname".equals(issue.translatedFinderName()))
             .anyMatch(issue -> "xbZ^vS,ML7Dqi,H3G=rc".equals(issue.hatBlockId()));
     }

@@ -32,8 +32,8 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
     <properties>
         <java.version>21</java.version>
         <maven.compiler.release>21</maven.compiler.release>
-        <!-- check https://gitlab.infosun.fim.uni-passau.de/se2/litterbox/litterbox/-/packages/ for available versions -->
-        <litterbox.version>1.10-20241121.154027-3</litterbox.version>
+        <!-- check https://gitlab.infosun.fim.uni-passau.de/se2/scratch/litterbox/litterbox/-/packages/ for available versions -->
+        <litterbox.version>1.10.llm-SNAPSHOT</litterbox.version>
         <!-- check https://gitlab.infosun.fim.uni-passau.de/se2/scratch/litterbox/embeddedkittens/-/packages/ for available versions -->
         <embedded-kittens.version>1.1.0-20241121.153450-2</embedded-kittens.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

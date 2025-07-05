@@ -66,7 +66,7 @@ public class ProgramAnalyzerService {
 
         return new TutorialIssueInfo(
             issue.getTranslatedFinderName(),
-            issue.getHint(),
+            issue.getHintText(),
             issue.getActorName(),
             costume,
             issue.getIssueType(),
