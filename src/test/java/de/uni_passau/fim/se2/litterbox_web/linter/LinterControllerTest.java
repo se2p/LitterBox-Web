@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import de.uni_passau.fim.se2.litterbox_web.LitterboxWebIntegrationTest;
+import de.uni_passau.fim.se2.litterbox_web.shared.dto.IssueDTO;
 import de.uni_passau.fim.se2.litterbox_web.util.FixtureLoader;
 import de.uni_passau.fim.se2.litterbox_web.util.RequestUtilService;
 
@@ -31,8 +32,8 @@ class LinterControllerTest extends LitterboxWebIntegrationTest {
     void getIssues() throws Exception {
         final String programJson = FixtureLoader.loadFixture("tokenizingTest.json");
 
-        final List<IssueInfo> issues = requestUtilService.postWithResponseBodyList(
-            "/linter/analyze", programJson, IssueInfo.class, HttpStatus.OK
+        final List<IssueDTO> issues = requestUtilService.postWithResponseBodyList(
+            "/linter/analyze", programJson, IssueDTO.class, HttpStatus.OK
         );
 
         assertThat(issues)
@@ -45,8 +46,8 @@ class LinterControllerTest extends LitterboxWebIntegrationTest {
     void getIssuesGerman() throws Exception {
         final String programJson = FixtureLoader.loadFixture("tokenizingTest.json");
 
-        final List<IssueInfo> issues = requestUtilService.postWithResponseBodyList(
-            "/linter/analyze", programJson, Map.of("locale", "de"), IssueInfo.class, HttpStatus.OK
+        final List<IssueDTO> issues = requestUtilService.postWithResponseBodyList(
+            "/linter/analyze", programJson, Map.of("locale", "de"), IssueDTO.class, HttpStatus.OK
         );
 
         assertThat(issues)
@@ -59,8 +60,8 @@ class LinterControllerTest extends LitterboxWebIntegrationTest {
     void getIssuesBugDetector() throws Exception {
         final String programJson = FixtureLoader.loadFixture("tokenizingTest.json");
 
-        final List<IssueInfo> issues = requestUtilService.postWithResponseBodyList(
-            "/linter/analyze", programJson, Map.of("locale", "de", "detectors", "bugs"), IssueInfo.class, HttpStatus.OK
+        final List<IssueDTO> issues = requestUtilService.postWithResponseBodyList(
+            "/linter/analyze", programJson, Map.of("locale", "de", "detectors", "bugs"), IssueDTO.class, HttpStatus.OK
         );
 
         assertThat(issues)

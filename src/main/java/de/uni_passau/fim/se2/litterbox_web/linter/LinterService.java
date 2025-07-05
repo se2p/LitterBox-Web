@@ -22,6 +22,7 @@ import de.uni_passau.fim.se2.litterbox.ast.model.metadata.Metadata;
 import de.uni_passau.fim.se2.litterbox.ast.model.metadata.block.TopNonDataBlockMetadata;
 import de.uni_passau.fim.se2.litterbox.ast.util.AstNodeUtil;
 import de.uni_passau.fim.se2.litterbox.utils.IssueTranslator;
+import de.uni_passau.fim.se2.litterbox_web.shared.dto.IssueDTO;
 
 @Service
 public class LinterService {
@@ -34,7 +35,7 @@ public class LinterService {
      * @param detectors Programm analyzer detectors for filtering found issues.
      * @return The found LitterBox issues.
      */
-    public synchronized List<IssueInfo> getIssues(final Program program, final String locale, final String detectors) {
+    public synchronized List<IssueDTO> getIssues(final Program program, final String locale, final String detectors) {
         // synchronized method: we are mutating global state in the singleton here
         // NOTE: convertToIssueInfo also uses the translator with `issue.getTranslatedFinderName()`. Therefore, we
         // cannot limit the synchronized block to only `getLitterBoxIssues()`.
@@ -49,7 +50,7 @@ public class LinterService {
         return bugAnalyzer.analyze(program);
     }
 
-    private IssueInfo convertToIssueInfo(final Issue issue) {
+    private IssueDTO convertToIssueInfo(final Issue issue) {
         String blockId = null;
         if (issue.getCodeLocation() != null) {
             ASTNode location = issue.getCodeLocation();
@@ -67,9 +68,9 @@ public class LinterService {
 
         String issueHint = issue.getHintText();
 
-        return new IssueInfo(
-            blockId, issue.getIssueType().toString(), issue.getFinderName(), issue.getTranslatedFinderName(),
-            issueHint, hatBlockId
+        return new IssueDTO(
+            issue.getId(), blockId, issue.getIssueType().toString(), issue.getFinderName(),
+            issue.getTranslatedFinderName(), issueHint, issue.getActorName(), hatBlockId
         );
     }
 }

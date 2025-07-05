@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import de.uni_passau.fim.se2.litterbox.ast.model.Program;
 import de.uni_passau.fim.se2.litterbox_web.shared.Scratch3ParserService;
+import de.uni_passau.fim.se2.litterbox_web.shared.dto.IssueDTO;
 
 @RestController
 @RequestMapping("/linter")
@@ -45,7 +46,7 @@ public class LinterController {
      * @return The found LitterBox issues.
      */
     @PostMapping("analyze")
-    public List<IssueInfo> analyze(
+    public List<IssueDTO> analyze(
         @RequestParam(
             value = "locale",
             required = false,
