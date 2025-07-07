@@ -41,14 +41,15 @@ class DornMetric:
 @register(DORN_METRICS, "Dorn_ColorsAreas")
 class ColorsAreas(DornMetric):
     def __init__(self, kind: str):
-        assert kind in scratch_colors.BLOCKS, (
-            f"kind must be in {scratch_colors.BLOCKS}, but {kind}"
+        assert kind in scratch_colors.ALL_TAGS, (
+            f"kind must be in {scratch_colors.ALL_TAGS}, but {kind}"
         )
-        self.block_color = scratch_colors.BLOCK_COLOR_MAPPING[kind]
+        self.kind = kind
+        self.block_colors = scratch_colors.TAG_COLORS[kind]
 
     @property
     def name(self) -> str:
-        return f"Dorn Areas {scratch_colors.COLOR_BLOCK_MAPPING[self.block_color]}s"
+        return f"Dorn Areas {self.kind}s"
 
     def compute(self, color_matrix: np.ndarray) -> float:
         total = 0
@@ -60,37 +61,36 @@ class ColorsAreas(DornMetric):
                 if rgb != scratch_colors.SPACE or first:
                     first = True
                     total += 1
-                    if rgb == self.block_color:
+                    if rgb in self.block_colors:
                         total_color += 1
 
         return float(total_color) / total if total > 0 else 0.0
 
     @classmethod
     def get_all_variants(cls) -> list["DornMetric"]:
-        return [ColorsAreas(kind) for kind in scratch_colors.BLOCKS]
+        return [ColorsAreas(kind) for kind in scratch_colors.ALL_TAGS]
 
 
 @register(DORN_METRICS, "Dorn_ColorsMutualAreas")
 class ColorsMutualAreas(DornMetric):
     def __init__(self, kind1: str, kind2: str):
-        assert kind1 in scratch_colors.BLOCKS, (
-            f"block_name1 must be in {scratch_colors.BLOCKS}, but {kind1}"
+        assert kind1 in scratch_colors.ALL_TAGS, (
+            f"block_name1 must be in {scratch_colors.ALL_TAGS}, but {kind1}"
         )
-        assert kind2 in scratch_colors.BLOCKS, (
-            f"block_name2 must be in {scratch_colors.BLOCKS}, but {kind2}"
+        assert kind2 in scratch_colors.ALL_TAGS, (
+            f"block_name2 must be in {scratch_colors.ALL_TAGS}, but {kind2}"
         )
         assert kind1 != kind2, (
             f"Expect block_name1 != block_name2, but '{kind1}' == '{kind2}'"
         )
-        self.block_color1 = scratch_colors.BLOCK_COLOR_MAPPING[kind1]
-        self.block_color2 = scratch_colors.BLOCK_COLOR_MAPPING[kind2]
+        self.kind1 = kind1
+        self.kind2 = kind2
+        self.block_colors1 = scratch_colors.TAG_COLORS[kind1]
+        self.block_colors2 = scratch_colors.TAG_COLORS[kind2]
 
     @property
     def name(self) -> str:
-        return (
-            f"Dorn Areas {scratch_colors.COLOR_BLOCK_MAPPING[self.block_color1]}s "
-            f"/ {scratch_colors.COLOR_BLOCK_MAPPING[self.block_color2]}s"
-        )
+        return f"Dorn Areas {self.kind1}s / {self.kind2}s"
 
     def compute(self, color_matrix: np.ndarray) -> float:
         total_color1 = 0
@@ -101,9 +101,9 @@ class ColorsMutualAreas(DornMetric):
                 rgb = _brg_to_rgb(color_matrix[i][j])
                 if rgb != scratch_colors.SPACE or first:
                     first = True
-                    if rgb == self.block_color1:
+                    if rgb in self.block_colors1:
                         total_color1 += 1
-                    if rgb == self.block_color2:
+                    if rgb in self.block_colors2:
                         total_color2 += 1
 
         return float(total_color1) / total_color2 if total_color2 > 0 else 0.0
@@ -111,20 +111,22 @@ class ColorsMutualAreas(DornMetric):
     @classmethod
     def get_all_variants(cls) -> list["DornMetric"]:
         return [
-            ColorsMutualAreas(scratch_colors.BLOCKS[i], scratch_colors.BLOCKS[j])
-            for i in range(len(scratch_colors.BLOCKS) - 1)
-            for j in range(i + 1, len(scratch_colors.BLOCKS))
+            ColorsMutualAreas(scratch_colors.ALL_TAGS[i], scratch_colors.ALL_TAGS[j])
+            for i in range(len(scratch_colors.ALL_TAGS) - 1)
+            for j in range(i + 1, len(scratch_colors.ALL_TAGS))
         ]
 
 
 @register(DORN_METRICS, "Dorn_DFTBandwidth")
 class DFTBandwidth(DornMetric):
     def __init__(self, kind: str):
-        assert kind == "SPACE" or kind in scratch_colors.BLOCKS, (
-            f"kind must be in {scratch_colors.BLOCKS + ['SPACE']}, but {kind}"
+        assert kind == "SPACE" or kind in scratch_colors.ALL_TAGS, (
+            f"kind must be in {scratch_colors.ALL_TAGS + ['SPACE']}, but {kind}"
         )
         self.kind = kind
-        self.block_color = getattr(scratch_colors, kind)
+        self.block_colors = scratch_colors.TAG_COLORS.get(
+            kind, {scratch_colors.SPACE}
+        ) or {scratch_colors.SPACE}
 
     @property
     def name(self) -> str:
@@ -136,7 +138,7 @@ class DFTBandwidth(DornMetric):
 
     @classmethod
     def get_all_variants(cls) -> list["DornMetric"]:
-        return [DFTBandwidth(kind) for kind in (scratch_colors.BLOCKS + ["SPACE"])]
+        return [DFTBandwidth(kind) for kind in (scratch_colors.ALL_TAGS + ["SPACE"])]
 
     @staticmethod
     def calculate_bandwidth(vector: list[float]) -> float:
@@ -163,7 +165,7 @@ class DFTBandwidth(DornMetric):
         return amplitudes
 
     def get_features(self, color_matrix: np.ndarray) -> list[float]:
-        return self._count_tokens(color_matrix, lambda rgb: rgb == self.block_color)
+        return self._count_tokens(color_matrix, lambda rgb: rgb in self.block_colors)
 
     @staticmethod
     def _count_tokens(
@@ -184,15 +186,16 @@ class VisualBandwidth2D(DornMetric):
         assert coordinate in ["X", "Y"], (
             f"coordinate must be in 'X' or 'Y', but {coordinate}"
         )
-        assert kind in scratch_colors.BLOCKS, (
-            f"kind must be in {scratch_colors.BLOCKS}, but {kind}"
+        assert kind in scratch_colors.ALL_TAGS, (
+            f"kind must be in {scratch_colors.ALL_TAGS}, but {kind}"
         )
-        self.block_color = scratch_colors.BLOCK_COLOR_MAPPING[kind]
+        self.kind = kind
+        self.block_colors = scratch_colors.TAG_COLORS[kind]
         self.coordinate = coordinate
 
     @property
     def name(self) -> str:
-        return f"Dorn Visual {self.coordinate} {scratch_colors.COLOR_BLOCK_MAPPING[self.block_color]}"
+        return f"Dorn Visual {self.coordinate} {self.kind}"
 
     def compute(self, color_matrix: np.ndarray) -> float:
         matrix = self.get_matrix(color_matrix)
@@ -221,7 +224,7 @@ class VisualBandwidth2D(DornMetric):
     def get_all_variants(cls) -> list["DornMetric"]:
         return [
             VisualBandwidth2D(coordinate, kind)
-            for kind in scratch_colors.BLOCKS
+            for kind in scratch_colors.ALL_TAGS
             for coordinate in ["X", "Y"]
         ]
 
@@ -254,7 +257,7 @@ class VisualBandwidth2D(DornMetric):
             matrix.append([])
             for j in range(len(color_matrix[i])):
                 rgb = _brg_to_rgb(color_matrix[i][j])
-                matrix[i].append(1.0 if rgb == self.block_color else 0.0)
+                matrix[i].append(1.0 if rgb in self.block_colors else 0.0)
         return matrix
 
 

@@ -70,11 +70,12 @@ def test_dorn_metrics_readable() -> None:
     print(result)
 
     colors = [
-        "LOOKS_BLOCKs",
-        "EVENT_BLOCKs",
-        "CONTROL_BLOCKs",
-        "SENSING_BLOCKs",
-        "SENSING_SELECTs",
+        "LOOKSs",
+        "EVENTs",
+        "CONTROLs",
+        "SENSINGs",
+        "BLOCKs",
+        "SELECTs",
     ]
     for i in range(0, len(colors)):
         assert result[f"Dorn Areas {colors[i]}"] > 0, (
