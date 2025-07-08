@@ -9,18 +9,25 @@
  */
 package de.uni_passau.fim.se2.litterbox_web.shared.dto;
 
+import de.uni_passau.fim.se2.litterbox.analytics.IssueType;
+import jakarta.annotation.Nullable;
+
 public record IssueDTO(
     int id,
-    String blockId,
-    String issueType,
-    String finderName,
+    IssueType type,
+    String name,
     String translatedFinderName,
-    String issueHint,
+    String hint,
     String sprite,
-    String hatBlockId
+    @Nullable String hatBlockId,
+    @Nullable String blockId,
+    @Nullable String costume,
+    String scratchBlocksCode
 ) {
 
     public IssueDTO withExplanation(final String explanation) {
-        return new IssueDTO(id, blockId, issueType, finderName, translatedFinderName, explanation, sprite, hatBlockId);
+        return new IssueDTO(
+            id, type, name, translatedFinderName, explanation, sprite, hatBlockId, blockId, costume, scratchBlocksCode
+        );
     }
 }
