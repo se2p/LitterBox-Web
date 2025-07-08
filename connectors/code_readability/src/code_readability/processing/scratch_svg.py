@@ -3,12 +3,15 @@
 # SPDX-License-Identifier: EUPL-1.2
 
 import json
+import logging
 import math
 from collections.abc import Generator
 from typing import Callable, Optional
 
 from lxml import etree
 from svgpathtools import parse_path
+
+log = logging.getLogger(__name__)
 
 
 class BBox:
@@ -204,14 +207,14 @@ def max_number_of_inside_blocks(
         [b for b in s.traverse()] for s in root_block.children
     ]
     if len(scripts) == 0:
-        print("No scripts found")
+        log.warning(f"No scripts found in this sprite: {str(svg_tree)}")
         return -1, -1, ""
 
     sprite_bboxes: list[BBox] = [b.bbox for s in scripts for b in s]
     max_count = -1
     max_index = -1
     for i, script in enumerate(scripts):
-        print(f"Align to top-left of {script[0].block_id}")
+        log.debug(f"Align to top-left of {script[0].block_id}")
         screenshot_bbox = BBox(
             x_min=script[0].bbox.x_min,
             x_max=script[0].bbox.x_min + (width / scale),
@@ -224,8 +227,8 @@ def max_number_of_inside_blocks(
         if count > max_count:
             max_index = i
             max_count = count
-        print(f"Number of blocks undercover: {count}")
-        print(f"Proportion: {count / len(sprite_bboxes)}")
+        log.debug(f"Number of blocks undercover: {count}")
+        log.debug(f"Proportion: {count / len(sprite_bboxes)}")
 
     return max_count, len(sprite_bboxes), scripts[max_index][0].block_id
 

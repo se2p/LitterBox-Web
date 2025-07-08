@@ -4,6 +4,7 @@
 
 import asyncio
 import logging
+import os
 import sys
 from typing import Annotated
 
@@ -40,6 +41,7 @@ class Model:
 
 
 app = FastAPI()
+logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO").upper())
 log = logging.getLogger("uvicorn")
 model = Model()
 

@@ -3,10 +3,13 @@
 # SPDX-License-Identifier: EUPL-1.2
 
 import json
+import logging
 
 import transformers
 
 from code_readability import constant
+
+log = logging.getLogger(__name__)
 
 
 def load_vocabulary() -> dict[str, int]:
@@ -50,7 +53,7 @@ def adapt_to_former_tokenizer(tokens: list[str]) -> list[str]:
         ):
             continue
         elif token not in vocab:
-            print(f"Ignore token not in vocabulary: {token}")
+            log.debug(f"Ignore token not in vocabulary: {token}")
             continue
         else:
             results.append(token)
