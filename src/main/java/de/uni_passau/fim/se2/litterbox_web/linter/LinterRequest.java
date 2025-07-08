@@ -7,7 +7,7 @@
  * SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
  * SPDX-License-Identifier: EUPL-1.2
  */
-package de.uni_passau.fim.se2.litterbox_web.tutorial_system;
+package de.uni_passau.fim.se2.litterbox_web.linter;
 
 import java.util.Locale;
 
@@ -24,13 +24,17 @@ import de.uni_passau.fim.se2.litterbox_web.shared.ScratchProgramConverter;
  * @param language  the preferred language for the hints.
  * @param detectors the code patterns that should be checked.
  */
-public record TutorialRequest(
+public record LinterRequest(
     String language,
     String detectors,
     @JsonSerialize(converter = ScratchProgramConverter.SerializeConverter.class) @JsonDeserialize(
         converter = ScratchProgramConverter.DeserializeConverter.class
     ) Program program
 ) {
+
+    public LinterRequest(final Program program) {
+        this("en", "flaws", program);
+    }
 
     /**
      * Converts the submitted language to {@link Locale}.

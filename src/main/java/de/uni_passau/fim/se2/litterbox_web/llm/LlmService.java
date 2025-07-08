@@ -66,9 +66,9 @@ public class LlmService {
         IssueBuilder issueBuilder = new IssueBuilder()
             .withId(issueDTO.id())
             .withActor(actor)
-            .withHint(Hint.fromText(issueDTO.issueHint()))
+            .withHint(Hint.fromText(issueDTO.hint()))
             .withFinder(
-                IssueTool.getFinders(issueDTO.finderName()).stream().findFirst().orElse(null)
+                IssueTool.getFinders(issueDTO.name()).stream().findFirst().orElse(null)
             );
 
         if (issueDTO.blockId() != null) {
