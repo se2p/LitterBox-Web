@@ -32,8 +32,17 @@ public record LinterRequest(
     ) Program program
 ) {
 
+    public LinterRequest {
+        if (language == null) {
+            language = "en";
+        }
+        if (detectors == null) {
+            detectors = "flaws";
+        }
+    }
+
     public LinterRequest(final Program program) {
-        this("en", "flaws", program);
+        this(null, null, program);
     }
 
     /**
