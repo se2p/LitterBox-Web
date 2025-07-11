@@ -10,6 +10,7 @@
 package de.uni_passau.fim.se2.litterbox_web.code_readability;
 
 import java.net.URI;
+import java.text.Normalizer;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -80,7 +81,10 @@ public class CodeReadabilityService {
             .collect(Collectors.toMap((ActorDefinition ad) -> ad.getIdent().getName(), ad -> ad));
 
         final boolean shouldFilter = spriteNames.isPresent();
-        final Collection<String> requestSprites = spriteNames.orElse(Set.of());
+        final Collection<String> requestSprites = spriteNames.orElse(Set.of())
+            .stream()
+            .map(s -> Normalizer.normalize(s, Normalizer.Form.NFC))
+            .toList();
 
         return Flux.fromStream(
             tokenizingPreprocessor.processSprites(program)
@@ -90,7 +94,7 @@ public class CodeReadabilityService {
         ).flatMap(tokenSequence -> {
             String spriteName = tokenSequence.label();
             ActorDefinition actorDefinition = actorDefinitionMap.get(spriteName);
-            String spriteScratchBlocks = extractSpriteScratchBlocks(actorDefinition);
+            String spriteScratchBlocks = extractSpriteScratchBlocks(actorDefinition, program);
 
             return computeReadability(programJSON, tokenSequence, spriteScratchBlocks)
                 .map(readability -> Map.entry(spriteName, readability));
@@ -135,10 +139,12 @@ public class CodeReadabilityService {
      * Get the ScratchBlocks of a given sprite.
      *
      * @param actorDefinition Sprite definition.
+     * @param program         The program the actor belongs to.
      * @return The ScratchBlocks of the given sprite.
      */
-    private String extractSpriteScratchBlocks(final ActorDefinition actorDefinition) {
+    private String extractSpriteScratchBlocks(final ActorDefinition actorDefinition, final Program program) {
         ScratchBlocksVisitor scratchBlocksVisitor = new ScratchBlocksVisitor();
+        scratchBlocksVisitor.setProgram(program);
         scratchBlocksVisitor.visit(actorDefinition);
         return scratchBlocksVisitor.getScratchBlocks();
     }

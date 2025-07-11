@@ -10,6 +10,8 @@
 package de.uni_passau.fim.se2.litterbox_web.screenshot;
 
 import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -49,9 +51,9 @@ public class ScreenshotService {
     ) {
         final URI url = UriComponentsBuilder.fromUri(screenshotConfig.getUrl())
             .path("/svg")
-            .queryParam("sprite", spriteName)
+            .queryParam("sprite", URLEncoder.encode(spriteName, StandardCharsets.UTF_8))
             .queryParam("scale", scale)
-            .build().toUri();
+            .build(true).toUri();
 
         return externalApiConnector.postEntity(url, programJSON, SVGScreenshot.class);
     }
