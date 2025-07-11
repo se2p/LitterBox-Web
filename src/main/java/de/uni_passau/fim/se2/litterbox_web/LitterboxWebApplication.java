@@ -11,9 +11,12 @@ package de.uni_passau.fim.se2.litterbox_web;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.modulith.Modulithic;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.util.unit.DataSize;
 import org.springframework.web.reactive.config.EnableWebFlux;
+import org.springframework.web.reactive.config.WebFluxConfigurer;
 
 @SpringBootApplication
 @EnableScheduling
@@ -23,9 +26,14 @@ import org.springframework.web.reactive.config.EnableWebFlux;
     systemName = "LitterboxWeb",
     sharedModules = { "shared" }
 )
-public class LitterboxWebApplication {
+public class LitterboxWebApplication implements WebFluxConfigurer {
 
     public static void main(String[] args) {
         SpringApplication.run(LitterboxWebApplication.class, args);
+    }
+
+    @Override
+    public void configureHttpMessageCodecs(final ServerCodecConfigurer configurer) {
+        configurer.defaultCodecs().maxInMemorySize((int) DataSize.ofMegabytes(2).toBytes());
     }
 }
