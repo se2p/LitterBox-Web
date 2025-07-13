@@ -19,6 +19,7 @@ import de.uni_passau.fim.se2.litterbox.analytics.Issue;
 import de.uni_passau.fim.se2.litterbox.analytics.IssueBuilder;
 import de.uni_passau.fim.se2.litterbox.analytics.IssueTool;
 import de.uni_passau.fim.se2.litterbox.analytics.llm.LLMIssueEffectExplainer;
+import de.uni_passau.fim.se2.litterbox.analytics.llm.LLMProgramQueryAnalyzer;
 import de.uni_passau.fim.se2.litterbox.ast.model.ActorDefinition;
 import de.uni_passau.fim.se2.litterbox.ast.model.Program;
 import de.uni_passau.fim.se2.litterbox.ast.model.Script;
@@ -26,9 +27,11 @@ import de.uni_passau.fim.se2.litterbox.ast.util.AstNodeUtil;
 import de.uni_passau.fim.se2.litterbox.ast.visitor.BlockByIdFinder;
 import de.uni_passau.fim.se2.litterbox.llm.api.LlmApi;
 import de.uni_passau.fim.se2.litterbox.llm.prompts.LlmPromptProvider;
+import de.uni_passau.fim.se2.litterbox.llm.prompts.LlmQuery;
 import de.uni_passau.fim.se2.litterbox.llm.prompts.PromptBuilder;
 import de.uni_passau.fim.se2.litterbox.llm.prompts.QueryTarget;
 import de.uni_passau.fim.se2.litterbox_web.shared.dto.IssueDTO;
+import jakarta.annotation.Nullable;
 
 @Service
 @Lazy
@@ -84,5 +87,29 @@ public class LlmService {
         }
 
         return issueBuilder.build();
+    }
+
+    /**
+     * Asks the LLM the given question either with the context of the program or just the sprite.
+     *
+     * @param program  A Scratch program.
+     * @param sprite   The sprite the question is about. Optional.
+     * @param question The question for the LLM.
+     * @return The LLM response.
+     */
+    public String respondToQuestion(final Program program, @Nullable final String sprite, final String question) {
+        final LlmQuery query = new LlmQuery.CustomQuery(question);
+        final QueryTarget target;
+        if (sprite == null) {
+            target = new QueryTarget.ProgramTarget();
+        }
+        else {
+            target = new QueryTarget.SpriteTarget(sprite);
+        }
+
+        final LLMProgramQueryAnalyzer analyzer = new LLMProgramQueryAnalyzer(
+            llmApi, promptBuilder, query, target, false
+        );
+        return analyzer.analyze(program);
     }
 }

@@ -9,15 +9,19 @@
  */
 package de.uni_passau.fim.se2.litterbox_web.llm;
 
+import java.util.Optional;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import de.uni_passau.fim.se2.litterbox.ast.model.Program;
 import de.uni_passau.fim.se2.litterbox_web.shared.JsonScratchProgram;
 import de.uni_passau.fim.se2.litterbox_web.shared.dto.IssueDTO;
 
-@RestController("llm")
+@RestController
+@RequestMapping("llm")
 public class LlmController {
 
     private final LlmService llmService;
@@ -32,5 +36,13 @@ public class LlmController {
     }
 
     public record IssueExplanationRequest(@JsonScratchProgram Program program, IssueDTO issue) {
+    }
+
+    @PostMapping("question")
+    public String respondToQuestion(@RequestBody final QuestionRequest request) {
+        return llmService.respondToQuestion(request.program, request.spriteName().orElse(null), request.question);
+    }
+
+    public record QuestionRequest(@JsonScratchProgram Program program, Optional<String> spriteName, String question) {
     }
 }
