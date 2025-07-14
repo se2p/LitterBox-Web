@@ -58,8 +58,8 @@ public class LitterBoxAnalysisService {
             issue.getTranslatedFinderName(),
             issue.getHintText(),
             issue.getActorName(),
-            getBlockId(issue),
             getScriptId(issue),
+            getBlockId(issue),
             getCostume(issue),
             getScratchBlocksCode(issue)
         );

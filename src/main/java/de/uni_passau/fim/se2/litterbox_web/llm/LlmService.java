@@ -19,6 +19,7 @@ import de.uni_passau.fim.se2.litterbox.analytics.Issue;
 import de.uni_passau.fim.se2.litterbox.analytics.IssueBuilder;
 import de.uni_passau.fim.se2.litterbox.analytics.IssueTool;
 import de.uni_passau.fim.se2.litterbox.analytics.llm.LLMIssueEffectExplainer;
+import de.uni_passau.fim.se2.litterbox.analytics.llm.LLMProgramImprovementAnalyzer;
 import de.uni_passau.fim.se2.litterbox.analytics.llm.LLMProgramQueryAnalyzer;
 import de.uni_passau.fim.se2.litterbox.ast.model.ActorDefinition;
 import de.uni_passau.fim.se2.litterbox.ast.model.Program;
@@ -63,24 +64,24 @@ public class LlmService {
         return issueDto.withExplanation(newIssue.getHintText());
     }
 
-    private Issue fromIssueDto(final Program program, final IssueDTO issueDTO) {
-        final ActorDefinition actor = AstNodeUtil.findActorByName(program, issueDTO.sprite());
+    private Issue fromIssueDto(final Program program, final IssueDTO issueDto) {
+        final ActorDefinition actor = AstNodeUtil.findActorByName(program, issueDto.sprite());
 
         IssueBuilder issueBuilder = new IssueBuilder()
-            .withId(issueDTO.id())
+            .withId(issueDto.id())
             .withActor(actor)
-            .withHint(Hint.fromText(issueDTO.hint()))
+            .withHint(Hint.fromText(issueDto.hint()))
             .withFinder(
-                IssueTool.getFinders(issueDTO.name()).stream().findFirst().orElse(null)
+                IssueTool.getFinders(issueDto.name()).stream().findFirst().orElse(null)
             );
 
-        if (issueDTO.blockId() != null) {
+        if (issueDto.blockId() != null) {
             issueBuilder = issueBuilder.withCurrentNode(
-                BlockByIdFinder.findBlock(actor, issueDTO.blockId()).orElse(null)
+                BlockByIdFinder.findBlock(actor, issueDto.blockId()).orElse(null)
             );
         }
-        if (issueDTO.hatBlockId() != null) {
-            final Script script = BlockByIdFinder.findBlock(actor, issueDTO.hatBlockId())
+        if (issueDto.hatBlockId() != null) {
+            final Script script = BlockByIdFinder.findBlock(actor, issueDto.hatBlockId())
                 .map(hat -> AstNodeUtil.findParent(hat, Script.class))
                 .orElse(null);
             issueBuilder = issueBuilder.withScript(script);
@@ -99,17 +100,49 @@ public class LlmService {
      */
     public String respondToQuestion(final Program program, @Nullable final String sprite, final String question) {
         final LlmQuery query = new LlmQuery.CustomQuery(question);
-        final QueryTarget target;
-        if (sprite == null) {
-            target = new QueryTarget.ProgramTarget();
-        }
-        else {
-            target = new QueryTarget.SpriteTarget(sprite);
-        }
+        final QueryTarget target = targetFromSpriteName(sprite);
 
         final LLMProgramQueryAnalyzer analyzer = new LLMProgramQueryAnalyzer(
             llmApi, promptBuilder, query, target, false
         );
         return analyzer.analyze(program);
+    }
+
+    /**
+     * Tries to fix the given issue within the program.
+     *
+     * @param program  A Scratch program.
+     * @param issueDto The issue that should be fixed.
+     * @return The program including the proposed fix.
+     */
+    public Program fixIssue(final Program program, final IssueDTO issueDto) {
+        final Issue issue = fromIssueDto(program, issueDto);
+        final QueryTarget target = targetFromIssue(issueDto);
+        final LLMProgramImprovementAnalyzer analyzer = new LLMProgramImprovementAnalyzer(
+            llmApi, promptBuilder, target, Collections.singleton(issue)
+        );
+
+        return analyzer.analyze(program);
+    }
+
+    private QueryTarget targetFromSpriteName(@Nullable final String sprite) {
+        if (sprite == null) {
+            return new QueryTarget.ProgramTarget();
+        }
+        else {
+            return new QueryTarget.SpriteTarget(sprite);
+        }
+    }
+
+    private QueryTarget targetFromIssue(final IssueDTO issueDTO) {
+        if (issueDTO.hatBlockId() != null) {
+            return new QueryTarget.ScriptTarget(issueDTO.hatBlockId());
+        }
+        else if (issueDTO.sprite() != null) {
+            return new QueryTarget.SpriteTarget(issueDTO.sprite());
+        }
+        else {
+            return new QueryTarget.ProgramTarget();
+        }
     }
 }
