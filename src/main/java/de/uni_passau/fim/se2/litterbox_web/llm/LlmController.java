@@ -31,16 +31,26 @@ public class LlmController {
     }
 
     @PostMapping("issue/explain")
-    public IssueDTO getIssueExplanation(@RequestBody final IssueExplanationRequest request) {
+    public IssueDTO getIssueExplanation(@RequestBody final LlmIssueRequest request) {
         return llmService.getIssueExplanation(request.program, request.issue);
     }
 
-    public record IssueExplanationRequest(@JsonScratchProgram Program program, IssueDTO issue) {
+    @PostMapping("issue/fix")
+    public LlmIssueFixResponse getIssueFix(@RequestBody final LlmIssueRequest request) {
+        final Program fixedProgram = llmService.fixIssue(request.program, request.issue);
+
+        return new LlmIssueFixResponse(fixedProgram);
     }
 
     @PostMapping("question")
     public String respondToQuestion(@RequestBody final QuestionRequest request) {
         return llmService.respondToQuestion(request.program, request.spriteName().orElse(null), request.question);
+    }
+
+    public record LlmIssueRequest(@JsonScratchProgram Program program, IssueDTO issue) {
+    }
+
+    public record LlmIssueFixResponse(@JsonScratchProgram Program fixedProgram) {
     }
 
     public record QuestionRequest(@JsonScratchProgram Program program, Optional<String> spriteName, String question) {
