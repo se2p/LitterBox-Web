@@ -23,8 +23,8 @@ import de.uni_passau.fim.se2.litterbox.llm.api.LlmApi;
 import de.uni_passau.fim.se2.litterbox.llm.api.LlmApiProvider;
 import jakarta.annotation.PostConstruct;
 
-@Component
 @Lazy
+@Component
 public class LlmConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(LlmConfiguration.class);

@@ -34,8 +34,8 @@ import de.uni_passau.fim.se2.litterbox.llm.prompts.QueryTarget;
 import de.uni_passau.fim.se2.litterbox_web.shared.dto.IssueDTO;
 import jakarta.annotation.Nullable;
 
-@Service
 @Lazy
+@Service
 public class LlmService {
 
     private final LlmApi llmApi;
@@ -75,12 +75,12 @@ public class LlmService {
                 IssueTool.getFinders(issueDto.name()).stream().findFirst().orElse(null)
             );
 
-        if (issueDto.blockId() != null) {
+        if (actor != null && issueDto.blockId() != null) {
             issueBuilder = issueBuilder.withCurrentNode(
                 BlockByIdFinder.findBlock(actor, issueDto.blockId()).orElse(null)
             );
         }
-        if (issueDto.hatBlockId() != null) {
+        if (actor != null && issueDto.hatBlockId() != null) {
             final Script script = BlockByIdFinder.findBlock(actor, issueDto.hatBlockId())
                 .map(hat -> AstNodeUtil.findParent(hat, Script.class))
                 .orElse(null);

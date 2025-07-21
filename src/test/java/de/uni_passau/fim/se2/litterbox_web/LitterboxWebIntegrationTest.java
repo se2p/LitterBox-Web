@@ -30,7 +30,7 @@ import okhttp3.mockwebserver.MockWebServer;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
-@ActiveProfiles({ "test", "metrics", Profiles.CODE_COMPLETION, Profiles.CODE_READABILITY })
+@ActiveProfiles({ "test", "metrics", "llm", Profiles.CODE_COMPLETION, Profiles.CODE_READABILITY })
 public abstract class LitterboxWebIntegrationTest {
 
     @Autowired

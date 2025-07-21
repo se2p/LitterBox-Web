@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: CC0-1.0
+#
+# SPDX-FileCopyrightText: 2025 LitterBox-Web contributors
+
+litterbox:
+  llm:
+    api: ollama
+    ollama:
+      base-url: http://localhost:11343
+      model: mistral:7b
+    openai:
+      api-key: invalid
+      model: gpt-4.1
