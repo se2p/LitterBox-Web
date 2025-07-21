@@ -11,6 +11,7 @@ package de.uni_passau.fim.se2.litterbox_web.llm;
 
 import java.util.Optional;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,7 @@ import de.uni_passau.fim.se2.litterbox.ast.model.Program;
 import de.uni_passau.fim.se2.litterbox_web.shared.JsonScratchProgram;
 import de.uni_passau.fim.se2.litterbox_web.shared.dto.IssueDTO;
 
+@Lazy
 @RestController
 @RequestMapping("llm")
 public class LlmController {
