@@ -79,7 +79,9 @@ You can import this in link:https://www.postman.com/[Postman], link:https://gith
 
 == Running the application
 
-=== JAR
+=== Executable
+
+==== JAR
 
 [source,bash]
 ----
@@ -93,7 +95,7 @@ java -jar litterbox-web/target/litterbox-web-${version}.jar
 ----
 
 
-=== Building a container image
+==== Building a container image
 
 [source,bash]
 ----
@@ -101,14 +103,50 @@ mvn spring-boot:build-image
 # or for an image that precompiles using GraalVM
 mvn spring-boot:build-image -Pnative
 ----
+or
+[source,bash]
+----
+docker build -t litterbox-web -f Containerfile .
+----
 
 
-=== Building a GraalVM binary
+==== Building a GraalVM binary
 
 [source,bash]
 ----
 mvn native:compile -Pnative
 ----
+
+
+=== Configuration Options
+
+==== Spring Profiles
+
+Features can be enabled or disabled via Spring profiles.
+When running the application via the JAR, run it as `java -Dspring.profiles.active=??? -jar …` to select specific profiles.
+For example, with `spring.profiles.active=prod,llm`, it will automatically load the configuration from `application-prod.yml` and `application-llm.yml` files placed next to the JAR.
+
+[TIP]
+--
+Spring profiles can alternatively be enabled via the environment variable `SPRING_PROFILES_ACTIVE`.
+--
+
+In `src/main/resources/` you can find `application*.yml` files with the default configuration values.
+
+
+==== LitterBox LLM Integration
+
+For the LLM-integration of LitterBox (https://github.com/se2p/LitterBox/pull/10), all configuration under `litterbox.llm` will be passed onto LitterBox.
+For example, an `application-llm.yml` file like
+[source,yaml]
+----
+litterbox:
+  llm:
+    api: openai
+  openai:
+    api-key: demo
+----
+maps directly to the link:https://github.com/se2p/LitterBox/blob/ec150b57c01696f6d7dcd4cc34adcc21cafff370/src/main/resources/scratchllm.properties[LitterBox properties] `litterbox.llm.api` and `litterbox.openai.api-key`.
 
 
 == Linting
