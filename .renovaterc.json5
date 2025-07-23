@@ -17,4 +17,7 @@
             "dependencyDashboardApproval": true,
         },
     ],
+    "nix": {
+        "enabled": true
+    }
 }
