@@ -19,5 +19,8 @@
     ],
     "nix": {
         "enabled": true
-    }
+    },
+    "labels": [
+        "type::maintenance"
+    ]
 }
