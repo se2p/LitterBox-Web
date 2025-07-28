@@ -33,7 +33,7 @@ import de.uni_passau.fim.se2.litterbox_web.screenshot.ScreenshotConfig;
 import de.uni_passau.fim.se2.litterbox_web.screenshot.ScreenshotService;
 import de.uni_passau.fim.se2.litterbox_web.util.FixtureLoader;
 import de.uni_passau.fim.se2.litterbox_web.util.RequestUtilService;
-import okhttp3.mockwebserver.RecordedRequest;
+import mockwebserver3.RecordedRequest;
 
 class CodeReadabilityControllerTest extends LitterboxWebIntegrationTest {
 
@@ -82,7 +82,7 @@ class CodeReadabilityControllerTest extends LitterboxWebIntegrationTest {
         final RecordedRequest recordedRequest = mockWebServer.takeRequest();
         assertAll(
             () -> assertThat(recordedRequest.getMethod()).isEqualTo("POST"),
-            () -> assertThat(recordedRequest.getPath()).isEqualTo("/code-readability")
+            () -> assertThat(recordedRequest.getTarget()).isEqualTo("/code-readability")
         );
     }
 

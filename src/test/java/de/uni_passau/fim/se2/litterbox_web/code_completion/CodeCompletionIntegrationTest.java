@@ -29,7 +29,7 @@ import de.uni_passau.fim.se2.litterbox.ast.model.Program;
 import de.uni_passau.fim.se2.litterbox_web.LitterboxWebIntegrationTest;
 import de.uni_passau.fim.se2.litterbox_web.util.FixtureLoader;
 import de.uni_passau.fim.se2.litterbox_web.util.RequestUtilService;
-import okhttp3.mockwebserver.RecordedRequest;
+import mockwebserver3.RecordedRequest;
 
 class CodeCompletionIntegrationTest extends LitterboxWebIntegrationTest {
 
@@ -84,7 +84,7 @@ class CodeCompletionIntegrationTest extends LitterboxWebIntegrationTest {
         final RecordedRequest recordedRequest = mockWebServer.takeRequest();
         assertAll(
             () -> assertThat(recordedRequest.getMethod()).isEqualTo("POST"),
-            () -> assertThat(recordedRequest.getPath()).isEqualTo("/")
+            () -> assertThat(recordedRequest.getTarget()).isEqualTo("/")
         );
     }
 }

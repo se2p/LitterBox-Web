@@ -24,8 +24,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.uni_passau.fim.se2.litterbox_web.shared.Profiles;
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
+import mockwebserver3.MockResponse;
+import mockwebserver3.MockWebServer;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -45,16 +45,17 @@ public abstract class LitterboxWebIntegrationTest {
     }
 
     @AfterAll
-    static void afterAll() throws IOException {
-        mockWebServer.shutdown();
+    static void afterAll() {
+        mockWebServer.close();
     }
 
     protected <T> void enqueueMockWebServerJsonResponse(final T response) throws JsonProcessingException {
         final String responseJson = objectMapper.writeValueAsString(response);
         mockWebServer.enqueue(
-            new MockResponse()
-                .setBody(responseJson)
+            new MockResponse.Builder()
+                .body(responseJson)
                 .addHeader("Content-Type", "application/json")
+                .build()
         );
     }
 }

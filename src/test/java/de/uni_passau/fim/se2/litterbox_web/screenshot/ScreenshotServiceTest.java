@@ -22,7 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import de.uni_passau.fim.se2.litterbox_web.LitterboxWebIntegrationTest;
 import de.uni_passau.fim.se2.litterbox_web.util.FixtureLoader;
-import okhttp3.mockwebserver.RecordedRequest;
+import mockwebserver3.RecordedRequest;
 
 class ScreenshotServiceTest extends LitterboxWebIntegrationTest {
 
@@ -53,7 +53,7 @@ class ScreenshotServiceTest extends LitterboxWebIntegrationTest {
         final RecordedRequest recordedRequest = mockWebServer.takeRequest();
         assertAll(
             () -> assertThat(recordedRequest.getMethod()).isEqualTo("POST"),
-            () -> assertThat(recordedRequest.getPath()).isEqualTo("/svg?sprite=Sprite1&scale=0.5625")
+            () -> assertThat(recordedRequest.getTarget()).isEqualTo("/svg?sprite=Sprite1&scale=0.5625")
         );
     }
 }
