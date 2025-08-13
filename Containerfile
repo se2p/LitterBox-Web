@@ -6,9 +6,11 @@ from docker.io/library/maven:3-eclipse-temurin-21-alpine as builder
 
 workdir /app
 
+# faster rebuilds: cache dependencies
 copy pom.xml .
-copy src ./src
+run mvn -B dependency:go-offline
 
+copy src ./src
 run mvn package -DskipTests
 
 ################################################################################
