@@ -96,7 +96,7 @@ test:code_readability:
     SUBPROJECT: code_readability
   script:
     - apt-get update
-    - apt-get install -y libgl1-mesa-glx
+    - apt-get install -y libgl1
     - >
       curl
       --header "Authorization: Bearer $CI_JOB_TOKEN"
