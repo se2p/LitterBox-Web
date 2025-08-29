@@ -51,7 +51,9 @@ class ReadabilityService:
         request: VisualFeature,
     ) -> dict[str, float]:
         # 478x478 image
-        raw_screenshot = scratch_towards.take_raw_screenshot(svg=request.svg)
+        raw_screenshot = scratch_towards.take_raw_screenshot(
+            svg=request.svg, replace_input_color=True
+        )
 
         metrics = dorn.get_all_metrics()
         result = {}

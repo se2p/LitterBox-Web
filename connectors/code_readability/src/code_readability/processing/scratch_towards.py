@@ -11,7 +11,7 @@ import numpy as np
 from litterbox_web_api.code_readability import CodeReadabilityRequest
 from lxml import etree
 
-from code_readability.processing import oalmbbp, scratch_svg, svg_util
+from code_readability.processing import oalmbbp, scratch_colors, scratch_svg, svg_util
 
 
 def to_towards_sample(
@@ -117,11 +117,15 @@ def take_screen_shot(
 def take_raw_screenshot(
     svg: str,
     size: tuple[int, int] = (478, 478),
+    replace_input_color: bool = False,
 ) -> np.ndarray:
     svg_tree = svg_util.parse_svg_tree(svg)
 
     # Align svg view to top-left of a script in which the number of captured blocks is the biggest
     svg_tree = align_view_for_best_screen_shot(svg_tree, size=size)
+
+    if replace_input_color:
+        _replace_input_color(svg_tree)
 
     # Remove text and icons
     svg_util.remove_by_xpath(svg_tree, "//text")
@@ -130,3 +134,46 @@ def take_raw_screenshot(
     with tempfile.NamedTemporaryFile() as f:
         svg_util.export_image(svg_tree, Path(f.name))
         return _read_image(f.name)
+
+
+def _replace_input_color(svg_tree: Any) -> None:
+    type_condition = " or ".join(
+        [f'@data-argument-type="{c}"' for c in ["colour", "text", "text number"]]
+    )
+    for path_element in svg_tree.xpath(
+        f"//g[@data-shapes = $shape and ({type_condition})]/path",
+        shape="argument round",
+    ):
+        parent = path_element.getparent()
+        data_argument_type = parent.attrib["data-argument-type"]
+        data_argument_type = (
+            "color_input" if data_argument_type == "colour" else "input"
+        )
+
+        grand_parent = parent.getparent()
+        data_category = grand_parent.attrib.get("data-category", "custom")
+
+        input_key = f"{data_category}_{data_argument_type}"
+        if input_key not in _INPUT_BLOCK_COLOR_MAPPING:
+            # Extension case
+            input_key = f"extension_{data_argument_type}"
+
+        path_element.attrib["fill"] = scratch_colors.rgb_to_hex(
+            _INPUT_BLOCK_COLOR_MAPPING[input_key]
+        )
+
+
+_INPUT_BLOCK_COLOR_MAPPING = {
+    "motion_input": scratch_colors.MOTION_INPUT,
+    "looks_input": scratch_colors.LOOKS_INPUT,
+    "sounds_input": scratch_colors.SOUND_INPUT,
+    "events_input": scratch_colors.EVENT_INPUT,
+    "operators_input": scratch_colors.OPERATOR_INPUT,
+    "control_input": scratch_colors.CONTROL_INPUT,
+    "sensing_input": scratch_colors.SENSING_INPUT,
+    "sensing_color_input": scratch_colors.SENSING_COLOR_INPUT,
+    "data_input": scratch_colors.VARIABLE_INPUT,
+    "custom_input": scratch_colors.CUSTOM_INPUT,
+    "extension_input": scratch_colors.EXTENSION_INPUT,
+    "extension_color_input": scratch_colors.EXTENSION_COLOR_INPUT,
+}

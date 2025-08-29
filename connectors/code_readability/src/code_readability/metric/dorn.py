@@ -110,11 +110,14 @@ class ColorsMutualAreas(DornMetric):
 
     @classmethod
     def get_all_variants(cls) -> list["DornMetric"]:
-        return [
-            ColorsMutualAreas(scratch_colors.ALL_TAGS[i], scratch_colors.ALL_TAGS[j])
+        pairs = [
+            (scratch_colors.ALL_TAGS[i], scratch_colors.ALL_TAGS[j])
             for i in range(len(scratch_colors.ALL_TAGS) - 1)
             for j in range(i + 1, len(scratch_colors.ALL_TAGS))
         ]
+        # Upon Lisa request
+        pairs += [("PLACEHOLDER", "BLOCK"), ("BLOCK", "VARIABLE")]
+        return [ColorsMutualAreas(*p) for p in pairs]
 
 
 @register(DORN_METRICS, "Dorn_DFTBandwidth")
