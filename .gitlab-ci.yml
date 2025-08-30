@@ -184,28 +184,16 @@ checkstyle:
       codequality:
         - checkstyle-report.json
 
-isort:
+python-lint:
   <<: *python-lint-template
   script:
     - uv run isort --check-only .
-
-ruff:
-  <<: *python-lint-template
-  script:
+    - uv run ruff format --diff --check .
+    - uv run mypy .
     - uv run ruff check --output-format=gitlab > $CI_PROJECT_DIR/ruff-report.json
   artifacts:
     reports:
       codequality: $CI_PROJECT_DIR/ruff-report.json
-
-ruff-format:
-  <<: *python-lint-template
-  script:
-    - uv run ruff format --diff --check .
-
-mypy:
-  <<: *python-lint-template
-  script:
-    - uv run mypy .
 
 ################################################################################
 # nix
