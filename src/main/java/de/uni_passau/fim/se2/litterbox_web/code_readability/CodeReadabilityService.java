@@ -78,7 +78,12 @@ public class CodeReadabilityService {
 
         final Map<String, ActorDefinition> actorDefinitionMap = program.getActorDefinitionList().getDefinitions()
             .stream()
-            .collect(Collectors.toMap((ActorDefinition ad) -> ad.getIdent().getName(), ad -> ad));
+            .collect(
+                Collectors.toMap(
+                    (ActorDefinition ad) -> Normalizer.normalize(ad.getIdent().getName(), Normalizer.Form.NFC),
+                    ad -> ad
+                )
+            );
 
         final boolean shouldFilter = spriteNames.isPresent();
         final Collection<String> requestSprites = spriteNames.orElse(Set.of())
@@ -86,38 +91,48 @@ public class CodeReadabilityService {
             .map(s -> Normalizer.normalize(s, Normalizer.Form.NFC))
             .toList();
 
-        return Flux.fromStream(
-            tokenizingPreprocessor.processSprites(program)
-                .filter(tokenSequence -> !shouldFilter || requestSprites.contains(tokenSequence.label()))
-                .filter(tokenSequence -> !tokenSequence.tokens().isEmpty())
-                .parallel()
-        ).flatMap(tokenSequence -> {
-            String spriteName = tokenSequence.label();
-            ActorDefinition actorDefinition = actorDefinitionMap.get(spriteName);
-            String spriteScratchBlocks = extractSpriteScratchBlocks(actorDefinition, program);
+        final Map<String, TokenSequence> tokenSequences = tokenizingPreprocessor.processSprites(program)
+            .map(
+                seq -> new TokenSequence(
+                    Normalizer.normalize(seq.label(), Normalizer.Form.NFC),
+                    seq.labelSubTokens(),
+                    seq.tokens(),
+                    seq.subTokens()
+                )
+            )
+            .filter(tokenSequence -> !shouldFilter || requestSprites.contains(tokenSequence.label()))
+            .filter(tokenSequence -> !tokenSequence.tokens().isEmpty())
+            .collect(Collectors.toUnmodifiableMap(TokenSequence::label, seq -> seq));
 
-            return computeReadability(programJSON, tokenSequence, spriteScratchBlocks)
-                .map(readability -> Map.entry(spriteName, readability));
-        }).collectMap(Map.Entry::getKey, Map.Entry::getValue);
+        return screenshotService.generateSVGScreenshot(
+            new ScreenshotService.ScreenshotRequest(
+                programJSON, tokenSequences.keySet(), codeReadabilityConfig.getZoomLevel()
+            )
+        )
+            .map(ScreenshotService.ScreenshotResponse::screenshots)
+            .flatMapMany(screenshots -> Flux.fromStream(screenshots.entrySet().stream()))
+            .filter(entry -> tokenSequences.containsKey(entry.getKey()))
+            .flatMap(entry -> {
+                final String spriteName = entry.getKey();
+                final String screenshot = entry.getValue();
+                final TokenSequence tokenSequence = tokenSequences.get(spriteName);
+                return computeReadability(program, actorDefinitionMap, tokenSequence, screenshot);
+            })
+            .collectMap(Map.Entry::getKey, Map.Entry::getValue);
     }
 
-    /**
-     * Compute readability by making a request to readability connector.
-     *
-     * @param programJSON         Some Scratch program.
-     * @param tokenSequence       The token sequence for a single sprite.
-     * @param spriteScratchBlocks The same sprite in ScratchBlocks format.
-     * @return The prediction (readable or not) and the decision confidence.
-     */
-    private Mono<SpriteReadability> computeReadability(
-        final String programJSON, final TokenSequence tokenSequence, final String spriteScratchBlocks
+    private Mono<Map.Entry<String, SpriteReadability>> computeReadability(
+        final Program program,
+        final Map<String, ActorDefinition> actorDefinitionMap,
+        final TokenSequence tokenSequence,
+        final String screenshot
     ) {
-        String spriteName = tokenSequence.label();
+        final ActorDefinition actorDefinition = actorDefinitionMap.get(tokenSequence.label());
+        final String spriteScratchBlocks = extractSpriteScratchBlocks(actorDefinition, program);
 
-        return screenshotService.generateSVGScreenshot(programJSON, spriteName, codeReadabilityConfig.getZoomLevel())
-            .map(ScreenshotService.SVGScreenshot::svg)
-            .map(svg -> new CodeReadabilityRequest(tokenSequence.tokens(), svg, spriteScratchBlocks))
-            .flatMap(this::computeReadability);
+        return computeReadability(
+            new CodeReadabilityRequest(tokenSequence.tokens(), screenshot, spriteScratchBlocks)
+        ).map(readability -> Map.entry(tokenSequence.label(), readability));
     }
 
     /**

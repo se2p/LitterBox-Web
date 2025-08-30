@@ -3,11 +3,11 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 const express = require('express');
-const {convertToSVG} = require('./util');
+const { convertToSVG } = require('./util');
 
 const app = express();
 app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 
 const hostname = "127.0.0.1";
 const port = Number(process.env.SCREENSHOT_PORT ?? 3001);
@@ -16,16 +16,18 @@ const port = Number(process.env.SCREENSHOT_PORT ?? 3001);
 app.post('/svg', (req, res) => {
     const projectData = req.body;
 
+    let sprites = req.query.sprites || [];
+    if (typeof sprites === "string")
+        sprites = [sprites];
+
     convertToSVG(
         projectData,
-        req.query.sprite,
+        sprites,
         req.query.scale,
     )
-        .then((svgString) => {
+        .then((spritesSVG) => {
             res.statusCode = 200;
-            res.json({
-                svg: svgString,
-            });
+            res.json({ screenshots: spritesSVG });
         })
         .catch((err) => {
             console.error(err)

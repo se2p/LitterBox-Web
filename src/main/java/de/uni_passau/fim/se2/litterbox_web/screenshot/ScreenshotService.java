@@ -12,6 +12,9 @@ package de.uni_passau.fim.se2.litterbox_web.screenshot;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -37,27 +40,40 @@ public class ScreenshotService {
     }
 
     /**
-     * Extract the SVG representation of a given sprite.
+     * Extract the SVG representation of a given list of sprites.
      *
-     * @param programJSON Scratch Program
-     * @param spriteName  Name of the sprite that you want to take screenshot of.
-     * @param scale       The zoom level in which the screenshot will be taken.
-     * @return The SVGScreenshot that contains SVG string.
+     * @param request Composition of project JSON, list of sprite names, and zoom level
+     * @return A map of sprite name and its SVG string.
      */
-    public Mono<SVGScreenshot> generateSVGScreenshot(
-        final String programJSON,
-        final String spriteName,
-        final double scale
-    ) {
+    public Mono<ScreenshotResponse> generateSVGScreenshot(final ScreenshotRequest request) {
+        Collection<String> sprites = request.sprites().stream()
+            .map(s -> URLEncoder.encode(s, StandardCharsets.UTF_8))
+            .collect(Collectors.toUnmodifiableSet());
         final URI url = UriComponentsBuilder.fromUri(screenshotConfig.getUrl())
             .path("/svg")
-            .queryParam("sprite", URLEncoder.encode(spriteName, StandardCharsets.UTF_8))
-            .queryParam("scale", scale)
+            .queryParam("sprites", sprites)
+            .queryParam("scale", request.scale())
             .build(true).toUri();
 
-        return externalApiConnector.postEntity(url, programJSON, SVGScreenshot.class);
+        return externalApiConnector.postEntity(url, request.projectJson(), ScreenshotResponse.class);
     }
 
-    public record SVGScreenshot(String svg) {
+    /**
+     * Request to get screenshot
+     * 
+     * @param projectJson JSON string of a Scratch project
+     * @param sprites     List of sprite names to get their screenshots
+     * @param scale       Zoom level
+     */
+    public record ScreenshotRequest(String projectJson, Collection<String> sprites, double scale) {
     }
+
+    /**
+     * Response from the screenshot connector
+     * 
+     * @param screenshots Map of sprite name to SVG
+     */
+    public record ScreenshotResponse(Map<String, String> screenshots) {
+    }
+
 }

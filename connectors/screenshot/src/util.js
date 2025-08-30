@@ -3,13 +3,13 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 const fs = require('node:fs');
-const { JSDOM } = require('jsdom');
+const {JSDOM} = require('jsdom');
 const VM = require('scratch-vm');
 const VMScratchBlocks = require('./lib/blocks');
 const defineDynamicBlock = require('./lib/define-dynamic-block');
 
-const { window } = new JSDOM('<div id="root"></div>');
-const { document, navigator } = window;
+const {window} = new JSDOM('<div id="root"></div>');
+const {document, navigator} = window;
 global.window = window;
 global.document = document;
 global.navigator = navigator;
@@ -39,7 +39,17 @@ const defaultOptions = {
     sounds: false
 };
 
-async function convertToSVG(projectData, sprite, scale) {
+function normaliseSpriteName(renderedTargetOrName) {
+    if (typeof renderedTargetOrName !== "string") {
+        renderedTargetOrName = renderedTargetOrName.sprite.name;
+    }
+
+    return renderedTargetOrName.trim().normalize("NFC");
+}
+
+async function convertToSVG(projectData, spriteNames, scale) {
+    spriteNames = (spriteNames || []).map((name) => normaliseSpriteName(name));
+
     const vm = new VM();
     vm.setCompatibilityMode(true);
 
@@ -56,41 +66,47 @@ async function convertToSVG(projectData, sprite, scale) {
         },
     }
     const workspace = ScratchBlocks.inject(ref, workspaceConfig);
-
+    const extractSvg = handleWorkspaceUpdate(ScratchBlocks, workspace);
     const extensionAddedHandler = handleExtensionAdded(ScratchBlocks);
     vm.addListener('EXTENSION_ADDED', extensionAddedHandler);
 
     await vm.loadProject(projectData);
-    const allTargets = vm.runtime.targets;
-    const target = allTargets.find((t) => t.sprite.name.trim().normalize("NFC") === sprite?.trim().normalize("NFC"));
 
-    return new Promise((resolve, reject) => {
-        if (sprite && !target) {
-            reject(new Error(`Could not find sprite name ${sprite}`));
+    const allSprites = vm.runtime.targets
+        .map((sprite) => [normaliseSpriteName(sprite), sprite]);
+    const sprites = spriteNames.length === 0
+        ? allSprites
+        : allSprites.filter(([name]) => spriteNames.includes(name));
+
+    const svgs = {};
+
+    try {
+        for (const [name, sprite] of sprites) {
+            const svgPromise = new Promise((resolve, reject) => {
+                vm.once('workspaceUpdate', (data) => extractSvg(data)
+                    .then((svg) => resolve(svg))
+                    .catch((err) => reject(err))
+                )
+            });
+
+            if (!sprite || sprite.id === vm.editingTarget.id) {
+                vm.emitWorkspaceUpdate();
+            } else {
+                vm.setEditingTarget(sprite.id);
+            }
+
+            svgs[name] = await svgPromise;
         }
 
-        const handler = data => handleWorkspaceUpdate(ScratchBlocks, workspace)(data)
-            .then((svgString) => resolve(svgString))
-            .catch((err) => reject(err))
-            .finally(() => {
-                console.log('DISPOSE');
-                vm.removeListener('workspaceUpdate', handler);
-            });
-        vm.addListener('workspaceUpdate', handler);
-
-        if (!target || target.id === vm.editingTarget.id)
-            vm.emitWorkspaceUpdate();
-        else
-            vm.setEditingTarget(target.id);
-    })
-        .finally(() => {
-            vm.removeListener('EXTENSION_ADDED', extensionAddedHandler);
-            workspace.dispose();
-            rootElement.removeChild(ref);
-            // Enforce re-inserting CSS
-            document.head.removeChild(document.head.firstElementChild);
-            ScratchBlocks.Css.styleSheet_ = null;
-        });
+        return svgs;
+    } finally {
+        vm.removeListener('EXTENSION_ADDED', extensionAddedHandler);
+        workspace.dispose();
+        rootElement.removeChild(ref);
+        // Enforce re-inserting CSS
+        document.head.removeChild(document.head.firstElementChild);
+        ScratchBlocks.Css.styleSheet_ = null;
+    }
 }
 
 function applyComputedStylesRecursively(window, element) {
@@ -113,7 +129,7 @@ async function embedXlinkImages(svgElement) {
 
     for (const imgElement of images) {
         const xlinkHref = imgElement.getAttribute('xlink:href');
-        if (!xlinkHref 
+        if (!xlinkHref
             || xlinkHref.startsWith('data:image/svg+xml;base64')
             || xlinkHref.startsWith('data:image/png;base64')
         )

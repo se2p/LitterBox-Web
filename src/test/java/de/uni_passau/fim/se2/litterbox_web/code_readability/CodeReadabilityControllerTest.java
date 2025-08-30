@@ -59,7 +59,7 @@ class CodeReadabilityControllerTest extends LitterboxWebIntegrationTest {
     void testComputeReadability(Collection<String> spriteNames)
         throws IOException, InterruptedException {
         final String svg = FixtureLoader.loadFixture("screenshotTest.svg");
-        final var screenshotResponse = new ScreenshotService.SVGScreenshot(svg);
+        final var screenshotResponse = new ScreenshotService.ScreenshotResponse(Map.of("Sprite1", svg));
         enqueueMockWebServerJsonResponse(screenshotResponse);
 
         final var codeReadabilityResponse = new CodeReadabilityService.SpriteReadability(true, 0.76);
