@@ -2,14 +2,14 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-const fs = require('node:fs');
-const {JSDOM} = require('jsdom');
-const VM = require('scratch-vm');
-const VMScratchBlocks = require('./lib/blocks');
-const defineDynamicBlock = require('./lib/define-dynamic-block');
+const fs = require("node:fs");
+const { JSDOM } = require("jsdom");
+const VM = require("scratch-vm");
+const VMScratchBlocks = require("./lib/blocks");
+const defineDynamicBlock = require("./lib/define-dynamic-block");
 
-const {window} = new JSDOM('<div id="root"></div>');
-const {document, navigator} = window;
+const { window } = new JSDOM('<div id="root"></div>');
+const { document, navigator } = window;
 global.window = window;
 global.document = document;
 global.navigator = navigator;
@@ -21,7 +21,7 @@ const defaultSVGSize = {
     height: 1080,
 };
 const defaultOptions = {
-    media: __dirname + '/../node_modules/scratch-blocks/media/',
+    media: __dirname + "/../node_modules/scratch-blocks/media/",
     readOnly: true,
     zoom: {
         controls: true,
@@ -31,12 +31,12 @@ const defaultOptions = {
     grid: {
         spacing: 40,
         length: 2,
-        colour: '#ddd'
+        colour: "#ddd",
     },
     comments: true,
     collapse: false,
     scrollbars: true,
-    sounds: false
+    sounds: false,
 };
 
 function normaliseSpriteName(renderedTargetOrName) {
@@ -53,8 +53,8 @@ async function convertToSVG(projectData, spriteNames, scale) {
     const vm = new VM();
     vm.setCompatibilityMode(true);
 
-    const rootElement = document.getElementById('root');
-    const ref = document.createElement('div', {});
+    const rootElement = document.getElementById("root");
+    const ref = document.createElement("div", {});
     rootElement.appendChild(ref);
 
     const ScratchBlocks = VMScratchBlocks(vm);
@@ -62,31 +62,35 @@ async function convertToSVG(projectData, spriteNames, scale) {
         ...defaultOptions,
         zoom: {
             ...defaultOptions.zoom,
-            startScale: scale || defaultOptions.zoom.startScale
+            startScale: scale || defaultOptions.zoom.startScale,
         },
-    }
+    };
     const workspace = ScratchBlocks.inject(ref, workspaceConfig);
     const extractSvg = handleWorkspaceUpdate(ScratchBlocks, workspace);
     const extensionAddedHandler = handleExtensionAdded(ScratchBlocks);
-    vm.addListener('EXTENSION_ADDED', extensionAddedHandler);
+    vm.addListener("EXTENSION_ADDED", extensionAddedHandler);
 
     await vm.loadProject(projectData);
 
-    const allSprites = vm.runtime.targets
-        .map((sprite) => [normaliseSpriteName(sprite), sprite]);
-    const sprites = spriteNames.length === 0
-        ? allSprites
-        : allSprites.filter(([name]) => spriteNames.includes(name));
+    const allSprites = vm.runtime.targets.map((sprite) => [
+        normaliseSpriteName(sprite),
+        sprite,
+    ]);
+    const sprites =
+        spriteNames.length === 0
+            ? allSprites
+            : allSprites.filter(([name]) => spriteNames.includes(name));
 
     const svgs = {};
 
     try {
         for (const [name, sprite] of sprites) {
             const svgPromise = new Promise((resolve, reject) => {
-                vm.once('workspaceUpdate', (data) => extractSvg(data)
-                    .then((svg) => resolve(svg))
-                    .catch((err) => reject(err))
-                )
+                vm.once("workspaceUpdate", (data) =>
+                    extractSvg(data)
+                        .then((svg) => resolve(svg))
+                        .catch((err) => reject(err)),
+                );
             });
 
             if (!sprite || sprite.id === vm.editingTarget.id) {
@@ -100,7 +104,7 @@ async function convertToSVG(projectData, spriteNames, scale) {
 
         return svgs;
     } finally {
-        vm.removeListener('EXTENSION_ADDED', extensionAddedHandler);
+        vm.removeListener("EXTENSION_ADDED", extensionAddedHandler);
         workspace.dispose();
         rootElement.removeChild(ref);
         // Enforce re-inserting CSS
@@ -124,20 +128,23 @@ function applyComputedStylesRecursively(window, element) {
 }
 
 async function embedXlinkImages(svgElement) {
-
-    const images = svgElement.querySelectorAll('image');
+    const images = svgElement.querySelectorAll("image");
 
     for (const imgElement of images) {
-        const xlinkHref = imgElement.getAttribute('xlink:href');
-        if (!xlinkHref
-            || xlinkHref.startsWith('data:image/svg+xml;base64')
-            || xlinkHref.startsWith('data:image/png;base64')
+        const xlinkHref = imgElement.getAttribute("xlink:href");
+        if (
+            !xlinkHref ||
+            xlinkHref.startsWith("data:image/svg+xml;base64") ||
+            xlinkHref.startsWith("data:image/png;base64")
         )
             continue;
         else {
-            const svgString = fs.readFileSync(xlinkHref, 'utf8');
+            const svgString = fs.readFileSync(xlinkHref, "utf8");
             const base64Image = window.btoa(svgString);
-            imgElement.setAttribute('xlink:href', `data:image/svg+xml;base64,${base64Image}`);
+            imgElement.setAttribute(
+                "xlink:href",
+                `data:image/svg+xml;base64,${base64Image}`,
+            );
         }
     }
 }
@@ -146,20 +153,20 @@ const handleWorkspaceUpdate = (ScratchBlocks, workspace) => async (data) => {
     const dom = ScratchBlocks.Xml.textToDom(data.xml);
     ScratchBlocks.Xml.clearWorkspaceAndLoadFromXml(dom, workspace);
     const svgElement = workspace.getParentSvg();
-    svgElement.setAttribute('width', `${defaultSVGSize.width}px`);
-    svgElement.setAttribute('height', `${defaultSVGSize.height}px`);
+    svgElement.setAttribute("width", `${defaultSVGSize.width}px`);
+    svgElement.setAttribute("height", `${defaultSVGSize.height}px`);
     await embedXlinkImages(svgElement);
     applyComputedStylesRecursively(window, svgElement);
-    return svgElement.outerHTML.replaceAll('&nbsp;', ' ');
-}
+    return svgElement.outerHTML.replaceAll("&nbsp;", " ");
+};
 
 const handleExtensionAdded = (ScratchBlocks) => (categoryInfo) => {
-    console.log('EXTENSION_ADDED');
+    console.log("EXTENSION_ADDED");
     const defineBlocks = (blockInfoArray) => {
         if (blockInfoArray && blockInfoArray.length > 0) {
             const staticBlocksJson = [];
             const dynamicBlocksInfo = [];
-            blockInfoArray.forEach(blockInfo => {
+            blockInfoArray.forEach((blockInfo) => {
                 if (blockInfo.info && blockInfo.info.isDynamic) {
                     dynamicBlocksInfo.push(blockInfo);
                 } else if (blockInfo.json) {
@@ -169,13 +176,17 @@ const handleExtensionAdded = (ScratchBlocks) => (categoryInfo) => {
             });
 
             ScratchBlocks.defineBlocksWithJsonArray(staticBlocksJson);
-            dynamicBlocksInfo.forEach(blockInfo => {
+            dynamicBlocksInfo.forEach((blockInfo) => {
                 // This is creating the block factory / constructor -- NOT a specific instance of the block.
                 // The factory should only know static info about the block: the category info and the opcode.
                 // Anything else will be picked up from the XML attached to the block instance.
                 const extendedOpcode = `${categoryInfo.id}_${blockInfo.info.opcode}`;
-                const blockDefinition =
-                    defineDynamicBlock(ScratchBlocks, categoryInfo, blockInfo, extendedOpcode);
+                const blockDefinition = defineDynamicBlock(
+                    ScratchBlocks,
+                    categoryInfo,
+                    blockInfo,
+                    extendedOpcode,
+                );
                 ScratchBlocks.Blocks[extendedOpcode] = blockDefinition;
             });
         }
@@ -184,12 +195,16 @@ const handleExtensionAdded = (ScratchBlocks) => (categoryInfo) => {
     // scratch-blocks implements a menu or custom field as a special kind of block ("shadow" block)
     // these actually define blocks and MUST run regardless of the UI state
     defineBlocks(
-        Object.getOwnPropertyNames(categoryInfo.customFieldTypes)
-            .map(fieldTypeName => categoryInfo.customFieldTypes[fieldTypeName].scratchBlocksDefinition));
+        Object.getOwnPropertyNames(categoryInfo.customFieldTypes).map(
+            (fieldTypeName) =>
+                categoryInfo.customFieldTypes[fieldTypeName]
+                    .scratchBlocksDefinition,
+        ),
+    );
     defineBlocks(categoryInfo.menus);
     defineBlocks(categoryInfo.blocks);
 };
 
 module.exports = {
     convertToSVG,
-}
+};
