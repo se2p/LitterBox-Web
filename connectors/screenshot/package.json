@@ -16,8 +16,8 @@
   "dependencies": {
     "express": "5.1.0",
     "jsdom": "26.1.0",
-    "scratch-audio": "2.0.171",
-    "scratch-blocks": "1.1.210",
+    "scratch-audio": "2.0.223",
+    "scratch-blocks": "1.1.215",
     "scratch-vm": "5.0.300"
   },
   "bundleDependencies": [
@@ -28,6 +28,6 @@
     "scratch-vm"
   ],
   "devDependencies": {
-    "eslint": "9.29.0"
+    "eslint": "9.34.0"
   }
 }
