@@ -152,6 +152,32 @@ test:code_readability:
         paths:
           - connectors/$SUBPROJECT/**/*
 
+.javascript-lint: &js-lint-template
+  stage: lint
+  image: docker.io/library/node:$NODE_VERSION
+  needs: []
+  parallel:
+    matrix:
+      - NODE_VERSION:
+          - "22"
+        SUBPROJECT:
+          - screenshot
+  before_script:
+    - cd connectors/$SUBPROJECT
+    - npm ci
+  cache: []
+  rules:
+    - if: '$CI_MERGE_REQUEST_TITLE =~ /^(Draft|WIP):/'
+      allow_failure: true
+      changes:
+        paths:
+          - connectors/$SUBPROJECT/**/*
+    - when: on_success
+      allow_failure: false
+      changes:
+        paths:
+          - connectors/$SUBPROJECT/**/*
+
 check-licence-headers:
   <<: *lint-template
   script:
@@ -194,6 +220,12 @@ python-lint:
   artifacts:
     reports:
       codequality: $CI_PROJECT_DIR/ruff-report.json
+
+js-lint:
+  <<: *js-lint-template
+  script:
+    - npm run lint
+    - npm run format:ci
 
 ################################################################################
 # nix
