@@ -1,0 +1,23 @@
+# SPDX-License-Identifier: CC0-1.0
+#
+# SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
+
+cors:
+  allowed-origins:
+    - http://localhost:8601
+
+logging:
+  level:
+    de.uni_passau.fim.se2: DEBUG
+
+management:
+  endpoints:
+    access:
+      default: unrestricted
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+  auto-tag-classes: true
