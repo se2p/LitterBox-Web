@@ -16,7 +16,7 @@
 :xrefstyle: short
 
 // links
-:url-litterbox: https://gitlab.infosun.fim.uni-passau.de/se2/litterbox
+:url-litterbox: https://github.com/se2p/litterbox
 
 
 [abstract]
