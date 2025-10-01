@@ -200,3 +200,8 @@ In case you need to _temporarily_ use a different branch until it has been merge
 
 Except specific files which bear a different mention, LitterBox-Web is licensed under the EUPL-1.2 or later.
 See `LICENSE.txt` or https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12 for more information.
+
+
+== Publications
+
+* B. Fein, F. Obermüller and G. Fraser, "LitterBox+: An Extensible Framework for LLM-enhanced Scratch Static Code Analysis", in Proceedings of the 40th IEEE/ACM International Conference on Automated Software Engineering (ASE ’25), Tool Demonstration Track. IEEE, 2025. https://doi.org/TBD (link:https://arxiv.org/abs/2509.12021[arXiv:2509.12021])
