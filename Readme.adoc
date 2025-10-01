@@ -136,7 +136,7 @@ In `src/main/resources/` you can find `application*.yml` files with the default 
 
 ==== LitterBox LLM Integration
 
-For the LLM-integration of LitterBox (https://github.com/se2p/LitterBox/pull/10), all configuration under `litterbox.llm` will be passed onto LitterBox.
+For the LLM-integration of LitterBox (https://github.com/se2p/LitterBox), all configuration under `litterbox.llm` will be passed onto LitterBox.
 For example, an `application-llm.yml` file like
 [source,yaml]
 ----
@@ -146,7 +146,7 @@ litterbox:
   openai:
     api-key: demo
 ----
-maps directly to the link:https://github.com/se2p/LitterBox/blob/ec150b57c01696f6d7dcd4cc34adcc21cafff370/src/main/resources/scratchllm.properties[LitterBox properties] `litterbox.llm.api` and `litterbox.openai.api-key`.
+maps directly to the link:https://github.com/se2p/LitterBox/blob/a5292d503d7bd17e5abede1b600b3217b8eeee78/src/main/resources/scratchllm.properties[LitterBox properties] `litterbox.llm.api` and `litterbox.openai.api-key`.
 
 
 == Linting
