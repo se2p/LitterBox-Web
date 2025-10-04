@@ -27,6 +27,17 @@ REST API wrapper around link:{url-litterbox}[LitterBox] functionality.
 
 == Development
 
+
+=== Project structure
+
+The package structure and commonly used cross-cutting patterns are described in `Architecture.adoc`.
+The main application can be found in the `litterbox-web/` directory.
+This directory contains a separate readme file with information on how to build and run the application.
+
+This repository also contains some related projects.
+Namely, the `connectors/` directory contains REST-API interfaces to various support tools, like for example a service that can take screenshots of the Scratch workspace.
+
+
 === Contribution process
 
 Issues for feature suggestions, bug reports, questions, and other suggestions are always welcome.
@@ -47,16 +58,6 @@ We do not enforce a minimum coverage.
 Do note however, that code not covered by tests may break without notice.
 When using the code as part of an experiment or evaluation it should therefore be in your own interest to ensure a reproducibly working implementation.
 --
-
-
-=== Project structure
-
-The package structure and commonly used cross-cutting patterns are described in `Architecture.adoc`.
-The main application can be found in the `litterbox-web/` directory.
-This directory contains a separate readme file with information on how to build and run the application.
-
-This repository also contains some related projects.
-Namely, the `connectors/` directory contains REST-API interfaces to various support tools, like for example a service that can take screenshots of the Scratch workspace.
 
 
 == Licence
