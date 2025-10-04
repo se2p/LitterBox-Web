@@ -47,12 +47,8 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
             <url>https://repo1.maven.org/maven2</url>
         </repository>
         <repository>
-            <id>gitlab-litterbox</id>
-            <url>https://gitlab.infosun.fim.uni-passau.de/api/v4/projects/425/packages/maven</url>
-        </repository>
-        <repository>
-            <id>gitlab-embedded-kittens</id>
-            <url>https://gitlab.infosun.fim.uni-passau.de/api/v4/projects/1245/packages/maven</url>
+            <id>gitlab-se2</id>
+            <url>https://gitlab.infosun.fim.uni-passau.de/api/v4/groups/275/-/packages/maven</url>
         </repository>
     </repositories>
 
