@@ -34,7 +34,7 @@
       in rec {
         devenv-up = self.devShells.${system}.default.config.procfileScript;
 
-        default = import ./default.nix {
+        default = import ./litterbox-web/default.nix {
           inherit pkgs jdk litterboxWebVersion;
         };
 
@@ -44,7 +44,8 @@
           pname = "litterbox-web";
           version = litterboxWebVersion;
           nativeBuildInputs = [pkgs.makeWrapper];
-          src = ./.;
+          src = null;
+          dontUnpack = true;
           buildPhase = "";
           installPhase = ''
             makeWrapper ${pkgs.jre}/bin/java $out/bin/litterbox-web \
@@ -116,15 +117,15 @@
                   enable = true;
                   name = "mvn-licence";
                   description = "Run maven license header checker.";
-                  entry = "${pkgs.maven}/bin/mvn license:check";
-                  files = "^src/.*";
+                  entry = "cd litterbox-web && ${pkgs.maven}/bin/mvn license:check";
+                  files = "^litterbox-web/src/.*";
                   pass_filenames = false;
                 };
                 spotless-fmt = {
                   enable = true;
                   name = "spotless-fmt";
                   description = "Check for correct Java source code formatting.";
-                  entry = "${pkgs.maven}/bin/mvn spotless:check";
+                  entry = "cd litterbox-web && ${pkgs.maven}/bin/mvn spotless:check";
                   files = ".*\\.java$";
                   pass_filenames = false;
                 };
@@ -132,7 +133,7 @@
                   enable = true;
                   name = "mvn-checkstyle";
                   description = "Run Checkstyle checker.";
-                  entry = "${pkgs.maven}/bin/mvn checkstyle:check";
+                  entry = "cd litterbox-web && ${pkgs.maven}/bin/mvn checkstyle:check";
                   files = ".*\\.java$";
                   pass_filenames = false;
                 };

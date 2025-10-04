@@ -296,11 +296,11 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
                     <java>
                         <eclipse>
                             <version>4.35</version>
-                            <file>${project.basedir}/config/spotless/spotless-format.xml</file>
+                            <file>${project.basedir}/../config/spotless/spotless-format.xml</file>
                         </eclipse>
 
                         <importOrder>
-                            <file>${project.basedir}/config/spotless/spotless.importorder</file>
+                            <file>${project.basedir}/../config/spotless/spotless.importorder</file>
                         </importOrder>
                     </java>
                 </configuration>
@@ -310,7 +310,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>3.6.0</version>
                 <configuration>
-                    <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+                    <configLocation>${project.basedir}/../config/checkstyle/checkstyle.xml</configLocation>
                     <consoleOutput>true</consoleOutput>
                     <linkXRef>false</linkXRef>
                     <includeTestSourceDirectory>true</includeTestSourceDirectory>

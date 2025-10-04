@@ -9,6 +9,7 @@
 # SPDX-License-Identifier: EUPL-1.2
 #
 
+set -eu
 
 function read_dom() {
     local IFS=\>
@@ -36,6 +37,8 @@ function extract_value() {
     echo "$input" | sed -nE "s#.*$key=\"([^\"]+)\".*#\1#p"
 }
 
+readonly subdir="${1:-}"
+
 workspace=$(pwd)
 first=1
 error_count=0
@@ -46,6 +49,9 @@ while read_dom; do
     entity_type=$(echo "$ENTITY" | awk '{ print $1 }')
     if [[ "$entity_type" = "file" ]]; then
         current_file=$(echo "$ENTITY" | sed -nE "s#.*name=\"$workspace/([^\"]+)\".*#\1#p")
+        if [[ -n "$subdir" ]]; then
+            current_file="${subdir}/${current_file}"
+        fi
     fi
 
     if [[ "$entity_type" = "error" || "$entity_type" = "warning" || "$entity_type" = "info" ]]; then

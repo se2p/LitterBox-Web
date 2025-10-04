@@ -34,30 +34,39 @@ variables:
 cache:
   paths:
     - .m2/repository/
-    - target/
+    - litterbox-web/target/
 
 ################################################################################
 # test
 
-test:
+litterbox-web-test:
   stage: test
   needs: []
   coverage: '/Instruction Coverage: \d+.\d+ %/'
+  before_script:
+    - cd litterbox-web
   script:
     - mvn clean test
     - mvn jacoco:report
-    - sh ./scripts/coverage.sh $JACOCO_CSV_LOCATION
-    - sh ./scripts/coverage_metrics.sh $JACOCO_CSV_LOCATION >> metrics.txt
+  after_script:
+    - sh $CI_PROJECT_DIR/scripts/coverage.sh $JACOCO_CSV_LOCATION
+    - sh $CI_PROJECT_DIR/scripts/coverage_metrics.sh "litterbox_web" $JACOCO_CSV_LOCATION >> metrics.txt
   variables:
-    JACOCO_CSV_LOCATION: "$CI_PROJECT_DIR/target/site/jacoco/jacoco.csv"
+    JACOCO_CSV_LOCATION: "$CI_PROJECT_DIR/litterbox-web/target/site/jacoco/jacoco.csv"
+  rules:
+    - when: on_success
+      allow_failure: false
+      changes:
+        paths:
+          - litterbox-web/**/*
   artifacts:
     reports:
       metrics: metrics.txt
       coverage_report:
         coverage_format: jacoco
-        path: target/site/jacoco/jacoco.xml
+        path: litterbox-web/target/site/jacoco/jacoco.xml
       junit:
-        - target/surefire-reports/TEST-*.xml
+        - litterbox-web/target/surefire-reports/TEST-*.xml
 
 .python-test: &python-test-template
   stage: connector-test
@@ -117,11 +126,20 @@ test:code_readability:
 .lint: &lint-template
   stage: lint
   needs: []
+  before_script:
+    - cd $SUBDIR
+  variables:
+    SUBDIR: "litterbox-web"
   rules:
     - if: '$CI_MERGE_REQUEST_TITLE =~ /^(Draft|WIP):/'
       allow_failure: true
     - when: on_success
       allow_failure: false
+    - when: on_success
+      allow_failure: false
+      changes:
+        paths:
+          - $SUBDIR/**/*
 
 .python-lint: &python-lint-template
   stage: lint
@@ -200,7 +218,7 @@ checkstyle:
   <<: *lint-template
   script:
     - mvn checkstyle:check || true
-    - cat target/checkstyle-result.xml | ./scripts/checkstyle_report.sh > checkstyle-report.json
+    - cat target/checkstyle-result.xml | $CI_PROJECT_DIR/scripts/checkstyle_report.sh "litterbox-web" > checkstyle-report.json
   rules:
     - when: on_success
       allow_failure: true
@@ -208,7 +226,7 @@ checkstyle:
     when: always
     reports:
       codequality:
-        - checkstyle-report.json
+        - litterbox-web/checkstyle-report.json
 
 python-lint:
   <<: *python-lint-template

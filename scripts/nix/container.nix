@@ -11,7 +11,8 @@
   litterbox-web-jar-module-deps = pkgs.stdenv.mkDerivation {
     name = "litterbox-web-jar-module-deps";
     nativeBuildInputs = [jdk litterbox-web-jar];
-    src = ./.;
+    src = null;
+    dontUnpack = true;
     buildPhase = ''
       jar xf ${litterbox-web-jar}/litterbox-web-*.jar
       jdeps \
