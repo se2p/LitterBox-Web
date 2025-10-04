@@ -232,6 +232,7 @@ js-lint:
 
 nix-build-jar:
   stage: nix
+  needs: []
   image: docker.io/nixos/nix:latest
   script:
     - >
