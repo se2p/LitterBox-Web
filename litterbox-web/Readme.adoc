@@ -1,0 +1,174 @@
+////
+  // Copyright (C) 2025 LitterBox-Web contributors
+  //
+  // This file is part of LitterBox-Web.
+  // Licenced under the EUPL-1.2 or later.
+  //
+  // SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
+  // SPDX-License-Identifier: EUPL-1.2
+////
+
+= Readme
+:icons: font
+:lang: en-GB
+:sectnums:
+:toc:
+:xrefstyle: short
+
+// links
+:url-litterbox: https://github.com/se2p/litterbox
+
+
+[abstract]
+--
+REST API wrapper around link:{url-litterbox}[LitterBox] functionality.
+--
+
+
+== Development
+
+=== Project structure
+
+The package structure and commonly used cross-cutting patterns are described in `Architecture.adoc`.
+
+
+=== Running & Debugging
+
+You can start the application directly in your IDE via the main class `LitterboxWebApplication`.
+To enable an automatic reload of the server on code changes, you can start the application with the Spring profile `local` (in IntelliJ Idea: add it to the ‘Active Profiles’ in the run configuration).
+In IntelliJ Idea this then also enables an overview of the REST API endpoints in the ‘Actuator’ tab of the ‘Run’ window.
+
+When using the `local` profile, you can also override specific options by editing the `src/main/resources/application-local.yml`.
+Once such use-case might be a Scratch-UI running on a non-default port.
+In that case add it to the `cors.allowed-origins` list:
+
+.CORS config in `application-local.yml`
+[source,yaml]
+----
+cors:
+  allowed-origins:
+    - http://localhost:0000
+----
+
+When running locally, you can view the available REST endpoints at http://localhost:8080/swagger-ui/index.html.
+The machine-readable specification of the API is available at http://localhost:8080/v3/api-docs.
+You can import this in link:https://www.postman.com/[Postman], link:https://github.com/usebruno/bruno/[Bruno], or other similar API testing tools.
+
+
+== Running the application
+
+=== Executable
+
+==== JAR
+
+[source,bash]
+----
+mvn package spring-boot:repackage
+----
+
+Afterwards, you can start the litterbox-web server using
+[source,bash]
+----
+java -jar target/litterbox-web-${version}.jar
+----
+
+
+==== Building a container image
+
+[source,bash]
+----
+mvn spring-boot:build-image
+# or for an image that precompiles using GraalVM
+mvn spring-boot:build-image -Pnative
+----
+or
+[source,bash]
+----
+docker build -t litterbox-web -f Containerfile .
+----
+
+
+==== Building a GraalVM binary
+
+[source,bash]
+----
+mvn native:compile -Pnative
+----
+
+
+=== Configuration Options
+
+==== Spring Profiles
+
+Features can be enabled or disabled via Spring profiles.
+When running the application via the JAR, run it as `java -Dspring.profiles.active=??? -jar …` to select specific profiles.
+For example, with `spring.profiles.active=prod,llm`, it will automatically load the configuration from `application-prod.yml` and `application-llm.yml` files placed next to the JAR.
+
+[TIP]
+--
+Spring profiles can alternatively be enabled via the environment variable `SPRING_PROFILES_ACTIVE`.
+--
+
+In `src/main/resources/` you can find `application*.yml` files with the default configuration values.
+
+
+==== LitterBox LLM Integration
+
+For the LLM-integration of LitterBox (https://github.com/se2p/LitterBox), all configuration under `litterbox.llm` will be passed onto LitterBox.
+For example, an `application-llm.yml` file like
+[source,yaml]
+----
+litterbox:
+  llm:
+    api: openai
+  openai:
+    api-key: demo
+----
+maps directly to the link:https://github.com/se2p/LitterBox/blob/a5292d503d7bd17e5abede1b600b3217b8eeee78/src/main/resources/scratchllm.properties[LitterBox properties] `litterbox.llm.api` and `litterbox.openai.api-key`.
+
+
+== Linting
+
+Licence headers and automatic code formatting are enforced in the CI pipeline.
+Checkstyle issues should be checked if useful and usually applied, but might be deemed acceptable/ignorable on a case-by-case basis.
+E.g. todo-style comments are shown as warning to make sure you did not forget something before merging but are acceptable to denote that there are going to be follow-up merge requests that implement the missing part.
+
+
+=== Licence headers
+
+You can automatically add missing licence headers using
+[source,bash]
+----
+mvn license:format
+----
+
+
+=== Code formatting
+
+Automatically format the code and sort imports using
+[source,bash]
+----
+mvn spotless:apply
+----
+
+
+=== Checkstyle
+
+Run the Checkstyle linter using
+[source,bash]
+----
+mvn checkstyle:check
+----
+
+
+== Advanced Topics
+
+=== Using a LitterBox version not available on the `master` branch
+
+The continuous integration of LitterBox only publishes the Maven artifacts for commits on the `master` branch.
+In case you need to _temporarily_ use a different branch until it has been merged into `master`, you can use a locally installed LitterBox package:
+
+. Change the version in the `pom.xml` of LitterBox in the relevant branch.
+. Run `mvn install` for LitterBox.
+    This places the packaged JAR into the local Maven repository (`~/.m2/repository/`).
+. You can now change the version of the LitterBox dependency accordingly to use the version you just built.
