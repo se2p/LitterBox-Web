@@ -265,7 +265,8 @@ nix-build-jar:
     - changes:
         - flake.nix
         - flake.lock
-        - pom.xml
+        - litterbox-web/pom.xml
+        - litterbox-web/default.nix
 
 nix-files-formatted:
   stage: nix
