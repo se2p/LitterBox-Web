@@ -37,7 +37,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
         <!-- check https://gitlab.infosun.fim.uni-passau.de/se2/scratch/litterbox/embeddedkittens/-/packages/ for available versions -->
         <embedded-kittens.version>1.1.0-20241121.153450-2</embedded-kittens.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <checkstyle.version>11.0.0</checkstyle.version>
+        <checkstyle.version>12.0.1</checkstyle.version>
         <!-- Spring boot version defined in parent pom.xml -->
     </properties>
 
