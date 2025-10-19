@@ -8,6 +8,6 @@ in
     pname = "screenshot";
     version = "0.1.0";
     src = ./.;
-    npmDepsHash = "sha256-nmzn2pkXxK1n86hjJEL36xm0YfGx0xuNI+bJ0QXW/Wc=";
+    npmDepsHash = "sha256-cYCroWs8eGicqkYWL6TcvbmvyLHcUD+wjgCoSiATApc=";
     dontNpmBuild = true;
   }
