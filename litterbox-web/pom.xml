@@ -130,6 +130,11 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
 
         <!-- other dependencies -->
         <dependency>
+            <groupId>org.jspecify</groupId>
+            <artifactId>jspecify</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
             <groupId>de.uni_passau.fim.se2</groupId>
             <artifactId>Litterbox</artifactId>
             <version>${litterbox.version}</version>

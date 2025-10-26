@@ -9,8 +9,9 @@
  */
 package de.uni_passau.fim.se2.litterbox_web.shared.dto;
 
+import org.jspecify.annotations.Nullable;
+
 import de.uni_passau.fim.se2.litterbox.analytics.IssueType;
-import jakarta.annotation.Nullable;
 
 public record IssueDTO(
     int id,

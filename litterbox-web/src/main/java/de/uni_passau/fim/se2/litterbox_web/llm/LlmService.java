@@ -11,6 +11,7 @@ package de.uni_passau.fim.se2.litterbox_web.llm;
 
 import java.util.Collections;
 
+import org.jspecify.annotations.Nullable;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +33,6 @@ import de.uni_passau.fim.se2.litterbox.llm.prompts.LlmQuery;
 import de.uni_passau.fim.se2.litterbox.llm.prompts.PromptBuilder;
 import de.uni_passau.fim.se2.litterbox.llm.prompts.QueryTarget;
 import de.uni_passau.fim.se2.litterbox_web.shared.dto.IssueDTO;
-import jakarta.annotation.Nullable;
 
 @Lazy
 @Service
