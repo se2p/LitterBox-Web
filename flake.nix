@@ -56,7 +56,7 @@
           };
         };
 
-        litterbox-web-container = import ./scripts/nix/container.nix {
+        litterbox-web-container = import ./litterbox-web/container.nix {
           inherit pkgs jdk litterbox-web-jar;
         };
 
