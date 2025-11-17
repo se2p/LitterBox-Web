@@ -2,12 +2,16 @@
 #
 # SPDX-License-Identifier: EUPL-1.2
 {pkgs, ...}: let
-  node = pkgs.nodejs_20;
+  node = pkgs.nodejs_24;
 in
   pkgs.buildNpmPackage rec {
     pname = "screenshot";
     version = "0.1.0";
     src = ./.;
-    npmDepsHash = "sha256-cYCroWs8eGicqkYWL6TcvbmvyLHcUD+wjgCoSiATApc=";
+    buildInputs = [node];
+    npmDeps = pkgs.importNpmLock {
+      npmRoot = ./.;
+    };
+    npmConfigHook = pkgs.importNpmLock.npmConfigHook;
     dontNpmBuild = true;
   }

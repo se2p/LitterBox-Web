@@ -17,9 +17,9 @@
   },
   "dependencies": {
     "express": "5.1.0",
-    "jsdom": "27.0.1",
-    "scratch-audio": "2.0.241",
-    "scratch-blocks": "1.1.225",
+    "jsdom": "27.2.0",
+    "scratch-audio": "2.0.268",
+    "scratch-blocks": "1.2.5",
     "scratch-vm": "5.0.300"
   },
   "bundleDependencies": [
@@ -30,10 +30,10 @@
     "scratch-vm"
   ],
   "devDependencies": {
-    "@eslint/js": "9.38.0",
-    "eslint": "9.38.0",
+    "@eslint/js": "9.39.1",
+    "eslint": "9.39.1",
     "eslint-config-prettier": "10.1.8",
-    "globals": "16.4.0",
+    "globals": "16.5.0",
     "prettier": "3.6.2"
   }
 }
