@@ -9,6 +9,7 @@
  */
 package de.uni_passau.fim.se2.litterbox_web.llm;
 
+import java.util.Locale;
 import java.util.Optional;
 
 import org.springframework.context.annotation.Lazy;
@@ -34,27 +35,43 @@ public class LlmController {
 
     @PostMapping("issue/explain")
     public IssueDTO getIssueExplanation(@RequestBody final LlmIssueRequest request) {
-        return llmService.getIssueExplanation(request.program, request.issue);
+        return llmService.getIssueExplanation(request.locale, request.program, request.issue);
     }
 
     @PostMapping("issue/fix")
     public LlmIssueFixResponse getIssueFix(@RequestBody final LlmIssueRequest request) {
-        final Program fixedProgram = llmService.fixIssue(request.program, request.issue);
+        final Program fixedProgram = llmService.fixIssue(request.locale, request.program, request.issue);
 
         return new LlmIssueFixResponse(fixedProgram);
     }
 
     @PostMapping("question")
     public String respondToQuestion(@RequestBody final QuestionRequest request) {
-        return llmService.respondToQuestion(request.program, request.spriteName().orElse(null), request.question);
+        return llmService.respondToQuestion(
+            request.locale, request.program, request.spriteName().orElse(null), request.question
+        );
     }
 
-    public record LlmIssueRequest(@JsonScratchProgram Program program, IssueDTO issue) {
+    public record LlmIssueRequest(Locale locale, @JsonScratchProgram Program program, IssueDTO issue) {
+
+        public LlmIssueRequest {
+            if (locale == null) {
+                locale = Locale.ENGLISH;
+            }
+        }
     }
 
     public record LlmIssueFixResponse(@JsonScratchProgram Program fixedProgram) {
     }
 
-    public record QuestionRequest(@JsonScratchProgram Program program, Optional<String> spriteName, String question) {
+    public record QuestionRequest(
+        Locale locale, @JsonScratchProgram Program program, Optional<String> spriteName, String question
+    ) {
+
+        public QuestionRequest {
+            if (locale == null) {
+                locale = Locale.ENGLISH;
+            }
+        }
     }
 }

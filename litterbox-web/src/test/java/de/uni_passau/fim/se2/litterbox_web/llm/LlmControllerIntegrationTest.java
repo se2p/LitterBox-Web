@@ -78,7 +78,7 @@ class LlmControllerIntegrationTest extends LitterboxWebIntegrationTest {
         when(llmApi.query(anyString(), llmRequest.capture())).thenReturn(conversation("llm response"));
 
         final LlmController.QuestionRequest request = new LlmController.QuestionRequest(
-            program, Optional.ofNullable(questionTarget), "Dummy question"
+            null, program, Optional.ofNullable(questionTarget), "Dummy question"
         );
         final String response = requestUtilService.postWithResponseBody(
             "/llm/question", request, String.class, HttpStatus.OK
@@ -109,7 +109,7 @@ class LlmControllerIntegrationTest extends LitterboxWebIntegrationTest {
         final ArgumentCaptor<String> llmRequest = ArgumentCaptor.forClass(String.class);
         when(llmApi.query(anyString(), llmRequest.capture())).thenReturn(conversation("llm response"));
 
-        final LlmController.LlmIssueRequest request = new LlmController.LlmIssueRequest(program, issue);
+        final LlmController.LlmIssueRequest request = new LlmController.LlmIssueRequest(Locale.ENGLISH, program, issue);
         final IssueDTO response = requestUtilService.postWithResponseBody(
             "/llm/issue/explain", request, IssueDTO.class, HttpStatus.OK
         );
@@ -155,7 +155,7 @@ class LlmControllerIntegrationTest extends LitterboxWebIntegrationTest {
             move (10) steps
             """.stripIndent()));
 
-        final LlmController.LlmIssueRequest request = new LlmController.LlmIssueRequest(program, issue);
+        final LlmController.LlmIssueRequest request = new LlmController.LlmIssueRequest(null, program, issue);
         final LlmController.LlmIssueFixResponse response = requestUtilService.postWithResponseBody(
             "/llm/issue/fix", request, LlmController.LlmIssueFixResponse.class, HttpStatus.OK
         );
