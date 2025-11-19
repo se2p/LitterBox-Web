@@ -10,6 +10,7 @@
 package de.uni_passau.fim.se2.litterbox_web.llm;
 
 import java.util.Collections;
+import java.util.Locale;
 
 import org.jspecify.annotations.Nullable;
 import org.springframework.context.annotation.Lazy;
@@ -32,6 +33,8 @@ import de.uni_passau.fim.se2.litterbox.llm.prompts.LlmPromptProvider;
 import de.uni_passau.fim.se2.litterbox.llm.prompts.LlmQuery;
 import de.uni_passau.fim.se2.litterbox.llm.prompts.PromptBuilder;
 import de.uni_passau.fim.se2.litterbox.llm.prompts.QueryTarget;
+import de.uni_passau.fim.se2.litterbox.utils.IssueTranslator;
+import de.uni_passau.fim.se2.litterbox.utils.IssueTranslatorFactory;
 import de.uni_passau.fim.se2.litterbox_web.shared.dto.IssueDTO;
 
 @Lazy
@@ -40,7 +43,9 @@ public class LlmService {
 
     private final LlmApi llmApi;
 
-    private final PromptBuilder promptBuilder = LlmPromptProvider.get();
+    private final IssueTranslator translator = IssueTranslatorFactory.getIssueTranslator(Locale.ENGLISH);
+
+    private final PromptBuilder promptBuilder = LlmPromptProvider.get(translator);
 
     public LlmService(final LlmApi llmApi) {
         this.llmApi = llmApi;
@@ -55,13 +60,13 @@ public class LlmService {
      */
     public IssueDTO getIssueExplanation(final Program program, final IssueDTO issueDto) {
         final LLMIssueEffectExplainer explainer = new LLMIssueEffectExplainer(
-            llmApi, promptBuilder, new QueryTarget.SpriteTarget(issueDto.sprite())
+            translator, llmApi, promptBuilder, new QueryTarget.SpriteTarget(issueDto.sprite())
         );
         final Issue issue = fromIssueDto(program, issueDto);
         final Issue newIssue = explainer.apply(program, Collections.singleton(issue)).stream()
             .findFirst()
             .orElseThrow();
-        return issueDto.withExplanation(newIssue.getHintText());
+        return issueDto.withExplanation(newIssue.getHintText(translator));
     }
 
     private Issue fromIssueDto(final Program program, final IssueDTO issueDto) {

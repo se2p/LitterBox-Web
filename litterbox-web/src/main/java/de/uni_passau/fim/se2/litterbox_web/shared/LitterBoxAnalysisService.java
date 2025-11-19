@@ -23,6 +23,7 @@ import de.uni_passau.fim.se2.litterbox.ast.model.metadata.resources.ImageMetadat
 import de.uni_passau.fim.se2.litterbox.ast.util.AstNodeUtil;
 import de.uni_passau.fim.se2.litterbox.ast.visitor.ScratchBlocksVisitor;
 import de.uni_passau.fim.se2.litterbox.utils.IssueTranslator;
+import de.uni_passau.fim.se2.litterbox.utils.IssueTranslatorFactory;
 import de.uni_passau.fim.se2.litterbox_web.shared.dto.IssueDTO;
 
 @Service
@@ -36,13 +37,12 @@ public class LitterBoxAnalysisService {
      * @param detectors Programm analyzer detectors for filtering found issues.
      * @return The found LitterBox issues.
      */
-    public synchronized Set<IssueDTO> getIssues(final Program program, final Locale locale, final String detectors) {
-        // synchronized method: we are mutating global state in the singleton here
-        // NOTE: convertToIssueInfo also uses the translator with `issue.getTranslatedFinderName()`. Therefore, we
-        // cannot limit the synchronized block to only `getLitterBoxIssues()`.
-        IssueTranslator.getInstance().setLanguage(locale.getLanguage());
+    public Set<IssueDTO> getIssues(final Program program, final Locale locale, final String detectors) {
+        final IssueTranslator translator = IssueTranslatorFactory.getIssueTranslator(locale);
 
-        return getLitterBoxIssues(program, detectors).stream().map(this::convertIssue).collect(Collectors.toSet());
+        return getLitterBoxIssues(program, detectors).stream()
+            .map(issue -> convertIssue(translator, issue))
+            .collect(Collectors.toSet());
     }
 
     private Set<Issue> getLitterBoxIssues(final Program program, final String detectors) {
@@ -50,13 +50,13 @@ public class LitterBoxAnalysisService {
         return bugAnalyzer.analyze(program);
     }
 
-    private IssueDTO convertIssue(final Issue issue) {
+    private IssueDTO convertIssue(final IssueTranslator translator, final Issue issue) {
         return new IssueDTO(
             issue.getId(),
             issue.getIssueType(),
             issue.getFinderName(),
-            issue.getTranslatedFinderName(),
-            issue.getHintText(),
+            issue.getTranslatedFinderName(translator),
+            issue.getHintText(translator),
             issue.getActorName(),
             getScriptId(issue),
             getBlockId(issue),
