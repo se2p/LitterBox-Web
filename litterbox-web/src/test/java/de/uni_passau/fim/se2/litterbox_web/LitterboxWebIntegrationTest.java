@@ -15,26 +15,24 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.uni_passau.fim.se2.litterbox_web.shared.Profiles;
 import mockwebserver3.MockResponse;
 import mockwebserver3.MockWebServer;
+import tools.jackson.databind.json.JsonMapper;
 
 @SpringBootTest
-@AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles({ "test", "metrics", "llm", Profiles.CODE_COMPLETION, Profiles.CODE_READABILITY })
 public abstract class LitterboxWebIntegrationTest {
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private JsonMapper jsonMapper;
 
     protected static MockWebServer mockWebServer;
 
@@ -50,7 +48,7 @@ public abstract class LitterboxWebIntegrationTest {
     }
 
     protected <T> void enqueueMockWebServerJsonResponse(final T response) throws JsonProcessingException {
-        final String responseJson = objectMapper.writeValueAsString(response);
+        final String responseJson = jsonMapper.writeValueAsString(response);
         mockWebServer.enqueue(
             new MockResponse.Builder()
                 .body(responseJson)

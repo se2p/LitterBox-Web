@@ -11,11 +11,8 @@ package de.uni_passau.fim.se2.litterbox_web.linter;
 
 import java.util.Locale;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import de.uni_passau.fim.se2.litterbox.ast.model.Program;
-import de.uni_passau.fim.se2.litterbox_web.shared.ScratchProgramConverter;
+import de.uni_passau.fim.se2.litterbox_web.shared.JsonScratchProgram;
 
 /**
  * Stores all required data to analyse a SCRATCH program submitted by the tutorial system.
@@ -27,9 +24,7 @@ import de.uni_passau.fim.se2.litterbox_web.shared.ScratchProgramConverter;
 public record LinterRequest(
     String language,
     String detectors,
-    @JsonSerialize(converter = ScratchProgramConverter.SerializeConverter.class) @JsonDeserialize(
-        converter = ScratchProgramConverter.DeserializeConverter.class
-    ) Program program
+    @JsonScratchProgram Program program
 ) {
 
     public LinterRequest {

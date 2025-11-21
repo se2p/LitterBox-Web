@@ -15,8 +15,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonSerialize;
 
 /**
  * Annotation for attributes that should be automatically converted from/to a Scratch project JSON.

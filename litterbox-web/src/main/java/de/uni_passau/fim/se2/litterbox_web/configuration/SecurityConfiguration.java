@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authorization.AuthorizationDecision;
+import org.springframework.security.authorization.AuthorizationResult;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -57,7 +58,7 @@ public class SecurityConfiguration {
             .pathMatchers("/**").permitAll();
     }
 
-    private Mono<AuthorizationDecision> checkMetricsAccess(final AuthorizationContext context) {
+    private Mono<AuthorizationResult> checkMetricsAccess(final AuthorizationContext context) {
         final InetSocketAddress remoteAddr = context.getExchange().getRequest().getRemoteAddress();
         if (remoteAddr == null) {
             return Mono.just(new AuthorizationDecision(false));

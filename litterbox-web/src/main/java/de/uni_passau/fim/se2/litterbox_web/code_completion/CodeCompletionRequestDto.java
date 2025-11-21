@@ -11,16 +11,11 @@ package de.uni_passau.fim.se2.litterbox_web.code_completion;
 
 import java.util.Objects;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import de.uni_passau.fim.se2.litterbox.ast.model.Program;
-import de.uni_passau.fim.se2.litterbox_web.shared.ScratchProgramConverter;
+import de.uni_passau.fim.se2.litterbox_web.shared.JsonScratchProgram;
 
 public record CodeCompletionRequestDto(
-    @JsonSerialize(converter = ScratchProgramConverter.SerializeConverter.class) @JsonDeserialize(
-        converter = ScratchProgramConverter.DeserializeConverter.class
-    ) Program program,
+    @JsonScratchProgram Program program,
     CodeCompletionModelConfig.CodeCompletionModelType model,
     int topkPredictions
     // note: probably needs some additional attributes to be actually usable
