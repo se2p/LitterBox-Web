@@ -206,6 +206,7 @@ check-licence-headers-reuse:
   image:
     name: docker.io/fsfe/reuse
     entrypoint: [""]
+  cache: []
   script:
     - reuse lint
 
@@ -260,6 +261,7 @@ nix-build-jar:
       build
       --print-build-logs
       .#litterbox-web-jar
+  cache: []
   rules:
     - if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"
     - changes:
@@ -280,6 +282,7 @@ nix-files-formatted:
       run
       nixpkgs#alejandra
       .
+  cache: []
   rules:
     - changes:
         - "**/*.nix"
