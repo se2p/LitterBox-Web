@@ -15,7 +15,7 @@ run mvn package -DskipTests
 
 ################################################################################
 
-from docker.io/library/eclipse-temurin:21-alpine
+from docker.io/library/eclipse-temurin:25-alpine
 
 run : \
     && addgroup -S spring \
