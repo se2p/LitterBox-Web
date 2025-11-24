@@ -70,20 +70,19 @@ async function convertToSVG(projectData, spriteNames, scale) {
     const extensionAddedHandler = handleExtensionAdded(ScratchBlocks);
     vm.addListener("EXTENSION_ADDED", extensionAddedHandler);
 
-    await vm.loadProject(projectData);
-
-    const allSprites = vm.runtime.targets.map((sprite) => [
-        normaliseSpriteName(sprite),
-        sprite,
-    ]);
-    const sprites =
-        spriteNames.length === 0
-            ? allSprites
-            : allSprites.filter(([name]) => spriteNames.includes(name));
-
-    const svgs = {};
-
     try {
+        await vm.loadProject(projectData);
+
+        const allSprites = vm.runtime.targets.map((sprite) => [
+            normaliseSpriteName(sprite),
+            sprite,
+        ]);
+        const sprites =
+            spriteNames.length === 0
+                ? allSprites
+                : allSprites.filter(([name]) => spriteNames.includes(name));
+
+        const svgs = {};
         for (const [name, sprite] of sprites) {
             const svgPromise = new Promise((resolve, reject) => {
                 vm.once("workspaceUpdate", (data) =>
@@ -105,11 +104,16 @@ async function convertToSVG(projectData, spriteNames, scale) {
         return svgs;
     } finally {
         vm.removeListener("EXTENSION_ADDED", extensionAddedHandler);
-        workspace.dispose();
         rootElement.removeChild(ref);
         // Enforce re-inserting CSS
         document.head.removeChild(document.head.firstElementChild);
         ScratchBlocks.Css.styleSheet_ = null;
+        try {
+            workspace.dispose();
+        } catch (error) {
+            // This happens when there was workspace update error.
+            // However, it's still safe to ignore this error.
+        }
     }
 }
 
@@ -151,7 +155,14 @@ async function embedXlinkImages(svgElement) {
 
 const handleWorkspaceUpdate = (ScratchBlocks, workspace) => async (data) => {
     const dom = ScratchBlocks.Xml.textToDom(data.xml);
-    ScratchBlocks.Xml.clearWorkspaceAndLoadFromXml(dom, workspace);
+    try {
+        ScratchBlocks.Xml.clearWorkspaceAndLoadFromXml(dom, workspace);
+    } catch (error) {
+        if (error.message) {
+            error.message = `Workspace Update Error: ${error.message}`;
+        }
+        throw error;
+    }
     const svgElement = workspace.getParentSvg();
     svgElement.setAttribute("width", `${defaultSVGSize.width}px`);
     svgElement.setAttribute("height", `${defaultSVGSize.height}px`);
