@@ -89,7 +89,7 @@ class RobertaSemanticEncoder(BaseModel):
             truncation=True,
         )
         batch_encoded.to(self.device)
-        outputs = self.roberta_model(**batch_encoded)  # type: ignore[operator]
+        outputs = self.roberta_model(**batch_encoded)
         return outputs.last_hidden_state
 
 
