@@ -71,6 +71,7 @@ litterbox-web-test:
 .python-test: &python-test-template
   stage: connector-test
   image: docker.io/library/python:$PYTHON_VERSION
+  needs: []
   before_script:
     - pip install uv
     - cd connectors/$SUBPROJECT
@@ -96,10 +97,15 @@ litterbox-web-test:
 
 test:code_readability:
   <<: *python-test-template
+  tags:
+    # our CI VMs emulate an older CPU that does not work with more recent
+    # versions of PyTorch
+    - bare-metal
   parallel:
     matrix:
       - PYTHON_VERSION:
           - "3.13"
+          - "3.14"
   variables:
     MODEL_VERSION_ID: 5
     SUBPROJECT: code_readability
