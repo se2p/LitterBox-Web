@@ -123,7 +123,17 @@ test:code_readability:
 ################################################################################
 # lint
 
-.lint: &lint-template
+check-licence-headers-reuse:
+  stage: lint
+  image:
+    name: docker.io/fsfe/reuse
+    entrypoint: [""]
+  needs: []
+  cache: []
+  script:
+    - reuse lint
+
+.java-lint: &java-lint-template
   stage: lint
   needs: []
   before_script:
@@ -133,8 +143,14 @@ test:code_readability:
   rules:
     - if: '$CI_MERGE_REQUEST_TITLE =~ /^(Draft|WIP):/'
       allow_failure: true
+      changes:
+        paths:
+          - $SUBDIR/**/*
     - when: on_success
       allow_failure: false
+      changes:
+        paths:
+          - $SUBDIR/**/*
     - when: on_success
       allow_failure: false
       changes:
@@ -197,32 +213,26 @@ test:code_readability:
           - connectors/$SUBPROJECT/**/*
 
 check-licence-headers:
-  <<: *lint-template
+  <<: *java-lint-template
   script:
     - mvn license:check
 
-check-licence-headers-reuse:
-  <<: *lint-template
-  image:
-    name: docker.io/fsfe/reuse
-    entrypoint: [""]
-  cache: []
-  script:
-    - reuse lint
-
 check-formatting:
-  <<: *lint-template
+  <<: *java-lint-template
   script:
     - mvn spotless:check
 
 checkstyle:
-  <<: *lint-template
+  <<: *java-lint-template
   script:
     - mvn checkstyle:check || true
     - cat target/checkstyle-result.xml | $CI_PROJECT_DIR/scripts/checkstyle_report.sh "litterbox-web" > checkstyle-report.json
   rules:
     - when: on_success
       allow_failure: true
+      changes:
+        paths:
+          - litterbox-web/**/*
   artifacts:
     when: always
     reports:
