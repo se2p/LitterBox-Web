@@ -23,7 +23,7 @@ import de.uni_passau.fim.se2.litterbox.analytics.Issue;
 import de.uni_passau.fim.se2.litterbox.analytics.IssueBuilder;
 import de.uni_passau.fim.se2.litterbox.analytics.IssueTool;
 import de.uni_passau.fim.se2.litterbox.analytics.llm.LLMIssueEffectExplainer;
-import de.uni_passau.fim.se2.litterbox.analytics.llm.LLMProgramImprovementAnalyzer;
+import de.uni_passau.fim.se2.litterbox.analytics.llm.LLMProgramFixAnalyzer;
 import de.uni_passau.fim.se2.litterbox.analytics.llm.LLMProgramQueryAnalyzer;
 import de.uni_passau.fim.se2.litterbox.ast.model.ActorDefinition;
 import de.uni_passau.fim.se2.litterbox.ast.model.Program;
@@ -142,7 +142,7 @@ public class LlmService {
 
         final Issue issue = fromIssueDto(program, issueDto);
         final QueryTarget target = targetFromIssue(issueDto);
-        final LLMProgramImprovementAnalyzer analyzer = new LLMProgramImprovementAnalyzer(
+        final LLMProgramFixAnalyzer analyzer = new LLMProgramFixAnalyzer(
             llmApi, promptBuilder, target, Collections.singleton(issue)
         );
 

@@ -24,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import de.uni_passau.fim.se2.litterbox.ast.model.Program;
 import de.uni_passau.fim.se2.litterbox_web.LitterboxWebIntegrationTest;
-import de.uni_passau.fim.se2.litterbox_web.shared.exceptions.IOStatusException;
 import de.uni_passau.fim.se2.litterbox_web.shared.exceptions.ParseStatusException;
 import de.uni_passau.fim.se2.litterbox_web.util.FixtureLoader;
 
@@ -38,7 +37,7 @@ class Scratch3ParserServiceTest extends LitterboxWebIntegrationTest {
     void handleErrorNonExistingFile(final String filename) {
         final Path file = Path.of(filename);
         assertThatThrownBy(() -> parserService.parseFromFile(file))
-            .isInstanceOf(IOStatusException.class);
+            .isInstanceOf(ParseStatusException.class);
     }
 
     @Test

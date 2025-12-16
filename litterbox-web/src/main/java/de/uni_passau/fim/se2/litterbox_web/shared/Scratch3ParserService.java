@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import de.uni_passau.fim.se2.litterbox.ast.ParsingException;
 import de.uni_passau.fim.se2.litterbox.ast.model.Program;
 import de.uni_passau.fim.se2.litterbox.ast.parser.Scratch3Parser;
-import de.uni_passau.fim.se2.litterbox_web.shared.exceptions.IOStatusException;
 import de.uni_passau.fim.se2.litterbox_web.shared.exceptions.ParseStatusException;
 
 /**
@@ -43,7 +42,7 @@ public class Scratch3ParserService {
         }
         catch (ParsingException | NullPointerException e) {
             if (e.getCause() instanceof IOException ioException) {
-                throw new IOStatusException("Could not read Scratch project.", ioException);
+                throw new ParseStatusException("Could not read Scratch project.", ioException);
             }
             else {
                 throw new ParseStatusException("Could not parse Scratch project!", e);
