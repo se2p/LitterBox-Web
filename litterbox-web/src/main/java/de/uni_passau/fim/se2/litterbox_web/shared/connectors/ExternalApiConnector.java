@@ -11,6 +11,7 @@ package de.uni_passau.fim.se2.litterbox_web.shared.connectors;
 
 import java.net.URI;
 
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.unit.DataSize;
@@ -42,6 +43,11 @@ public class ExternalApiConnector {
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(entity)
             .retrieve()
+            .onStatus(
+                HttpStatusCode::is4xxClientError,
+                response -> response.bodyToMono(String.class)
+                    .map(bodyString -> new HttpClientBadRequestException(response.statusCode(), uri, bodyString))
+            )
             .bodyToMono(returnType);
     }
 }

@@ -60,7 +60,7 @@ public class ScreenshotService {
 
     /**
      * Request to get screenshot
-     * 
+     *
      * @param projectJson JSON string of a Scratch project
      * @param sprites     List of sprite names to get their screenshots
      * @param scale       Zoom level
@@ -70,7 +70,7 @@ public class ScreenshotService {
 
     /**
      * Response from the screenshot connector
-     * 
+     *
      * @param screenshots Map of sprite name to SVG
      */
     public record ScreenshotResponse(Map<String, String> screenshots) {

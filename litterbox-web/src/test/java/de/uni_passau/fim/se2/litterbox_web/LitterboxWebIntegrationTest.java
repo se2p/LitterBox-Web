@@ -16,10 +16,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 import de.uni_passau.fim.se2.litterbox_web.shared.Profiles;
 import mockwebserver3.MockResponse;
@@ -47,11 +47,16 @@ public abstract class LitterboxWebIntegrationTest {
         mockWebServer.close();
     }
 
-    protected <T> void enqueueMockWebServerJsonResponse(final T response) throws JsonProcessingException {
+    protected <T> void enqueueMockWebServerJsonResponse(final T response) {
+        enqueueMockWebServerJsonResponse(response, HttpStatus.OK);
+    }
+
+    protected <T> void enqueueMockWebServerJsonResponse(final T response, final HttpStatusCode statusCode) {
         final String responseJson = jsonMapper.writeValueAsString(response);
         mockWebServer.enqueue(
             new MockResponse.Builder()
                 .body(responseJson)
+                .code(statusCode.value())
                 .addHeader("Content-Type", "application/json")
                 .build()
         );

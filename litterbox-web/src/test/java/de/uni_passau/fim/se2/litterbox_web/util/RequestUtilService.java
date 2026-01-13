@@ -80,10 +80,6 @@ public class RequestUtilService {
             .expectBody(responseType)
             .returnResult();
 
-        if (!expectedStatus.is2xxSuccessful()) {
-            return null;
-        }
-
         return response.getResponseBody();
     }
 
@@ -122,10 +118,6 @@ public class RequestUtilService {
             .expectStatus().isEqualTo(expectedStatus)
             .expectBody(responseType)
             .returnResult();
-
-        if (!expectedStatus.is2xxSuccessful()) {
-            return null;
-        }
 
         return response.getResponseBody();
     }
@@ -169,10 +161,6 @@ public class RequestUtilService {
             .expectBody(responseType)
             .returnResult();
 
-        if (!expectedStatus.is2xxSuccessful()) {
-            return null;
-        }
-
         return response.getResponseBody();
     }
 
@@ -213,13 +201,7 @@ public class RequestUtilService {
             .expectStatus().isEqualTo(expectedStatus)
             .expectHeader().contentType(MediaType.APPLICATION_JSON);
 
-        final List<R> response = getListResponse(listElementType, responseSpec);
-
-        if (!expectedStatus.is2xxSuccessful() || response == null) {
-            return null;
-        }
-
-        return response;
+        return getListResponse(listElementType, responseSpec);
     }
 
     @SuppressWarnings("unchecked")

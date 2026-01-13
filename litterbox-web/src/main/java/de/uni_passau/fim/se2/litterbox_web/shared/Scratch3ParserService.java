@@ -74,7 +74,7 @@ public class Scratch3ParserService {
         try {
             return parser.parseString(programName, projectJson);
         }
-        catch (ParsingException | NullPointerException e) {
+        catch (ParsingException | NullPointerException | OutOfMemoryError e) {
             throw new ParseStatusException("Could not parse Scratch project!", e);
         }
     }
