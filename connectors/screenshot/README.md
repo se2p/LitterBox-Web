@@ -5,6 +5,13 @@ SPDX-License-Identifier: EUPL-1.2
 -->
 
 # Readme
+
+Node.js 24 is required. If you use nvm you can simply:
+```bash
+nvm install
+nvm use
+```
+
 Install dependencies
 ```bash
 npm install
