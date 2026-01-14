@@ -166,7 +166,7 @@ public class CodeReadabilityService {
 
     private TokenizingProgramPreprocessor buildPreprocessor() {
         final MLPreprocessorCommonOptions options = new MLPreprocessorCommonOptions(
-            null, false, true, true,
+            null, true, true, true,
             // Not normalize sprite name for retrieving later
             actor -> Optional.ofNullable(actor.getIdent().getName())
         );
