@@ -6,7 +6,7 @@ from pydantic import BaseModel, constr
 
 
 class VisualFeature(BaseModel):
-    svg: constr(pattern="^<svg.*</svg>$", strict=True)  # type: ignore[valid-type]
+    svg: constr(pattern="(?s)^<svg.*</svg>$", strict=True)  # type: ignore[valid-type]
 
 
 class CodeReadabilityRequest(VisualFeature):
