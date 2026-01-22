@@ -3,7 +3,8 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 const express = require("express");
-const { convertToSVG } = require("./util");
+const path = require("path");
+const { fork } = require("child_process");
 
 const app = express();
 app.use(express.json({ limit: "50mb" }));
@@ -12,6 +13,25 @@ app.use(express.urlencoded({ extended: true }));
 const hostname = "127.0.0.1";
 const port = Number(process.env.SCREENSHOT_PORT ?? 3001);
 
+function screenshot(projectData, spriteNames, scale) {
+    return new Promise((resolve, reject) => {
+        const child = fork(path.join(__dirname, "worker.js"));
+
+        child.on("message", (result) => {
+            if (result.ok) {
+                resolve(result.screenshots);
+            } else {
+                reject({
+                    message: result.message,
+                    stack: result.stack,
+                });
+            }
+        });
+
+        child.send({ projectData, spriteNames, scale });
+    });
+}
+
 // Create HTTP server
 app.post("/svg", (req, res) => {
     const projectData = req.body;
@@ -19,7 +39,7 @@ app.post("/svg", (req, res) => {
     let sprites = req.query.sprites || [];
     if (typeof sprites === "string") sprites = [sprites];
 
-    convertToSVG(projectData, sprites, req.query.scale)
+    screenshot(projectData, sprites, req.query.scale)
         .then((spritesSVG) => {
             res.statusCode = 200;
             res.json({ screenshots: spritesSVG });
