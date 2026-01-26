@@ -41,7 +41,7 @@ class LinterControllerIntegrationTest extends LitterboxWebIntegrationTest {
     @Test
     void getLitterboxAnalysis() throws Exception {
         final List<IssueDTO> issues = requestFeedback(DEFAULT_FIXTURE, "english");
-        assertThat(issues).hasSize(4);
+        assertThat(issues).hasSize(5);
     }
 
     @Test
@@ -63,7 +63,7 @@ class LinterControllerIntegrationTest extends LitterboxWebIntegrationTest {
     @ValueSource(strings = { "de", "en" })
     void selectLanguageForResponse(final String language) throws Exception {
         final List<IssueDTO> issues = requestFeedback(DEFAULT_FIXTURE, language);
-        assertThat(issues).hasSize(4);
+        assertThat(issues).hasSize(5);
 
         final String issueName;
         if ("en".equals(language)) {
@@ -85,7 +85,7 @@ class LinterControllerIntegrationTest extends LitterboxWebIntegrationTest {
         );
 
         assertThat(issues)
-            .hasSize(11)
+            .hasSize(12)
             .anyMatch(issue -> "Sprite Naming".equals(issue.translatedFinderName()))
             .anyMatch(issue -> "xbZ^vS,ML7Dqi,H3G=rc".equals(issue.hatBlockId()));
     }
@@ -100,7 +100,7 @@ class LinterControllerIntegrationTest extends LitterboxWebIntegrationTest {
         );
 
         assertThat(issues)
-            .hasSize(4)
+            .hasSize(5)
             .allMatch(issue -> Set.of(IssueType.BUG, IssueType.SMELL).contains(issue.type()));
     }
 
@@ -114,7 +114,7 @@ class LinterControllerIntegrationTest extends LitterboxWebIntegrationTest {
         );
 
         assertThat(issues)
-            .hasSize(11)
+            .hasSize(12)
             .anyMatch(issue -> "Bedeutungsloser Figurenname".equals(issue.translatedFinderName()))
             .anyMatch(issue -> "xbZ^vS,ML7Dqi,H3G=rc".equals(issue.hatBlockId()));
     }
@@ -129,7 +129,7 @@ class LinterControllerIntegrationTest extends LitterboxWebIntegrationTest {
         );
 
         assertThat(issues)
-            .hasSize(3)
+            .hasSize(4)
             .allMatch(issue -> IssueType.BUG.equals(issue.type()));
     }
 

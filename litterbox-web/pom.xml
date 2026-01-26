@@ -33,9 +33,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
         <java.version>21</java.version>
         <maven.compiler.release>21</maven.compiler.release>
         <!-- check https://gitlab.infosun.fim.uni-passau.de/se2/scratch/litterbox/litterbox/-/packages/ for available versions -->
-        <litterbox.version>1.11</litterbox.version>
-        <!-- check https://gitlab.infosun.fim.uni-passau.de/se2/scratch/litterbox/embeddedkittens/-/packages/ for available versions -->
-        <embedded-kittens.version>1.1.0-20241121.153450-2</embedded-kittens.version>
+        <litterbox.version>1.12-20260123.205511-17</litterbox.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <checkstyle.version>12.1.2</checkstyle.version>
         <!-- Spring boot version defined in parent pom.xml -->
@@ -134,11 +132,6 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
             <groupId>de.uni_passau.fim.se2</groupId>
             <artifactId>Litterbox</artifactId>
             <version>${litterbox.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>de.uni_passau.fim.se2</groupId>
-            <artifactId>embedded-kittens</artifactId>
-            <version>${embedded-kittens.version}</version>
         </dependency>
 
         <!-- test dependencies -->

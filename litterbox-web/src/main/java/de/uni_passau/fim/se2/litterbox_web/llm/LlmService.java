@@ -12,8 +12,10 @@ package de.uni_passau.fim.se2.litterbox_web.llm;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -25,11 +27,12 @@ import de.uni_passau.fim.se2.litterbox.analytics.IssueTool;
 import de.uni_passau.fim.se2.litterbox.analytics.llm.LLMIssueEffectExplainer;
 import de.uni_passau.fim.se2.litterbox.analytics.llm.LLMProgramFixAnalyzer;
 import de.uni_passau.fim.se2.litterbox.analytics.llm.LLMProgramQueryAnalyzer;
+import de.uni_passau.fim.se2.litterbox.ast.model.ASTNode;
 import de.uni_passau.fim.se2.litterbox.ast.model.ActorDefinition;
 import de.uni_passau.fim.se2.litterbox.ast.model.Program;
 import de.uni_passau.fim.se2.litterbox.ast.model.Script;
 import de.uni_passau.fim.se2.litterbox.ast.util.AstNodeUtil;
-import de.uni_passau.fim.se2.litterbox.ast.visitor.BlockByIdFinder;
+import de.uni_passau.fim.se2.litterbox.ast.util.BlockIdNodeFinder;
 import de.uni_passau.fim.se2.litterbox.llm.api.LlmApi;
 import de.uni_passau.fim.se2.litterbox.llm.prompts.LlmPromptProvider;
 import de.uni_passau.fim.se2.litterbox.llm.prompts.LlmQuery;
@@ -93,11 +96,11 @@ public class LlmService {
 
         if (actor != null && issueDto.blockId() != null) {
             issueBuilder = issueBuilder.withCurrentNode(
-                BlockByIdFinder.findBlock(actor, issueDto.blockId()).orElse(null)
+                findNodeById(program, issueDto.blockId()).orElse(null)
             );
         }
         if (actor != null && issueDto.hatBlockId() != null) {
-            final Script script = BlockByIdFinder.findBlock(actor, issueDto.hatBlockId())
+            final Script script = findNodeById(program, issueDto.hatBlockId())
                 .map(hat -> AstNodeUtil.findParent(hat, Script.class))
                 .orElse(null);
             issueBuilder = issueBuilder.withScript(script);
@@ -147,6 +150,10 @@ public class LlmService {
         );
 
         return analyzer.analyze(program);
+    }
+
+    private Optional<ASTNode> findNodeById(@NonNull final Program program, @NonNull final String blockId) {
+        return BlockIdNodeFinder.find(program, blockId).map(BlockIdNodeFinder.NodeContext::node);
     }
 
     private QueryTarget targetFromSpriteName(@Nullable final String sprite) {
