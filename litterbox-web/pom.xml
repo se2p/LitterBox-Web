@@ -323,7 +323,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
                 <version>5.0.0</version>
                 <configuration>
                     <properties>
-                        <year>2024</year>
+                        <year>2024-2026</year>
                     </properties>
                     <licenseSets>
                         <licenseSet>
