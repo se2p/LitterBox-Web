@@ -18,7 +18,7 @@ pkgs.maven.buildMavenPackage rec {
   ];
   src = ./.;
   buildOffline = true;
-  mvnHash = "sha256-JZkhwK0nqloxSR0z2Hrymarmp4vdT4uS+x/N2GuCB90=";
+  mvnHash = "sha256-zxVDqtRTBQMGavHCEHBSMPm5G1sl0huTSERnnpLW9oM=";
   mvnParameters = "-DskipTests";
   installPhase = ''
     mkdir -p $out
