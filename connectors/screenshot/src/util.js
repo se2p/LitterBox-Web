@@ -44,7 +44,7 @@ function normaliseSpriteName(renderedTargetOrName) {
         renderedTargetOrName = renderedTargetOrName.sprite.name;
     }
 
-    return renderedTargetOrName.trim().normalize("NFC");
+    return renderedTargetOrName.normalize("NFC");
 }
 
 async function convertToSVG(projectData, spriteNames, scale) {
