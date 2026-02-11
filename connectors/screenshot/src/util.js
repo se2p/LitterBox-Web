@@ -5,16 +5,26 @@
 const fs = require("node:fs");
 const { JSDOM } = require("jsdom");
 const VM = require("scratch-vm");
+const FakeAudioContext = require("./audio-context");
 const VMScratchBlocks = require("./lib/blocks");
 const defineDynamicBlock = require("./lib/define-dynamic-block");
 
 const { window } = new JSDOM('<div id="root"></div>');
 const { document, navigator } = window;
+window.AudioContext ??= FakeAudioContext;
+window.webkitAudioContext ??= FakeAudioContext;
+global.AudioContext = window.AudioContext;
+global.webkitAudioContext = window.webkitAudioContext;
 global.window = window;
 global.document = document;
 global.navigator = navigator;
 global.DOMParser = window.DOMParser;
+global.NodeList = window.NodeList;
+global.Element = window.Element;
 FileReader = window.FileReader;
+
+// Need to be placed here after global elements were all set.
+const AudioEngine = require("scratch-audio");
 
 const defaultSVGSize = {
     width: 1920,
@@ -52,6 +62,7 @@ async function convertToSVG(projectData, spriteNames, scale) {
 
     const vm = new VM();
     vm.setCompatibilityMode(true);
+    vm.attachAudioEngine(new AudioEngine());
 
     const rootElement = document.getElementById("root");
     const ref = document.createElement("div", {});
