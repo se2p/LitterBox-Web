@@ -199,7 +199,7 @@ check-licence-headers-reuse:
   parallel:
     matrix:
       - NODE_VERSION:
-          - "22"
+          - "24"
         SUBPROJECT:
           - screenshot
   before_script:
