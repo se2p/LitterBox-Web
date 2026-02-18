@@ -16,10 +16,10 @@
     "screenshot": "src/index.js"
   },
   "dependencies": {
-    "express": "5.1.0",
-    "jsdom": "28.0.0",
+    "express": "5.2.1",
+    "jsdom": "28.1.0",
     "scratch-audio": "2.0.268",
-    "scratch-blocks": "1.2.5",
+    "scratch-blocks": "1.3.0",
     "scratch-vm": "5.0.300"
   },
   "bundleDependencies": [
@@ -33,7 +33,7 @@
     "@eslint/js": "10.0.1",
     "eslint": "10.0.0",
     "eslint-config-prettier": "10.1.8",
-    "globals": "17.1.0",
-    "prettier": "3.6.2"
+    "globals": "17.3.0",
+    "prettier": "3.8.1"
   }
 }
