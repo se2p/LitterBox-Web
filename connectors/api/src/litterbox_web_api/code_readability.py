@@ -14,6 +14,11 @@ class CodeReadabilityRequest(VisualFeature):
     scratchblocks: str
 
 
+class SpriteFeatures(VisualFeature):
+    name: str
+    features: list[dict[str, float]]
+
+
 class CodeReadabilityResponse(BaseModel):
     readable: bool
     confidence: float
