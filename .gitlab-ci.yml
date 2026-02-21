@@ -178,6 +178,7 @@ check-licence-headers-reuse:
   before_script:
     - pip install uv
     - cd connectors/$SUBPROJECT
+    - uv lock --check
     - uv sync --all-extras --dev
   cache: []
   rules:
