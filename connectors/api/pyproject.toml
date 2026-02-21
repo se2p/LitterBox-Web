@@ -9,9 +9,8 @@ description = ""
 authors = [
     { name = "Benedikt Fein", email = "fein@fim.uni-passau.de" }
 ]
-classifiers = [
-    "License :: OSI Approved :: European Union Public Licence 1.2 (EUPL 1.2)",
-]
+license = "EUPL-1.2"
+classifiers = []
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
