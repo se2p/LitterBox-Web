@@ -30,7 +30,7 @@ import de.uni_passau.fim.se2.embedded_kittens.tokenizer.TokenizingProgramPreproc
 import de.uni_passau.fim.se2.embedded_kittens.util.MaskingStrategy;
 import de.uni_passau.fim.se2.litterbox.ast.model.ActorDefinition;
 import de.uni_passau.fim.se2.litterbox.ast.model.Program;
-import de.uni_passau.fim.se2.litterbox.ast.visitor.ScratchBlocksVisitor;
+import de.uni_passau.fim.se2.litterbox.export.scratchblocks.ScratchBlocksVisitor;
 import de.uni_passau.fim.se2.litterbox_web.screenshot.ScreenshotService;
 import de.uni_passau.fim.se2.litterbox_web.shared.Profiles;
 import de.uni_passau.fim.se2.litterbox_web.shared.Scratch3ParserService;

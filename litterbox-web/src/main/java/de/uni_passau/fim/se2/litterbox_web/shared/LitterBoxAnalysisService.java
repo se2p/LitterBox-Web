@@ -21,7 +21,7 @@ import de.uni_passau.fim.se2.litterbox.ast.model.ASTNode;
 import de.uni_passau.fim.se2.litterbox.ast.model.Program;
 import de.uni_passau.fim.se2.litterbox.ast.model.metadata.resources.ImageMetadata;
 import de.uni_passau.fim.se2.litterbox.ast.util.AstNodeUtil;
-import de.uni_passau.fim.se2.litterbox.ast.visitor.ScratchBlocksVisitor;
+import de.uni_passau.fim.se2.litterbox.export.scratchblocks.ScratchBlocksVisitor;
 import de.uni_passau.fim.se2.litterbox.utils.IssueTranslator;
 import de.uni_passau.fim.se2.litterbox.utils.IssueTranslatorFactory;
 import de.uni_passau.fim.se2.litterbox_web.shared.dto.IssueDTO;

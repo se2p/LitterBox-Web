@@ -33,11 +33,11 @@ import de.uni_passau.fim.se2.litterbox.ast.model.Program;
 import de.uni_passau.fim.se2.litterbox.ast.model.Script;
 import de.uni_passau.fim.se2.litterbox.ast.util.AstNodeUtil;
 import de.uni_passau.fim.se2.litterbox.ast.util.BlockIdNodeFinder;
+import de.uni_passau.fim.se2.litterbox.ast.util.CodeTarget;
 import de.uni_passau.fim.se2.litterbox.llm.api.LlmApi;
 import de.uni_passau.fim.se2.litterbox.llm.prompts.LlmPromptProvider;
 import de.uni_passau.fim.se2.litterbox.llm.prompts.LlmQuery;
 import de.uni_passau.fim.se2.litterbox.llm.prompts.PromptBuilder;
-import de.uni_passau.fim.se2.litterbox.llm.prompts.QueryTarget;
 import de.uni_passau.fim.se2.litterbox.utils.IssueTranslator;
 import de.uni_passau.fim.se2.litterbox.utils.IssueTranslatorFactory;
 import de.uni_passau.fim.se2.litterbox_web.shared.dto.IssueDTO;
@@ -74,7 +74,7 @@ public class LlmService {
         final PromptBuilder promptBuilder = getPromptBuilder(locale);
 
         final LLMIssueEffectExplainer explainer = new LLMIssueEffectExplainer(
-            translator, llmApi, promptBuilder, new QueryTarget.SpriteTarget(issueDto.sprite())
+            translator, llmApi, promptBuilder, new CodeTarget.SpriteTarget(issueDto.sprite())
         );
         final Issue issue = fromIssueDto(program, issueDto);
         final Issue newIssue = explainer.apply(program, Collections.singleton(issue)).stream()
@@ -124,7 +124,7 @@ public class LlmService {
         final PromptBuilder promptBuilder = getPromptBuilder(locale);
 
         final LlmQuery query = new LlmQuery.CustomQuery(question);
-        final QueryTarget target = targetFromSpriteName(sprite);
+        final CodeTarget target = targetFromSpriteName(sprite);
 
         final LLMProgramQueryAnalyzer analyzer = new LLMProgramQueryAnalyzer(
             llmApi, promptBuilder, query, target, false
@@ -144,7 +144,7 @@ public class LlmService {
         final PromptBuilder promptBuilder = getPromptBuilder(locale);
 
         final Issue issue = fromIssueDto(program, issueDto);
-        final QueryTarget target = targetFromIssue(issueDto);
+        final CodeTarget target = targetFromIssue(issueDto);
         final LLMProgramFixAnalyzer analyzer = new LLMProgramFixAnalyzer(
             llmApi, promptBuilder, target, Collections.singleton(issue)
         );
@@ -156,24 +156,24 @@ public class LlmService {
         return BlockIdNodeFinder.find(program, blockId).map(BlockIdNodeFinder.NodeContext::node);
     }
 
-    private QueryTarget targetFromSpriteName(@Nullable final String sprite) {
+    private CodeTarget targetFromSpriteName(@Nullable final String sprite) {
         if (sprite == null) {
-            return new QueryTarget.ProgramTarget();
+            return new CodeTarget.ProgramTarget();
         }
         else {
-            return new QueryTarget.SpriteTarget(sprite);
+            return new CodeTarget.SpriteTarget(sprite);
         }
     }
 
-    private QueryTarget targetFromIssue(final IssueDTO issueDTO) {
+    private CodeTarget targetFromIssue(final IssueDTO issueDTO) {
         if (issueDTO.hatBlockId() != null) {
-            return new QueryTarget.ScriptTarget(issueDTO.hatBlockId());
+            return new CodeTarget.ScriptTarget(issueDTO.hatBlockId());
         }
         else if (issueDTO.sprite() != null) {
-            return new QueryTarget.SpriteTarget(issueDTO.sprite());
+            return new CodeTarget.SpriteTarget(issueDTO.sprite());
         }
         else {
-            return new QueryTarget.ProgramTarget();
+            return new CodeTarget.ProgramTarget();
         }
     }
 }

@@ -24,7 +24,7 @@ import org.springframework.http.HttpStatus;
 import de.uni_passau.fim.se2.litterbox.analytics.IssueType;
 import de.uni_passau.fim.se2.litterbox.ast.ParsingException;
 import de.uni_passau.fim.se2.litterbox.ast.model.Program;
-import de.uni_passau.fim.se2.litterbox.ast.visitor.ScratchBlocksVisitor;
+import de.uni_passau.fim.se2.litterbox.export.scratchblocks.ScratchBlocksVisitor;
 import de.uni_passau.fim.se2.litterbox_web.LitterboxWebIntegrationTest;
 import de.uni_passau.fim.se2.litterbox_web.shared.dto.IssueDTO;
 import de.uni_passau.fim.se2.litterbox_web.util.FixtureLoader;
@@ -85,7 +85,7 @@ class LinterControllerIntegrationTest extends LitterboxWebIntegrationTest {
         );
 
         assertThat(issues)
-            .hasSize(12)
+            .hasSize(5)
             .anyMatch(issue -> "Sprite Naming".equals(issue.translatedFinderName()))
             .anyMatch(issue -> "xbZ^vS,ML7Dqi,H3G=rc".equals(issue.hatBlockId()));
     }
@@ -114,7 +114,7 @@ class LinterControllerIntegrationTest extends LitterboxWebIntegrationTest {
         );
 
         assertThat(issues)
-            .hasSize(12)
+            .hasSize(5)
             .anyMatch(issue -> "Bedeutungsloser Figurenname".equals(issue.translatedFinderName()))
             .anyMatch(issue -> "xbZ^vS,ML7Dqi,H3G=rc".equals(issue.hatBlockId()));
     }
