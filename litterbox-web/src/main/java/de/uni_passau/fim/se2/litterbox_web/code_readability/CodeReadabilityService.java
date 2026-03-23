@@ -63,6 +63,12 @@ public class CodeReadabilityService {
         this.tokenizingPreprocessor = buildPreprocessor();
     }
 
+    private static String getNormalizedActorName(final ActorDefinition ad) {
+        // Disambiguate actor names to avoid confusion between the stage and sprites named "Stage". See issue #37.
+        final String name = ad.isStage() ? "_stage_" : ad.getIdent().getName();
+        return Normalizer.normalize(name, Normalizer.Form.NFC);
+    }
+
     /**
      * Compute the readability of all sprites in the project or a given list of sprites.
      *
@@ -80,7 +86,7 @@ public class CodeReadabilityService {
             .stream()
             .collect(
                 Collectors.toMap(
-                    (ActorDefinition ad) -> Normalizer.normalize(ad.getIdent().getName(), Normalizer.Form.NFC),
+                    CodeReadabilityService::getNormalizedActorName,
                     ad -> ad
                 )
             );
