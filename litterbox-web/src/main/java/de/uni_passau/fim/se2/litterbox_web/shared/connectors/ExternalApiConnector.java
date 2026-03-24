@@ -23,7 +23,7 @@ import reactor.core.publisher.Mono;
 public class ExternalApiConnector {
 
     private final WebClient client = WebClient.builder()
-        .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize((int) DataSize.ofMegabytes(10).toBytes()))
+        .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize((int) DataSize.ofMegabytes(20).toBytes()))
         .build();
 
     /**
