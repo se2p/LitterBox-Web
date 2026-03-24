@@ -65,7 +65,12 @@ public class CodeReadabilityService {
 
     private static String getNormalizedActorName(final ActorDefinition ad) {
         // Disambiguate actor names to avoid confusion between the stage and sprites named "Stage". See issue #37.
-        final String name = ad.isStage() ? "_stage_" : ad.getIdent().getName();
+        final String name;
+        if (ad.isStage()) {
+            name = "_stage";
+        } else {
+            name = ad.getIdent().getName();
+        }
         return Normalizer.normalize(name, Normalizer.Form.NFC);
     }
 
