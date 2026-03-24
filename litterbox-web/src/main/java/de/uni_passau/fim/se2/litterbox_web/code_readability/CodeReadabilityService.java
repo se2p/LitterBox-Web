@@ -68,7 +68,8 @@ public class CodeReadabilityService {
         final String name;
         if (ad.isStage()) {
             name = "_stage";
-        } else {
+        }
+        else {
             name = ad.getIdent().getName();
         }
         return Normalizer.normalize(name, Normalizer.Form.NFC);
