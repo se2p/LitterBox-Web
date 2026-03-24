@@ -67,7 +67,7 @@ public class CodeReadabilityService {
         // Disambiguate actor names to avoid confusion between the stage and sprites named "Stage". See issue #37.
         final String name;
         if (ad.isStage()) {
-            name = "_stage";
+            name = "_stage_";
         }
         else {
             name = ad.getIdent().getName();
