@@ -13,7 +13,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.0.2</version>
+        <version>4.0.5</version>
         <relativePath/>
     </parent>
 
@@ -35,7 +35,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
         <!-- check https://gitlab.infosun.fim.uni-passau.de/se2/scratch/litterbox/litterbox/-/packages/ for available versions -->
         <litterbox.version>1.12</litterbox.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <checkstyle.version>13.2.0</checkstyle.version>
+        <checkstyle.version>13.4.0</checkstyle.version>
         <!-- Spring boot version defined in parent pom.xml -->
     </properties>
 
@@ -55,7 +55,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
             <dependency>
                 <groupId>org.springframework.modulith</groupId>
                 <artifactId>spring-modulith-bom</artifactId>
-                <version>2.0.2</version>
+                <version>2.0.5</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -110,7 +110,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
-            <version>3.0.1</version>
+            <version>3.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.modulith</groupId>
@@ -218,7 +218,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
             <plugin>
                 <groupId>org.graalvm.buildtools</groupId>
                 <artifactId>native-maven-plugin</artifactId>
-                <version>0.11.4</version>
+                <version>1.0.0</version>
                 <configuration>
                     <mainClass>de.uni_passau.fim.se2.litterbox_web.LitterboxWebApplication</mainClass>
                 </configuration>
@@ -265,7 +265,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.5.4</version>
+                <version>3.5.5</version>
                 <configuration>
                     <argLine>@{argLine} -javaagent:${org.mockito:mockito-core:jar}</argLine>
                 </configuration>
@@ -273,7 +273,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>3.5.4</version>
+                <version>3.5.5</version>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
@@ -300,7 +300,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
-                <version>3.2.1</version>
+                <version>3.4.0</version>
                 <configuration>
                     <java>
                         <eclipse>
