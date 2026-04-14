@@ -30,7 +30,7 @@
         pkgs = nixpkgs.legacyPackages.${system};
         jdk = pkgs."jdk${toString javaVersion}_headless";
         maven = pkgs.maven.override {jdk_headless = jdk;};
-        litterboxWebVersion = "1.0.0";
+        litterboxWebVersion = "1.1.0-SNAPSHOT";
       in rec {
         devenv-up = self.devShells.${system}.default.config.procfileScript;
 
