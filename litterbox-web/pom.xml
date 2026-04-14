@@ -19,7 +19,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
 
     <groupId>de.uni_passau.fim.se2</groupId>
     <artifactId>litterbox-web</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>litterbox-web</name>
     <description>REST API for LitterBox functionality</description>
     <licenses>
