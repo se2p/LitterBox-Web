@@ -10,12 +10,15 @@
 package de.uni_passau.fim.se2.litterbox_web.llm;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -44,8 +47,12 @@ import de.uni_passau.fim.se2.litterbox_web.shared.LitterBoxAnalysisService;
 import de.uni_passau.fim.se2.litterbox_web.shared.dto.IssueDTO;
 import de.uni_passau.fim.se2.litterbox_web.util.FixtureLoader;
 import de.uni_passau.fim.se2.litterbox_web.util.RequestUtilService;
+import mockwebserver3.MockResponse;
+import mockwebserver3.RecordedRequest;
 
 class LlmControllerIntegrationTest extends LitterboxWebIntegrationTest {
+
+    private static final String CONTENT_TYPE = "Content-Type";
 
     @MockitoBean
     private LlmApi llmApi;
@@ -56,9 +63,157 @@ class LlmControllerIntegrationTest extends LitterboxWebIntegrationTest {
     @Autowired
     private LitterBoxAnalysisService litterBoxAnalysisService;
 
+    @Autowired
+    private RawLlmConfig rawLlmConfig;
+
     @BeforeEach
     void tearDown() {
         Mockito.reset(llmApi);
+    }
+
+    @BeforeEach
+    void setUp() {
+        rawLlmConfig.setBaseUrl(URI.create("http://localhost:" + mockWebServer.getPort()));
+    }
+
+    @Test
+    void rawStreamProxiesPayloadAndForwardsResponse() throws InterruptedException {
+        mockWebServer.enqueue(
+            new MockResponse.Builder()
+                .body("data: {\"delta\":\"hello\"}\n\ndata: {\"delta\":\"world\"}\n\n")
+                .addHeader(CONTENT_TYPE, "text/event-stream")
+                .build()
+        );
+
+        final Map<String, Object> payload = Map.of(
+            "systemPrompt", "You are a helpful assistant.",
+            "userPrompt", "test"
+        );
+
+        final String response = requestUtilService.postWithResponseBody(
+            "/llm/raw", payload, String.class, HttpStatus.OK
+        );
+
+        assertThat(response).contains("hello", "world");
+
+        final RecordedRequest recorded = mockWebServer.takeRequest();
+        assertAll(
+            () -> assertThat(recorded.getMethod()).isEqualTo("POST"),
+            () -> assertThat(recorded.getTarget()).isEqualTo("/responses"),
+            () -> assertThat(recorded.getHeaders().get("Authorization")).startsWith("Bearer "),
+            () -> assertThat(recorded.getBody().utf8()).contains("gpt-4.1")
+        );
+    }
+
+    @Test
+    void rawStreamPropagatesUpstreamError() throws InterruptedException {
+        mockWebServer.enqueue(
+            new MockResponse.Builder()
+                .code(HttpStatus.UNAUTHORIZED.value())
+                .body("{\"error\":\"invalid api key\"}")
+                .addHeader(CONTENT_TYPE, "application/json")
+                .build()
+        );
+
+        requestUtilService.postWithResponseBody(
+            "/llm/raw", Map.of("systemPrompt", "", "userPrompt", ""), String.class, HttpStatus.INTERNAL_SERVER_ERROR
+        );
+        mockWebServer.takeRequest();
+    }
+
+    @Test
+    void chatCompletionsStreamProxiesPayloadAndForwardsResponse() throws InterruptedException {
+        final LlmApiStyle originalApi = rawLlmConfig.getApi();
+        final String originalModel = rawLlmConfig.getModel();
+        rawLlmConfig.setApi(LlmApiStyle.CHAT_COMPLETIONS);
+        rawLlmConfig.setModel("qwen36-35b");
+        try {
+            mockWebServer.enqueue(
+                new MockResponse.Builder()
+                    .body(
+                        "data: {\"choices\":[{\"delta\":{\"content\":\"hello\"}}]}\n\n"
+                            + "data: {\"choices\":[{\"delta\":{\"content\":\" world\"}}]}\n\n"
+                    )
+                    .addHeader(CONTENT_TYPE, "text/event-stream")
+                    .build()
+            );
+
+            final Map<String, Object> payload = Map.of(
+                "systemPrompt", "You are a helpful assistant.",
+                "userPrompt", "test"
+            );
+
+            final String response = requestUtilService.postWithResponseBody(
+                "/llm/raw", payload, String.class, HttpStatus.OK
+            );
+
+            assertThat(response).contains("hello", "world");
+
+            final RecordedRequest recorded = mockWebServer.takeRequest();
+            assertAll(
+                () -> assertThat(recorded.getMethod()).isEqualTo("POST"),
+                () -> assertThat(recorded.getTarget()).isEqualTo("/chat/completions"),
+                () -> assertThat(recorded.getHeaders().get("Authorization")).startsWith("Bearer "),
+                () -> assertThat(recorded.getBody().utf8()).contains("qwen36-35b")
+            );
+        }
+        finally {
+            rawLlmConfig.setApi(originalApi);
+            rawLlmConfig.setModel(originalModel);
+        }
+    }
+
+    @Test
+    void chatCompletionsStreamPropagatesUpstreamError() throws InterruptedException {
+        final LlmApiStyle originalApi = rawLlmConfig.getApi();
+        rawLlmConfig.setApi(LlmApiStyle.CHAT_COMPLETIONS);
+        try {
+            mockWebServer.enqueue(
+                new MockResponse.Builder()
+                    .code(HttpStatus.UNAUTHORIZED.value())
+                    .body("{\"error\":\"invalid api key\"}")
+                    .addHeader(CONTENT_TYPE, "application/json")
+                    .build()
+            );
+
+            requestUtilService.postWithResponseBody(
+                "/llm/raw", Map.of("systemPrompt", "", "userPrompt", ""), String.class, HttpStatus.INTERNAL_SERVER_ERROR
+            );
+            mockWebServer.takeRequest();
+        }
+        finally {
+            rawLlmConfig.setApi(originalApi);
+        }
+    }
+
+    @Test
+    void tutorialHintStreamConvertsProjectAndStreamsResponse()
+        throws IOException, ParsingException, InterruptedException {
+        mockWebServer.enqueue(
+            new MockResponse.Builder()
+                .body("data: {\"delta\":\"hello\"}\n\ndata: {\"delta\":\"world\"}\n\n")
+                .addHeader(CONTENT_TYPE, "text/event-stream")
+                .build()
+        );
+
+        final Program program = FixtureLoader.loadProgramFixture("scratch_programs/boatRace.json");
+        final LlmController.TutorialHintRequest request = new LlmController.TutorialHintRequest(
+            program, "The boat does not move.", "", Locale.ENGLISH
+        );
+
+        final String response = requestUtilService.postWithResponseBody(
+            "/llm/tutorial", request, String.class, HttpStatus.OK
+        );
+
+        assertThat(response).contains("hello", "world");
+
+        final RecordedRequest recorded = mockWebServer.takeRequest();
+        final String body = recorded.getBody().utf8();
+        assertAll(
+            () -> assertThat(recorded.getMethod()).isEqualTo("POST"),
+            () -> assertThat(body).contains("//Sprite:"),
+            () -> assertThat(body).contains("The boat does not move.")
+        );
     }
 
     @Test

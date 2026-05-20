@@ -13,7 +13,6 @@
 result
 
 application-local*.yml
-
 .idea/
 
 ### Eclipse ###

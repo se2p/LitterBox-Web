@@ -11,3 +11,7 @@ litterbox:
     openai:
       api-key: invalid
       model: gpt-4.1
+    raw:
+      api-key: invalid
+      model: gpt-4.1
+      api: responses
