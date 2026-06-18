@@ -11,8 +11,8 @@ package de.uni_passau.fim.se2.litterbox_web;
 
 import java.io.IOException;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,16 +34,16 @@ public abstract class LitterboxWebIntegrationTest {
     @Autowired
     private JsonMapper jsonMapper;
 
-    protected static MockWebServer mockWebServer;
+    protected MockWebServer mockWebServer;
 
-    @BeforeAll
-    static void beforeAll() throws IOException {
+    @BeforeEach
+    void beforeEach() throws IOException {
         mockWebServer = new MockWebServer();
         mockWebServer.start();
     }
 
-    @AfterAll
-    static void afterAll() {
+    @AfterEach
+    void afterEach() {
         mockWebServer.close();
     }
 
