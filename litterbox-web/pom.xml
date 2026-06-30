@@ -33,7 +33,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
         <java.version>21</java.version>
         <maven.compiler.release>21</maven.compiler.release>
         <!-- check https://gitlab.infosun.fim.uni-passau.de/se2/scratch/litterbox/litterbox/-/packages/ for available versions -->
-        <litterbox.version>1.13-20260605.135910-16</litterbox.version>
+        <litterbox.version>1.13-20260630.090640-20</litterbox.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <checkstyle.version>13.5.0</checkstyle.version>
         <!-- Spring boot version defined in parent pom.xml -->
