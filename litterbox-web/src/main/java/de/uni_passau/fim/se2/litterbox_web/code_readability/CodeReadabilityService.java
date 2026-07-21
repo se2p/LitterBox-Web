@@ -139,7 +139,15 @@ public class CodeReadabilityService {
         final TokenSequence tokenSequence,
         final String screenshot
     ) {
-        final ActorDefinition actorDefinition = actorDefinitionMap.get(tokenSequence.label());
+        ActorDefinition actorDefinition = actorDefinitionMap.get(tokenSequence.label());
+
+        // Workaround for a regression caused by MR !111. A proper fix requires adjustments to
+        // TokenizingProgramPreprocessor::processSprites such that it sets the label of the stage
+        // to "_stage_" instead of "Stage".
+        if (actorDefinition == null && tokenSequence.label().equals("Stage")) {
+            actorDefinition = actorDefinitionMap.get("_stage_");
+        }
+
         final String spriteScratchBlocks = extractSpriteScratchBlocks(actorDefinition, program);
 
         return computeReadability(
