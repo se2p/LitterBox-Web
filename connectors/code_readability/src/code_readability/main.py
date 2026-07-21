@@ -31,8 +31,6 @@ class Model:
         request: CodeReadabilityRequest,
         readability_service: ReadabilityService,
     ) -> CodeReadabilityResponse:
-        log.info("Code readability request: %s", request)
-
         # lock: PyTorch models might only be able to handle a single forward pass at
         # the same time, this ensures that there is no concurrent access to the same
         # underlying model
