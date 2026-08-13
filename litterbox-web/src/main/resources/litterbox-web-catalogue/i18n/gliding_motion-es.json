@@ -1,0 +1,13 @@
+{
+  "finderId": "gliding_motion",
+  "locale": "es",
+  "name": "Movimiento de deslizamiento con tecla",
+  "hint": "El deslizamiento hace visible la respuesta del objeto a las teclas y permite movimientos suaves en los juegos.",
+  "instruction": "Usa un bloque de deslizar en un evento de tecla cuando el objeto deba moverse suavemente hacia un destino.",
+  "examples": [
+    {
+      "label": "Ejemplo",
+      "scratchblocks": "when [space v] key pressed\nglide (1) secs to (random position v)"
+    }
+  ]
+}

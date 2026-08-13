@@ -1,0 +1,13 @@
+{
+  "finderId": "conditional_inside_loop",
+  "locale": "de",
+  "name": "Bedingungsüberprüfung in Wiederholung",
+  "hint": "Du überprüfst kontinuierlich innerhalb einer Wiederholung, ob eine Bedingung erfüllt ist.",
+  "instruction": "Du überprüfst kontinuierlich innerhalb einer Wiederholung, ob eine Bedingung erfüllt ist.",
+  "examples": [
+    {
+      "label": "Eleganter Code",
+      "scratchblocks": "when green flag clicked\nforever\nif <key (left arrow v) pressed?> then  //⇦  👍\nchange [x v] by (-1)\nend"
+    }
+  ]
+}

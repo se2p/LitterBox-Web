@@ -1,0 +1,8 @@
+{
+  "finderId": "unnecessary_message",
+  "locale": "es",
+  "name": "Mensaje innecesario",
+  "hint": "Utilizas [sbi]enviar ( v)[/sbi] inmediatamente después de un controlador de eventos.",
+  "instruction": "Utilizas [sbi]enviar ( v)[/sbi] inmediatamente después de un controlador de eventos.",
+  "examples": []
+}

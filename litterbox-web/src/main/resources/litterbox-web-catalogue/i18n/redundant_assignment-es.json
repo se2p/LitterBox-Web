@@ -1,0 +1,17 @@
+{
+  "finderId": "redundant_assignment",
+  "locale": "es",
+  "name": "Asignación Redundante",
+  "hint": "El buscador detecta una asignación cuyo valor no se lee antes de otra asignación, ya sea en todos los caminos de control o en algunos. La escritura resulta innecesaria o dificulta entender qué estado pretende usar el programa.",
+  "instruction": "Sigue la variable o el atributo por cada rama y uso relevante; elimina la escritura cuando ninguna lectura pueda observarla, o muévela o usa su valor antes de que se sobrescriba.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nset [myVar v] to (10)\nset [myVar v] to (10)"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\nset [myVar v] to (10)"
+    }
+  ]
+}

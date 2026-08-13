@@ -1,0 +1,13 @@
+{
+  "finderId": "timed_statement_in_live_loop",
+  "locale": "es",
+  "name": "Los bucles tartamudean en el modo de directo",
+  "hint": "Una acción de hardware temporizada es la operación central que se repite en un bucle en modo directo o en una ruta que podría ejecutarse en directo. Transmitir el comando repetidamente puede provocar pausas o movimientos entrecortados.",
+  "instruction": "Usa el modo de carga para estas acciones cuando sea apropiado o reestructura el bucle para no reenviar el comando temporizado en cada iteración; aplica el mismo cuidado a las rutas que podrían ser directas.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when Codey is shaking :: events hat\nforever\n@codeyA keep straight forward at power (50) % for (1) secs :: motion\nend"
+    }
+  ]
+}

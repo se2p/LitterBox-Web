@@ -1,0 +1,13 @@
+{
+  "finderId": "object_follower",
+  "locale": "de",
+  "name": "Figur folgt einem Objekt",
+  "hint": "Eine Figur kann ihre Bewegung an einem anderen Objekt ausrichten, um Verfolgungs- und Begleitmechaniken zu gestalten.",
+  "instruction": "Richte die Figur mit „zeige auf“ oder „gehe zu“ auf das Zielobjekt aus und wiederhole die Bewegung, wenn sie ihm laufend folgen soll.",
+  "examples": [
+    {
+      "label": "Beispiel",
+      "scratchblocks": "when green flag clicked\nrepeat (10)\npoint towards (Sprite1 v)\nmove (10) steps\nend"
+    }
+  ]
+}

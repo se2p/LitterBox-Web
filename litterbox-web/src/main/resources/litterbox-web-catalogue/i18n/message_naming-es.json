@@ -1,0 +1,17 @@
+{
+  "finderId": "message_naming",
+  "locale": "es",
+  "name": "Nombre de mensaje",
+  "hint": "Tu mensaje no tiene un nombre con sentido. Estás utilizando el nombre por defecto o uno que ya está en uso seguido por un número. Esto hace que tu programa sea difícil de comprender.",
+  "instruction": "Utiliza un mensaje con sentido y único.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nshow\nbroadcast (message1 v) :: #ff0000 //⇦  🐛"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\nshow\nbroadcast (startGame v) :: #007000 //⇦  👍"
+    }
+  ]
+}

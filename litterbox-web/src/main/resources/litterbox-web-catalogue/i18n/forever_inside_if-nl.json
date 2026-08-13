@@ -1,0 +1,17 @@
+{
+  "finderId": "forever_inside_if",
+  "locale": "nl",
+  "name": "Herhaal binnen een Als-blok",
+  "hint": "De vinder detecteert een oneindige lus binnen een voorwaarde waarachter nog bereikbare code staat. Zodra de oneindige lus begint, eindigt deze nooit, waardoor het vervolg van de voorwaarde en alle volgende blokken onbereikbaar blijven.",
+  "instruction": "Herstructureer de voorwaarde en lus zodat de tak kan eindigen, of vervang de oneindige lus door een lus met een betrouwbare stopvoorwaarde.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nif <(1) = (1)> then\nforever\nmove (10) steps\nend\nend\nmove (10) steps"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\nif <(1) = (1)> then\nmove (10) steps\nend\nmove (10) steps"
+    }
+  ]
+}

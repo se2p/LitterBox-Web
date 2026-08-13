@@ -1,0 +1,17 @@
+{
+  "finderId": "invalid_number_string",
+  "locale": "es",
+  "name": "Cadena de número inválida",
+  "hint": "El buscador detecta texto que parece un número pero usa una sintaxis numérica no válida, como varios puntos decimales o una notación no admitida, en una entrada numérica. La conversión puede fallar o producir un valor distinto del que el programa parece solicitar.",
+  "instruction": "Normaliza o valida el texto antes de usarlo como número y trata explícitamente las entradas no válidas en lugar de pasarlas a un bloque numérico.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nsay ([1.0.] + (1))"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\nsay ((1) + (1))"
+    }
+  ]
+}

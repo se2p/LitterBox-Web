@@ -1,0 +1,8 @@
+{
+  "finderId": "busy_waiting",
+  "locale": "es",
+  "name": "Esperando ocupado",
+  "hint": "En tu secuencia de instrucciones, estás comprobando constantemente una condición, solo para eliminar el clon una vez que se cumpla la condición.",
+  "instruction": "En tu secuencia de instrucciones, estás comprobando constantemente una condición, solo para eliminar el clon una vez que se cumpla la condición.",
+  "examples": []
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "invalid_quantum_possibilities",
+  "locale": "en",
+  "name": "Invalid Number of Possibilities for Entanglement or Superposition",
+  "hint": "A quantum entanglement or superposition needs at least one possible outcome. A value below 1 becomes no possibilities during execution and can leave the quantum state unusable.",
+  "instruction": "Set the number of possibilities to at least 1, and validate dynamic inputs before starting an entanglement or superposition.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when superposition started :: events hat #5c068c\nforever\nturn right (15) degrees\nwait (0.1) seconds\nend\n\nwhen green flag clicked\nsuperpose [position v] possibilities: (0) :: #5c068c"
+    }
+  ]
+}

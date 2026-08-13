@@ -1,0 +1,8 @@
+{
+  "finderId": "ambiguous_parameter_name_unused",
+  "locale": "en",
+  "name": "Ambiguous Parameter Name Unused",
+  "hint": "Scratch allows multiple parameter with the same name in one custom block. However, it cannot distinguish between these parameters afterwards, causing problems in your program.",
+  "instruction": "Scratch allows multiple parameter with the same name in one custom block. However, it cannot distinguish between these parameters afterwards, causing problems in your program.",
+  "examples": []
+}

@@ -1,0 +1,17 @@
+{
+  "finderId": "key_set_position",
+  "locale": "de",
+  "name": "Positionierung durch Tastendruck",
+  "hint": "Der Finder erkennt einen tastengesteuerten Handler, der eine absolute Position auf der betroffenen Achse setzt, statt eine relative Bewegung anzuwenden. Wiederholte Tastendrücke setzen die Figur dadurch immer auf dieselbe Koordinate, anstatt sie um den gewünschten Betrag zu bewegen.",
+  "instruction": "Verwende einen Baustein zum Ändern von x oder y oder berechne die nächste Koordinate aus der aktuellen Position. Für Bewegung während des Gedrückthaltens sollte die Taste fortlaufend abgefragt werden.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when [right arrow v] key pressed\nset x to (10)"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\nforever\nif <key (right arrow v) pressed?> then\nchange x by (10)\nend\nend"
+    }
+  ]
+}

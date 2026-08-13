@@ -1,0 +1,8 @@
+{
+  "finderId": "unused_parameter",
+  "locale": "en",
+  "name": "Unused Parameter",
+  "hint": "You created a parameter but you never use it in your procedure. This makes the custom block harder to understand.",
+  "instruction": "You created a parameter but you never use it in your procedure. This makes the custom block harder to understand.",
+  "examples": []
+}

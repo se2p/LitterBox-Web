@@ -1,0 +1,13 @@
+{
+  "finderId": "unnecessary_stop_script",
+  "locale": "en",
+  "name": "Unnecessary Stop Script",
+  "hint": "This smell identifies a [stop this script] block as the final block in a script. Reaching the end already stops that script, so the explicit stop adds no behavior.",
+  "instruction": "Remove the final stop so the script's natural completion is clear. Keep [stop all] and [stop other scripts] distinct, because those blocks can still affect other execution.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nsay [Hello!] for (2) seconds\nstop [this script v]"
+    }
+  ]
+}

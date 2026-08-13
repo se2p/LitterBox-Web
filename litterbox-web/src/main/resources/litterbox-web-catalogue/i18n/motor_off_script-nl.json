@@ -1,0 +1,13 @@
+{
+  "finderId": "motor_off_script",
+  "locale": "nl",
+  "name": "Zet motoren uit",
+  "hint": "Een uitschakelscript stopt de motoren na een beweging of wanneer het programma eindigt. Zo blijft de robot niet onbedoeld bewegen en is de levenscyclus van de motoren expliciet.",
+  "instruction": "Sluit een motoractie af met een stopopdracht voordat het programma eindigt of een andere routine de besturing overneemt.",
+  "examples": [
+    {
+      "label": "Voorbeeld",
+      "scratchblocks": "when green flag clicked\n@codeyA move forward at power (50) % for (1) secs :: motion\n@codeyA stop moving :: motion\nstop [all v]"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "finderId": "type_error",
+  "locale": "de",
+  "name": "Ungültiger Vergleich",
+  "hint": "Du vergleichst Werte, die nicht vergleichbar sind.",
+  "instruction": "Überprüfe deinen Vergleich und ändere einen der beiden Werte. Du kannst nur Zahlen mit Zahlen und Texte mit Texten vergleichen.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nforever\nif <(x position) > [twenty]> then :: #ff0000 //⇦  🐛\nchange (score v) by (1)\nend\nend"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\nforever\nif <(x position) > (20)> then :: #007000 //⇦  👍\nchange (score v) by (1)\nend\nend"
+    }
+  ]
+}

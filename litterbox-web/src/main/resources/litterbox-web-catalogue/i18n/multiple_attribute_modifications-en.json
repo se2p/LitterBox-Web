@@ -1,0 +1,17 @@
+{
+  "finderId": "multiple_attribute_modifications",
+  "locale": "en",
+  "name": "Multiple Attribute Modifications",
+  "hint": "There are multiple changes to the same variable or attribute in sequence, which could be replaced by a single statement.",
+  "instruction": "There are multiple changes to the same variable or attribute in sequence, which could be replaced by a single statement.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nswitch backdrop to (garden v)\ngo to x: (11) y: (120)\nset [points v] to (0)\nset [points v] to (0) :: #ff0000 //⇦  🐛"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "when green flag clicked\nswitch backdrop to (garden v)\ngo to x: (11) y: (120)\nset [points v] to (0) :: #007000 //⇦  👍"
+    }
+  ]
+}

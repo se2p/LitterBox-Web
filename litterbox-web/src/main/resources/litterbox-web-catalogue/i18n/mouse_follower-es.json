@@ -1,0 +1,13 @@
+{
+  "finderId": "mouse_follower",
+  "locale": "es",
+  "name": "Seguir el ratón",
+  "hint": "Tu sprite puede seguir al ratón. Ese puede ser un buen concepto para muchos juegos.",
+  "instruction": "Tu sprite puede seguir al ratón. Ese puede ser un buen concepto para muchos juegos.",
+  "examples": [
+    {
+      "label": "Código bello",
+      "scratchblocks": "when green flag clicked\nforever\ngo to (mouse-pointer v) //⇦  👍\nend"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "shaking_strength_out_of_bounds",
+  "locale": "de",
+  "name": "Vibrationsstärkemessung außerhalb des Messbereichs",
+  "hint": "Ein Vergleich der Vibrationsstärke außerhalb von 0 bis 100 kann keinen Sensorwert darstellen und macht bewegungsabhängige Logik unzuverlässig.",
+  "instruction": "Prüfe Vibrationsstärke und Schwellenwerte als Werte von 0 bis 100, bevor du sie verwendest.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB shaking strength :: sensing) > (150)> then\nsay [Invalid shaking]\nend"
+    }
+  ]
+}

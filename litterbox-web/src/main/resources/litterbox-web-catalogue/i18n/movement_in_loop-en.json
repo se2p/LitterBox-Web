@@ -1,0 +1,13 @@
+{
+  "finderId": "movement_in_loop",
+  "locale": "en",
+  "name": "Fluent sprite movement in loop",
+  "hint": "The movements of your sprites are very fluent and natural because you implemented the moves in a loop.",
+  "instruction": "The movements of your sprites are very fluent and natural because you implemented the moves in a loop.",
+  "examples": [
+    {
+      "label": "Elegant code",
+      "scratchblocks": "when green flag clicked\nforever\nchange x by (1) //⇦  👍\nend"
+    }
+  ]
+}

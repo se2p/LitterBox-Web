@@ -1,0 +1,25 @@
+{
+  "finderId": "message_never_received",
+  "locale": "nl",
+  "name": "Bericht nooit ontvangen",
+  "hint": "Het bericht wordt verzonden, maar geen enkel script ontvangt het. Daarom veroorzaakt het bericht geen reactie.",
+  "instruction": "Voeg het bedoelde ontvangende script toe, of verwijder het bericht als er geen reactie nodig is.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\n broadcast [elephantStart v]"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\n broadcast [elephantStart v]"
+    },
+    {
+      "label": "Fout 2",
+      "scratchblocks": "when green flag clicked :: #ff0000 //⇦  🐛\nrepeat (4)\nmove (10) steps\nturn left (90) degrees\nend"
+    },
+    {
+      "label": "Mogelijke oplossing 2",
+      "scratchblocks": "when I receive [elephantStart v] :: #007000 //⇦  👍\nrepeat (4)\nmove (10) steps\nturn left (90) degrees\nend"
+    }
+  ]
+}

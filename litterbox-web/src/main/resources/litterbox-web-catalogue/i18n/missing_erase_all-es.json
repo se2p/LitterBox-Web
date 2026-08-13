@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_erase_all",
+  "locale": "es",
+  "name": "Falta bloque \"Borrar todo\"",
+  "hint": "Si un objeto usa un bloque de lápiz hacia abajo pero nunca un bloque para borrar todo, todos los dibujos de una ejecución anterior permanecen para la siguiente ejecución.[newLine]Tal vez deberías usar un bloque [sbi]detener [todos][/sbi] después de tu bloque de inicio.",
+  "instruction": "Si un objeto usa un bloque de lápiz hacia abajo pero nunca un bloque para borrar todo, todos los dibujos de una ejecución anterior permanecen para la siguiente ejecución.[newLine]Tal vez deberías usar un bloque [sbi]detener [todos][/sbi] después de tu bloque de inicio.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\npen down\nrepeat (4)\nmove (10) steps\nturn left (90) degrees\nend\npen up\n"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\nerase all //⇦  👍\npen down\nrepeat (4)\nmove (10) steps\nturn left (90) degrees\nend\npen up\n"
+    }
+  ]
+}

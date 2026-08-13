@@ -1,0 +1,13 @@
+{
+  "finderId": "color_setting_out_of_bounds",
+  "locale": "en",
+  "name": "Color Setting out of Bounds",
+  "hint": "An RGB channel command outside 0–255 cannot be represented by the LED, so the requested color may be clipped or ignored.",
+  "instruction": "Constrain every red, green, and blue channel to an integer from 0 through 255 before sending the color command.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\n@codeyB set the indicator [red v] with color value (300) :: lighting"
+    }
+  ]
+}

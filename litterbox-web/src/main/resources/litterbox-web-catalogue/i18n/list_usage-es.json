@@ -1,0 +1,13 @@
+{
+  "finderId": "list_usage",
+  "locale": "es",
+  "name": "Utilización de listas",
+  "hint": "Puede usar una lista y, por lo tanto, manejar conceptos importantes de colecciones en programación.",
+  "instruction": "Puede usar una lista y, por lo tanto, manejar conceptos importantes de colecciones en programación.",
+  "examples": [
+    {
+      "label": "Código bello",
+      "scratchblocks": "when green flag clicked\nset (score v) to (0)\nrepeat until <touching (bear v) ?>\nchange (score v) by (1)\nwait (1) seconds\nend\nadd (score v) to [highscore v] //⇦  👍"
+    }
+  ]
+}

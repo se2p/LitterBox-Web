@@ -1,0 +1,17 @@
+{
+  "finderId": "expression_as_touching_or_color",
+  "locale": "de",
+  "name": "Ausdruck als Berührung oder Farbe",
+  "hint": "Dieser Baustein erwartet eine Farbe oder eine Figur als Übergabeparameter und funktioniert nicht richtig mit Text oder Zahlen.",
+  "instruction": "Dieser Baustein erwartet eine Farbe oder eine Figur als Übergabeparameter und funktioniert nicht richtig mit Text oder Zahlen.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nforever\nif &lt;touching color (answer) ? :: #ff0000&gt; then //⇦  🐛\nstop [all v]\nend\nend"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\nforever\nif &lt;touching color (#00FF00) ? :: #007000 &gt;then //⇦  👍\nstop [all v]\nend\nend"
+    }
+  ]
+}

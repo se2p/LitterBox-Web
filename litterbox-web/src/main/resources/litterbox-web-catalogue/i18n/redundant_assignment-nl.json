@@ -1,0 +1,17 @@
+{
+  "finderId": "redundant_assignment",
+  "locale": "nl",
+  "name": "Overbodige toewijzing",
+  "hint": "De vinder detecteert een toewijzing waarvan de waarde niet wordt gelezen voordat een andere toewijzing plaatsvindt, op elk besturingspad of op sommige paden. De schrijfopdracht is daardoor overbodig of maakt onduidelijk welke toestand het programma hoort te gebruiken.",
+  "instruction": "Volg de variabele of het attribuut door elke relevante tak en elk gebruik; verwijder de schrijfopdracht als geen lezing haar kan waarnemen, of verplaats haar of gebruik de waarde voordat die wordt overschreven.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nset [myVar v] to (10)\nset [myVar v] to (10)"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\nset [myVar v] to (10)"
+    }
+  ]
+}

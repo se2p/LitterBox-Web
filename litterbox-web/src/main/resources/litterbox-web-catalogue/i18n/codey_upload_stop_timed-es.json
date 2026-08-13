@@ -1,0 +1,13 @@
+{
+  "finderId": "codey_upload_stop_timed",
+  "locale": "es",
+  "name": "Detener la secuencia de comandos en el modo de carga evita el final del tiempo de ejecución",
+  "hint": "En un programa de Codey cargado, detener todos los scripts mientras una acción de hardware temporizada sigue activa puede dejarla incompleta y el recurso en un estado inesperado. El mismo riesgo existe cuando la ejecución en modo de carga solo es posible.",
+  "instruction": "Añade una detención o un reinicio explícito para cada acción de hardware temporizada antes de detener todos los scripts, y haz que toda entrada posible al modo de carga siga esa limpieza.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when on-board button [B v] :: events hat\n@codeyA turn right at power (50) % for (60) secs :: motion\n\nwhen on-board button [C v] :: events hat\nstop [all v]"
+    }
+  ]
+}

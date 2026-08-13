@@ -1,0 +1,17 @@
+{
+  "finderId": "clone_type_2",
+  "locale": "nl",
+  "name": "Vergelijkbare code met parameters",
+  "hint": "Vergelijkbare instructies staan in meerdere scripts en verschillen alleen in waarden of parameters. Daardoor moet dezelfde logica op meerdere plaatsen worden onderhouden.",
+  "instruction": "Maak een eigen blok met parameters voor de verschillende waarden en gebruik dat blok in de relevante scripts.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\nturn left (15) degrees\nmove (5) steps\nturn left (15) degrees\nmove (15) steps\nturn left (15) degrees"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\nmoveAndTurn(10)\nmoveAndTurn(5)\nmoveAndTurn(15)\n\ndefine moveAndTurn (num) :: #007000 //⇦  👍\nmove (num) steps\nturn left (15) degrees"
+    }
+  ]
+}

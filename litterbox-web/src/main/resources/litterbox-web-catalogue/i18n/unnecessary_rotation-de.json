@@ -1,0 +1,13 @@
+{
+  "finderId": "unnecessary_rotation",
+  "locale": "de",
+  "name": "Unnötige Drehung",
+  "hint": "Der Geruch erkennt eine Drehung um null Grad oder um ein ganzzahliges Vielfaches von 360 Grad. Die Figur endet dadurch in derselben Ausrichtung, obwohl der Baustein eine Änderung vortäuscht.",
+  "instruction": "Entferne die wirkungslose Drehung oder verwende einen Winkel, der die beabsichtigte Ausrichtung tatsächlich verändert.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nturn right (360) degrees"
+    }
+  ]
+}

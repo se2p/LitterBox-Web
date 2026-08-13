@@ -1,0 +1,13 @@
+{
+  "finderId": "led_off_script_missing",
+  "locale": "de",
+  "name": "LED-Ausschalt-Skript fehlt",
+  "hint": "Eine LED wird eingeschaltet, aber kein erreichbares Aufräumskript schaltet genau diese LED vor dem Ende der Ausführung aus. Sie kann weiterleuchten und späteres Roboterverhalten beeinflussen.",
+  "instruction": "Verknüpfe jedes Einschalten einer LED mit einem erreichbaren Ausschalt- oder Schwarzkommando für normale Beendigung und alternative Pfade.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\n@mBot LED [left v] shows color [#ff0000] :: show\nstop [this script v]"
+    }
+  ]
+}

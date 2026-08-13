@@ -1,0 +1,13 @@
+{
+  "finderId": "gear_potentiometer_out_of_bounds",
+  "locale": "es",
+  "name": "Potenciómetro de engranaje fuera de límites",
+  "hint": "Una comparación del potenciómetro de engranaje fuera de 0–100 se refiere a un valor imposible para el sensor y vuelve poco fiable el control de posición.",
+  "instruction": "Valida las lecturas y los umbrales del potenciómetro como enteros entre 0 y 100 antes de usarlos.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB gear potentiometer value :: sensing) > (150)> then\nsay [Invalid gear value]\nend"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "timer",
+  "locale": "es",
+  "name": "Variable sirve como temporizador",
+  "hint": "Una variable usada como contador en un bucle temporizado hace explícitos los intervalos y el progreso repetido.",
+  "instruction": "Inicializa la variable, espera un intervalo fijo dentro del bucle y actualiza su valor después de cada intervalo.",
+  "examples": [
+    {
+      "label": "Ejemplo",
+      "scratchblocks": "when green flag clicked\nset [my variable v] to (20)\nforever\nwait (1) seconds\nchange [my variable v] by (-1)\nend"
+    }
+  ]
+}

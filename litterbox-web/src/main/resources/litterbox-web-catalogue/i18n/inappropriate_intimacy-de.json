@@ -1,0 +1,13 @@
+{
+  "finderId": "inappropriate_intimacy",
+  "locale": "de",
+  "name": "Logik am falschen Ort",
+  "hint": "Der Geruch erkennt ein Skript, das deutlich häufiger auf Attribute einer anderen Figur als auf die eigenen zugreift. Das deutet darauf hin, dass das Verhalten bei der anderen Figur liegen könnte, und erzeugt unnötige Kopplung zwischen den Aktoren.",
+  "instruction": "Verschiebe das Verhalten zu der Figur, deren Zustand es hauptsächlich verwendet, oder verringere die Zugriffe und koordiniere die verbleibende Abhängigkeit ausdrücklich.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nsay ([x position v] of (Sprite2 v))\nsay ([y position v] of (Sprite2 v))"
+    }
+  ]
+}

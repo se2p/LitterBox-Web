@@ -1,0 +1,13 @@
+{
+  "finderId": "conditional_inside_loop",
+  "locale": "en",
+  "name": "Condition in loop",
+  "hint": "You continouosly check for conditions within a loop. You know how to combine important control blocks and that can help you solve more advanced problems.",
+  "instruction": "You continouosly check for conditions within a loop. You know how to combine important control blocks and that can help you solve more advanced problems.",
+  "examples": [
+    {
+      "label": "Elegant code",
+      "scratchblocks": "when green flag clicked\nforever\nif <key (left arrow v) pressed?> then  //⇦  👍\nchange [x v] by (-1)\nend"
+    }
+  ]
+}

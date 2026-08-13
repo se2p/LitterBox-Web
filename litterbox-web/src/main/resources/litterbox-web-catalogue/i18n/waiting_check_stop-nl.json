@@ -1,0 +1,13 @@
+{
+  "finderId": "waiting_check_stop",
+  "locale": "nl",
+  "name": "Wachten op voorwaarde om te stoppen",
+  "hint": "Wachten op een concrete voorwaarde laat een activiteit eindigen nadat een duidelijke gebeurtenis heeft plaatsgevonden.",
+  "instruction": "Zet een wacht-tot-blok vóór het stopblok wanneer het programma moet eindigen zodra een voorwaarde waar wordt.",
+  "examples": [
+    {
+      "label": "Voorbeeld",
+      "scratchblocks": "when green flag clicked\nwait until <touching (mouse-pointer v) ?>\nmove (10) steps\nstop [all v]"
+    }
+  ]
+}

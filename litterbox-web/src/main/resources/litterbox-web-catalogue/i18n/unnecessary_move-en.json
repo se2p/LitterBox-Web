@@ -1,0 +1,13 @@
+{
+  "finderId": "unnecessary_move",
+  "locale": "en",
+  "name": "Unnecessary Move",
+  "hint": "This smell identifies a motion block with the literal value zero, such as [move (0) steps] or changing X or Y by zero. The block cannot change the sprite's position and makes the script harder to read.",
+  "instruction": "Remove the zero movement, or replace it with an intentional value when the sprite should actually move.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nmove (0) steps"
+    }
+  ]
+}

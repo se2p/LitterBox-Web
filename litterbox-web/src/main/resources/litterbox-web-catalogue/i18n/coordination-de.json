@@ -1,0 +1,13 @@
+{
+  "finderId": "coordination",
+  "locale": "de",
+  "name": "Koordination",
+  "hint": "Du kannst dein Programm und mehrere Skripte bereits gut miteinander koordinieren, das ist für ein größeres Program sehr wichtig. Am besten geht es mittels Nachrichten und Warte bis .",
+  "instruction": "Du kannst dein Programm und mehrere Skripte bereits gut miteinander koordinieren, das ist für ein größeres Program sehr wichtig. Am besten geht es mittels Nachrichten und Warte bis .",
+  "examples": [
+    {
+      "label": "Eleganter Code",
+      "scratchblocks": "when green flag clicked\nshow\nset [score v] to (0)\nwait until <key (up arrow v) pressed?>"
+    }
+  ]
+}

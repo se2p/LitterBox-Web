@@ -1,0 +1,13 @@
+{
+  "finderId": "parallelisation",
+  "locale": "en",
+  "name": "Parallelisation of different scripts",
+  "hint": "You start at least two scripts on the same event. You implemented the concept of parallelisation.",
+  "instruction": "You start at least two scripts on the same event. You implemented the concept of parallelisation.",
+  "examples": [
+    {
+      "label": "Elegant code",
+      "scratchblocks": "when green flag clicked  //⇦  👍\nforever\nturn left (10) degrees\nend\n\nwhen green flag clicked  //⇦  👍\nforever\nmove (10) steps\nend"
+    }
+  ]
+}

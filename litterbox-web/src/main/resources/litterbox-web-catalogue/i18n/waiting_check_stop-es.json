@@ -1,0 +1,13 @@
+{
+  "finderId": "waiting_check_stop",
+  "locale": "es",
+  "name": "Esperando condición para parar",
+  "hint": "Esperar una condición concreta permite terminar una actividad después de que ocurra un evento claro.",
+  "instruction": "Coloca un bloque de esperar hasta antes del bloque de detener cuando el programa deba terminar al cumplirse una condición.",
+  "examples": [
+    {
+      "label": "Ejemplo",
+      "scratchblocks": "when green flag clicked\nwait until <touching (mouse-pointer v) ?>\nmove (10) steps\nstop [all v]"
+    }
+  ]
+}

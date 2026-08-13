@@ -1,0 +1,13 @@
+{
+  "finderId": "unnecessary_stop_script",
+  "locale": "es",
+  "name": "Detención innecesaria del script",
+  "hint": "Este olor identifica un bloque [stop this script] como último bloque de un script. Al llegar al final el script ya se detiene, por lo que la detención explícita no añade ningún comportamiento.",
+  "instruction": "Elimina la detención final para que quede claro que el script termina de forma natural. Distingue [stop all] y [stop other scripts], porque esos bloques sí pueden afectar a otras ejecuciones.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nsay [Hello!] for (2) seconds\nstop [this script v]"
+    }
+  ]
+}

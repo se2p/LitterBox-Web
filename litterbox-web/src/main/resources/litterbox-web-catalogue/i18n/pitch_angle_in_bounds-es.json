@@ -1,0 +1,13 @@
+{
+  "finderId": "pitch_angle_in_bounds",
+  "locale": "es",
+  "name": "Ángulo de inclinación en límites",
+  "hint": "El ángulo de inclinación se puede interpretar de forma significativa entre -180 y 180 grados y describe la inclinación frontal o posterior del robot.",
+  "instruction": "Usa límites de comparación entre -180 y 180 grados y valida las lecturas que queden fuera del intervalo.",
+  "examples": [
+    {
+      "label": "Ejemplo",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB pitch angle° :: sensing) > (30)> then\nsay [Tilted forward]\nend"
+    }
+  ]
+}

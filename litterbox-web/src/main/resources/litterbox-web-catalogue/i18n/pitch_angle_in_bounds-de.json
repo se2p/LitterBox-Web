@@ -1,0 +1,13 @@
+{
+  "finderId": "pitch_angle_in_bounds",
+  "locale": "de",
+  "name": "Pitchwinkelmessung im Messbereich",
+  "hint": "Der Pitchwinkel kann im Bereich von -180 bis 180 Grad sinnvoll ausgewertet werden und beschreibt die Neigung des Roboters.",
+  "instruction": "Verwende für Pitch-Vergleiche nur Grenzwerte zwischen -180 und 180 Grad und validiere Messwerte außerhalb dieses Bereichs.",
+  "examples": [
+    {
+      "label": "Beispiel",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB pitch angle° :: sensing) > (30)> then\nsay [Tilted forward]\nend"
+    }
+  ]
+}

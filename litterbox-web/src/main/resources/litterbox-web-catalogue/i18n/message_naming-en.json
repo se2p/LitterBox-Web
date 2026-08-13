@@ -1,0 +1,17 @@
+{
+  "finderId": "message_naming",
+  "locale": "en",
+  "name": "Message Naming",
+  "hint": "Your message doesn't have a meaningful name. You are using the default name or one that is already used followed by a number. This makes your program hard to understand.",
+  "instruction": "Use a meaningful, unique message.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nshow\nbroadcast (message1 v) :: #ff0000 //⇦  🐛"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "when green flag clicked\nshow\nbroadcast (startGame v) :: #007000 //⇦  👍"
+    }
+  ]
+}

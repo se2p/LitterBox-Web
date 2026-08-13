@@ -1,0 +1,17 @@
+{
+  "finderId": "long_script",
+  "locale": "nl",
+  "name": "Lang script",
+  "hint": "Een script combineert te veel verantwoordelijkheden of stappen in één lange reeks. Daardoor wordt het moeilijker te begrijpen, te testen en te wijzigen.",
+  "instruction": "Splits het script op thema of verantwoordelijkheid op in kleinere scripts of eigen blokken.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\npen down\nrepeat (4)\nmove (10) steps\nturn left (90) degrees\nend\nrepeat (6)\nmove (10) steps\nturn left (60) degrees\nend\nrepeat (8)\nmove (10) steps\nturn left (45) degrees\nend\nrepeat (10)\nmove (10) steps\nturn left (36) degrees\nend\n"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "define square\nrepeat (4)\nmove (10) steps\nturn left (90) degrees\nend\ndefine hexagon\nrepeat (6)\nmove (10) steps\nturn left (60) degrees\nend\ndefine octagon\nrepeat (8)\nmove (10) steps\nturn left (45) degrees\nend \ndefine decagon\nrepeat (10)\nmove (10) steps\nturn left (36) degrees\nend\nwhen green flag clicked\npen down\nsquare\nhexagon\noctagon\ndecagon\n"
+    }
+  ]
+}

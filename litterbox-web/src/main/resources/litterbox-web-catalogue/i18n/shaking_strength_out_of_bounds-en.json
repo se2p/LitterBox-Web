@@ -1,0 +1,13 @@
+{
+  "finderId": "shaking_strength_out_of_bounds",
+  "locale": "en",
+  "name": "Shaking Strength out of Bounds",
+  "hint": "A shaking-strength comparison outside 0–100 cannot represent a sensor reading, so motion-response logic may never behave as intended.",
+  "instruction": "Validate shaking strength and its thresholds as values from 0 through 100 before using them.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB shaking strength :: sensing) > (150)> then\nsay [Invalid shaking]\nend"
+    }
+  ]
+}

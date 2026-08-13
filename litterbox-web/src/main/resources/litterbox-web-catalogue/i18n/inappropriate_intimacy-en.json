@@ -1,0 +1,13 @@
+{
+  "finderId": "inappropriate_intimacy",
+  "locale": "en",
+  "name": "Misplaced Logic",
+  "hint": "This smell identifies a script that accesses another sprite's attributes substantially more often than its own. The behavior may belong on the other sprite, and the current arrangement creates unnecessary coupling between actors.",
+  "instruction": "Move the behavior to the sprite whose state it primarily uses, or reduce the accesses and coordinate the remaining cross-sprite dependency explicitly.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nsay ([x position v] of (Sprite2 v))\nsay ([y position v] of (Sprite2 v))"
+    }
+  ]
+}

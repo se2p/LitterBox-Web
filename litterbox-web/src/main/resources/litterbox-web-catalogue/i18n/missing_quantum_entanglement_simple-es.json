@@ -1,0 +1,13 @@
+{
+  "finderId": "missing_quantum_entanglement_simple",
+  "locale": "es",
+  "name": "Falta el script de entrelazamiento",
+  "hint": "Un controlador de inicio del entrelazamiento solo puede activarse cuando el actor participa en un entrelazamiento. Si ninguna operación lo entrelaza directamente o mediante otro participante, el script es inalcanzable y su comportamiento nunca se produce.",
+  "instruction": "Mantén el controlador en un actor al que pueda llegar un bloque de entrelazamiento adecuado, o añade una operación de entrelazamiento que incluya a este actor.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when entanglement started :: events hat #5c068c\nforever\nturn right (15) degrees\nwait (0.1) seconds\nend"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_clone_initialization",
+  "locale": "en",
+  "name": "Missing Clone Initialization",
+  "hint": "When a sprite creates a clone of itself but has no scripts started by [sbi]When I start as a clone[/sbi] or [sbi]When this sprite clicked[/sbi] events, clones will not perform any actions.",
+  "instruction": "When a sprite creates a clone of itself but has no scripts started by [sbi]When I start as a clone[/sbi] or [sbi]When this sprite clicked[/sbi] events, clones will not perform any actions.[newLine]Your code has to contain one of these two blocks.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nglide (1) secs to [random position v]\ncreate clone of [myself v] :: #ff0000 //⇦  🐛\n"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "when green flag clicked\nglide (1) secs to [random position v]\ncreate clone of [myself v] :: #007000 //⇦  👍\n\nwhen I start as a clone :: #007000 //⇦  👍\nchange size by (10)\n"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_pen_up",
+  "locale": "nl",
+  "name": "Ontbrekende 'pen op'",
+  "hint": "Je programma gebruikt [sbi]pen neer[/sbi] maar gebruikt daarna geen [sbi]pen op[/sbi]. Latere bewegingen kunnen daardoor onbedoeld blijven tekenen.",
+  "instruction": "Voeg [sbi]pen op[/sbi] toe zodra het tekenen moet eindigen.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nerase all\npen down//⇦  🐛\nrepeat (10)\nglide (1) secs to [random position v]\nend\n"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\nerase all\npen down\nrepeat (10)\nglide (1) secs to [random position v]\nend\npen up //⇦  👍\n"
+    }
+  ]
+}

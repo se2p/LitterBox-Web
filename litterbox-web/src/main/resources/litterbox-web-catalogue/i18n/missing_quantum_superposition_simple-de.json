@@ -1,0 +1,13 @@
+{
+  "finderId": "missing_quantum_superposition_simple",
+  "locale": "de",
+  "name": "Fehlender Superpositions-Handler",
+  "hint": "Ein Handler für den Start der Superposition kann nur ausgelöst werden, wenn für diese Figur eine Superpositionsoperation ausgeführt wird. Ohne eine solche Operation bleibt das Skript unerreichbar und seine Reaktion tritt nie ein.",
+  "instruction": "Führe vor dem erwarteten Ereignis eine passende Superpositionsoperation für dieselbe Figur aus oder entferne den Handler, wenn dieser Zustand nicht benötigt wird.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when superposition started :: events hat #5c068c\nforever\nturn right (15) degrees\nwait (0.1) seconds\nend"
+    }
+  ]
+}

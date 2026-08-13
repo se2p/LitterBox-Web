@@ -1,0 +1,17 @@
+{
+  "finderId": "unused_variables",
+  "locale": "de",
+  "name": "Nicht verwendete Variable",
+  "hint": "Du hast eine Variable definiert, die du an keiner Stelle deines Programms nutzt.",
+  "instruction": "Verwende die Variable oder lösche sie.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "(score)"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "(score)\n\nwhen green flag clicked\nset (score v) to (0)"
+    }
+  ]
+}

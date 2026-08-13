@@ -1,0 +1,13 @@
+{
+  "finderId": "led_off_script",
+  "locale": "nl",
+  "name": "Zet LED's uit",
+  "hint": "Een uitschakelscript zet LED's terug nadat ze zijn gebruikt of wanneer het programma eindigt. Zo blijft de robot in een voorspelbare eindtoestand en is de levenscyclus van de hardware duidelijk.",
+  "instruction": "Voeg na het gebruik van de LED's een uitschakelopdracht toe voordat je het programma stopt of de besturing overdraagt.",
+  "examples": [
+    {
+      "label": "Voorbeeld",
+      "scratchblocks": "when green flag clicked\n@codeyB RGB LED lights up [#ff0000] :: lighting\n@codeyB RGB LED lights off :: lighting\nstop [all v]"
+    }
+  ]
+}

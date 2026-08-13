@@ -1,0 +1,13 @@
+{
+  "finderId": "pointless_timer_reset",
+  "locale": "de",
+  "name": "Sinnloser Timer-Reset",
+  "hint": "Der Geruch erkennt ein Zurücksetzen des Timers in einem Projekt, das den Timerwert nirgends liest. Der Reset kann dadurch keinen Einfluss auf das Verhalten nehmen und deutet auf eine unvollständige oder veraltete Zeitsteuerung hin.",
+  "instruction": "Verwende den Timerwert in einer sinnvollen Bedingung oder Berechnung, wenn die Zeitmessung gebraucht wird. Entferne den Reset andernfalls, damit der Ablauf seine Absicht klar zeigt.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nreset timer"
+    }
+  ]
+}

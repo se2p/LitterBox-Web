@@ -1,0 +1,13 @@
+{
+  "finderId": "motor_power_in_bounds",
+  "locale": "de",
+  "name": "Motorleistung im zulässigen Bereich",
+  "hint": "Motorleistung wird als Prozentwert von 0 bis 100 verstanden. Innerhalb dieses Bereichs kann der Roboter seine Bewegung zuverlässig ausführen.",
+  "instruction": "Begrenze jede Leistungsangabe auf 0 bis 100 Prozent, bevor du sie an einen Motorbefehl übergibst.",
+  "examples": [
+    {
+      "label": "Beispiel",
+      "scratchblocks": "when green flag clicked\n@codeyA move forward at power (50) % for (1) secs :: motion"
+    }
+  ]
+}

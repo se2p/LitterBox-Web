@@ -1,0 +1,13 @@
+{
+  "finderId": "missing_quantum_superposition_simple",
+  "locale": "nl",
+  "name": "Ontbrekend superpositiescript",
+  "hint": "Een handler voor het starten van superpositie kan alleen worden uitgevoerd als voor die actor een superpositiebewerking wordt uitgevoerd. Zonder zo'n bewerking is het script onbereikbaar en treedt de reactie nooit op.",
+  "instruction": "Voer voor dezelfde actor een geschikte superpositiebewerking uit voordat de gebeurtenis wordt verwacht, of verwijder de handler als die toestand niet nodig is.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when superposition started :: events hat #5c068c\nforever\nturn right (15) degrees\nwait (0.1) seconds\nend"
+    }
+  ]
+}

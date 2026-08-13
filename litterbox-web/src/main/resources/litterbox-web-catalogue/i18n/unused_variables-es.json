@@ -1,0 +1,17 @@
+{
+  "finderId": "unused_variables",
+  "locale": "es",
+  "name": "Variable no utilizada",
+  "hint": "Has creado una variable pero nunca la usas en tu proyecto. Esto hace que el proyecto sea más difícil de entender.[newLine]Borra la variable ó usa el bloque [sbi]dar a [%VARIABLE v] el valor ( )[/sbi] ó [sbi]sumar a [%VARIABLE v] ( )[/sbi] en tu projecto.",
+  "instruction": "Has creado una variable pero nunca la usas en tu proyecto. Esto hace que el proyecto sea más difícil de entender.[newLine]Borra la variable ó usa el bloque [sbi]dar a [%VARIABLE v] el valor ( )[/sbi] ó [sbi]sumar a [%VARIABLE v] ( )[/sbi] en tu projecto.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "(score)"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "(score)\n\nwhen green flag clicked\nset (score v) to (0)"
+    }
+  ]
+}

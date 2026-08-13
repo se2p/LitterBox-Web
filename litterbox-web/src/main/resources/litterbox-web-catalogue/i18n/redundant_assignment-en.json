@@ -1,0 +1,17 @@
+{
+  "finderId": "redundant_assignment",
+  "locale": "en",
+  "name": "Redundant Assignment",
+  "hint": "The finder detects an assignment whose value is never observed before another assignment, either on every control-flow path or on some paths. The write is therefore unnecessary or obscures which state the program intends to use.",
+  "instruction": "Trace the variable or attribute through each relevant branch and use; remove the write when no read can observe it, or move it or add the needed use before it is overwritten.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nset [myVar v] to (10)\nset [myVar v] to (10)"
+    },
+    {
+      "label": "Possible solution",
+      "scratchblocks": "when green flag clicked\nset [myVar v] to (10)"
+    }
+  ]
+}

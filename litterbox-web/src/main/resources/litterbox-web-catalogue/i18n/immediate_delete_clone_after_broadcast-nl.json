@@ -1,0 +1,17 @@
+{
+  "finderId": "immediate_delete_clone_after_broadcast",
+  "locale": "nl",
+  "name": "Kloon onmiddellijk verwijderen na bericht",
+  "hint": "Een kloon verzendt een bericht en wordt direct daarna verwijderd. Ontvangende scripts van die kloon krijgen mogelijk niet de tijd om hun werk af te ronden.",
+  "instruction": "Gebruik [sbi]broadcast ( v) and wait[/sbi] wanneer ontvangers klaar moeten zijn voordat de kloon wordt verwijderd, of coördineer de verwijdering expliciet.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when i start as a clone\nforever\nif <touching (#000) ?> then\nchange [points v] by (1)\nbroadcast (boom v) :: #ff0000 //⇦  🐛\ndelete this clone\nend\nend\n\nwhen i receive (boom v)\nplay sound (explosion v) until done"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when i start as a clone\nforever\nif <touching (#000) ?> then\nchange [points v] by (1)\nbroadcast (boom v) and wait :: #007000 //⇦  👍\ndelete this clone\nend\nend\n\nwhen i receive (boom v)\nplay sound (explosion v) until done"
+    }
+  ]
+}

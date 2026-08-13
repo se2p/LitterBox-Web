@@ -1,0 +1,13 @@
+{
+  "finderId": "loop_sensing_robot",
+  "locale": "de",
+  "name": "Fortlaufendes Abfragen von Events",
+  "hint": "Eine Schleife, die einen Sensor oder ein Roboterereignis wiederholt prüft, kann reagieren, sobald die Bedingung eintritt, statt nur einmal nachzusehen.",
+  "instruction": "Setze die Sensor- oder Ereignisbedingung in eine forever- oder until-Schleife und platziere die passende Reaktion in ihrem Zweig.",
+  "examples": [
+    {
+      "label": "Beispiel",
+      "scratchblocks": "when green flag clicked\nforever\nif <@codeyB shaken ? :: sensing> then\nsay [Robot shaken]\nend\nend"
+    }
+  ]
+}

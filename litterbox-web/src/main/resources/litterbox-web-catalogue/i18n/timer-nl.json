@@ -1,0 +1,13 @@
+{
+  "finderId": "timer",
+  "locale": "nl",
+  "name": "Variabele dient als timer",
+  "hint": "Een variabele als teller in een lus met tijdsintervallen maakt duur en voortgang van herhaalde stappen duidelijk.",
+  "instruction": "Initialiseer de variabele, wacht in de lus een vast interval en pas de waarde na elk interval aan.",
+  "examples": [
+    {
+      "label": "Voorbeeld",
+      "scratchblocks": "when green flag clicked\nset [my variable v] to (20)\nforever\nwait (1) seconds\nchange [my variable v] by (-1)\nend"
+    }
+  ]
+}

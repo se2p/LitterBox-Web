@@ -1,0 +1,13 @@
+{
+  "finderId": "nested_loops_perfume",
+  "locale": "de",
+  "name": "Verschachtelte Wiederholung",
+  "hint": "Du benutzt ineinander verschachtelte Wiederholungen. Damit kannst du auch etwas anspruchsvollere Probleme lösen.",
+  "instruction": "Du benutzt ineinander verschachtelte Wiederholungen. Damit kannst du auch etwas anspruchsvollere Probleme lösen.",
+  "examples": [
+    {
+      "label": "Eleganter Code",
+      "scratchblocks": "when i start as a clone\nforever\nturn left (15) degrees\nrepeat (4) //⇦  👍\nmove (10) steps\nwait (1) seconds\nend\nend"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "shaking_strength_out_of_bounds",
+  "locale": "es",
+  "name": "Fuerza de agitación fuera de límites",
+  "hint": "Una comparación de la fuerza de agitación fuera de 0–100 no puede representar una lectura del sensor, por lo que la lógica de respuesta al movimiento puede no funcionar como se espera.",
+  "instruction": "Valida la fuerza de agitación y sus umbrales como valores entre 0 y 100 antes de usarlos.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB shaking strength :: sensing) > (150)> then\nsay [Invalid shaking]\nend"
+    }
+  ]
+}

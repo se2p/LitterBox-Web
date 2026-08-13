@@ -1,0 +1,13 @@
+{
+  "finderId": "parallel_resource_use",
+  "locale": "es",
+  "name": "Control paralelo de los recursos",
+  "hint": "Dos o más scripts paralelos envían comandos al mismo recurso del robot. Su orden temporal y el último comando pueden entrar en conflicto y producir movimientos o estados de hardware impredecibles.",
+  "instruction": "Asigna a cada recurso un único script de control claro o coordina el acceso mediante mensajes y una propiedad explícita.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when on-board button [A v] :: events hat\n@codeyA keep straight forward at power (50) % for (1) secs :: motion\n\nwhen on-board button [B v] :: events hat\n@codeyA left wheel turns at power (50)(50) % :: motion"
+    }
+  ]
+}

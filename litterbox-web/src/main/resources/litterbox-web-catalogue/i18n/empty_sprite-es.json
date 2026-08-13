@@ -1,0 +1,13 @@
+{
+  "finderId": "empty_sprite",
+  "locale": "es",
+  "name": "Sprite vacío",
+  "hint": "Este sprite no contiene bloques. No puede reaccionar a ninguna entrada de usuario o interacción con sprites.[newLine]Si la intención es esa, déjalo como está. De lo contrario, debes pensar en lo que debería hacer el objeto e introducir scripts en este objeto.",
+  "instruction": "Este sprite no contiene bloques. No puede reaccionar a ninguna entrada de usuario o interacción con sprites.[newLine]Si la intención es esa, déjalo como está. De lo contrario, debes pensar en lo que debería hacer el objeto e introducir scripts en este objeto.",
+  "examples": [
+    {
+      "label": "Código bello",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\nsay [Hello!]\n"
+    }
+  ]
+}

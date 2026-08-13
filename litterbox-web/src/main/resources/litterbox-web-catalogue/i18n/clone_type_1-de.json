@@ -1,0 +1,8 @@
+{
+  "finderId": "clone_type_1",
+  "locale": "de",
+  "name": "Exaktes Code-Duplikat",
+  "hint": "Die identischen Anweisungen existieren in mehreren Scripts.",
+  "instruction": "Die identischen Anweisungen existieren in mehreren Scripts.",
+  "examples": []
+}

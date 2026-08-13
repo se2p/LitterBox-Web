@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_pen_up",
+  "locale": "en",
+  "name": "Missing Pen Up",
+  "hint": "You use the [sbi]pen down[/sbi] block but you never lift the pen again, so your sprite will draw forever.",
+  "instruction": "You use the [sbi]pen down[/sbi] block but you never lift the pen again, so your sprite will draw forever.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nerase all\npen down//⇦  🐛\nrepeat (10)\nglide (1) secs to [random position v]\nend\n"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "when green flag clicked\nerase all\npen down\nrepeat (10)\nglide (1) secs to [random position v]\nend\npen up //⇦  👍\n"
+    }
+  ]
+}

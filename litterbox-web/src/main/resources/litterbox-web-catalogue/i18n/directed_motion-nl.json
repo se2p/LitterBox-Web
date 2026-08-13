@@ -1,0 +1,13 @@
+{
+  "finderId": "directed_motion",
+  "locale": "nl",
+  "name": "Gerichte beweging met toetsindruk",
+  "hint": "Toetsenbordbesturing kan de richting van een sprite verbinden met haar beweging en directe spelbesturing mogelijk maken.",
+  "instruction": "Stel in een toetsgebeurtenis eerst de richting in en voeg daarna beweging toe als de sprite die kant op moet gaan.",
+  "examples": [
+    {
+      "label": "Voorbeeld",
+      "scratchblocks": "when [right arrow v] key pressed\npoint in direction (90)\nmove (10) steps"
+    }
+  ]
+}

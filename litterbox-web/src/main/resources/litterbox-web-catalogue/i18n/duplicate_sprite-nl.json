@@ -1,0 +1,21 @@
+{
+  "finderId": "duplicate_sprite",
+  "locale": "nl",
+  "name": "Gedupliceerde sprite",
+  "hint": "Je project bevat exacte kopieën van dezelfde sprite. Afzonderlijke kopieën verdubbelen scripts, uiterlijk en toestand, waardoor wijzigingen inconsistent kunnen worden.",
+  "instruction": "Gebruik klonen wanneer je meerdere identieke uitvoeringsinstanties nodig hebt; houd sprites alleen apart als hun gedrag of toestand echt verschilt.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nchange size by (10)\n"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\nchange size by (10)\ncreate clone of [myself v] :: #007000 //⇦  👍\n\nwhen I start as a clone\nchange size by (10)\n"
+    },
+    {
+      "label": "Fout 2",
+      "scratchblocks": "when green flag clicked :: #ff0000 //⇦  🐛\nchange size by (10) :: #ff0000\n"
+    }
+  ]
+}

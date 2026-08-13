@@ -1,0 +1,17 @@
+{
+  "finderId": "type_error",
+  "locale": "es",
+  "name": "Comparación no válida",
+  "hint": "Algunas de las comparaciones comparan atributos de diferentes tipos.",
+  "instruction": "Verifique su comparación y cambie uno de los dos valores. Solo puede comparar números con números y textos con textos.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nforever\nif <(x position) > [twenty]> then :: #ff0000 //⇦  🐛\nchange (score v) by (1)\nend\nend"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\nforever\nif <(x position) > (20)> then :: #007000 //⇦  👍\nchange (score v) by (1)\nend\nend"
+    }
+  ]
+}

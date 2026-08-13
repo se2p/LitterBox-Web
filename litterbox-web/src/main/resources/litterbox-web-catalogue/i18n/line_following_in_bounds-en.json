@@ -1,0 +1,13 @@
+{
+  "finderId": "line_following_in_bounds",
+  "locale": "en",
+  "name": "Line Following in Bounds",
+  "hint": "The line-following sensor reports the four states 0 through 3 for its possible black-and-white combinations.",
+  "instruction": "Map states 0, 1, 2, and 3 to the intended behaviours, and treat other readings as invalid input.",
+  "examples": [
+    {
+      "label": "Example",
+      "scratchblocks": "when green flag clicked\nif <(@mBot line follower sensor [port2 v] value :: sensing) = (1)> then\nsay [Line detected]\nend"
+    }
+  ]
+}

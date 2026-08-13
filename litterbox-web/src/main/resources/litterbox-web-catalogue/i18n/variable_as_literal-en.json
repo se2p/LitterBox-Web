@@ -1,0 +1,17 @@
+{
+  "finderId": "variable_as_literal",
+  "locale": "en",
+  "name": "Variable Used As Literal",
+  "hint": "You are using the name of a variable as text. Did you mean to use the variable block [sbi](variable)[/sbi] instead?",
+  "instruction": "You are using the name of a variable as text. Did you mean to use the variable block [sbi](variable)[/sbi] instead?",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "(score)\n\nwhen green flag clicked\nforever\nif <[score] > (20)> then :: #ff0000 //⇦  🐛\nswitch backdrop to (level2 v)\nend"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "(score)\n\nwhen green flag clicked\nforever\nif <(score) > (20)> then :: #007000 //⇦  👍\nswitch backdrop to (level2 v)\nend"
+    }
+  ]
+}

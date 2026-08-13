@@ -1,0 +1,17 @@
+{
+  "finderId": "no_working_scripts",
+  "locale": "en",
+  "name": "No Working Script",
+  "hint": "If a sequence of blocks does not start with an event block, it can never be executed.",
+  "instruction": "Connect your sequence of blocks to an event block to start your program.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "forever :: #ff0000 //⇦  🐛\nmove (1) steps\nturn left (5) degrees\nend"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "when green flag clicked :: #007000 //⇦  👍\nforever\nmove (1) steps\nturn left (5) degrees\nend"
+    }
+  ]
+}

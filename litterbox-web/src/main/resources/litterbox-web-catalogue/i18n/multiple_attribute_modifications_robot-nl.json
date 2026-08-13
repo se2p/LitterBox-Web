@@ -1,0 +1,13 @@
+{
+  "finderId": "multiple_attribute_modifications_robot",
+  "locale": "nl",
+  "name": "Meerdere wijzigingen van robotattributen",
+  "hint": "Twee opeenvolgende robotopdrachten besturen dezelfde hardwarebron, zoals de ingebouwde leds, de ledmatrix of het display, Rocky's licht of de motorbeweging en het motorvermogen. Zonder ander gedrag ertussen vervangt de tweede opdracht de eerste meteen; de eerdere toestand is meestal niet zichtbaar en de bedoeling van het programma wordt minder duidelijk.",
+  "instruction": "Houd de opdracht die de gewenste eindtoestand uitdrukt, combineer verenigbare wijzigingen of voeg bewust gedrag of timing toe wanneer tussenstanden zichtbaar moeten zijn.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\n@codeyB RGB LED lights up [#ff0000] :: lighting\n@codeyB RGB LED lights up [#003bff] :: lighting"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "invalid_quantum_entanglement_target",
+  "locale": "en",
+  "name": "Invalid Entanglement Target",
+  "hint": "An entanglement operation needs a different actor that exists in the project. Entangling a sprite with itself or naming an absent actor leaves the relationship undefined and can prevent the intended quantum behavior.",
+  "instruction": "Select another existing sprite or a supported Stage target, and verify that its name matches an actor in the project before running the entanglement operation.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nentangle [position v] with [non-existing] possibilities: (1) :: #5c068c"
+    }
+  ]
+}

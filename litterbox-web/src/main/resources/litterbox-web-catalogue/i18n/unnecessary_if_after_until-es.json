@@ -1,0 +1,8 @@
+{
+  "finderId": "unnecessary_if_after_until",
+  "locale": "es",
+  "name": "Condición Si tras Repetir-Hasta",
+  "hint": "Estás utilizando un bloque [sbi]si < > entonces[/sbi] después de un bloque [sbi]repetir hasta que < >[/sbi] con la misma condición. Los bloques dentro del [sbi]si < > entonces[/sbi] se ejecutarán siempre.",
+  "instruction": "Estás utilizando un bloque [sbi]si < > entonces[/sbi] después de un bloque [sbi]repetir hasta que < >[/sbi] con la misma condición. Los bloques dentro del [sbi]si < > entonces[/sbi] se ejecutarán siempre.",
+  "examples": []
+}

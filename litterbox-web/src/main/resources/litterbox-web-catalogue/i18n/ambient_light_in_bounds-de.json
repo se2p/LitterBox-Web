@@ -1,0 +1,13 @@
+{
+  "finderId": "ambient_light_in_bounds",
+  "locale": "de",
+  "name": "Umgebungslichtmessung im Messbereich",
+  "hint": "Der Umgebungslichtsensor liefert für Codey Werte von 0 bis 100 und für mBot von 0 bis 1020. Vergleiche innerhalb des passenden Bereichs, damit die Messung für die Steuerung aussagekräftig bleibt.",
+  "instruction": "Orientiere die Grenzwerte an der Dokumentation des verbundenen Roboters und prüfe oder begrenze Eingaben vor dem Vergleich.",
+  "examples": [
+    {
+      "label": "Beispiel",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB ambient light intensity :: sensing) > (50)> then\nsay [Bright]\nend"
+    }
+  ]
+}

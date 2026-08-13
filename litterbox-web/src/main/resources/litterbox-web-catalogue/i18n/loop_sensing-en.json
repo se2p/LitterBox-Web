@@ -1,0 +1,13 @@
+{
+  "finderId": "loop_sensing",
+  "locale": "en",
+  "name": "Continuous check for events",
+  "hint": "To ensure that you don´t miss an event you continuously check for it in a forever loop.",
+  "instruction": "To ensure that you don´t miss an event you continuously check for it in a forever loop.",
+  "examples": [
+    {
+      "label": "Elegant code",
+      "scratchblocks": "when green flag clicked\nforever\nif <key (left arrow v) pressed?> then //⇦  👍\nchange [x v] by (-1)\nend"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "duplicated_scripts_covering",
+  "locale": "de",
+  "name": "Duplizierte, überlappende Skripte",
+  "hint": "Der Geruch erkennt zwei strukturell identische Skripte desselben Aktors, die im Scratch-Editor übereinanderliegen. Ein Skript verdeckt das andere, obwohl beide ausgeführt werden können und dadurch Wirkungen doppelt auftreten können.",
+  "instruction": "Entferne die verdeckte Kopie, sofern die Verdopplung nicht beabsichtigt ist. Wenn beide Skripte gebraucht werden, trenne sie sichtbar und ordne ihre Aufgaben klar.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\ngo to x: (0) y: (0)\nsay [Hello!] for (2) seconds\nrepeat (10)\nmove (50) steps\nturn right (90) degrees\nwait (1) seconds\nend\n\nwhen green flag clicked\ngo to x: (0) y: (0)\nsay [Hello!] for (2) seconds\nrepeat (10)\nmove (50) steps\nturn right (90) degrees\nwait (1) seconds\nend"
+    }
+  ]
+}

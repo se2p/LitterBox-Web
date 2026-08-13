@@ -1,0 +1,17 @@
+{
+  "finderId": "invalid_number_string",
+  "locale": "de",
+  "name": "Ungültige Zahlenzeichenfolge",
+  "hint": "Der Finder erkennt Text, der wie eine Zahl aussieht, aber eine ungültige Schreibweise verwendet, etwa mehrere Dezimalpunkte oder nicht unterstützte Notation, in einem numerischen Eingabefeld. Die Umwandlung kann fehlschlagen oder einen anderen Wert als erwartet liefern.",
+  "instruction": "Normalisiere oder überprüfe Text, bevor du ihn als Zahl verwendest, und behandle ungültige Eingaben ausdrücklich, statt sie an einen numerischen Baustein weiterzugeben.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nsay ([1.0.] + (1))"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\nsay ((1) + (1))"
+    }
+  ]
+}

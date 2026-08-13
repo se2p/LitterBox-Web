@@ -1,0 +1,13 @@
+{
+  "finderId": "custom_block_usage",
+  "locale": "de",
+  "name": "Eigener Block wird benutzt",
+  "hint": "Eigene Blöcke bündeln wiederverwendbare Abläufe und halten ein Projekt übersichtlich.",
+  "instruction": "Definiere einen eigenen Block für eine wiederkehrende Aufgabe und rufe ihn dort auf, wo der Ablauf diese Aufgabe benötigt.",
+  "examples": [
+    {
+      "label": "Beispiel",
+      "scratchblocks": "define jump [height]\nglide (1) secs to x: (x position) y: ((y position) + (height))\nglide (1) secs to x: (x position) y: ((y position) - (height))\n\nwhen green flag clicked\nforever\nif <key (up arrow v) pressed?> then\njump (50)\nend\nend"
+    }
+  ]
+}

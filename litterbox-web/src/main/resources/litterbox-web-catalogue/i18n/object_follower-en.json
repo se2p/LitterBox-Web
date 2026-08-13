@@ -1,0 +1,13 @@
+{
+  "finderId": "object_follower",
+  "locale": "en",
+  "name": "Following an Object",
+  "hint": "A sprite can align its movement with another object to create following and escort behaviours.",
+  "instruction": "Point the sprite toward or move it to the target object and repeat the movement when it should follow continuously.",
+  "examples": [
+    {
+      "label": "Example",
+      "scratchblocks": "when green flag clicked\nrepeat (10)\npoint towards (Sprite1 v)\nmove (10) steps\nend"
+    }
+  ]
+}

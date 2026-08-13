@@ -1,0 +1,17 @@
+{
+  "finderId": "blocking_if_else",
+  "locale": "nl",
+  "name": "Blokkerende als-anders",
+  "hint": "Beide takken van een als-anders-voorwaarde beëindigen de uitvoering met een stopactie. Daardoor is code na de voorwaarde onbereikbaar, ongeacht welke tak wordt uitgevoerd.",
+  "instruction": "Gebruik de stopactie alleen in de tak waar dat nodig is, of verwijder/verplaats de onbereikbare vervolgstappen.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching (bird v)> then\nshow\nstop [this script v] :: #ff0000 //⇦  🐛\nelse\nhide\nstop [this script v] :: #ff0000 //⇦  🐛\nend\nend"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching (bird v)> then\nshow\nstop [this script v] :: #007000 //⇦ 👍\nelse\nhide\nend\nend"
+    }
+  ]
+}

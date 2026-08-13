@@ -1,0 +1,13 @@
+{
+  "finderId": "ask_and_answer_perfume",
+  "locale": "nl",
+  "name": "Vraag en antwoord",
+  "hint": "Het vraag-en-antwoordpatroon verzamelt invoer en gebruikt het antwoord voor interactie.",
+  "instruction": "Plaats een vraag-en-wachtblok vóór een actie die afhankelijk moet zijn van wat de gebruiker invoert.",
+  "examples": [
+    {
+      "label": "Voorbeeld",
+      "scratchblocks": "when green flag clicked\nask [What's your name?] and wait\nsay (answer)"
+    }
+  ]
+}

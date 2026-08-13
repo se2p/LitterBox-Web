@@ -1,0 +1,13 @@
+{
+  "finderId": "looped_statement_not_stopped",
+  "locale": "es",
+  "name": "Los recursos en los bucles no se detienen",
+  "hint": "Un recurso se activa dentro de un bucle, mientras que su parada correspondiente solo se gestiona localmente o en otra ruta. La siguiente iteración puede activarlo de nuevo, por lo que no queda apagado de forma fiable al terminar la ejecución.",
+  "instruction": "Usa una parada global final fuera del bucle que reactiva el recurso y asegúrate de que todas las rutas de terminación lleguen a esa limpieza.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nforever\n@codeyB RGB LED lights up [#ff0000] for (1) secs :: lighting\nend\n\nwhen [space v] key pressed\n@codeyB RGB LED lights off :: lighting"
+    }
+  ]
+}

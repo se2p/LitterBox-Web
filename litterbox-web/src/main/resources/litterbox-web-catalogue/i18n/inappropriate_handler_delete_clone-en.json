@@ -1,0 +1,17 @@
+{
+  "finderId": "inappropriate_handler_delete_clone",
+  "locale": "en",
+  "name": "Inappropriate Handler for Script with Delete Clone",
+  "hint": "The script contains a [sbi]delete this clone[/sbi] block. It can't be executed, because in the event handler it isn't clear which clone should be affected.",
+  "instruction": "The script has to start with a [sbi]when I start as a clone[/sbi] or [sbi]when this sprite clicked[/sbi] block. Another possibility would be moving the [sbi]delete this clone[/sbi] block to a script starting with one of these blocks.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked :: #ff0000 //⇦  🐛\nshow\ngo to x: (100) y: (10)\nrepeat (10)\nmove (20) steps\nturn left (90) degrees\nend\ndelete this clone"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "when I start as a clone :: #007000 //⇦  👍\nshow\ngo to x: (100) y: (10)\nrepeat (10)\nmove (20) steps\nturn left (90) degrees\nend\ndelete this clone "
+    }
+  ]
+}

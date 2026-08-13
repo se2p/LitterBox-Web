@@ -1,0 +1,17 @@
+{
+  "finderId": "immediate_stop_after_say_think",
+  "locale": "en",
+  "name": "Immediate Stop after Say or Think",
+  "hint": "The script stops everything immediately after the [sbi]say ()[/sbi] or [sbi]think ()[/sbi] block. The text is never shown.",
+  "instruction": "Replace the [sbi]say ()[/sbi] or [sbi]think ()[/sbi] block with a [sbi]say ( ) for ( ) seconds[/sbi] or [sbi]think ( ) for ( ) seconds[/sbi] block.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when i start as a clone\nforever\nif <touching (mouse-pointer v) ?> then\nchange [points v] by (1)\nsay [Ooohhh...] :: #ff0000 //⇦  🐛\nstop [all v]\nend\nend"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "when i start as a clone\nforever\nif <touching (mouse-pointer v) ?> then\nchange [points v] by (1)\nsay [Ooohhh...] for (3) seconds  :: #007000 //⇦  👍\nstop [all v]\nend\nend"
+    }
+  ]
+}

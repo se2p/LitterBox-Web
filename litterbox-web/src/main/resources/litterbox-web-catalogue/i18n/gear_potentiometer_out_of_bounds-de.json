@@ -1,0 +1,13 @@
+{
+  "finderId": "gear_potentiometer_out_of_bounds",
+  "locale": "de",
+  "name": "Potentiometerwert des Getriebes außerhalb des Messbereichs",
+  "hint": "Ein Vergleich des Getriebepotentiometers außerhalb von 0 bis 100 bezieht sich auf einen Wert, den der Sensor nicht liefern kann, und macht die Positionssteuerung unzuverlässig.",
+  "instruction": "Prüfe Potentiometerwerte und Schwellenwerte als Ganzzahlen im inklusiven Bereich von 0 bis 100, bevor du sie verwendest.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB gear potentiometer value :: sensing) > (150)> then\nsay [Invalid gear value]\nend"
+    }
+  ]
+}

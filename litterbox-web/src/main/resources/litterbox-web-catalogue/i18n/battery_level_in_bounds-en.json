@@ -1,0 +1,13 @@
+{
+  "finderId": "battery_level_in_bounds",
+  "locale": "en",
+  "name": "Battery Level in Bounds",
+  "hint": "Battery charge is represented as a percentage from 0 to 100, making energy-based decisions dependable.",
+  "instruction": "Compare the battery reading with thresholds between 0 and 100, and handle values outside that interval explicitly.",
+  "examples": [
+    {
+      "label": "Example",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB battery level :: sensing) < (20)> then\nsay [Low battery]\nend"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "finderId": "hide_without_show",
+  "locale": "es",
+  "name": "Ocultar sin mostrar",
+  "hint": "El buscador detecta un objeto que se oculta y después recibe cambios visibles sin un bloque mostrar alcanzable. Los cambios de movimiento y apariencia pueden producirse mientras el objeto sigue invisible, haciendo que el programa parezca no reaccionar.",
+  "instruction": "Muestra el objeto antes de los cambios visuales que deban verse, o elimina esos cambios cuando permanecer oculto sea intencionado.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\nhide"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\nshow\nmove (10) steps\nhide"
+    }
+  ]
+}

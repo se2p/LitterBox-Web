@@ -1,0 +1,17 @@
+{
+  "finderId": "correct_broadcast",
+  "locale": "de",
+  "name": "Korrekte Nachrichtenkommunikation",
+  "hint": "Du hast eine Kommunikation mit Nachrichten richtig umgesetzt, somit kannst du ganz einfach deine Skripte koordinieren.",
+  "instruction": "Du hast eine Kommunikation mit Nachrichten richtig umgesetzt, somit kannst du ganz einfach deine Skripte koordinieren.",
+  "examples": [
+    {
+      "label": "Eleganter Code",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching (#000) ?> then\nbroadcast (black v) //⇦  👍\nend\nend"
+    },
+    {
+      "label": "Eleganter Code 2",
+      "scratchblocks": "when i receive [black v] //⇦  👍\nmove (10) steps"
+    }
+  ]
+}

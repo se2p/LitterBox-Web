@@ -1,0 +1,13 @@
+{
+  "finderId": "missing_quantum_entanglement_event",
+  "locale": "nl",
+  "name": "Ontbrekende verstrengelingsgebeurtenis",
+  "hint": "Wanneer een verstrengelingsblok actors koppelt, heeft minstens één deelnemende actor een niet-lege handler voor het starten van de verstrengeling nodig. Zonder die gebeurtenis is er geen gedrag voor de verstrengelde toestand en reageert het programma mogelijk niet zoals bedoeld.",
+  "instruction": "Voeg bij een van de deelnemende actors een niet-lege handler voor [when entanglement started] toe en beschrijf daar de reactie op de verstrengelde toestand.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nentangle [costume v] with [Cat Flying] possibilities: (2) :: #5c068c"
+    }
+  ]
+}

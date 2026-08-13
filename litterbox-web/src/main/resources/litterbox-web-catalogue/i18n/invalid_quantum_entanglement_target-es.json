@@ -1,0 +1,13 @@
+{
+  "finderId": "invalid_quantum_entanglement_target",
+  "locale": "es",
+  "name": "Objetivo de entrelazamiento no válido",
+  "hint": "Una operación de entrelazamiento necesita otro actor que exista en el proyecto. Entrelazar un objeto consigo mismo o indicar un actor inexistente deja indefinida la relación y puede impedir el comportamiento cuántico esperado.",
+  "instruction": "Selecciona otro objeto existente o un escenario compatible, y comprueba que su nombre coincide con un actor del proyecto antes de ejecutar el entrelazamiento.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nentangle [position v] with [non-existing] possibilities: (1) :: #5c068c"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "valid_termination",
+  "locale": "de",
+  "name": "Valide Abbruchbedingung",
+  "hint": "Du hast eine Abbruchbedingung in deine Wiederholung eingebaut, somit läuft die Wiederholung auch nicht unendlich lange.",
+  "instruction": "Du hast eine Abbruchbedingung in deine Wiederholung eingebaut, somit läuft die Wiederholung auch nicht unendlich lange.",
+  "examples": [
+    {
+      "label": "Eleganter Code",
+      "scratchblocks": "when green flag clicked\nrepeat until <touching (mouse-pointer v) ?> //⇦  👍\ngo to (random position v)\nwait (1) seconds\nend"
+    }
+  ]
+}

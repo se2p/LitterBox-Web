@@ -1,0 +1,8 @@
+{
+  "finderId": "empty_project",
+  "locale": "en",
+  "name": "Empty Project",
+  "hint": "Your project is completely empty.",
+  "instruction": "Your project is completely empty.",
+  "examples": []
+}

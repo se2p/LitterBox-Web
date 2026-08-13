@@ -1,0 +1,13 @@
+{
+  "finderId": "invalid_quantum_possibilities_list",
+  "locale": "nl",
+  "name": "Ongeldige lijst voor verstrengeling of superpositie",
+  "hint": "Kwantumblokken met een lijst voor mogelijkheden verwachten een echte Scratch-lijstreporter. Een getal of een gewone variabele levert geen lijst met mogelijke toestanden en kan de bewerking onbruikbaar maken.",
+  "instruction": "Maak een Scratch-lijst voor de mogelijke toestanden, vul die indien nodig en plaats de lijstreporter in het kwantumblok. Gebruik daar niet alleen de naam van de lijst als gewone waarde.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nentangle [position v] with [Sprite2] possibilities: (1) list: (6) :: #5c068c"
+    }
+  ]
+}

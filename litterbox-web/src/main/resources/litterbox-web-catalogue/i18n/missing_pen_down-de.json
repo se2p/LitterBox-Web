@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_pen_down",
+  "locale": "de",
+  "name": "Fehlendes Stifteinschalten",
+  "hint": "Du verwendest den [sbi]schalte Stift aus[/sbi] Baustein, aber du hast den Stift nie eingeschaltet. Dadurch wird deine Figur nie etwas malen. Verwende deshalb davor den [sbi]schalte Stift ein[/sbi] Baustein.",
+  "instruction": "Du verwendest den [sbi]schalte Stift aus[/sbi] Baustein, aber du hast den Stift nie eingeschaltet. Dadurch wird deine Figur nie etwas malen. Verwende deshalb davor den [sbi]schalte Stift ein[/sbi] Baustein.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nrepeat (10)\nglide (1) secs to [random position v]\nend\npen up//⇦  🐛\n"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\npen down//⇦  👍\nrepeat (10)\nglide (1) secs to [random position v]\nend\npen up\n"
+    }
+  ]
+}

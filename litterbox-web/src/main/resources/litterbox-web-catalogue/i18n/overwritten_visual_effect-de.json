@@ -1,0 +1,17 @@
+{
+  "finderId": "overwritten_visual_effect",
+  "locale": "de",
+  "name": "Überschriebener visueller Effekt",
+  "hint": "Der Finder erkennt aufeinanderfolgende Änderungen desselben visuellen Zustands ohne zeitliche Pause, etwa bei Aussehen, Größe, Sichtbarkeit, Ebene, Sprechblase oder Grafikeffekten. Der spätere Baustein wirkt sofort, sodass der frühere Zustand nicht sichtbar wird.",
+  "instruction": "Füge zwischen sichtbaren Zuständen eine Wartezeit ein, wenn beide wahrgenommen werden sollen, oder entferne beziehungsweise verbinde die frühere Änderung, wenn sie keinen sichtbaren Zweck hat.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nset [ghost v] effect to (50)\nset [ghost v] effect to (0)"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\nset [ghost v] effect to (50)"
+    }
+  ]
+}

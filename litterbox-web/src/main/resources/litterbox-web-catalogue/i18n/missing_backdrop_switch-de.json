@@ -1,0 +1,25 @@
+{
+  "finderId": "missing_backdrop_switch",
+  "locale": "de",
+  "name": "Fehlender Bühnenwechsel",
+  "hint": "Wenn du [sbi]wechsle zu Bühnenbild [ v][/sbi] verwendest um ein Skript zu starten und das Bühnenbild nie zu dem ausgewählten Bühnenbild wechselt, wird das Skript nie ausgeführt.",
+  "instruction": "Wenn du [sbi]wechsle zu Bühnenbild [ v][/sbi] verwendest um ein Skript zu starten und das Bühnenbild nie zu dem ausgewählten Bühnenbild wechselt, wird das Skript nie ausgeführt.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when backdrop switches to [stage v]\nmove (10) steps\n"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when backdrop switches to [stage v]\nmove (10) steps\n"
+    },
+    {
+      "label": "Fehler 2",
+      "scratchblocks": "when green flag clicked\n"
+    },
+    {
+      "label": "Mögliche Lösung 2",
+      "scratchblocks": "when green flag clicked\nswitch backdrop to [stage v] :: #007000\n"
+    }
+  ]
+}

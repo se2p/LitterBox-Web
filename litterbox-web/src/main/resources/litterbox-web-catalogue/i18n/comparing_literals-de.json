@@ -1,0 +1,17 @@
+{
+  "finderId": "comparing_literals",
+  "locale": "de",
+  "name": "Symbole vergleichen",
+  "hint": "Bei deinem Vergleich erhältst du immer dasselbe Ergebnis WAHR oder FALSCH. Der Code in der Klammer wird entweder immer oder nie ausgeführt. Ersetze deinen Vergleich durch etwas Passenderes oder entferne die Kontrollstruktur.",
+  "instruction": "Möglicherweise wolltest du eine Variable [sbi](score)[/sbi] zur Speicherung verwenden.[newLine]Neue Variablen kannst du im Bereich Variablen erstellen.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when I start as a clone\nif &lt; [score] &gt; (20) :: #ff0000 &gt; then //⇦  🐛\nswitch costume to (profi v)\nend\n"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "(score)\n\nwhen I start as a clone\nif &lt; (score) &gt; (20) :: #007000 &gt; then //⇦  👍\nswitch costume to (profi v)\nend"
+    }
+  ]
+}

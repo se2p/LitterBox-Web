@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_initialization",
+  "locale": "nl",
+  "name": "Ontbrekende initialisatie",
+  "hint": "Een variabele of eigenschap wordt gelezen of gewijzigd voordat een bewuste beginwaarde is ingesteld. Daardoor kan een vorige uitvoering de nieuwe uitvoering beïnvloeden.",
+  "instruction": "Initialiseer de betreffende variabele of eigenschap aan het begin van een geschikt startscript, tenzij het bewust behouden van de waarde bedoeld is.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "(score)\n\nwhen green flag clicked\nforever\nif <touching (edge v) ?> then\nchange [score v] by (1)\nend\nend"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "(score)\n\nwhen green flag clicked\nset [score] to (0) :: #007000 //⇦  👍\nforever\nif <touching (edge v) ?> then\nchange [score v] by (1)\nend\nend"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "loop_sensing",
+  "locale": "de",
+  "name": "Fortlaufendes Abfragen von Events",
+  "hint": "Um zu vermeiden, dass du irgendein Ereignis verpasst, überprüfst du kontinuierlich in einer Wiederholung, ob es bereits eingetreten ist.",
+  "instruction": "Um zu vermeiden, dass du irgendein Ereignis verpasst, überprüfst du kontinuierlich in einer Wiederholung, ob es bereits eingetreten ist.",
+  "examples": [
+    {
+      "label": "Eleganter Code",
+      "scratchblocks": "when green flag clicked\nforever\nif <key (left arrow v) pressed?> then //⇦  👍\nchange [x v] by (-1)\nend"
+    }
+  ]
+}

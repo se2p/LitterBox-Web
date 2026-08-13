@@ -1,0 +1,17 @@
+{
+  "finderId": "variable_as_literal",
+  "locale": "nl",
+  "name": "Variabele gebruikt als tekst",
+  "hint": "De naam van een variabele is als gewone tekst ingevoerd. Het programma gebruikt dan de tekens van die naam, niet de actuele waarde van de variabele.",
+  "instruction": "Sleep het variabele-blok in de invoer zodat het programma de huidige waarde gebruikt in plaats van de naam als tekst.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "(score)\n\nwhen green flag clicked\nforever\nif <[score] > (20)> then :: #ff0000 //⇦  🐛\nswitch backdrop to (level2 v)\nend"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "(score)\n\nwhen green flag clicked\nforever\nif <(score) > (20)> then :: #007000 //⇦  👍\nswitch backdrop to (level2 v)\nend"
+    }
+  ]
+}

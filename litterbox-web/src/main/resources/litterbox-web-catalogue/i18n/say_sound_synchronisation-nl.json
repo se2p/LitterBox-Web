@@ -1,0 +1,13 @@
+{
+  "finderId": "say_sound_synchronisation",
+  "locale": "nl",
+  "name": "Zeg-geluid synchronisatie",
+  "hint": "Een tekstballon samen met een geluid maakt dialoog duidelijker en aantrekkelijker voor gebruikers.",
+  "instruction": "Speel het geluid meteen na de tekst af en wis de tekstballon daarna wanneer beide synchroon moeten lopen.",
+  "examples": [
+    {
+      "label": "Voorbeeld",
+      "scratchblocks": "when green flag clicked\nsay [Hello!]\nplay sound (recording1 v) until done\nsay []"
+    }
+  ]
+}

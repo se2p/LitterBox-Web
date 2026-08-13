@@ -1,0 +1,17 @@
+{
+  "finderId": "dead_code",
+  "locale": "nl",
+  "name": "Dode code",
+  "hint": "Je project bevat blokken die niet via een gebeurtenis of de uitvoerbare programmastroom bereikbaar zijn en daarom nooit worden uitgevoerd. Zulke blokken verbergen de bedoeling en kunnen verouderde logica behouden.",
+  "instruction": "Verbind bedoeld gedrag met een passend gebeurtenisblok of een bereikbaar script, en verwijder blokken die niet meer nodig zijn.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\n\nmove(20) steps :: #ff0000 //⇦  🐛\n\n turn left (15) degrees :: #ff0000 //⇦  🐛\n"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\nmove(20) steps :: #007000 //⇦  👍\n"
+    }
+  ]
+}

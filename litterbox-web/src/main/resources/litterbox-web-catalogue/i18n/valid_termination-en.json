@@ -1,0 +1,13 @@
+{
+  "finderId": "valid_termination",
+  "locale": "en",
+  "name": "Valid termination condition",
+  "hint": "You implemented a valid termination condition in your loop, that prevents the loop to run forever.",
+  "instruction": "You implemented a valid termination condition in your loop, that prevents the loop to run forever.",
+  "examples": [
+    {
+      "label": "Elegant code",
+      "scratchblocks": "when green flag clicked\nrepeat until <touching (mouse-pointer v) ?> //⇦  👍\ngo to (random position v)\nwait (1) seconds\nend"
+    }
+  ]
+}

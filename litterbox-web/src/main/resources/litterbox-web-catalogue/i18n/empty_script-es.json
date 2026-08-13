@@ -1,0 +1,17 @@
+{
+  "finderId": "empty_script",
+  "locale": "es",
+  "name": "Script vacío",
+  "hint": "Utilizas un bloque de eventos vacío, por lo que cuando ocurra el evento, no pasará nada. Elimina este bloque de eventos o agrega bloques después del mismo.",
+  "instruction": "Utilizas un bloque de eventos vacío, por lo que cuando ocurra el evento, no pasará nada. Elimina este bloque de eventos o agrega bloques después del mismo.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked :: #ff0000 //⇦  🐛\n"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\nmove (10) steps :: #007000 //⇦  👍\n"
+    }
+  ]
+}

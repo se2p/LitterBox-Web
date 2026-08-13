@@ -1,0 +1,13 @@
+{
+  "finderId": "roll_angle_in_bounds",
+  "locale": "es",
+  "name": "Ángulo de balanceo en límites",
+  "hint": "El ángulo de balanceo está respaldado entre -90 y 90 grados, lo que permite tomar decisiones fiables sobre la inclinación lateral.",
+  "instruction": "Mantén los umbrales de balanceo entre -90 y 90 grados y trata por separado las lecturas fuera del intervalo.",
+  "examples": [
+    {
+      "label": "Ejemplo",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB roll angle° :: sensing) > (30)> then\nsay [Tilted sideways]\nend"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "color_detection_out_of_bounds",
+  "locale": "de",
+  "name": "Farbwerterkennung außerhalb des Messbereichs",
+  "hint": "Ein erkannter Farbkanal außerhalb von 0 bis 255 kann keine gültige Farbmessung darstellen; farbabhängige Entscheidungen werden dadurch unzuverlässig.",
+  "instruction": "Stelle sicher, dass jeder erkannte Farbkanal vor dem Vergleich als Ganzzahl von 0 bis 255 behandelt wird.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB [red v] color value detected :: sensing) > (300)> then\nsay [Invalid color]\nend"
+    }
+  ]
+}

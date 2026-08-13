@@ -1,0 +1,17 @@
+{
+  "finderId": "empty_control_body",
+  "locale": "en",
+  "name": "Empty Control Body",
+  "hint": "The body of a control structure is empty, so when the control block is invoked, nothing happens. This makes your code harder to understand.",
+  "instruction": "Delete the block, if it isn't used.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\nWhen this sprite clicked :: #ff0000 //⇦  🐛\n"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\n"
+    }
+  ]
+}

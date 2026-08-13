@@ -1,0 +1,13 @@
+{
+  "finderId": "motor_power_minus",
+  "locale": "de",
+  "name": "Negative Motorleistung",
+  "hint": "Ein Motorbefehl mit negativer Leistung steht für die Gegenrichtung und kann die beabsichtigte Fahrtrichtung schwer lesbar machen. Ohne klaren Richtungsbaustein entstehen dadurch leicht unerwartete Bewegungen.",
+  "instruction": "Wähle den passenden Richtungsbaustein und verwende dafür eine positive Leistung innerhalb des unterstützten Bereichs.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\n@codeyA move forward at power (-100) % for (1) secs :: motion"
+    }
+  ]
+}

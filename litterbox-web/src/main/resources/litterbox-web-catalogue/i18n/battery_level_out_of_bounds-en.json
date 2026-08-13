@@ -1,0 +1,13 @@
+{
+  "finderId": "battery_level_out_of_bounds",
+  "locale": "en",
+  "name": "Battery Level out of Bounds",
+  "hint": "A battery comparison outside 0–100 describes an impossible charge level and can make power decisions unreliable.",
+  "instruction": "Accept and compare battery levels only from 0 through 100, and constrain calculated thresholds to that interval.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB battery level :: sensing) > (150)> then\nsay [Invalid battery level]\nend"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "finderId": "busy_waiting",
+  "locale": "de",
+  "name": "Aktives Warten",
+  "hint": "In deinem Skript wird immer wieder die Bedingung überprüft, nur um bei positiver Auswertung das Skript zu beenden.",
+  "instruction": "In deinem Skript wird immer wieder die Bedingung überprüft, nur um bei positiver Auswertung das Skript zu beenden.",
+  "examples": []
+}

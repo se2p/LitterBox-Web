@@ -1,0 +1,13 @@
+{
+  "finderId": "multiple_quantum_measurements",
+  "locale": "es",
+  "name": "Múltiples mediciones cuánticas",
+  "hint": "Una medición cuántica fija el estado. Repetirla sin crear una nueva superposición o un nuevo entrelazamiento no produce un estado nuevo y puede alterar la animación o la respuesta esperada.",
+  "instruction": "Vuelve a medir solo después de iniciar un estado cuántico nuevo, o guarda el primer resultado para las decisiones posteriores.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when superposition started :: events hat #5c068c\nforever\nturn right (15) degrees\nwait (0.1) seconds\nend\n\nwhen green flag clicked\nsuperpose [position v] possibilities: (30) :: #5c068c\n\nwhen [space v] key pressed\nmeasure :: #5c068c\nmeasure :: #5c068c"
+    }
+  ]
+}

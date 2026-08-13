@@ -1,0 +1,13 @@
+{
+  "finderId": "gear_potentiometer_in_bounds",
+  "locale": "en",
+  "name": "Gear Potentiometer in Bounds",
+  "hint": "The gear potentiometer reports values from 0 to 100, providing usable position information for the robot.",
+  "instruction": "Use thresholds within 0–100 for comparisons and control decisions based on the potentiometer.",
+  "examples": [
+    {
+      "label": "Example",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB gear potentiometer value :: sensing) > (50)> then\nsay [Gear position set]\nend"
+    }
+  ]
+}

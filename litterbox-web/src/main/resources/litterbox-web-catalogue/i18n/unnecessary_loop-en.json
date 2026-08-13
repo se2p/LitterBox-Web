@@ -1,0 +1,8 @@
+{
+  "finderId": "unnecessary_loop",
+  "locale": "en",
+  "name": "Unnecessary Loop",
+  "hint": "Your loop is not necessary and can be deleted.",
+  "instruction": "Your loop is not necessary and can be deleted.",
+  "examples": []
+}

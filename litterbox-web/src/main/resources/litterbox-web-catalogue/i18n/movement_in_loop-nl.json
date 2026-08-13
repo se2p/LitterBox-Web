@@ -1,0 +1,13 @@
+{
+  "finderId": "movement_in_loop",
+  "locale": "nl",
+  "name": "Vloeiende sprite-beweging in lus",
+  "hint": "Kleine bewegings- of rotatieaanpassingen in een lus zorgen voor continue, vloeiende beweging. Door herhaalde updates ontstaat natuurlijker gedrag.",
+  "instruction": "Gebruik een voortdurende lus met kleine bewegingen en controleer daarin met [sbi]key pressed?[/sbi] de invoer, in plaats van te vertrouwen op onregelmatige herhaalde toetsgebeurtenissen.",
+  "examples": [
+    {
+      "label": "Elegante code",
+      "scratchblocks": "when green flag clicked\nforever\nchange x by (1) //⇦  👍\nend"
+    }
+  ]
+}

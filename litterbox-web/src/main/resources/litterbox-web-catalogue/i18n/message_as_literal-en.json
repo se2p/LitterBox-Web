@@ -1,0 +1,17 @@
+{
+  "finderId": "message_as_literal",
+  "locale": "en",
+  "name": "Message as Literal",
+  "hint": "The finder detects a message name used as ordinary text while the corresponding message is expected to coordinate scripts. Text in a say, comparison, list, or similar block does not send a message, so receiver scripts may never run and the text can be misleading.",
+  "instruction": "Use a broadcast or broadcast-and-wait block when the intention is to notify other scripts; keep a message name as text only when displaying or comparing that text is deliberate.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nsay [myMsg]\nwhen I receive \\[myMsg v\\]\nmove (10) steps"
+    },
+    {
+      "label": "Possible solution",
+      "scratchblocks": "when green flag clicked\nbroadcast (myMsg v)\nsay [Hello]\nwhen I receive \\[myMsg v\\]\nmove (10) steps"
+    }
+  ]
+}

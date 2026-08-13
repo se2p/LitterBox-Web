@@ -1,0 +1,13 @@
+{
+  "finderId": "ultra_sonic_in_bounds",
+  "locale": "nl",
+  "name": "Ultrasoon binnen grenzen",
+  "hint": "De ultrasoonsensor levert bruikbare afstanden van 3 tot 400 centimeter voor robotbesturing.",
+  "instruction": "Beperk afstandsvergelijkingen tot het ondersteunde bereik van 3 tot 400 centimeter en controleer metingen op de grenzen.",
+  "examples": [
+    {
+      "label": "Voorbeeld",
+      "scratchblocks": "when green flag clicked\nif <(@mBot ultrasonic sensor [port3 v] distance \\(cm\\) :: sensing) < (50)> then\nsay [Obstacle ahead]\nend"
+    }
+  ]
+}

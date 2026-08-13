@@ -1,0 +1,13 @@
+{
+  "finderId": "parallel_board_launch_script",
+  "locale": "es",
+  "name": "No hay scripts paralelos",
+  "hint": "Varios scripts de inicio de placa intentan ejecutarse en paralelo en un programa de mBot en modo de carga, aunque ese modo no ejecuta esos scripts en paralelo como se espera. Algunas acciones pueden omitirse o producirse en un orden inesperado.",
+  "instruction": "Usa el modo directo para las reacciones paralelas de la placa o reestructura el programa para que el modo de carga tenga una sola ruta coordinada de inicio.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when Codey starts up :: events hat\n@codeyA move forward at power (50) % for (1) secs :: motion\n\nwhen Codey starts up :: events hat\n@codeyA move backward at power (50) % for (1) secs :: motion"
+    }
+  ]
+}

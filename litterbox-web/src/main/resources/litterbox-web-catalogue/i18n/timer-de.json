@@ -1,0 +1,13 @@
+{
+  "finderId": "timer",
+  "locale": "de",
+  "name": "Variable wird als Zähler benutzt",
+  "hint": "Eine Variable als Zähler in einer zeitgesteuerten Wiederholung hilft dabei, Abläufe und Zeitspannen nachvollziehbar zu steuern.",
+  "instruction": "Initialisiere die Variable, warte in der Wiederholung ein festes Intervall und verändere den Wert nach jedem Intervall.",
+  "examples": [
+    {
+      "label": "Beispiel",
+      "scratchblocks": "when green flag clicked\nset [my variable v] to (20)\nforever\nwait (1) seconds\nchange [my variable v] by (-1)\nend"
+    }
+  ]
+}

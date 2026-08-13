@@ -1,0 +1,13 @@
+{
+  "finderId": "gliding_motion",
+  "locale": "de",
+  "name": "Gleitende Bewegung durch Tastendruck",
+  "hint": "Gleitbewegungen machen die Reaktion einer Figur auf Tastatur-Eingaben sichtbar und eignen sich für flüssige Spielbewegungen.",
+  "instruction": "Setze in einem Tastatur-Ereignis einen Gleitblock ein, wenn die Figur anstatt eines unmittelbaren Sprungs sanft zu einem Ziel bewegt werden soll.",
+  "examples": [
+    {
+      "label": "Beispiel",
+      "scratchblocks": "when [space v] key pressed\nglide (1) secs to (random position v)"
+    }
+  ]
+}

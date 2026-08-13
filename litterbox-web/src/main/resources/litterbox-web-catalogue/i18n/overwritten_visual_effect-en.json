@@ -1,0 +1,17 @@
+{
+  "finderId": "overwritten_visual_effect",
+  "locale": "en",
+  "name": "Overwritten Visual Effect",
+  "hint": "The finder detects consecutive changes to the same visual state without a timed pause, including appearance, size, visibility, layer, speech, or graphic effects. The later block takes effect immediately, so the earlier visual state is not observable.",
+  "instruction": "Pause between visual states when both should be seen, or remove or combine the earlier change when it has no intended visible effect.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nset [ghost v] effect to (50)\nset [ghost v] effect to (0)"
+    },
+    {
+      "label": "Possible solution",
+      "scratchblocks": "when green flag clicked\nset [ghost v] effect to (50)"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "useful_position_check",
+  "locale": "es",
+  "name": "Comprobación útil para números decimales",
+  "hint": "En Scratch, los valores de las coordenadas x e y son valores de coma flotante muy exactos. Una verificación de [sbi]<() = ()>[/sbi] con estos números puede causar problemas. Para evitar eso, usó los operadores [sbi]<() < ()>[/sbi] o [sbi]<() > ()>[/sbi].",
+  "instruction": "En Scratch, los valores de las coordenadas x e y son valores de coma flotante muy exactos. Una verificación de [sbi]<() = ()>[/sbi] con estos números puede causar problemas. Para evitar eso, usó los operadores [sbi]<() < ()>[/sbi] o [sbi]<() > ()>[/sbi].",
+  "examples": [
+    {
+      "label": "Código bello",
+      "scratchblocks": "when I start as a clone\nshow\nrepeat until <(y position) < (120)> //⇦  👍\nchange y by (-10)\nwait (1) seconds\nend"
+    }
+  ]
+}

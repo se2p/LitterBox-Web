@@ -1,0 +1,13 @@
+{
+  "finderId": "gliding_motion",
+  "locale": "nl",
+  "name": "Glijdende beweging door toetsindruk",
+  "hint": "Glijden maakt de reactie van een sprite op toetsen zichtbaar en ondersteunt vloeiende beweging in spellen.",
+  "instruction": "Gebruik een glijblok in een toetsgebeurtenis wanneer de sprite vloeiend naar een doel moet bewegen.",
+  "examples": [
+    {
+      "label": "Voorbeeld",
+      "scratchblocks": "when [space v] key pressed\nglide (1) secs to (random position v)"
+    }
+  ]
+}

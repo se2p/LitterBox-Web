@@ -1,0 +1,13 @@
+{
+  "finderId": "line_following_out_of_bounds",
+  "locale": "de",
+  "name": "Linienverfolgungsmessung außerhalb des Messbereichs",
+  "hint": "Ein Vergleich mit einem Linienfolger-Zustand außerhalb von 0, 1, 2 oder 3 kann keinen Sensorzustand treffen und macht den Zweig unerreichbar.",
+  "instruction": "Behandle nur die vier unterstützten Linienfolger-Zustände 0, 1, 2 und 3 und prüfe Zustandswerte vor dem Vergleich.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nif <(@mBot line follower sensor [port2 v] value :: sensing) = (4)> then\nsay [Invalid line state]\nend"
+    }
+  ]
+}

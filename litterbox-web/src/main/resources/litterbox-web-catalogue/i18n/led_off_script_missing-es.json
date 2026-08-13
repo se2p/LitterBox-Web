@@ -1,0 +1,13 @@
+{
+  "finderId": "led_off_script_missing",
+  "locale": "es",
+  "name": "Falta el script para apagar los LED",
+  "hint": "Se enciende un LED, pero ningún script de limpieza alcanzable apaga ese mismo LED antes de terminar la ejecución. Puede quedar encendido y afectar al comportamiento posterior del robot.",
+  "instruction": "Asocia cada comando para encender un LED con un comando de apagado o color negro alcanzable en la terminación normal y en rutas alternativas.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\n@mBot LED [left v] shows color [#ff0000] :: show\nstop [this script v]"
+    }
+  ]
+}

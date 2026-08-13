@@ -1,0 +1,13 @@
+{
+  "finderId": "shaking_strength_out_of_bounds",
+  "locale": "nl",
+  "name": "trillings-sterkte buiten grenzen",
+  "hint": "Een vergelijking van trillingssterkte buiten 0–100 kan geen sensorwaarde voorstellen, waardoor bewegingsreacties mogelijk niet werken zoals bedoeld.",
+  "instruction": "Valideer trillingssterkte en de bijbehorende drempelwaarden als waarden van 0 tot en met 100 voordat je ze gebruikt.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB shaking strength :: sensing) > (150)> then\nsay [Invalid shaking]\nend"
+    }
+  ]
+}

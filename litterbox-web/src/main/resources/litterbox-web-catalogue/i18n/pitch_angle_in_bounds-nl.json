@@ -1,0 +1,13 @@
+{
+  "finderId": "pitch_angle_in_bounds",
+  "locale": "nl",
+  "name": "Hellingshoek binnen grenzen",
+  "hint": "De stamp-hoek kan van -180 tot 180 graden zinvol worden geïnterpreteerd en beschrijft de voorwaartse of achterwaartse kanteling van de robot.",
+  "instruction": "Gebruik vergelijkingsgrenzen tussen -180 en 180 graden en controleer metingen buiten dat interval.",
+  "examples": [
+    {
+      "label": "Voorbeeld",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB pitch angle° :: sensing) > (30)> then\nsay [Tilted forward]\nend"
+    }
+  ]
+}

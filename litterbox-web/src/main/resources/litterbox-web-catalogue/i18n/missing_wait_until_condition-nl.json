@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_wait_until_condition",
+  "locale": "nl",
+  "name": "Ontbrekende wacht-tot voorwaarde",
+  "hint": "De vinder detecteert een wacht-tot-blok zonder booleaanse voorwaarde. Het blok weet daardoor niet wanneer het moet doorgaan, wacht oneindig en verhindert dat de volgende code wordt uitgevoerd.",
+  "instruction": "Voeg een voorwaarde toe die uiteindelijk waar kan worden en het verwachte evenement beschrijft; gebruik een getimede wacht wanneer geen voorwaarde nodig is.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nwait until <>\nsay [done]"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\nwait until <key \\[space v\\] pressed?>\nsay [done]"
+    }
+  ]
+}

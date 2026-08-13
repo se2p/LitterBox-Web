@@ -1,0 +1,13 @@
+{
+  "finderId": "loudness_in_bounds",
+  "locale": "en",
+  "name": "Loudness in Bounds",
+  "hint": "The loudness sensor reports values from 0 to 100, so sound levels can be compared and processed meaningfully.",
+  "instruction": "Choose loudness thresholds between 0 and 100 and validate the reading before using it in a condition.",
+  "examples": [
+    {
+      "label": "Example",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB loudness :: sensing) > (50)> then\nsay [Loud sound]\nend"
+    }
+  ]
+}

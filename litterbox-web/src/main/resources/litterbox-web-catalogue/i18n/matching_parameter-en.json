@@ -1,0 +1,13 @@
+{
+  "finderId": "matching_parameter",
+  "locale": "en",
+  "name": "Initialized Parameter",
+  "hint": "A named parameter passes a value into a custom block and makes its behaviour adaptable.",
+  "instruction": "Add the parameter to the block definition and use it in the block body where the supplied value should take effect.",
+  "examples": [
+    {
+      "label": "Example",
+      "scratchblocks": "define jump [height]\nforever\nif <key (up arrow v) pressed?> then\nglide (1) secs to x: (0) y: (height)\nglide (1) secs to x: (0) y: (0)\nend\nend"
+    }
+  ]
+}

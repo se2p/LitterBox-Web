@@ -1,0 +1,13 @@
+{
+  "finderId": "missing_loop_robot_sensing",
+  "locale": "en",
+  "name": "Missing Loop in Robot",
+  "hint": "A robot sensor condition is checked once outside a loop, so later changes are ignored and the robot can respond only to its initial state.",
+  "instruction": "Place the sensing condition and its response inside an appropriate forever or until loop, or use an event-driven hat for each occurrence.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nif <@codeyB shaken ? :: sensing> then\nsay [Shaken]\nend"
+    }
+  ]
+}

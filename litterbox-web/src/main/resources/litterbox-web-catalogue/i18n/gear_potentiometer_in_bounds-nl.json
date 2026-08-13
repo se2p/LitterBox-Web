@@ -1,0 +1,13 @@
+{
+  "finderId": "gear_potentiometer_in_bounds",
+  "locale": "nl",
+  "name": "Tandwiel-potentiometer binnen grenzen",
+  "hint": "De tandwiel-potentiometer geeft waarden van 0 tot 100 en levert bruikbare positie-informatie voor de robot.",
+  "instruction": "Gebruik voor vergelijkingen en besturingsbeslissingen drempelwaarden binnen 0–100.",
+  "examples": [
+    {
+      "label": "Voorbeeld",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB gear potentiometer value :: sensing) > (50)> then\nsay [Gear position set]\nend"
+    }
+  ]
+}

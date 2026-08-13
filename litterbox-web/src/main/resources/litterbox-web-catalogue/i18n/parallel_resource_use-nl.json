@@ -1,0 +1,13 @@
+{
+  "finderId": "parallel_resource_use",
+  "locale": "nl",
+  "name": "Parallelle controle van bronnen",
+  "hint": "Twee of meer parallelle scripts sturen dezelfde robotbron aan. Hun timing en laatste opdracht kunnen elkaar tegenspreken, wat onvoorspelbare beweging of hardwaretoestanden veroorzaakt.",
+  "instruction": "Geef elke bron één duidelijk besturend script, of coördineer de toegang met berichten en expliciet eigenaarschap.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when on-board button [A v] :: events hat\n@codeyA keep straight forward at power (50) % for (1) secs :: motion\n\nwhen on-board button [B v] :: events hat\n@codeyA left wheel turns at power (50)(50) % :: motion"
+    }
+  ]
+}

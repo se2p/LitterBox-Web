@@ -1,0 +1,17 @@
+{
+  "finderId": "inappropriate_handler_delete_clone",
+  "locale": "de",
+  "name": "Unpassender Ereignisverarbeiter in Kombination mit Lösche Klon",
+  "hint": "Das Skript enthält einen [sbi]lösche diesen Klon[/sbi] Baustein. Dieser kann aber nicht ausgeführt werden, weil im Ereignisverarbeiter nicht klar wird, für welche Klone er gelten soll.",
+  "instruction": "Deswegen muss das Skript entweder mit dem [sbi]Wenn ich als Klon entstehe[/sbi] Baustein oder dem [sbi]Wenn diese Figur angeklickt wird[/sbi] Baustein beginnen oder du verschiebst den [sbi]Lösche diesen Klon[/sbi] Baustein in ein anderes Skript, das mit diesen Ereignisverarbeitern beginnt.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked :: #ff0000 //⇦  🐛\nshow\ngo to x: (100) y: (10)\nrepeat (10)\nmove (20) steps\nturn left (90) degrees\nend\ndelete this clone"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when I start as a clone :: #007000 //⇦  👍\nshow\ngo to x: (100) y: (10)\nrepeat (10)\nmove (20) steps\nturn left (90) degrees\nend\ndelete this clone "
+    }
+  ]
+}

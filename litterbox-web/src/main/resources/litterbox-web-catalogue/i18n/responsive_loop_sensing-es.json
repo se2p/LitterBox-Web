@@ -1,0 +1,13 @@
+{
+  "finderId": "responsive_loop_sensing",
+  "locale": "es",
+  "name": "Detección de bucle receptivo",
+  "hint": "Un bucle que comprueba entradas puede reaccionar al instante a las acciones de la persona usuaria y mantener controles ágiles.",
+  "instruction": "Comprueba la entrada dentro del bucle y ejecuta la respuesta prevista directamente en la rama correspondiente.",
+  "examples": [
+    {
+      "label": "Ejemplo",
+      "scratchblocks": "when green flag clicked\nforever\nif <key (space v) pressed?> then\nsay [Hello!]\nend\nmove (10) steps\nend"
+    }
+  ]
+}

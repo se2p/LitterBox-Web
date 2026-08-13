@@ -1,0 +1,13 @@
+{
+  "finderId": "ultra_sonic_out_of_bounds",
+  "locale": "de",
+  "name": "Ultraschall Messung außerhalb des Messbereichs",
+  "hint": "Ein Ultraschallvergleich außerhalb von 3 bis 400 cm liegt außerhalb des Messbereichs des Sensors und kann Hindernisentscheidungen unmöglich oder unzuverlässig machen.",
+  "instruction": "Akzeptiere Ultraschallentfernungen nur von 3 cm bis 400 cm und prüfe Schwellenwerte vor dem Vergleich.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nif <(@mBot ultrasonic sensor [port3 v] distance \\(cm\\) :: sensing) > (500)> then\nsay [Invalid distance]\nend"
+    }
+  ]
+}

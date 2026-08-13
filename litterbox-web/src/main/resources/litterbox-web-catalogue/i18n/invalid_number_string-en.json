@@ -1,0 +1,17 @@
+{
+  "finderId": "invalid_number_string",
+  "locale": "en",
+  "name": "Invalid Number String",
+  "hint": "The finder detects text that resembles a number but uses invalid numeric syntax, such as multiple decimal points or unsupported notation, in a numeric input. The conversion can fail or produce a value different from what the program appears to request.",
+  "instruction": "Normalize or validate text before using it as a number, and handle invalid input explicitly instead of passing it to a numeric block.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nsay ([1.0.] + (1))"
+    },
+    {
+      "label": "Possible solution",
+      "scratchblocks": "when green flag clicked\nsay ((1) + (1))"
+    }
+  ]
+}

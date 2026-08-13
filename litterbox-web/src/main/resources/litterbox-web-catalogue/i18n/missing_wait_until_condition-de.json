@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_wait_until_condition",
+  "locale": "de",
+  "name": "Fehlende Warte-Bedingung",
+  "hint": "Der Finder erkennt einen Warte-bis-Baustein ohne boolesche Bedingung. Der Baustein weiß dadurch nicht, wann er fortfahren soll, wartet unendlich lange und verhindert die Ausführung des nachfolgenden Codes.",
+  "instruction": "Füge eine Bedingung hinzu, die schließlich wahr werden kann und das erwartete Ereignis beschreibt. Wenn keine Bedingung nötig ist, verwende stattdessen eine zeitgesteuerte Wartezeit.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nwait until <>\nsay [done]"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\nwait until <key \\[space v\\] pressed?>\nsay [done]"
+    }
+  ]
+}

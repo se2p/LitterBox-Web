@@ -1,0 +1,17 @@
+{
+  "finderId": "floating_point_comparison",
+  "locale": "nl",
+  "name": "Vergelijking met decimale getallen",
+  "hint": "De vinder detecteert exacte gelijkheidscontroles met gemeten of berekende waarden, zoals posities, afstanden, richting, volume, timer of muiscoördinaten. Deze waarden hebben vaak decimalen of veranderen voortdurend, waardoor ze zelden precies gelijk zijn aan het vergeleken getal en een voorwaarde of lus onverwacht kan mislukken.",
+  "instruction": "Vervang de exacte gelijkheidscontrole door een controle met een tolerantie of bereik, bijvoorbeeld met <= of >=, of gebruik een waarnemingsvoorwaarde die het bedoelde contact uitdrukt.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nif <(timer) = (mouse x)> then\nmove (10) steps\nend"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\nif <(timer) < (mouse x)> then\nmove (10) steps\nend"
+    }
+  ]
+}

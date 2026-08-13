@@ -1,0 +1,8 @@
+{
+  "finderId": "illegal_parameter_refactor",
+  "locale": "en",
+  "name": "Illegal Parameter Refactor",
+  "hint": "The used parameter has the wrong format. By editing the custom block the boolean parameter was made into a number or text parameter.",
+  "instruction": "The used parameter has the wrong format. By editing the custom block the boolean parameter was made into a number or text parameter.",
+  "examples": []
+}

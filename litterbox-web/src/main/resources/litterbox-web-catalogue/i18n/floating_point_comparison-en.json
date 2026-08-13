@@ -1,0 +1,17 @@
+{
+  "finderId": "floating_point_comparison",
+  "locale": "en",
+  "name": "Floating Point Comparison",
+  "hint": "The finder detects exact equality checks that use measured or calculated values such as positions, distances, direction, volume, timer, or mouse coordinates. These values are often fractional or change continuously, so they may rarely equal the compared number exactly and a condition or loop can fail unexpectedly.",
+  "instruction": "Replace the exact equality test with a tolerance or range check, such as comparing with <= or >=, or use a sensing condition that expresses the intended contact.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nif <(timer) = (mouse x)> then\nmove (10) steps\nend"
+    },
+    {
+      "label": "Possible solution",
+      "scratchblocks": "when green flag clicked\nif <(timer) < (mouse x)> then\nmove (10) steps\nend"
+    }
+  ]
+}

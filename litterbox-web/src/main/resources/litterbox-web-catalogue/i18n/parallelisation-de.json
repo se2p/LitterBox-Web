@@ -1,0 +1,13 @@
+{
+  "finderId": "parallelisation",
+  "locale": "de",
+  "name": "Parallele Ausführung von Skripten",
+  "hint": "Du startest mindestens zwei Skripte zur gleichen Zeit. Damit hast du das Konzept der Parallelprogrammierung umgesetzt.",
+  "instruction": "Du startest mindestens zwei Skripte zur gleichen Zeit. Damit hast du das Konzept der Parallelprogrammierung umgesetzt.",
+  "examples": [
+    {
+      "label": "Eleganter Code",
+      "scratchblocks": "when green flag clicked  //⇦  👍\nforever\nturn left (10) degrees\nend\n\nwhen green flag clicked  //⇦  👍\nforever\nmove (10) steps\nend"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "empty_parameter",
+  "locale": "es",
+  "name": "Parámetro vacío",
+  "hint": "Este olor identifica una entrada obligatoria de un bloque que se dejó vacía. Puede faltar un número o texto, una dirección, un color o una posición; Scratch podría usar un valor predeterminado o comportarse de forma distinta a la prevista.",
+  "instruction": "Rellena deliberadamente cada entrada obligatoria con un valor válido o selecciona una opción adecuada del menú. Revisa especialmente los campos de dirección, color y posición antes de ejecutar el script.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nmove () steps"
+    }
+  ]
+}

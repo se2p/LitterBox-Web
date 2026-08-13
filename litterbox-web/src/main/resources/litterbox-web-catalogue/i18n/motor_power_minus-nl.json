@@ -1,0 +1,13 @@
+{
+  "finderId": "motor_power_minus",
+  "locale": "nl",
+  "name": "Negatief motorvermogen",
+  "hint": "Een motorcommando met negatief vermogen betekent de tegenovergestelde richting en maakt de bedoelde beweging minder duidelijk. Zonder een expliciet richtingsblok kan dit onverwachte beweging veroorzaken.",
+  "instruction": "Kies het juiste richtingsblok en gebruik een positieve vermogenswaarde binnen het ondersteunde bereik.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\n@codeyA move forward at power (-100) % for (1) secs :: motion"
+    }
+  ]
+}

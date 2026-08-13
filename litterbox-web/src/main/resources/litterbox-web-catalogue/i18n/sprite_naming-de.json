@@ -1,0 +1,8 @@
+{
+  "finderId": "sprite_naming",
+  "locale": "de",
+  "name": "Bedeutungsloser Figurenname",
+  "hint": "Deine Figur hat keinen aussagekräftigen Namen. Du verwendest den Standardnamen oder den Namen einer anderen Figur gefolgt von einer Zahl. Dadurch wird dein Programm schwerer zu verstehen.",
+  "instruction": "Gib deinen Figuren aussagekräftige, eindeutige Namen.",
+  "examples": []
+}

@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_termination",
+  "locale": "es",
+  "name": "Falta condición de terminación",
+  "hint": "El bloque [sbi]repetir hasta que < >[/sbi] requiere una condición de parada. Si falta esa condición, el resultado es un bucle infinito. Si tienes un bucle infinito no se ejecutarán los bloques posteriores.",
+  "instruction": "El bloque [sbi]repetir hasta que < >[/sbi] requiere una condición de parada. Si falta esa condición, el resultado es un bucle infinito. Si tienes un bucle infinito no se ejecutarán los bloques posteriores.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nrepeat until < > :: #ff0000 //⇦  🐛\nplay sound (BumBum v) until done\nend"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\nforever :: #007000 //⇦  👍\nplay sound (BumBum v) until done\nend"
+    }
+  ]
+}

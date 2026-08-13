@@ -1,0 +1,17 @@
+{
+  "finderId": "multiple_attribute_modifications",
+  "locale": "nl",
+  "name": "Meerdere wijzigingen van dezelfde eigenschap",
+  "hint": "Opeenvolgende instructies wijzigen dezelfde variabele of eigenschap zonder betekenisvol gedrag ertussen. De latere wijziging vervangt of omvat de eerdere meestal, waardoor de reeks overbodig of onduidelijk wordt.",
+  "instruction": "Combineer compatibele wijzigingen, behoud alleen de bedoelde eindtoewijzing of voeg bewust gedrag toe wanneer tussenliggende toestanden zichtbaar moeten zijn.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nswitch backdrop to (garden v)\ngo to x: (11) y: (120)\nset [points v] to (0)\nset [points v] to (0) :: #ff0000 //⇦  🐛"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\nswitch backdrop to (garden v)\ngo to x: (11) y: (120)\nset [points v] to (0) :: #007000 //⇦  👍"
+    }
+  ]
+}

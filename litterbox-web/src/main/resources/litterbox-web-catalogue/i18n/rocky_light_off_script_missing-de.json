@@ -1,0 +1,13 @@
+{
+  "finderId": "rocky_light_off_script_missing",
+  "locale": "de",
+  "name": "Rockys Licht-Ausschalt-Skript fehlt",
+  "hint": "Rockys Licht wird eingeschaltet, aber kein erreichbares Aufräumskript schaltet Rockys Licht vor dem Ende der Ausführung ausdrücklich aus. Es kann eingeschaltet bleiben und spätere Abläufe beeinflussen.",
+  "instruction": "Schalte Rockys Licht nach der gewünschten Beleuchtung und vor dem Beenden des Programms auf jedem erreichbaren Pfad ausdrücklich aus.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when on-board button [B v] :: events hat\n@rocky set Rocky's light with color ['red v'] :: lighting\nstop [this script v]"
+    }
+  ]
+}

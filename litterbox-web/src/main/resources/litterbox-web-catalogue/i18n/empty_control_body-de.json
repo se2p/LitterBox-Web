@@ -1,0 +1,17 @@
+{
+  "finderId": "empty_control_body",
+  "locale": "de",
+  "name": "Leere Kontrollstruktur",
+  "hint": "Du hast einen Steuerungsblock verwendet, der keine Befehle enthält. Dies macht den Code schlechter lesbar.",
+  "instruction": "Lösche den Block, falls er nicht weiter verwendet wird.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\nWhen this sprite clicked :: #ff0000 //⇦  🐛\n"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\n"
+    }
+  ]
+}

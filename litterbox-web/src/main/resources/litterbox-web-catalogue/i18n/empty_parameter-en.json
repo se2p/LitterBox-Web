@@ -1,0 +1,13 @@
+{
+  "finderId": "empty_parameter",
+  "locale": "en",
+  "name": "Empty Parameter",
+  "hint": "This smell identifies a required block input that was left empty. The missing input may be an ordinary number or text value, a direction, a color, or a position; Scratch may substitute a default or behave differently from what was intended.",
+  "instruction": "Deliberately fill every required input with a valid value or choose an appropriate menu option. Check direction, color, and position inputs especially carefully before running the script.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nmove () steps"
+    }
+  ]
+}

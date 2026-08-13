@@ -1,0 +1,17 @@
+{
+  "finderId": "sequential_actions",
+  "locale": "de",
+  "name": "Sequenz wiederholter Anweisungen",
+  "hint": "Das Programm enthält eine Sequenz sich wiederholender gleicher Anweisungen. Man könnte das Skript mit einer Wiederholung vereinfachen.",
+  "instruction": "Das Programm enthält eine Sequenz sich wiederholender gleicher Anweisungen. Man könnte das Skript mit einer Wiederholung vereinfachen.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nmove (5) steps :: #ff0000 //⇦  🐛\nwait (2) seconds :: #ff0000\nmove (5) steps :: #ff0000\nwait (2) seconds :: #ff0000\nmove (5) steps :: #ff0000\nwait (2) seconds :: #ff0000"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\nrepeat (3) :: #007000 //⇦  👍\nmove (5) steps\nwait (2) seconds\nend"
+    }
+  ]
+}

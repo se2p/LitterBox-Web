@@ -1,0 +1,13 @@
+{
+  "finderId": "detect_repeat_in_loop",
+  "locale": "de",
+  "name": "Inputabfrage in einem Loop",
+  "hint": "Eine schnelle Schleife prüft einen Robotersensor und löst sofort eine Aktion aus, ohne auf das Ende der auslösenden Bedingung zu warten. Dadurch kann ein einzelnes physisches Ereignis mehrfach erkannt werden und wiederholt Aktionen oder Zustandsänderungen auslösen.",
+  "instruction": "Warte, bis die Bedingung nicht mehr gilt, prüfe eine Zustandskante oder verwende eine Entprellung, damit die Schleife erst nach dem Ende des vorherigen Ereignisses ein neues akzeptiert.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when Codey starts up :: events hat\nforever\nif <@codeyB shaken ? :: sensing> then\nchange [aas v] by (1)\nend\nend"
+    }
+  ]
+}

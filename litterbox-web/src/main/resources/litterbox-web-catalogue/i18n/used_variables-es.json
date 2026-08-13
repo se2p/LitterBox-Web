@@ -1,0 +1,13 @@
+{
+  "finderId": "used_variables",
+  "locale": "es",
+  "name": "Variable usada",
+  "hint": "Las variables y listas inicializadas guardan estados que el proyecto puede reutilizar en sus scripts.",
+  "instruction": "Crea una variable o una lista antes de usarla por primera vez y después léela o actualízala en los bloques que necesiten ese estado.",
+  "examples": [
+    {
+      "label": "Ejemplo",
+      "scratchblocks": "when green flag clicked\nset [my variable v] to (0)\nsay [Hello!] for (2) seconds\nchange [my variable v] by (1)"
+    }
+  ]
+}

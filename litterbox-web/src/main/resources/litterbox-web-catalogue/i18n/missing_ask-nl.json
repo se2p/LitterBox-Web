@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_ask",
+  "locale": "nl",
+  "name": "Ontbrekend vraagblok",
+  "hint": "Je gebruikt het [sbi](antwoord)[/sbi]-blok, maar nergens wordt [sbi]vraag [ ] en wacht[/sbi] uitgevoerd. Daardoor kan het antwoord leeg of verouderd zijn.",
+  "instruction": "Stel de bedoelde vraag met [sbi]vraag [ ] en wacht[/sbi] voordat je het antwoord leest, of verwijder het antwoordblok als geen invoer nodig is.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when this sprite clicked\ngo to [random position v]\nsay (join [Hello] (answer :: #ff0000)) //⇦  🐛\n"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when this sprite clicked\nask [What is your name?] and wait :: #007000 // ⇦  👍\ngo to [random position v]\nsay (join [Hello] (answer  :: #007000)) // ⇦  👍\n"
+    }
+  ]
+}

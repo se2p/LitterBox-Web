@@ -1,0 +1,13 @@
+{
+  "finderId": "ambient_light_out_of_bounds",
+  "locale": "es",
+  "name": "Luz ambiental fuera de límites",
+  "hint": "Esta comparación usa un valor de luz ambiental fuera del rango admitido por el sensor. Por ello, la condición no representa una lectura fiable y el comportamiento del robot puede ser impredecible.",
+  "instruction": "Limita los valores de luz ambiental de Codey a 0–100 y los de mBot a 0–1020; valida o ajusta los umbrales antes de compararlos.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB ambient light intensity :: sensing) > (150)> then\nsay [Invalid light reading]\nend"
+    }
+  ]
+}

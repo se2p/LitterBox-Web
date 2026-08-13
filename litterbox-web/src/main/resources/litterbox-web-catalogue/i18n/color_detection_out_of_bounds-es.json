@@ -1,0 +1,13 @@
+{
+  "finderId": "color_detection_out_of_bounds",
+  "locale": "es",
+  "name": "Detección de color fuera de límites",
+  "hint": "Un canal RGB detectado fuera de 0–255 no representa una medición de color válida, por lo que las decisiones basadas en el color pueden ser poco fiables.",
+  "instruction": "Asegúrate de que cada canal de color detectado sea un entero entre 0 y 255 antes de compararlo.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB [red v] color value detected :: sensing) > (300)> then\nsay [Invalid color]\nend"
+    }
+  ]
+}

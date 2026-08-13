@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_clone_call",
+  "locale": "de",
+  "name": "Fehlender Klonaufruf",
+  "hint": "Wenn du den [sbi]wenn ich als Klon entstehe[/sbi]-Baustein verwendest, um ein Skript zu starten, die Figur aber nie geklont wird, wird das Skript nie augeführt.[newLine]Stelle vorher sicher, dass die Figur auch irgendwo geklont wird.",
+  "instruction": "Wenn du den [sbi]wenn ich als Klon entstehe[/sbi]-Baustein verwendest, um ein Skript zu starten, die Figur aber nie geklont wird, wird das Skript nie augeführt.[newLine]Stelle vorher sicher, dass die Figur auch irgendwo geklont wird.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\n\nwhen i start as a clone :: #ff0000 // ⇦  🐛\ngo to (random position v)\nnext costume\n"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\ncreate clone of (myself v) :: #007000 // ⇦  👍\n\nwhen i start as a clone\ngo to (random position v)\nnext costume\n"
+    }
+  ]
+}

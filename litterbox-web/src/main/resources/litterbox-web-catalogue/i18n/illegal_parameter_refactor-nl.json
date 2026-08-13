@@ -1,0 +1,8 @@
+{
+  "finderId": "illegal_parameter_refactor",
+  "locale": "nl",
+  "name": "Ongeldige parameterwijziging",
+  "hint": "Bij het bewerken van een eigen blok is het type van een parameter gewijzigd, bijvoorbeeld van Booleaans naar een getal- of tekstparameter. Bestaande verwijzingen verwachten nog de oorspronkelijke vorm.",
+  "instruction": "Kies het bedoelde parametertype en vervang of verbind de betreffende parameterverwijzingen opnieuw.",
+  "examples": []
+}

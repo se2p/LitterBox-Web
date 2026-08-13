@@ -1,0 +1,13 @@
+{
+  "finderId": "loop_sensing",
+  "locale": "es",
+  "name": "Comprobación continuada para eventos",
+  "hint": "Para asegurarte de no perder un evento, lo buscas continuamente en un ciclo infinito.",
+  "instruction": "Para asegurarte de no perder un evento, lo buscas continuamente en un ciclo infinito.",
+  "examples": [
+    {
+      "label": "Código bello",
+      "scratchblocks": "when green flag clicked\nforever\nif <key (left arrow v) pressed?> then //⇦  👍\nchange [x v] by (-1)\nend"
+    }
+  ]
+}

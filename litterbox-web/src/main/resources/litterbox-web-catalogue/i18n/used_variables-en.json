@@ -1,0 +1,13 @@
+{
+  "finderId": "used_variables",
+  "locale": "en",
+  "name": "Used Variable",
+  "hint": "Initialized variables and lists store state that a project can reuse throughout its scripts.",
+  "instruction": "Create a variable or list before its first use, then read or update it in the blocks that need the stored state.",
+  "examples": [
+    {
+      "label": "Example",
+      "scratchblocks": "when green flag clicked\nset [my variable v] to (0)\nsay [Hello!] for (2) seconds\nchange [my variable v] by (1)"
+    }
+  ]
+}

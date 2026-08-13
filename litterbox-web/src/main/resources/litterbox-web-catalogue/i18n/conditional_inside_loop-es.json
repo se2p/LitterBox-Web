@@ -1,0 +1,13 @@
+{
+  "finderId": "conditional_inside_loop",
+  "locale": "es",
+  "name": "Condición in repetición",
+  "hint": "Verificas continuamente una condicion dentro de un bucle.",
+  "instruction": "Verificas continuamente una condicion dentro de un bucle.",
+  "examples": [
+    {
+      "label": "Código bello",
+      "scratchblocks": "when green flag clicked\nforever\nif <key (left arrow v) pressed?> then  //⇦  👍\nchange [x v] by (-1)\nend"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "motor_off_script",
+  "locale": "de",
+  "name": "Ausschalten aller Motoren",
+  "hint": "Ein Ausschalt-Skript stoppt die Motoren nach der Bewegung oder beim Programmende. So verhindert das Programm unbeabsichtigte Weiterbewegung und beendet die Nutzung der Hardware nachvollziehbar.",
+  "instruction": "Beende eine Motoraktion mit einem Stoppbefehl, bevor das Programm endet oder die Motorsteuerung an einen anderen Ablauf übergeht.",
+  "examples": [
+    {
+      "label": "Beispiel",
+      "scratchblocks": "when green flag clicked\n@codeyA move forward at power (50) % for (1) secs :: motion\n@codeyA stop moving :: motion\nstop [all v]"
+    }
+  ]
+}

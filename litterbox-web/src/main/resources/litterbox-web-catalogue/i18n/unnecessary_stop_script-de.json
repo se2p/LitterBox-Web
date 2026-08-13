@@ -1,0 +1,13 @@
+{
+  "finderId": "unnecessary_stop_script",
+  "locale": "de",
+  "name": "Unnötiger Skriptstopp",
+  "hint": "Der Geruch erkennt einen [stop this script]-Baustein als letzten Baustein eines Skripts. Beim Erreichen des Endes stoppt das Skript ohnehin, sodass der ausdrückliche Stopp keine zusätzliche Wirkung hat.",
+  "instruction": "Entferne den letzten Stopp, damit der natürliche Skriptabschluss sichtbar bleibt. Behalte [stop all] oder [stop other scripts] davon getrennt, da diese weiterhin andere Auswirkungen haben können.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nsay [Hello!] for (2) seconds\nstop [this script v]"
+    }
+  ]
+}

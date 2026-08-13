@@ -1,0 +1,13 @@
+{
+  "finderId": "pointless_timer_reset",
+  "locale": "es",
+  "name": "Restablecimiento inútil del cronómetro",
+  "hint": "Este olor identifica un restablecimiento del cronómetro en un proyecto que nunca lee su valor. Por tanto, el restablecimiento no puede influir en el comportamiento y sugiere una lógica temporal incompleta u obsoleta.",
+  "instruction": "Usa el valor del cronómetro en una condición o cálculo significativo cuando necesites medir el tiempo. En caso contrario, elimina el restablecimiento para mantener clara la intención del programa.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nreset timer"
+    }
+  ]
+}

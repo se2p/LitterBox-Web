@@ -1,0 +1,13 @@
+{
+  "finderId": "line_following_in_bounds",
+  "locale": "nl",
+  "name": "Lijnvolgen binnen grenzen",
+  "hint": "De lijnvolgsensor geeft de vier toestanden 0 tot en met 3 voor de mogelijke zwart-witcombinaties.",
+  "instruction": "Koppel de toestanden 0, 1, 2 en 3 aan het gewenste gedrag en behandel andere metingen als ongeldige invoer.",
+  "examples": [
+    {
+      "label": "Voorbeeld",
+      "scratchblocks": "when green flag clicked\nif <(@mBot line follower sensor [port2 v] value :: sensing) = (1)> then\nsay [Line detected]\nend"
+    }
+  ]
+}

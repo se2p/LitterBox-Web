@@ -1,0 +1,13 @@
+{
+  "finderId": "motor_stop_script_missing",
+  "locale": "es",
+  "name": "Falta el script para detener el motor",
+  "hint": "El motor puede iniciar un movimiento, pero ningún comando de parada alcanzable lo sigue antes de que termine el programa, por lo que el robot puede continuar moviéndose.",
+  "instruction": "Añade una parada explícita del motor o una potencia cero después de cada movimiento persistente en todas las rutas de terminación.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\n@codeyA [move forward v] at power (50) % :: motion\nstop [this script v]"
+    }
+  ]
+}

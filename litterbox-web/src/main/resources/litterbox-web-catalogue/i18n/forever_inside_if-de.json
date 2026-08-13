@@ -1,0 +1,17 @@
+{
+  "finderId": "forever_inside_if",
+  "locale": "de",
+  "name": "Endloswiederholung in Falls Block",
+  "hint": "Der Finder erkennt eine Endlosschleife innerhalb einer Bedingung, nach der weiterer erreichbarer Code folgt. Sobald die Schleife betreten wird, endet sie nie; deshalb werden die Fortsetzung des Falls-Bausteins und alle folgenden Bausteine nicht ausgeführt.",
+  "instruction": "Strukturiere Bedingung und Schleife so um, dass der Zweig beendet werden kann, oder ersetze die Endlosschleife durch eine Wiederholung mit einer verlässlichen Abbruchbedingung.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nif <(1) = (1)> then\nforever\nmove (10) steps\nend\nend\nmove (10) steps"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\nif <(1) = (1)> then\nmove (10) steps\nend\nmove (10) steps"
+    }
+  ]
+}

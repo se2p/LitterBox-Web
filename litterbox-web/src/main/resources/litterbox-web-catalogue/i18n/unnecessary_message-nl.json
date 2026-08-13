@@ -1,0 +1,8 @@
+{
+  "finderId": "unnecessary_message",
+  "locale": "nl",
+  "name": "Onnodig bericht",
+  "hint": "Je gebruikt een [sbi]zend signaal (%MESSAGE v)[/sbi]-blok direct na een gebeurtenisblok, zonder extra gedrag toe te voegen.",
+  "instruction": "Laat de ontvangende scripts waar dat passend is rechtstreeks met de oorspronkelijke gebeurtenis beginnen, in plaats van het bericht alleen door te sturen.",
+  "examples": []
+}

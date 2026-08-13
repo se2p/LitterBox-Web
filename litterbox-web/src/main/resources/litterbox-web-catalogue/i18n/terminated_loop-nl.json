@@ -1,0 +1,17 @@
+{
+  "finderId": "terminated_loop",
+  "locale": "nl",
+  "name": "Beëindigde lus",
+  "hint": "Een lus bevat een onvoorwaardelijke beëindiging voordat zij kan herhalen, zoals een directe stopactie. Daardoor voert de lus hoogstens één iteratie uit en is zij misleidend.",
+  "instruction": "Verwijder de overbodige lus of verplaats/verwijder de beëindiging zodat herhaling werkelijk kan plaatsvinden.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nrepeat (10)\ngo to x: (100) y: (100)\nturn left (20) degrees\nmove(10) steps\nstop [this script v] :: #ff0000 //⇦  🐛\nend\nhide"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\nrepeat (10)\ngo to x: (100) y: (100)\nturn left (20) degrees\nmove(10) steps\nend\nhide"
+    }
+  ]
+}

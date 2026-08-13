@@ -1,0 +1,13 @@
+{
+  "finderId": "led_off_script",
+  "locale": "en",
+  "name": "Turn off LEDs",
+  "hint": "A shutdown script resets LEDs after they are used or when the program ends. This leaves the robot in a predictable final state and makes the hardware lifecycle clear.",
+  "instruction": "After using the LEDs, add an off command before stopping the program or handing control back.",
+  "examples": [
+    {
+      "label": "Example",
+      "scratchblocks": "when green flag clicked\n@codeyB RGB LED lights up [#ff0000] :: lighting\n@codeyB RGB LED lights off :: lighting\nstop [all v]"
+    }
+  ]
+}

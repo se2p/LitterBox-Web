@@ -1,0 +1,13 @@
+{
+  "finderId": "loop_sensing_robot",
+  "locale": "nl",
+  "name": "Continue controle op gebeurtenissen",
+  "hint": "Een lus die een sensor of robotgebeurtenis herhaaldelijk controleert, laat het programma reageren zodra de voorwaarde waar wordt in plaats van slechts één keer te controleren.",
+  "instruction": "Plaats de waarnemingsvoorwaarde in een forever- of until-lus en zet de passende reactie in de bijbehorende tak.",
+  "examples": [
+    {
+      "label": "Voorbeeld",
+      "scratchblocks": "when green flag clicked\nforever\nif <@codeyB shaken ? :: sensing> then\nsay [Robot shaken]\nend\nend"
+    }
+  ]
+}

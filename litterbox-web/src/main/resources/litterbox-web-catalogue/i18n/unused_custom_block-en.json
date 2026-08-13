@@ -1,0 +1,8 @@
+{
+  "finderId": "unused_custom_block",
+  "locale": "en",
+  "name": "Unused Custom Block",
+  "hint": "You created a custom block but you never use it in your project.",
+  "instruction": "You created a custom block but you never use it in your project.",
+  "examples": []
+}

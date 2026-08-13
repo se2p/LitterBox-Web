@@ -1,0 +1,17 @@
+{
+  "finderId": "no_working_scripts",
+  "locale": "es",
+  "name": "Scripts no funcionales",
+  "hint": "Tu sprite solo tiene bloques de sombrero (de inicio) sueltos y otros bloques muertos.",
+  "instruction": "Asegúrate de conectar los bloques de sombrero a los otros bloques para que el objeto pueda reaccionar a los eventos.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "forever :: #ff0000 //⇦  🐛\nmove (1) steps\nturn left (5) degrees\nend"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked :: #007000 //⇦  👍\nforever\nmove (1) steps\nturn left (5) degrees\nend"
+    }
+  ]
+}

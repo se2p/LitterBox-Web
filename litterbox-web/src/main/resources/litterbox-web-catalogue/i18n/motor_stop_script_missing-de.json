@@ -1,0 +1,13 @@
+{
+  "finderId": "motor_stop_script_missing",
+  "locale": "de",
+  "name": "Motor-Ausschalt-Skript fehlt",
+  "hint": "Ein Motor kann gestartet werden, aber vor dem Ende des Programms folgt kein erreichbarer Motorstopp. Dadurch kann der Roboter weiterfahren oder die Ressource für spätere Abläufe aktiviert bleiben.",
+  "instruction": "Füge nach jeder dauerhaften Motorbewegung auf jedem Beendigungspfad einen ausdrücklichen Motorstopp oder eine Null-Leistung ein.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\n@codeyA [move forward v] at power (50) % :: motion\nstop [this script v]"
+    }
+  ]
+}

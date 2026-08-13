@@ -1,0 +1,13 @@
+{
+  "finderId": "unnecessary_time_robot",
+  "locale": "es",
+  "name": "Duración innecesaria en robots",
+  "hint": "Un comando temporizado del robot tiene una duración de cero o una duración en blanco que se interpreta como cero. La acción solicitada de movimiento, luz, pantalla o sonido no dispone de un tiempo útil, por lo que el comando resulta ineficaz o engañoso.",
+  "instruction": "Indica una duración positiva y adecuada, utiliza un comando sin duración cuando esté disponible o elimina la acción ineficaz.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\n@codeyA move forward at power (50) % for (0) secs :: motion"
+    }
+  ]
+}

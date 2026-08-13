@@ -1,0 +1,17 @@
+{
+  "finderId": "orphaned_parameter",
+  "locale": "de",
+  "name": "Verwaister Parameter",
+  "hint": "Wenn ein zuvor definierter Parameter aus einem selbst erstellten Baustein gelöscht wird, so muss sicher gestellt werden, dass der Parameter auch im Folgenden nicht weiter verwendet wird.",
+  "instruction": "Wenn die Definition eines selbst erstellten Paramters aus einer Block Definition gelöscht wird, können weitere Vorkommen des Parameters zu ungewünschtem Verhalten führen.[newLine]Um dies zu vermeiden, müssen alle weiteren Vorkommen gelöscht werden oder der Paramter wieder neu definiert werden.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "define sing\nset volume to (100) %\nrepeat (count :: #ff6680) :: #ff0000 //⇦  🐛\nplay sound (LadyGaga v) until done\nend"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "define sing\nset volume to (100) %\nrepeat (3) :: #007000 //⇦  👍\nplay sound (LadyGaga v) until done\nend"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "codey_upload_stop_timed",
+  "locale": "nl",
+  "name": "Stopscript in uploadmodus voorkomt einde van runtime",
+  "hint": "In een geüpload Codey-programma kan het stoppen van alle scripts terwijl een tijdsgebonden hardwareactie nog actief is die actie onvolledig laten en de bron in een onverwachte toestand achterlaten. Hetzelfde risico bestaat wanneer uitvoering in uploadmodus slechts mogelijk is.",
+  "instruction": "Voorzie elke tijdsgebonden hardwareactie van een expliciete stop of reset voordat je alle scripts stopt, en laat elk mogelijk pad naar de uploadmodus deze opruimvolgorde volgen.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when on-board button [B v] :: events hat\n@codeyA turn right at power (50) % for (60) secs :: motion\n\nwhen on-board button [C v] :: events hat\nstop [all v]"
+    }
+  ]
+}

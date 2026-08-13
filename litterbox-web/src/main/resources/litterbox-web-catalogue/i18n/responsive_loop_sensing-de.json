@@ -1,0 +1,13 @@
+{
+  "finderId": "responsive_loop_sensing",
+  "locale": "de",
+  "name": "Reaktive Wiederholung",
+  "hint": "Eine Wiederholung mit einer Eingabeprüfung kann sofort auf Benutzeraktionen reagieren und die Steuerung flüssig halten.",
+  "instruction": "Prüfe die Eingabe innerhalb der Wiederholung und führe die gewünschte Reaktion direkt im passenden Zweig aus.",
+  "examples": [
+    {
+      "label": "Beispiel",
+      "scratchblocks": "when green flag clicked\nforever\nif <key (space v) pressed?> then\nsay [Hello!]\nend\nmove (10) steps\nend"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "sensor_value_equals",
+  "locale": "nl",
+  "name": "Vraag om exacte waarde",
+  "hint": "Een veranderlijke robotsensorwaarde wordt met exacte gelijkheid vergeleken. Ruis en drijvende-kommaprecisie maken een exacte overeenkomst zeldzaam of instabiel, waardoor de reactie kan uitblijven of flikkeren.",
+  "instruction": "Vergelijk met een tolerantie, drempelwaarde of interval in plaats van met één exacte waarde, rekening houdend met verwachte meetruis.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when on-board button [A v] :: events hat\nif <(@codeyB loudness :: sensing) = (50)> then\nsay [Loud]\nend"
+    }
+  ]
+}

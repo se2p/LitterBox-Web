@@ -1,0 +1,13 @@
+{
+  "finderId": "missing_quantum_entanglement_event",
+  "locale": "de",
+  "name": "Fehlendes Verschränkungsereignis",
+  "hint": "Wenn ein Verschränkungsblock Figuren verbindet, braucht mindestens eine beteiligte Figur einen nicht leeren Handler für den Start der Verschränkung. Fehlt dieses Ereignis, bleibt das Verhalten für den verschränkten Zustand aus und das Programm reagiert möglicherweise nicht wie erwartet.",
+  "instruction": "Füge bei einer der beteiligten Figuren einen nicht leeren [when entanglement started]-Handler hinzu und lege darin die Reaktion auf den verschränkten Zustand fest.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nentangle [costume v] with [Cat Flying] possibilities: (2) :: #5c068c"
+    }
+  ]
+}

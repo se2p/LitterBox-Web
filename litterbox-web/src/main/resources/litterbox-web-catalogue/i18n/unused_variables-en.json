@@ -1,0 +1,17 @@
+{
+  "finderId": "unused_variables",
+  "locale": "en",
+  "name": "Unused Variable",
+  "hint": "You created a variable but you never use it in your project.",
+  "instruction": "Use the variable or delete it.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "(score)"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "(score)\n\nwhen green flag clicked\nset (score v) to (0)"
+    }
+  ]
+}

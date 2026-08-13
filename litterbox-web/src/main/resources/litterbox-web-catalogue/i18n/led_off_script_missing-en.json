@@ -1,0 +1,13 @@
+{
+  "finderId": "led_off_script_missing",
+  "locale": "en",
+  "name": "LED Off Script Missing",
+  "hint": "An LED is activated, but no reachable cleanup script turns that same LED off before execution ends. It can remain lit and affect later robot behaviour.",
+  "instruction": "Pair each LED-on command with a reachable off or black command on normal termination and alternate paths.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\n@mBot LED [left v] shows color [#ff0000] :: show\nstop [this script v]"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "finderId": "sequential_actions",
+  "locale": "es",
+  "name": "Secuencia de instrucciones repetidas",
+  "hint": "Tu programa contiene una secuencia de instrucciones similares repetidas que probablemente puedan acortarse mediante un bucle.",
+  "instruction": "Tu programa contiene una secuencia de instrucciones similares repetidas que probablemente puedan acortarse mediante un bucle.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nmove (5) steps :: #ff0000 //⇦  🐛\nwait (2) seconds :: #ff0000\nmove (5) steps :: #ff0000\nwait (2) seconds :: #ff0000\nmove (5) steps :: #ff0000\nwait (2) seconds :: #ff0000"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\nrepeat (3) :: #007000 //⇦  👍\nmove (5) steps\nwait (2) seconds\nend"
+    }
+  ]
+}

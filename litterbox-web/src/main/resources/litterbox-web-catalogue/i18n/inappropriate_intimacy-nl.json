@@ -1,0 +1,13 @@
+{
+  "finderId": "inappropriate_intimacy",
+  "locale": "nl",
+  "name": "Logica op de verkeerde plek",
+  "hint": "Deze geur herkent een script dat veel vaker attributen van een andere sprite gebruikt dan zijn eigen attributen. Het gedrag hoort mogelijk bij de andere sprite en de huidige indeling veroorzaakt onnodige koppeling tussen actors.",
+  "instruction": "Verplaats het gedrag naar de sprite waarvan de toestand vooral wordt gebruikt, of beperk de toegangen en coördineer de resterende afhankelijkheid tussen sprites duidelijk.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nsay ([x position v] of (Sprite2 v))\nsay ([y position v] of (Sprite2 v))"
+    }
+  ]
+}

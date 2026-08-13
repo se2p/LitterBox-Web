@@ -1,0 +1,13 @@
+{
+  "finderId": "motor_power_in_bounds",
+  "locale": "en",
+  "name": "Motor Power in Bounds",
+  "hint": "Motor power is expressed as a percentage from 0 to 100, enabling the robot to execute movement commands reliably.",
+  "instruction": "Keep every power value between 0 and 100 percent before passing it to a motor command.",
+  "examples": [
+    {
+      "label": "Example",
+      "scratchblocks": "when green flag clicked\n@codeyA move forward at power (50) % for (1) secs :: motion"
+    }
+  ]
+}

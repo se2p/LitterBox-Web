@@ -1,0 +1,13 @@
+{
+  "finderId": "timed_statement_in_live_loop",
+  "locale": "de",
+  "name": "Schleifen im Live Modus stottern",
+  "hint": "Eine zeitlich begrenzte Hardwareaktion ist die zentrale Aktion einer wiederholten Schleife im Live-Modus oder in einem Pfad, der möglicherweise live läuft. Die wiederholte Übertragung des Befehls kann Pausen und ruckelndes Roboterverhalten verursachen.",
+  "instruction": "Verwende für solche Aktionen nach Möglichkeit den Uploadmodus oder strukturiere die Schleife um, damit der zeitlich begrenzte Befehl nicht bei jeder Iteration erneut gesendet wird; beachte auch mögliche Live-Pfade.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when Codey is shaking :: events hat\nforever\n@codeyA keep straight forward at power (50) % for (1) secs :: motion\nend"
+    }
+  ]
+}

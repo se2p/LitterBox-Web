@@ -1,0 +1,13 @@
+{
+  "finderId": "ask_and_answer_perfume",
+  "locale": "de",
+  "name": "Frage und Antwort",
+  "hint": "Das Frage-und-Antwort-Muster erfasst Eingaben und nutzt die Antwort für eine Interaktion.",
+  "instruction": "Setze „frage und warte“ vor eine Aktion, die von der Eingabe der Benutzerin oder des Benutzers abhängen soll.",
+  "examples": [
+    {
+      "label": "Beispiel",
+      "scratchblocks": "when green flag clicked\nask [What's your name?] and wait\nsay (answer)"
+    }
+  ]
+}

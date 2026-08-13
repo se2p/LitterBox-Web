@@ -1,0 +1,8 @@
+{
+  "finderId": "unused_custom_block",
+  "locale": "de",
+  "name": "Nicht verwendeter eigener Baustein",
+  "hint": "Du hast einen eigenen Baustein erstellt, den du nirgends verwendest.",
+  "instruction": "Du hast einen eigenen Baustein erstellt, den du nirgends verwendest.",
+  "examples": []
+}

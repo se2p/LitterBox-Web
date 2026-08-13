@@ -1,0 +1,13 @@
+{
+  "finderId": "unnecessary_rotation",
+  "locale": "es",
+  "name": "Rotación innecesaria",
+  "hint": "Este olor identifica un giro de cero grados o de un múltiplo entero de 360 grados. El objeto termina con la misma orientación, aunque el bloque parece indicar que gira.",
+  "instruction": "Elimina el giro sin efecto o usa un ángulo que produzca el cambio de orientación previsto.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nturn right (360) degrees"
+    }
+  ]
+}

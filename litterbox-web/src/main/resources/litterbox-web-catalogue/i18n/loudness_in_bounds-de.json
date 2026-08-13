@@ -1,0 +1,13 @@
+{
+  "finderId": "loudness_in_bounds",
+  "locale": "de",
+  "name": "Lautstärke im Messbereich",
+  "hint": "Der Lautstärkesensor liefert Werte von 0 bis 100, sodass Geräuschpegel sinnvoll verglichen und verarbeitet werden können.",
+  "instruction": "Setze Lautstärke-Schwellen zwischen 0 und 100 und prüfe Messwerte vor ihrer Verwendung in Bedingungen.",
+  "examples": [
+    {
+      "label": "Beispiel",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB loudness :: sensing) > (50)> then\nsay [Loud sound]\nend"
+    }
+  ]
+}

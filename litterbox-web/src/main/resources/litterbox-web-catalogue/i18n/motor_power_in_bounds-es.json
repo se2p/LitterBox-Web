@@ -1,0 +1,13 @@
+{
+  "finderId": "motor_power_in_bounds",
+  "locale": "es",
+  "name": "Potencia de motor en límites",
+  "hint": "La potencia del motor se expresa como un porcentaje de 0 a 100, lo que permite ejecutar los movimientos del robot de forma fiable.",
+  "instruction": "Mantén cada valor de potencia entre 0 y 100 por ciento antes de pasarlo a un bloque de motor.",
+  "examples": [
+    {
+      "label": "Ejemplo",
+      "scratchblocks": "when green flag clicked\n@codeyA move forward at power (50) % for (1) secs :: motion"
+    }
+  ]
+}

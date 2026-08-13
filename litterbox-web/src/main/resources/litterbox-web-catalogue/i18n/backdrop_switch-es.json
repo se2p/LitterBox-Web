@@ -1,0 +1,13 @@
+{
+  "finderId": "backdrop_switch",
+  "locale": "es",
+  "name": "Evento de cambio de fondo existente",
+  "hint": "Un cambio de fondo puede activar secuencias relacionadas y coordinar las escenas de un proyecto.",
+  "instruction": "Combina el cambio de fondo con un evento «cuando el fondo cambie a» cuando la transición deba iniciar nuevas acciones.",
+  "examples": [
+    {
+      "label": "Ejemplo",
+      "scratchblocks": "when green flag clicked\nwait (1) seconds\nswitch backdrop to (backdrop1 v)\n\nwhen backdrop switches to [backdrop1 v]\nmove (10) steps"
+    }
+  ]
+}

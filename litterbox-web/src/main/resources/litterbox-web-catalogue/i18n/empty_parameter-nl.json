@@ -1,0 +1,13 @@
+{
+  "finderId": "empty_parameter",
+  "locale": "nl",
+  "name": "Lege parameter",
+  "hint": "Deze geur herkent een verplichte invoer van een blok die leeg is gelaten. Het kan gaan om een getal of tekst, een richting, een kleur of een positie; Scratch kan dan een standaardwaarde gebruiken of zich anders gedragen dan bedoeld.",
+  "instruction": "Vul elke verplichte invoer bewust in met een geldige waarde of kies een passende menuoptie. Controleer vooral invoeren voor richting, kleur en positie voordat je het script uitvoert.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nmove () steps"
+    }
+  ]
+}

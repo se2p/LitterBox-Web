@@ -1,0 +1,13 @@
+{
+  "finderId": "delete_clone_in_loop",
+  "locale": "en",
+  "name": "Delete Clone in Loop",
+  "hint": "This smell identifies an unconditional [delete this clone] inside a loop in a clone-started script. The clone is deleted during the first iteration, so later iterations can never run and the loop hides the actual control flow.",
+  "instruction": "Let the loop perform its repeated work first and delete the clone after the loop when it should be removed. If deletion depends on a condition, keep it conditional and make the exit logic explicit.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when I start as a clone\nforever\ndelete this clone\nend"
+    }
+  ]
+}

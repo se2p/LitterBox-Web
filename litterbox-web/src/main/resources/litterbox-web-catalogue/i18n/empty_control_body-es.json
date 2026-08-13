@@ -1,0 +1,17 @@
+{
+  "finderId": "empty_control_body",
+  "locale": "es",
+  "name": "Estructura de control vacía",
+  "hint": "Los corchetes horizontales de la estructura de control están vacíos, por lo que cuando se invoca el bloque de control no sucede nada.[newLine]Esto hace que tu código sea más difícil de entender. Considera eliminar este bloque si no lo necesitas.",
+  "instruction": "Los corchetes horizontales de la estructura de control están vacíos, por lo que cuando se invoca el bloque de control no sucede nada.[newLine]Esto hace que tu código sea más difícil de entender. Considera eliminar este bloque si no lo necesitas.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\nWhen this sprite clicked :: #ff0000 //⇦  🐛\n"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\n"
+    }
+  ]
+}

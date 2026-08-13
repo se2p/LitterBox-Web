@@ -1,0 +1,17 @@
+{
+  "finderId": "custom_block_with_termination",
+  "locale": "de",
+  "name": "Eigener Baustein mit Terminierung",
+  "hint": "Wenn du in einem eigenen Baustein [sbi]stoppe [alles v][/sbi] oder [sbi]lösche diesen Klon[/sbi] aufrufst, werden die Befehle, die nach dem Aufruf des eigenen Bausteins im Skript stehen, nie ausgeführt.",
+  "instruction": "Wenn du in einem eigenen Baustein [sbi]stoppe [alles v][/sbi] oder [sbi]lösche diesen Klon[/sbi] aufrufst, werden die Befehle, die nach dem Aufruf des eigenen Bausteins im Skript stehen, nie ausgeführt.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "define walkSquare\nrepeat (4)\nmove (10) steps\nturn left (90) degrees\nend\nstop [all v] :: #ff0000 //⇦  🐛\n\nwhen green flag clicked\nwalkSquare\nsay [finished] for (2) seconds //⇦  🐛\n"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "define walkSquare\nrepeat (4)\nmove (10) steps\nturn left (90) degrees\nend\n\nwhen green flag clicked\nwalkSquare\nsay [finished]for (2) seconds\nstop [all v] :: #007000 //⇦  👍\n"
+    }
+  ]
+}

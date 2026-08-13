@@ -1,0 +1,17 @@
+{
+  "finderId": "key_set_position",
+  "locale": "es",
+  "name": "Posición fijada por tecla",
+  "hint": "El buscador detecta un controlador de teclado que asigna una posición absoluta en el eje correspondiente en lugar de aplicar un movimiento relativo. Por ello, las pulsaciones repetidas colocan el objeto en la misma coordenada en vez de desplazarlo la cantidad prevista.",
+  "instruction": "Usa un bloque para cambiar x o y, o calcula la siguiente coordenada a partir de la posición actual; mantén la consulta continua de la tecla cuando el movimiento deba continuar mientras se mantiene pulsada.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when [right arrow v] key pressed\nset x to (10)"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\nforever\nif <key (right arrow v) pressed?> then\nchange x by (10)\nend\nend"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "finderId": "interrupted_loop_sensing",
+  "locale": "en",
+  "name": "Interrupted Loop Sensing",
+  "hint": "The block interrupts the checking of the condition in the [sbi]if () then[/sbi] block while being executed. It can happen that the condition occurs but your script doesn't react accordingly because it is busy doing the block.",
+  "instruction": "Consider doing the condition checking in a separate (parallel) script.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching (edge v) ?> then\nchange (score v) by (-1)\nend\nplay sound (Miau v) until done :: #ff0000 //⇦  🐛\nend"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching (edge v) ?> then\nchange (score v) by (-1)\nend\nend\n\nwhen green flag clicked :: #007000 //⇦  👍\nforever\nplay sound (Miau v) until done\nend"
+    }
+  ]
+}

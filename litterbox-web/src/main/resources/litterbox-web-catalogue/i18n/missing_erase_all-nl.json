@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_erase_all",
+  "locale": "nl",
+  "name": "Ontbrekende 'wis alles'",
+  "hint": "Je tekent met [sbi]pen neer[/sbi] maar wist eerdere tekeningen niet. Sporen van een vorige uitvoering blijven daardoor zichtbaar wanneer het project opnieuw start.",
+  "instruction": "Gebruik [sbi]wis alles[/sbi] in passende start- of resetlogica voordat je opnieuw tekent.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\npen down\nrepeat (4)\nmove (10) steps\nturn left (90) degrees\nend\npen up\n"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\nerase all //⇦  👍\npen down\nrepeat (4)\nmove (10) steps\nturn left (90) degrees\nend\npen up\n"
+    }
+  ]
+}

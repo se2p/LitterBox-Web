@@ -1,0 +1,13 @@
+{
+  "finderId": "matrix_off_script_missing",
+  "locale": "es",
+  "name": "Falta el script para apagar la matriz",
+  "hint": "Se utiliza la matriz LED, pero ningún script de limpieza alcanzable la borra o apaga antes de terminar la ejecución. Una imagen antigua puede permanecer visible e interferir con el comportamiento posterior.",
+  "instruction": "Después de mostrar la imagen necesaria, añade una acción alcanzable para borrar o apagar la matriz en las rutas de terminación normal y alternativa.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\n@codeyB show image @matrix :: looks\nstop [this script v]"
+    }
+  ]
+}

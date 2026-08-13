@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_wait_until_condition",
+  "locale": "en",
+  "name": "Missing Wait Until Condition",
+  "hint": "The finder detects a wait-until block with no Boolean condition. The block cannot know when to continue, so it waits indefinitely and prevents the following code from running.",
+  "instruction": "Add a condition that can eventually become true and reflects the event the script must wait for; use a timed wait instead when no condition is required.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nwait until <>\nsay [done]"
+    },
+    {
+      "label": "Possible solution",
+      "scratchblocks": "when green flag clicked\nwait until <key \\[space v\\] pressed?>\nsay [done]"
+    }
+  ]
+}

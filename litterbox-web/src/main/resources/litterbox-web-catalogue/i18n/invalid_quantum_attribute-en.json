@@ -1,0 +1,13 @@
+{
+  "finderId": "invalid_quantum_attribute",
+  "locale": "en",
+  "name": "Invalid Attribute for Entanglement or Superposition",
+  "hint": "Quantum entanglement and superposition must use attributes supported by the selected actor. The Stage supports color and costume for these operations, but not position, direction, or size. An unsupported attribute can prevent the operation or lead to surprising behavior.",
+  "instruction": "Use only color or costume when the Stage is involved, and use position, direction, or size only with a sprite. Check the actor context before adding the quantum operation.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nsuperpose [position v] possibilities: (1) :: #5c068c"
+    }
+  ]
+}

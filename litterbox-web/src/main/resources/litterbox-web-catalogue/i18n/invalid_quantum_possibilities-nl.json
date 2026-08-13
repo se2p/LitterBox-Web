@@ -1,0 +1,13 @@
+{
+  "finderId": "invalid_quantum_possibilities",
+  "locale": "nl",
+  "name": "Ongeldig aantal mogelijkheden voor verstrengeling of superpositie",
+  "hint": "Een kwantumverstrengeling of superpositie heeft minstens één mogelijke uitkomst nodig. Een waarde kleiner dan 1 wordt tijdens de uitvoering nul en kan de kwantumtoestand onbruikbaar maken.",
+  "instruction": "Gebruik minstens 1 mogelijkheid en controleer dynamische invoer voordat je een verstrengeling of superpositie start.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when superposition started :: events hat #5c068c\nforever\nturn right (15) degrees\nwait (0.1) seconds\nend\n\nwhen green flag clicked\nsuperpose [position v] possibilities: (0) :: #5c068c"
+    }
+  ]
+}

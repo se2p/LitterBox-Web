@@ -1,0 +1,13 @@
+{
+  "finderId": "delete_clone_in_loop",
+  "locale": "es",
+  "name": "Eliminar clon en bucle",
+  "hint": "Este olor detecta un bloque incondicional [delete this clone] dentro de un bucle iniciado por un clon. El clon se elimina en la primera iteración, por lo que las siguientes nunca pueden ejecutarse y el bucle oculta el flujo real del programa.",
+  "instruction": "Deja que el bucle realice primero su tarea repetida y elimina el clon después, cuando deba desaparecer. Si la eliminación depende de una condición, mantenla condicionada y haz explícita la salida del bucle.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when I start as a clone\nforever\ndelete this clone\nend"
+    }
+  ]
+}

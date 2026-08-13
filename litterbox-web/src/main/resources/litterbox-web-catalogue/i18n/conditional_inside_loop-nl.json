@@ -1,0 +1,13 @@
+{
+  "finderId": "conditional_inside_loop",
+  "locale": "nl",
+  "name": "Voorwaarde in een lus",
+  "hint": "Je controleert herhaaldelijk een voorwaarde binnen een lus en reageert wanneer die waar wordt. Door herhaling en een voorwaarde te combineren, kan het programma voortdurend en responsief reageren.",
+  "instruction": "Gebruik een lus met een voorwaarde om relevante toestanden te blijven controleren en het passende gedrag uit te voeren zodra de voorwaarde geldt.",
+  "examples": [
+    {
+      "label": "Elegante code",
+      "scratchblocks": "when green flag clicked\nforever\nif <key (left arrow v) pressed?> then  //⇦  👍\nchange [x v] by (-1)\nend"
+    }
+  ]
+}

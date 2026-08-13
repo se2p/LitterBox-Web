@@ -1,0 +1,17 @@
+{
+  "finderId": "blocking_if_else",
+  "locale": "en",
+  "name": "Blocking If-Else",
+  "hint": "You are using [sbi]stop [all v][/sbi] or [sbi]stop [this script v][/sbi] blocks in both the [sbi]if :: #ffab19[/sbi] and [sbi]else :: #ffab19[/sbi] branch of this block. So the script terminates anyway and the blocks after the [sbi]if < > then[/sbi] are never executed.",
+  "instruction": "Try using the stop command only in one branch or remove the blocks after the [sbi]if < > then[/sbi].",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching (bird v)> then\nshow\nstop [this script v] :: #ff0000 //⇦  🐛\nelse\nhide\nstop [this script v] :: #ff0000 //⇦  🐛\nend\nend"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching (bird v)> then\nshow\nstop [this script v] :: #007000 //⇦ 👍\nelse\nhide\nend\nend"
+    }
+  ]
+}

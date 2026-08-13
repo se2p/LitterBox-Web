@@ -1,0 +1,17 @@
+{
+  "finderId": "invalid_number_string",
+  "locale": "nl",
+  "name": "Ongeldige nummerstring",
+  "hint": "De vinder detecteert tekst die op een getal lijkt maar een ongeldige getalnotatie gebruikt, zoals meerdere decimalen of niet-ondersteunde notatie, in een numerieke invoer. De omzetting kan mislukken of een andere waarde opleveren dan het programma lijkt te vragen.",
+  "instruction": "Normaliseer of controleer tekst voordat je die als getal gebruikt, en behandel ongeldige invoer expliciet in plaats van die aan een numeriek blok door te geven.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nsay ([1.0.] + (1))"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\nsay ((1) + (1))"
+    }
+  ]
+}

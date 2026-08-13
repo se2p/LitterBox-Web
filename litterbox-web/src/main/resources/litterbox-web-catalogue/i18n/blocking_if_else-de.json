@@ -1,0 +1,17 @@
+{
+  "finderId": "blocking_if_else",
+  "locale": "de",
+  "name": "Blockierendes Falls-Sonst",
+  "hint": "Du verwendest einen [sbi]stoppe [alles v][/sbi] oder [sbi]stoppe [dieses Skript v][/sbi] Baustein sowohl im [sbi]falls :: #ffab19[/sbi] als auch im [sbi]sonst :: #ffab19[/sbi] Zweig dieses Bausteins. Das Skript terminiert also in jedem Fall und die Blöcke nach dem [sbi]falls < >, dann[/sbi] Baustein werden nie ausgeführt.",
+  "instruction": "Verwende nur in einem Zweig einen [sbi]stoppe [ v][/sbi] Baustein oder lösche alle Bausteine nach dem [sbi]falls < >, dann[/sbi].",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching (bird v)> then\nshow\nstop [this script v] :: #ff0000 //⇦  🐛\nelse\nhide\nstop [this script v] :: #ff0000 //⇦  🐛\nend\nend"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching (bird v)> then\nshow\nstop [this script v] :: #007000 //⇦ 👍\nelse\nhide\nend\nend"
+    }
+  ]
+}

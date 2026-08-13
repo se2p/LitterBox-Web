@@ -1,0 +1,25 @@
+{
+  "finderId": "missing_backdrop_switch",
+  "locale": "en",
+  "name": "Missing Backdrop Switch",
+  "hint": "If the [sbi]When backdrop switches to [ v][/sbi] block is used to start a script and the backdrop never switches to the selected one, the script is never executed.",
+  "instruction": "If the [sbi]When backdrop switches to [ v][/sbi] block is used to start a script and the backdrop never switches to the selected one, the script is never executed.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when backdrop switches to [stage v]\nmove (10) steps\n"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "when backdrop switches to [stage v]\nmove (10) steps\n"
+    },
+    {
+      "label": "Error 2",
+      "scratchblocks": "when green flag clicked\n"
+    },
+    {
+      "label": "Possible Solution 2",
+      "scratchblocks": "when green flag clicked\nswitch backdrop to [stage v] :: #007000\n"
+    }
+  ]
+}

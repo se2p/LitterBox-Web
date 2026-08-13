@@ -1,0 +1,17 @@
+{
+  "finderId": "hide_without_show",
+  "locale": "en",
+  "name": "Hide Without Show",
+  "hint": "The finder detects an actor that is hidden and later receives visible changes without a reachable show block. Movement and appearance changes can then occur while the actor remains invisible, making the program appear not to react.",
+  "instruction": "Show the actor before visual changes that should be seen, or remove those changes when remaining hidden is intentional.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\nhide"
+    },
+    {
+      "label": "Possible solution",
+      "scratchblocks": "when green flag clicked\nshow\nmove (10) steps\nhide"
+    }
+  ]
+}

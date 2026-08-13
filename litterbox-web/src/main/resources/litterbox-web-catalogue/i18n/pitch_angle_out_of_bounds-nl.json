@@ -1,0 +1,13 @@
+{
+  "finderId": "pitch_angle_out_of_bounds",
+  "locale": "nl",
+  "name": "Hellingshoek hoek buiten grenzen",
+  "hint": "Een vergelijking van de hellingshoek buiten -180° tot 180° beschrijft een onmogelijke oriëntatie, waardoor kantelafhankelijk gedrag onbetrouwbaar kan worden.",
+  "instruction": "Beperk metingen en drempelwaarden van de hellingshoek vóór de vergelijking tot het inclusieve bereik van -180° tot 180°.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB pitch angle° :: sensing) > (200)> then\nsay [Invalid pitch]\nend"
+    }
+  ]
+}

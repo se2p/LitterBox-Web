@@ -1,0 +1,13 @@
+{
+  "finderId": "motor_power_in_bounds",
+  "locale": "nl",
+  "name": "Motorvermogen binnen grenzen",
+  "hint": "Motorvermogen wordt uitgedrukt als een percentage van 0 tot 100, zodat de robot bewegingsopdrachten betrouwbaar uitvoert.",
+  "instruction": "Houd elke vermogenswaarde tussen 0 en 100 procent voordat je haar aan een motorblok doorgeeft.",
+  "examples": [
+    {
+      "label": "Voorbeeld",
+      "scratchblocks": "when green flag clicked\n@codeyA move forward at power (50) % for (1) secs :: motion"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "empty_parameter",
+  "locale": "de",
+  "name": "Leerer Parameter",
+  "hint": "Dieser Geruch erkennt einen erforderlichen Baustein-Eingang, der leer geblieben ist. Das kann eine gewöhnliche Zahl oder ein Text, eine Richtung, eine Farbe oder eine Position sein; Scratch verwendet dann möglicherweise einen Standardwert oder verhält sich anders als beabsichtigt.",
+  "instruction": "Fülle jeden erforderlichen Eingang bewusst mit einem gültigen Wert oder wähle eine passende Menüoption. Prüfe besonders Richtungs-, Farb- und Positionsfelder, bevor das Skript ausgeführt wird.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nmove () steps"
+    }
+  ]
+}

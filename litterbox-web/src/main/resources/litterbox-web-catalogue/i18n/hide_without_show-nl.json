@@ -1,0 +1,17 @@
+{
+  "finderId": "hide_without_show",
+  "locale": "nl",
+  "name": "Verdwijn zonder verschijn",
+  "hint": "De vinder detecteert een sprite die verdwijnt en daarna zichtbare veranderingen krijgt zonder bereikbaar verschijn-blok. Bewegings- en uiterlijkveranderingen kunnen dan plaatsvinden terwijl de sprite onzichtbaar blijft, waardoor het programma niet lijkt te reageren.",
+  "instruction": "Laat de sprite verschijnen voordat zichtbare veranderingen moeten worden getoond, of verwijder die veranderingen wanneer onzichtbaar blijven de bedoeling is.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\nhide"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\nshow\nmove (10) steps\nhide"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "backdrop_switch",
+  "locale": "nl",
+  "name": "Achtergrond wissel",
+  "hint": "Een achtergrondwissel kan passende reeksen starten en de scènes van een programma coördineren.",
+  "instruction": "Combineer een achtergrondwissel met een gebeurtenis «wanneer het decor naar ... wisselt» als de overgang nieuwe acties moet starten.",
+  "examples": [
+    {
+      "label": "Voorbeeld",
+      "scratchblocks": "when green flag clicked\nwait (1) seconds\nswitch backdrop to (backdrop1 v)\n\nwhen backdrop switches to [backdrop1 v]\nmove (10) steps"
+    }
+  ]
+}

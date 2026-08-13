@@ -1,0 +1,8 @@
+{
+  "finderId": "unused_custom_block",
+  "locale": "nl",
+  "name": "Ongebruikt eigen blok",
+  "hint": "Een eigen blok is gedefinieerd maar wordt nergens aangeroepen. Dat voegt ongebruikte code toe en maakt het project moeilijker te begrijpen.",
+  "instruction": "Verwijder het eigen blok of roep het aan waar de abstractie werkelijk nodig is.",
+  "examples": []
+}

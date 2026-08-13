@@ -1,0 +1,13 @@
+{
+  "finderId": "used_variables",
+  "locale": "de",
+  "name": "Benutzte Variable",
+  "hint": "Initialisierte Variablen und Listen speichern Zustände, die ein Projekt später in seinen Abläufen wiederverwenden kann.",
+  "instruction": "Lege eine Variable oder Liste vor ihrer ersten Nutzung an und aktualisiere oder lese sie anschließend in den passenden Blöcken.",
+  "examples": [
+    {
+      "label": "Beispiel",
+      "scratchblocks": "when green flag clicked\nset [my variable v] to (0)\nsay [Hello!] for (2) seconds\nchange [my variable v] by (1)"
+    }
+  ]
+}

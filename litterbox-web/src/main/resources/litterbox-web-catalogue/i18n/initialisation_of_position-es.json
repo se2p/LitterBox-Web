@@ -1,0 +1,13 @@
+{
+  "finderId": "initialisation_of_position",
+  "locale": "es",
+  "name": "Initialización de la posición de la figura",
+  "hint": "Inicializas la posición de tu sprite con cada nuevo inicio de programa.",
+  "instruction": "Inicializas la posición de tu sprite con cada nuevo inicio de programa.",
+  "examples": [
+    {
+      "label": "Código bello",
+      "scratchblocks": "when green flag clicked\ngo to x: (-10) y: (23) //⇦  👍\nforever\nchange y by (30)\nwait (1) seconds\nchange y by (-30)\nwait (1) seconds\nend"
+    }
+  ]
+}

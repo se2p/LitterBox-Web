@@ -1,0 +1,17 @@
+{
+  "finderId": "interrupted_loop_sensing",
+  "locale": "nl",
+  "name": "Onderbroken lusdetectie",
+  "hint": "Een lus controleert een waarnemingsvoorwaarde, maar een langdurige, getimede of blokkerende actie in hetzelfde pad vertraagt de volgende controle. Veranderingen kunnen daardoor worden gemist of te laat worden afgehandeld.",
+  "instruction": "Houd het pad voor waarneming kort of verplaats voortdurende controle naar een afzonderlijk parallel script.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching (edge v) ?> then\nchange (score v) by (-1)\nend\nplay sound (Miau v) until done :: #ff0000 //⇦  🐛\nend"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching (edge v) ?> then\nchange (score v) by (-1)\nend\nend\n\nwhen green flag clicked :: #007000 //⇦  👍\nforever\nplay sound (Miau v) until done\nend"
+    }
+  ]
+}

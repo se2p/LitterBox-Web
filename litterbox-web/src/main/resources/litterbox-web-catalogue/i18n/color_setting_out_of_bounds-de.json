@@ -1,0 +1,13 @@
+{
+  "finderId": "color_setting_out_of_bounds",
+  "locale": "de",
+  "name": "Farbsetzung außerhalb des möglichen Bereichs",
+  "hint": "Ein RGB-Kanal außerhalb von 0 bis 255 kann von der LED nicht dargestellt werden; die gewünschte Farbe kann abgeschnitten oder ignoriert werden.",
+  "instruction": "Begrenze rote, grüne und blaue Farbkanäle vor dem Farbkommando auf Ganzzahlen von 0 bis 255.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\n@codeyB set the indicator [red v] with color value (300) :: lighting"
+    }
+  ]
+}

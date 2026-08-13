@@ -1,0 +1,13 @@
+{
+  "finderId": "battery_level_in_bounds",
+  "locale": "es",
+  "name": "Nivel de batería en límites",
+  "hint": "La carga de la batería se representa como un porcentaje de 0 a 100, lo que permite tomar decisiones fiables sobre la energía.",
+  "instruction": "Compara el nivel de batería con umbrales entre 0 y 100 y trata de forma explícita los valores fuera de ese intervalo.",
+  "examples": [
+    {
+      "label": "Ejemplo",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB battery level :: sensing) < (20)> then\nsay [Low battery]\nend"
+    }
+  ]
+}

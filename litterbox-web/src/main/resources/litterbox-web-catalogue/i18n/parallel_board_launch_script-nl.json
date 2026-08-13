@@ -1,0 +1,13 @@
+{
+  "finderId": "parallel_board_launch_script",
+  "locale": "nl",
+  "name": "Geen parallelle scripts",
+  "hint": "Meerdere board-startscripts zijn bedoeld om parallel te draaien in een mBot-programma in uploadmodus, hoewel uploaduitvoering die scripts niet zoals verwacht parallel uitvoert. Acties kunnen worden overgeslagen of in een onverwachte volgorde plaatsvinden.",
+  "instruction": "Gebruik livemodus voor parallelle boardreacties, of structureer het programma zo om dat uploadmodus één gecoördineerd board-startpad heeft.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when Codey starts up :: events hat\n@codeyA move forward at power (50) % for (1) secs :: motion\n\nwhen Codey starts up :: events hat\n@codeyA move backward at power (50) % for (1) secs :: motion"
+    }
+  ]
+}

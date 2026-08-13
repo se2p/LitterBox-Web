@@ -1,0 +1,13 @@
+{
+  "finderId": "empty_sprite",
+  "locale": "de",
+  "name": "Leere Figur",
+  "hint": "Deine Figur besitzt keinerlei Programme.",
+  "instruction": "Deine Figur besitzt keinerlei Programme.",
+  "examples": [
+    {
+      "label": "Eleganter Code",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\nsay [Hello!]\n"
+    }
+  ]
+}

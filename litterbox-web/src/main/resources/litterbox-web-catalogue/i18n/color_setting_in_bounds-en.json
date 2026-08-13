@@ -1,0 +1,13 @@
+{
+  "finderId": "color_setting_in_bounds",
+  "locale": "en",
+  "name": "Color Setting in Bounds",
+  "hint": "Each RGB channel can represent values from 0 to 255, allowing the selected color to be rendered without clipped or ignored components.",
+  "instruction": "Constrain the red, green, and blue values to 0–255 before passing them to the lighting command.",
+  "examples": [
+    {
+      "label": "Example",
+      "scratchblocks": "when green flag clicked\n@codeyB set the indicator [red v] with color value (234) :: lighting\n@codeyB set the indicator [green v] with color value (255) :: lighting\n@codeyB set the indicator [blue v] with color value (0) :: lighting"
+    }
+  ]
+}

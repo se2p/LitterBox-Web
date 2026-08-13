@@ -1,0 +1,17 @@
+{
+  "finderId": "unnecessary_if",
+  "locale": "nl",
+  "name": "Onnodige als-voorwaarde",
+  "hint": "Twee opeenvolgende als-blokken bevatten hetzelfde lichaam maar testen verschillende voorwaarden. Hetzelfde gedrag staat daardoor dubbel in het script.",
+  "instruction": "Combineer de voorwaarden met een [sbi]<< > or < >>[/sbi]-expressie en gebruik één als-blok voor het gedeelde gedrag.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching color (#f00) ?> then\nmove (2) steps\nend\nif <touching color (#0f0) ?> then :: #ff0000 //⇦  🐛\nmove (2) steps\nend\nend"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\nforever\nif <<touching color (#f00) ?> or <touching color (#0f0) ?>> then :: #007000 //⇦  👍\nmove (2) steps\nend"
+    }
+  ]
+}

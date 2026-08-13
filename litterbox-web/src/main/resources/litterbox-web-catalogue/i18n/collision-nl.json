@@ -1,0 +1,13 @@
+{
+  "finderId": "collision",
+  "locale": "nl",
+  "name": "Reactie van sprite op botsing",
+  "hint": "Je sprite merkt een botsing of aanraking op en reageert met duidelijk gedrag, zoals bewegen of het uiterlijk veranderen.",
+  "instruction": "Koppel een botsings- of aanraakvoorwaarde aan een betekenisvolle reactie, bijvoorbeeld beweging of een verandering van het uiterlijk.",
+  "examples": [
+    {
+      "label": "Elegante code",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching color (#000)> then  //⇦  👍\ngo to x: (-182) y: (150)\nnext backdrop\nend"
+    }
+  ]
+}

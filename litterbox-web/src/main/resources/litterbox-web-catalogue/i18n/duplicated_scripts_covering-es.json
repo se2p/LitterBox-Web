@@ -1,0 +1,13 @@
+{
+  "finderId": "duplicated_scripts_covering",
+  "locale": "es",
+  "name": "Scripts duplicados superpuestos",
+  "hint": "Este olor identifica dos scripts estructuralmente idénticos del mismo actor que ocupan el mismo lugar en el editor de Scratch. Un script cubre al otro, aunque ambos pueden ejecutarse y duplicar los efectos del programa.",
+  "instruction": "Elimina la copia oculta si la duplicación no es intencionada. Si necesitas ambos scripts, sepáralos visualmente y organiza con claridad la responsabilidad de cada uno.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\ngo to x: (0) y: (0)\nsay [Hello!] for (2) seconds\nrepeat (10)\nmove (50) steps\nturn right (90) degrees\nwait (1) seconds\nend\n\nwhen green flag clicked\ngo to x: (0) y: (0)\nsay [Hello!] for (2) seconds\nrepeat (10)\nmove (50) steps\nturn right (90) degrees\nwait (1) seconds\nend"
+    }
+  ]
+}

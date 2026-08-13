@@ -1,0 +1,13 @@
+{
+  "finderId": "color_detection_in_bounds",
+  "locale": "en",
+  "name": "Color Detection in Bounds",
+  "hint": "A detected color channel ranges from 0 to 255, so color sensing and the reactions based on it remain reliable.",
+  "instruction": "Keep color comparisons between 0 and 255 and validate readings before using them in decisions.",
+  "examples": [
+    {
+      "label": "Example",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB [red v] color value detected :: sensing) > (128)> then\nsay [Red detected]\nend"
+    }
+  ]
+}

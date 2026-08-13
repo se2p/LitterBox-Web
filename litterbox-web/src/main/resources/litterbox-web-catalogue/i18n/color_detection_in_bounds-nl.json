@@ -1,0 +1,13 @@
+{
+  "finderId": "color_detection_in_bounds",
+  "locale": "nl",
+  "name": "Kleurdetectie binnen grenzen",
+  "hint": "Een gedetecteerd kleurkanaal ligt tussen 0 en 255, zodat kleurwaarneming en de reacties daarop betrouwbaar blijven.",
+  "instruction": "Houd kleurvergelijkingen tussen 0 en 255 en controleer metingen voordat je ze in beslissingen gebruikt.",
+  "examples": [
+    {
+      "label": "Voorbeeld",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB [red v] color value detected :: sensing) > (128)> then\nsay [Red detected]\nend"
+    }
+  ]
+}

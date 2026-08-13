@@ -1,0 +1,13 @@
+{
+  "finderId": "multiple_attribute_modifications_robot",
+  "locale": "en",
+  "name": "Multiple Robot Attribute Modifications",
+  "hint": "Two adjacent robot commands control the same resource, such as onboard LEDs, the LED matrix or display, Rocky’s light, or motor movement and power. With no intervening behaviour, the later command immediately replaces the earlier state; the earlier state is usually not observable and the program’s intention becomes harder to understand.",
+  "instruction": "Keep the command that expresses the intended final state, combine compatible changes, or add purposeful behaviour or timing when intermediate states should be visible.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\n@codeyB RGB LED lights up [#ff0000] :: lighting\n@codeyB RGB LED lights up [#003bff] :: lighting"
+    }
+  ]
+}

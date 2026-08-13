@@ -1,0 +1,13 @@
+{
+  "finderId": "useless_wait",
+  "locale": "en",
+  "name": "Useless Wait",
+  "hint": "This smell identifies a [wait] block in a script branch where no meaningful behavior follows it and it does not serve loop timing. The delay then cannot postpone an observable action and makes the control flow harder to understand.",
+  "instruction": "Remove the wait, or place it before behavior that genuinely needs to be delayed. In a loop, keep a wait only when it deliberately controls the loop's timing.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\nif <touching color [#2727c2] ?> then\nwait (1) seconds\nelse\nwait until <mouse down?>\nend"
+    }
+  ]
+}

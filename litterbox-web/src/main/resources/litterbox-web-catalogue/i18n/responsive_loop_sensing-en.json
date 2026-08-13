@@ -1,0 +1,13 @@
+{
+  "finderId": "responsive_loop_sensing",
+  "locale": "en",
+  "name": "Responsive Loop Sensing",
+  "hint": "A loop that checks input can react immediately to user actions and keep controls responsive.",
+  "instruction": "Check the input inside the loop and perform the intended response directly in the matching branch.",
+  "examples": [
+    {
+      "label": "Example",
+      "scratchblocks": "when green flag clicked\nforever\nif <key (space v) pressed?> then\nsay [Hello!]\nend\nmove (10) steps\nend"
+    }
+  ]
+}

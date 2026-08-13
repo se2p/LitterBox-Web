@@ -1,0 +1,13 @@
+{
+  "finderId": "sensor_value_equals",
+  "locale": "de",
+  "name": "Abfrage auf exakten Wert",
+  "hint": "Ein veränderlicher Roboter-Sensorwert wird mit exakter Gleichheit verglichen. Messrauschen und Gleitkommagenauigkeit machen einen exakten Treffer selten oder instabil, sodass die Reaktion ausbleiben oder flackern kann.",
+  "instruction": "Vergleiche stattdessen mit einer Toleranz, einem Schwellenwert oder einem Wertebereich, der die erwartete Messungenauigkeit berücksichtigt.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when on-board button [A v] :: events hat\nif <(@codeyB loudness :: sensing) = (50)> then\nsay [Loud]\nend"
+    }
+  ]
+}

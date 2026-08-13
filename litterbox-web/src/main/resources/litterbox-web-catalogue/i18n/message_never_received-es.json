@@ -1,0 +1,25 @@
+{
+  "finderId": "message_never_received",
+  "locale": "es",
+  "name": "Mensaje nunca recibido",
+  "hint": "El mensaje se envía, pero ningún script lo recibe, por lo que no provoca ninguna reacción.",
+  "instruction": "Añade el script receptor previsto o elimina el envío si no se necesita ninguna respuesta.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\n broadcast [elephantStart v]"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\n broadcast [elephantStart v]"
+    },
+    {
+      "label": "Error 2",
+      "scratchblocks": "when green flag clicked :: #ff0000 //⇦  🐛\nrepeat (4)\nmove (10) steps\nturn left (90) degrees\nend"
+    },
+    {
+      "label": "Solución posible 2",
+      "scratchblocks": "when I receive [elephantStart v] :: #007000 //⇦  👍\nrepeat (4)\nmove (10) steps\nturn left (90) degrees\nend"
+    }
+  ]
+}

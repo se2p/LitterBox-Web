@@ -1,0 +1,13 @@
+{
+  "finderId": "nested_loops_perfume",
+  "locale": "en",
+  "name": "Nested loops",
+  "hint": "You used nested loops such as nested [sbi]forever[/sbi] and [sbi]repeat ( )[/sbi] blocks. That can help you solve more advanced problems.",
+  "instruction": "You used nested loops such as nested [sbi]forever[/sbi] and [sbi]repeat ( )[/sbi] blocks. That can help you solve more advanced problems.",
+  "examples": [
+    {
+      "label": "Elegant code",
+      "scratchblocks": "when i start as a clone\nforever\nturn left (15) degrees\nrepeat (4) //⇦  👍\nmove (10) steps\nwait (1) seconds\nend\nend"
+    }
+  ]
+}

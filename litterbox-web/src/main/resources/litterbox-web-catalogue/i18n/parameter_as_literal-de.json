@@ -1,0 +1,17 @@
+{
+  "finderId": "parameter_as_literal",
+  "locale": "de",
+  "name": "Eingabefeld als Text",
+  "hint": "Der Finder erkennt einen eigenen Baustein, der den Namen eines Eingabefelds als Text statt dessen Eingabewert verwendet. Die Prozedur erhält dann zwar ein Argument, benutzt aber die Bezeichnung selbst, was zu unerwarteten Ausgaben oder Entscheidungen führt.",
+  "instruction": "Ersetze den Text durch den Reporter des Eingabefelds im betreffenden Eingabefeld und überprüfe alle Verwendungen des Parameters im eigenen Baustein.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "define myBlock [myParam]\nsay ([myParam])"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "define myBlock [myParam]\nsay (myParam)"
+    }
+  ]
+}

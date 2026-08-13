@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_clone_call",
+  "locale": "es",
+  "name": "Llamada a clon errónea",
+  "hint": "Si el bloque [sbi]al comenzar como clon[/sbi] se usa para iniciar un script, pero el sprite nunca se clona, el evento nunca se activará y el script no se ejecutará. Asegúrate de usar un bloque de clonación.",
+  "instruction": "Si el bloque [sbi]al comenzar como clon[/sbi] se usa para iniciar un script, pero el sprite nunca se clona, el evento nunca se activará y el script no se ejecutará. Asegúrate de usar un bloque de clonación.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\n\nwhen i start as a clone :: #ff0000 // ⇦  🐛\ngo to (random position v)\nnext costume\n"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\ncreate clone of (myself v) :: #007000 // ⇦  👍\n\nwhen i start as a clone\ngo to (random position v)\nnext costume\n"
+    }
+  ]
+}

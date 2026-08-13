@@ -1,0 +1,13 @@
+{
+  "finderId": "roll_angle_in_bounds",
+  "locale": "de",
+  "name": "Rollwinkelmessung im Messbereich",
+  "hint": "Der Rollwinkel liegt im unterstützten Bereich von -90 bis 90 Grad und macht die seitliche Neigung des Roboters auswertbar.",
+  "instruction": "Halte Rollwinkel-Grenzwerte zwischen -90 und 90 Grad und behandle Messungen außerhalb dieses Intervalls gesondert.",
+  "examples": [
+    {
+      "label": "Beispiel",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB roll angle° :: sensing) > (30)> then\nsay [Tilted sideways]\nend"
+    }
+  ]
+}

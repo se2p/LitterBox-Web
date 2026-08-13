@@ -1,0 +1,13 @@
+{
+  "finderId": "missing_loop_robot_sensing",
+  "locale": "nl",
+  "name": "Ontbrekende lus in robot",
+  "hint": "Een robotsensorvoorwaarde wordt buiten een lus één keer gecontroleerd, waardoor latere veranderingen worden genegeerd en de robot alleen op de beginstatus kan reageren.",
+  "instruction": "Plaats de sensorvoorwaarde en reactie in een geschikte herhaal- of totdat-lus, of gebruik een gebeurtenis-hoed voor elke gebeurtenis.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nif <@codeyB shaken ? :: sensing> then\nsay [Shaken]\nend"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "finderId": "parameter_as_literal",
+  "locale": "nl",
+  "name": "Parameter als tekst",
+  "hint": "De vinder detecteert een eigen blok dat de naam van een parameter als letterlijke tekst gebruikt in plaats van de parameterreporter. De procedure ontvangt dan wel een argument, maar gebruikt de naam zelf, wat tot onverwachte uitvoer of beslissingen leidt.",
+  "instruction": "Vervang de letterlijke naam in het betreffende invoerveld door de parameterreporter en controleer elk gebruik van de parameter in het eigen blok.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "define myBlock [myParam]\nsay ([myParam])"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "define myBlock [myParam]\nsay (myParam)"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "missing_quantum_entanglement_simple",
+  "locale": "de",
+  "name": "Fehlender Verschränkungs-Handler",
+  "hint": "Ein Handler für den Start der Verschränkung kann nur ausgelöst werden, wenn die Figur an einer Verschränkung beteiligt ist. Wird die Figur weder direkt noch über eine andere beteiligte Figur verschränkt, bleibt das Skript unerreichbar und sein Verhalten tritt nie ein.",
+  "instruction": "Verwende den Handler nur für Figuren, die durch einen passenden Verschränkungsblock erreicht werden können, oder füge eine Verschränkung hinzu, die diese Figur beteiligt.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when entanglement started :: events hat #5c068c\nforever\nturn right (15) degrees\nwait (0.1) seconds\nend"
+    }
+  ]
+}

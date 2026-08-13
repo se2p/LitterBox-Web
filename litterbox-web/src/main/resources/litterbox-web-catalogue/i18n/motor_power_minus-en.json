@@ -1,0 +1,13 @@
+{
+  "finderId": "motor_power_minus",
+  "locale": "en",
+  "name": "Negative Motor Power",
+  "hint": "A motor command with negative power represents the opposite direction and can make the intended movement difficult to read. Without an explicit direction block, it can therefore cause surprising motion.",
+  "instruction": "Choose the appropriate direction block and use a positive power value within the supported range.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\n@codeyA move forward at power (-100) % for (1) secs :: motion"
+    }
+  ]
+}

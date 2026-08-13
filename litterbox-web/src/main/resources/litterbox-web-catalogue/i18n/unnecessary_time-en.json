@@ -1,0 +1,17 @@
+{
+  "finderId": "unnecessary_time",
+  "locale": "en",
+  "name": "Unnecessary Time Block",
+  "hint": "You are using a [sbi]wait ( ) seconds[/sbi] block. Since the value is 0 this block has no effect.",
+  "instruction": "You can delete it.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\nwait (0) seconds :: #ff0000 //⇦  🐛\nturn left (15) degrees"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\nturn left (15) degrees"
+    }
+  ]
+}

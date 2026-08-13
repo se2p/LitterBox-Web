@@ -1,0 +1,17 @@
+{
+  "finderId": "dead_code",
+  "locale": "de",
+  "name": "Herumliegender Code",
+  "hint": "In deinem Programm befinden sich Bausteine, die niemals ausgeführt werden.",
+  "instruction": "Lösche die überflüssigen Codebausteine oder verbinde sie mit einem Ereignisblock, damit das Programm übersichtlicher wird.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\n\nmove(20) steps :: #ff0000 //⇦  🐛\n\n turn left (15) degrees :: #ff0000 //⇦  🐛\n"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\nmove(20) steps :: #007000 //⇦  👍\n"
+    }
+  ]
+}

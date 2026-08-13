@@ -1,0 +1,13 @@
+{
+  "finderId": "duplicated_scripts_covering",
+  "locale": "nl",
+  "name": "Overlappende gedupliceerde scripts",
+  "hint": "Deze geur herkent twee structureel identieke scripts van dezelfde actor die op dezelfde plek in de Scratch-editor staan. Het ene script bedekt het andere, terwijl beide kunnen worden uitgevoerd en effecten van het programma kunnen verdubbelen.",
+  "instruction": "Verwijder de verborgen kopie als de duplicatie niet opzettelijk is. Als beide scripts nodig zijn, zet ze zichtbaar uit elkaar en geef hun taken een duidelijke structuur.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\ngo to x: (0) y: (0)\nsay [Hello!] for (2) seconds\nrepeat (10)\nmove (50) steps\nturn right (90) degrees\nwait (1) seconds\nend\n\nwhen green flag clicked\ngo to x: (0) y: (0)\nsay [Hello!] for (2) seconds\nrepeat (10)\nmove (50) steps\nturn right (90) degrees\nwait (1) seconds\nend"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "shaking_strength_in_bounds",
+  "locale": "nl",
+  "name": "trillings-sterkte binnen grenzen",
+  "hint": "De trillingssterkte wordt gemeten van 0 tot 100, zodat reacties op beweging op een betrouwbare meting kunnen steunen.",
+  "instruction": "Vergelijk de trillingssterkte met drempelwaarden van 0 tot 100 en controleer de meting vóór de evaluatie.",
+  "examples": [
+    {
+      "label": "Voorbeeld",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB shaking strength :: sensing) > (50)> then\nsay [Strong shaking]\nend"
+    }
+  ]
+}

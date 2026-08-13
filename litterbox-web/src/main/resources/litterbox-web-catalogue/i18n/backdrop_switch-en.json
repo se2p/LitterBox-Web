@@ -1,0 +1,13 @@
+{
+  "finderId": "backdrop_switch",
+  "locale": "en",
+  "name": "Backdrop Switch",
+  "hint": "A backdrop change can trigger matching sequences and coordinate the scenes of a project.",
+  "instruction": "Pair a backdrop change with a “when backdrop switches to” event when a scene transition should start follow-up actions.",
+  "examples": [
+    {
+      "label": "Example",
+      "scratchblocks": "when green flag clicked\nwait (1) seconds\nswitch backdrop to (backdrop1 v)\n\nwhen backdrop switches to [backdrop1 v]\nmove (10) steps"
+    }
+  ]
+}

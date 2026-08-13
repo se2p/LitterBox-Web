@@ -1,0 +1,13 @@
+{
+  "finderId": "gear_potentiometer_in_bounds",
+  "locale": "de",
+  "name": "Potentiometerwert des Getriebes im Messbereich",
+  "hint": "Der Potentiometerwert des Getriebes liegt zwischen 0 und 100 und liefert damit eine verwertbare Positionsinformation.",
+  "instruction": "Verwende für Vergleiche und Steuerentscheidungen nur Schwellenwerte im Bereich von 0 bis 100.",
+  "examples": [
+    {
+      "label": "Beispiel",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB gear potentiometer value :: sensing) > (50)> then\nsay [Gear position set]\nend"
+    }
+  ]
+}

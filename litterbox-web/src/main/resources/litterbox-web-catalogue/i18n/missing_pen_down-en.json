@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_pen_down",
+  "locale": "en",
+  "name": "Missing Pen Down",
+  "hint": "You use the [sbi]pen up[/sbi] block but your sprite has never set the [sbi]pen down[/sbi] before.",
+  "instruction": "You use the [sbi]pen up[/sbi] block but your sprite has never set the [sbi]pen down[/sbi] before.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nrepeat (10)\nglide (1) secs to [random position v]\nend\npen up//⇦  🐛\n"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "when green flag clicked\npen down//⇦  👍\nrepeat (10)\nglide (1) secs to [random position v]\nend\npen up\n"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "finderId": "illegal_parameter_refactor",
+  "locale": "de",
+  "name": "Ungültiger Parameter",
+  "hint": "Der verwendete Parameter besitzt das falsche Format. Durch das Bearbeiten des eigenen Blocks ist aus dem Parameter mit einem Wahrheitswert ein Parameter mit einem Text oder Nummer geworden.",
+  "instruction": "Der verwendete Parameter besitzt das falsche Format. Durch das Bearbeiten des eigenen Blocks ist aus dem Parameter mit einem Wahrheitswert ein Parameter mit einem Text oder Nummer geworden.",
+  "examples": []
+}

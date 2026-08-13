@@ -1,0 +1,13 @@
+{
+  "finderId": "timed_statement_in_live_loop",
+  "locale": "en",
+  "name": "Loops Stutter in Live Mode",
+  "hint": "A timed hardware action is the central operation repeated by a loop in live mode or in a path that may run live. Repeatedly transmitting that command can pause or stutter the robot.",
+  "instruction": "Use upload mode for such actions when appropriate, or restructure the loop so the timed command is not resent on every iteration; apply the same care to possible live paths.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when Codey is shaking :: events hat\nforever\n@codeyA keep straight forward at power (50) % for (1) secs :: motion\nend"
+    }
+  ]
+}

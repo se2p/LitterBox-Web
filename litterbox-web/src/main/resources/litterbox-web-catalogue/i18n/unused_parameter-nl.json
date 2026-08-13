@@ -1,0 +1,8 @@
+{
+  "finderId": "unused_parameter",
+  "locale": "nl",
+  "name": "Ongebruikte parameter",
+  "hint": "Een eigen blok definieert een parameter die de inhoud niet gebruikt. Daardoor wordt het eigen blok moeilijker te begrijpen.",
+  "instruction": "Verwijder de parameter of gebruik hem om het bedoelde gedrag te sturen.",
+  "examples": []
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "ultra_sonic_in_bounds",
+  "locale": "en",
+  "name": "Ultrasonic in Bounds",
+  "hint": "The ultrasonic sensor provides usable distances from 3 to 400 centimetres for robot control.",
+  "instruction": "Limit distance comparisons to the supported 3–400 centimetre range and validate boundary readings.",
+  "examples": [
+    {
+      "label": "Example",
+      "scratchblocks": "when green flag clicked\nif <(@mBot ultrasonic sensor [port3 v] distance \\(cm\\) :: sensing) < (50)> then\nsay [Obstacle ahead]\nend"
+    }
+  ]
+}

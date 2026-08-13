@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_pen_up",
+  "locale": "es",
+  "name": "Error de subida de lápiz",
+  "hint": "Usas el bloque [sbi]subir lápiz[/sbi] pero tu sprite nunca ha bajado el bolígrafo antes. Asegúrate de usar un bloque de [sbi]bajar lápiz[/sbi] si quieres dibujar algo.",
+  "instruction": "Usas el bloque [sbi]subir lápiz[/sbi] pero tu sprite nunca ha bajado el bolígrafo antes. Asegúrate de usar un bloque de [sbi]bajar lápiz[/sbi] si quieres dibujar algo.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nerase all\npen down//⇦  🐛\nrepeat (10)\nglide (1) secs to [random position v]\nend\n"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\nerase all\npen down\nrepeat (10)\nglide (1) secs to [random position v]\nend\npen up //⇦  👍\n"
+    }
+  ]
+}

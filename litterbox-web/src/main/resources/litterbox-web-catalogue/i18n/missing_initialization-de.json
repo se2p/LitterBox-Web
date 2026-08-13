@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_initialization",
+  "locale": "de",
+  "name": "Fehlende Initialisierung",
+  "hint": "Eine Variable oder ein Attribut in deiner Figur wird niemals initialisiert, und hat damit beim Start immer den Wert der letzten Ausführung.",
+  "instruction": "Soll die Ausführung des Programms die jetzige beeinflussen?[newLine]Falls nein: Initialisiere die Werte, die bei jedem Programmstart gleich sein sollen.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "(score)\n\nwhen green flag clicked\nforever\nif <touching (edge v) ?> then\nchange [score v] by (1)\nend\nend"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "(score)\n\nwhen green flag clicked\nset [score] to (0) :: #007000 //⇦  👍\nforever\nif <touching (edge v) ?> then\nchange [score v] by (1)\nend\nend"
+    }
+  ]
+}

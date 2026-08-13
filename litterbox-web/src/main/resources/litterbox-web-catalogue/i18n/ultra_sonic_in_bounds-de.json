@@ -1,0 +1,13 @@
+{
+  "finderId": "ultra_sonic_in_bounds",
+  "locale": "de",
+  "name": "Ultraschall Messung innerhalb des Messbereichs",
+  "hint": "Der Ultraschallsensor liefert im Bereich von 3 bis 400 Zentimetern verwertbare Entfernungen für die Robotersteuerung.",
+  "instruction": "Beschränke Entfernungsvergleiche auf den unterstützten Bereich von 3 bis 400 Zentimetern und validiere Grenzfälle.",
+  "examples": [
+    {
+      "label": "Beispiel",
+      "scratchblocks": "when green flag clicked\nif <(@mBot ultrasonic sensor [port3 v] distance \\(cm\\) :: sensing) < (50)> then\nsay [Obstacle ahead]\nend"
+    }
+  ]
+}

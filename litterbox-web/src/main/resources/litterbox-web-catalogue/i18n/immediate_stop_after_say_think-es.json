@@ -1,0 +1,17 @@
+{
+  "finderId": "immediate_stop_after_say_think",
+  "locale": "es",
+  "name": "Parada inmediata después de decir o pensar",
+  "hint": "El script detiene todo inmediatamente después del bloque [sbi]decir ()[/sbi] ó [sbi]pensar ()[/sbi]. El texto nunca se llegará a mostrar.",
+  "instruction": "Reemplaza el bloque [sbi]decir ()[/sbi] o [sbi]pensar ()[/sbi] por un bloque [sbi]decir () durante ( ) segundos[/sbi] o [sbi]pensar () durante ( ) segundos[/sbi].",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when i start as a clone\nforever\nif <touching (mouse-pointer v) ?> then\nchange [points v] by (1)\nsay [Ooohhh...] :: #ff0000 //⇦  🐛\nstop [all v]\nend\nend"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when i start as a clone\nforever\nif <touching (mouse-pointer v) ?> then\nchange [points v] by (1)\nsay [Ooohhh...] for (3) seconds  :: #007000 //⇦  👍\nstop [all v]\nend\nend"
+    }
+  ]
+}

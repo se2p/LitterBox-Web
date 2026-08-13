@@ -1,0 +1,13 @@
+{
+  "finderId": "line_following_out_of_bounds",
+  "locale": "es",
+  "name": "Seguidor de línea fuera de límites",
+  "hint": "Una comparación con un estado del seguidor de línea fuera de 0, 1, 2 o 3 no puede coincidir con un estado del sensor y hace inalcanzable la rama.",
+  "instruction": "Maneja solo los cuatro estados admitidos del seguidor de línea, 0, 1, 2 y 3, y valida cualquier estado antes de compararlo.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nif <(@mBot line follower sensor [port2 v] value :: sensing) = (4)> then\nsay [Invalid line state]\nend"
+    }
+  ]
+}

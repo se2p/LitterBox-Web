@@ -1,0 +1,13 @@
+{
+  "finderId": "boolean_expression",
+  "locale": "en",
+  "name": "Using boolean expressions",
+  "hint": "You use boolean expressions in your program.",
+  "instruction": "You use boolean expressions in your program.",
+  "examples": [
+    {
+      "label": "Elegant code",
+      "scratchblocks": "when green flag clicked\nset [xpos v] to (mouse x)\nwait (3) seconds\nif <(xpos) = (mouse x)> then  //⇦  👍\ngo to (mouse-pointer v)\nend"
+    }
+  ]
+}

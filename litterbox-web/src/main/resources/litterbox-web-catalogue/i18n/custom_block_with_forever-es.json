@@ -1,0 +1,17 @@
+{
+  "finderId": "custom_block_with_forever",
+  "locale": "es",
+  "name": "Bloque personalizado con bucle infinito",
+  "hint": "Si un bloque propio contiene un bucle infinito y el bloque propio se usa en medio de otro script, el script nunca podrá finalizar. Un bloque [sbi]por siempre[/sbi] en el bloque propio hace que el script que le llamó nunca pueda continuar.",
+  "instruction": "Si un bloque propio contiene un bucle infinito y el bloque propio se usa en medio de otro script, el script nunca podrá finalizar. Un bloque [sbi]por siempre[/sbi] en el bloque propio hace que el script que le llamó nunca pueda continuar.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "define longMarch\nforever :: #ff0000 //⇦  🐛\nmove (10) steps\nend\n\nwhen green flag clicked\nlongMarch\nsay [Hello!] //⇦  🐛\n"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "define longMarch\nrepeat (10) //⇦  👍\nmove (10) steps\nend\n\nwhen green flag clicked\nlongMarch\nsay [Hello!]\n"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "codey_upload_stop_timed",
+  "locale": "de",
+  "name": "Stopscript im Uploadmodus verhindert Laufzeitende",
+  "hint": "In einem hochgeladenen Codey-Programm kann das Stoppen aller Skripte während einer zeitlich begrenzten Hardwareaktion diese unvollständig lassen und die Ressource in einem unerwarteten Zustand zurücklassen. Das gilt auch für Pfade, auf denen der Uploadmodus nur möglich ist.",
+  "instruction": "Gib jeder zeitlich begrenzten Hardwareaktion vor dem Stoppen aller Skripte einen ausdrücklichen Stopp oder Reset und lasse jeden möglichen Uploadpfad dieser Aufräumsequenz folgen.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when on-board button [B v] :: events hat\n@codeyA turn right at power (50) % for (60) secs :: motion\n\nwhen on-board button [C v] :: events hat\nstop [all v]"
+    }
+  ]
+}

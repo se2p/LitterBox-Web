@@ -1,0 +1,17 @@
+{
+  "finderId": "ambiguous_parameter_name_used",
+  "locale": "es",
+  "name": "Nombres de parámetros ambiguos usados en bloques propios",
+  "hint": "Scratch permite múltiples parámetros con el mismo nombre en un bloque propio. Sin embargo, luego no puede distinguir entre estos parámetros, lo que causa problemas en tu programa.[newLine]Utiliza siempre parámetros con nombres únicos.",
+  "instruction": "Scratch permite múltiples parámetros con el mismo nombre en un bloque propio. Sin embargo, luego no puede distinguir entre estos parámetros, lo que causa problemas en tu programa.[newLine]Utiliza siempre parámetros con nombres únicos.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "define checkScore (score) (score :: #ff0000) //⇦  🐛\nif &lt;(score) = (0)&gt; then\nsay [You are bad!]\nsay (join [Score of your Rival: ] (score :: #ff0000)) //⇦  🐛\nend"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "define checkScore (score) (rivalScore :: #007000) //⇦  👍\nif &lt;(score) = (0)&gt; then\nsay [You are bad!]\nsay (join [Score of your Rival: ] (rivalScore :: #007000)) //⇦  👍\nend"
+    }
+  ]
+}

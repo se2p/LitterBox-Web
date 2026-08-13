@@ -1,0 +1,17 @@
+{
+  "finderId": "double_if",
+  "locale": "en",
+  "name": "Duplicated If-Condition",
+  "hint": "Your project contains a duplicated if-condition. You could shorten the program by merging the two if-statements in a single conditional statement.",
+  "instruction": "Your project contains a duplicated if-condition. You could shorten the program by merging the two if-statements in a single conditional statement.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching (mouse-pointer v)?> then\nmove (10) steps\nend\nif <touching (mouse-pointer v)?> then :: #ff0000 //⇦  🐛\nturn left (15) degrees\nend\nend\n"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching (mouse-pointer v)?> then\nmove (10) steps\nturn left (15) degrees :: #007000 //⇦  👍\nend\nend\n"
+    }
+  ]
+}

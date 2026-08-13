@@ -1,0 +1,17 @@
+{
+  "finderId": "sequential_actions",
+  "locale": "nl",
+  "name": "Reeks van herhaalde acties",
+  "hint": "Een script schrijft dezelfde of vergelijkbare actievolgorde meerdere keren uit. Dat maakt de code langer en vergroot de onderhoudslast.",
+  "instruction": "Vervang de herhaalde reeks door een passende lus en geef alleen de veranderende waarden mee of maak ze parameters.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nmove (5) steps :: #ff0000 //⇦  🐛\nwait (2) seconds :: #ff0000\nmove (5) steps :: #ff0000\nwait (2) seconds :: #ff0000\nmove (5) steps :: #ff0000\nwait (2) seconds :: #ff0000"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\nrepeat (3) :: #007000 //⇦  👍\nmove (5) steps\nwait (2) seconds\nend"
+    }
+  ]
+}

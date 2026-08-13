@@ -1,0 +1,13 @@
+{
+  "finderId": "unnecessary_move",
+  "locale": "es",
+  "name": "Movimiento innecesario",
+  "hint": "Este olor identifica un bloque de movimiento con el valor literal cero, como [move (0) steps] o cambiar X o Y en cero. El bloque no puede cambiar la posición del objeto y dificulta la lectura del script.",
+  "instruction": "Elimina el movimiento nulo o sustitúyelo por un valor intencionado cuando el objeto deba moverse realmente.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nmove (0) steps"
+    }
+  ]
+}

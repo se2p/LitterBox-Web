@@ -1,0 +1,13 @@
+{
+  "finderId": "unnecessary_size_change",
+  "locale": "de",
+  "name": "Unnötige Größenänderung",
+  "hint": "Der Geruch erkennt Größenoperationen ohne nützliche kontrollierte Wirkung: eine Änderung um null, extreme Änderungen ab 540 in Betrag oder ein Setzen auf einen Wert außerhalb der sinnvollen Größenbereiche. Solche Werte werden begrenzt oder drücken keine beabsichtigte Größenänderung aus.",
+  "instruction": "Entferne eine wirkungslose Größenoperation oder verwende einen moderaten, bewusst gewählten Wert, der die gewünschte Größe zuverlässig ausdrückt.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nchange size by (0)"
+    }
+  ]
+}

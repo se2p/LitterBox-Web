@@ -1,0 +1,17 @@
+{
+  "finderId": "inappropriate_handler_delete_clone",
+  "locale": "nl",
+  "name": "Onjuist gebruik van 'deze kloon verwijderen'",
+  "hint": "Een script bevat [sbi]delete this clone[/sbi], maar de gebeurtenis geeft geen duidelijke klooncontext. Daardoor is niet duidelijk welke kloon verwijderd moet worden.",
+  "instruction": "Laat het script beginnen met [sbi]when I start as a clone[/sbi] of [sbi]when this sprite clicked[/sbi], of verplaats het verwijderblok naar zo'n script.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked :: #ff0000 //⇦  🐛\nshow\ngo to x: (100) y: (10)\nrepeat (10)\nmove (20) steps\nturn left (90) degrees\nend\ndelete this clone"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when I start as a clone :: #007000 //⇦  👍\nshow\ngo to x: (100) y: (10)\nrepeat (10)\nmove (20) steps\nturn left (90) degrees\nend\ndelete this clone "
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_pen_down",
+  "locale": "nl",
+  "name": "Ontbrekende 'pen neer'",
+  "hint": "Je programma gebruikt het [sbi]pen op[/sbi]-blok zonder eerder het [sbi]pen neer[/sbi]-blok te gebruiken. Het optillen van de pen kan het tekenen dan niet beëindigen.",
+  "instruction": "Voeg [sbi]pen neer[/sbi] toe vóór de tekenreeks, of verwijder het overbodige [sbi]pen op[/sbi]-blok.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nrepeat (10)\nglide (1) secs to [random position v]\nend\npen up//⇦  🐛\n"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\npen down//⇦  👍\nrepeat (10)\nglide (1) secs to [random position v]\nend\npen up\n"
+    }
+  ]
+}

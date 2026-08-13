@@ -1,0 +1,17 @@
+{
+  "finderId": "empty_script",
+  "locale": "nl",
+  "name": "Leeg script",
+  "hint": "Een gebeurtenisblok heeft geen blokken eraan vastzitten. Wanneer de gebeurtenis optreedt, gebeurt er niets.",
+  "instruction": "Voeg het bedoelde gedrag toe aan het gebeurtenisblok of verwijder het ongebruikte blok.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked :: #ff0000 //⇦  🐛\n"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\nmove (10) steps :: #007000 //⇦  👍\n"
+    }
+  ]
+}

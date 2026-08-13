@@ -1,0 +1,13 @@
+{
+  "finderId": "nested_conditional_checks",
+  "locale": "en",
+  "name": "Nested conditional checks",
+  "hint": "You use nested conditions, such as nested [sbi]if < > then[/sbi] blocks. That can help you solve more advanced problems.",
+  "instruction": "You use nested conditions, such as nested [sbi]if < > then[/sbi] blocks. That can help you solve more advanced problems.",
+  "examples": [
+    {
+      "label": "Elegant code",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching color (#f00)> then\nnext costume\nif <key (up arrow v) pressed ?> then //⇦  👍\nchange [y v] by (1)\nend\nend\nend"
+    }
+  ]
+}

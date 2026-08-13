@@ -1,0 +1,17 @@
+{
+  "finderId": "type_error",
+  "locale": "nl",
+  "name": "Ongeldige typen",
+  "hint": "Een blok of operator krijgt een waarde van een onverenigbaar type. Vergelijkingen hebben passende waarden nodig, getypeerde invoervelden verwachten een bepaald soort waarde en keuzeblokken zoals [sbi]distance to[/sbi] vereisen een geldig doelwit.",
+  "instruction": "Vervang de onverenigbare waarde door een invoer van het verwachte type, zoals twee getallen, tekst van dezelfde soort of een geldig doelwit.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nforever\nif <(x position) > [twenty]> then :: #ff0000 //⇦  🐛\nchange (score v) by (1)\nend\nend"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\nforever\nif <(x position) > (20)> then :: #007000 //⇦  👍\nchange (score v) by (1)\nend\nend"
+    }
+  ]
+}

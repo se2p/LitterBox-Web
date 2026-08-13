@@ -1,0 +1,13 @@
+{
+  "finderId": "missing_loop_robot_sensing",
+  "locale": "de",
+  "name": "Fehlende Wiederholung in Roboter",
+  "hint": "Eine Roboter-Sensorbedingung wird außerhalb einer Schleife nur einmal geprüft. Spätere Änderungen werden dadurch ignoriert, und der Roboter kann nur auf seinen anfänglichen Zustand reagieren.",
+  "instruction": "Platziere die Sensorbedingung und ihre Reaktion in einer geeigneten fortlaufenden oder bedingten Schleife, oder verwende ein ereignisgesteuertes Ereignis für jede Messänderung.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nif <@codeyB shaken ? :: sensing> then\nsay [Shaken]\nend"
+    }
+  ]
+}

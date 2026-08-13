@@ -1,0 +1,13 @@
+{
+  "finderId": "loop_sensing",
+  "locale": "nl",
+  "name": "Continue controle op gebeurtenissen",
+  "hint": "Kortdurende invoer of interactie, zoals een ingedrukte toets, muisknop, aanraking of aanraking van een kleur, moet herhaaldelijk worden gecontroleerd om niet te worden gemist.",
+  "instruction": "Plaats de waarnemingsvoorwaarde in een als-blok binnen een voortdurend draaiende lus, zodat het programma snel opnieuw kan reageren.",
+  "examples": [
+    {
+      "label": "Elegante code",
+      "scratchblocks": "when green flag clicked\nforever\nif <key (left arrow v) pressed?> then //⇦  👍\nchange [x v] by (-1)\nend"
+    }
+  ]
+}

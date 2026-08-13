@@ -1,0 +1,25 @@
+{
+  "finderId": "missing_backdrop_switch",
+  "locale": "es",
+  "name": "Falta cambio de fondo",
+  "hint": "Si el bloque [sbi]Cuando el fondo cambie a [ v][/sbi] se usa para iniciar un script y el fondo nunca cambia al fondo seleccionado, el script nunca se ejecuta. Asegúrate de cambiar el fondo de tu proyecto.",
+  "instruction": "Si el bloque [sbi]Cuando el fondo cambie a [ v][/sbi] se usa para iniciar un script y el fondo nunca cambia al fondo seleccionado, el script nunca se ejecuta. Asegúrate de cambiar el fondo de tu proyecto.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when backdrop switches to [stage v]\nmove (10) steps\n"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when backdrop switches to [stage v]\nmove (10) steps\n"
+    },
+    {
+      "label": "Error 2",
+      "scratchblocks": "when green flag clicked\n"
+    },
+    {
+      "label": "Solución posible 2",
+      "scratchblocks": "when green flag clicked\nswitch backdrop to [stage v] :: #007000\n"
+    }
+  ]
+}

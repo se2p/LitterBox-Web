@@ -1,0 +1,13 @@
+{
+  "finderId": "invalid_quantum_possibilities",
+  "locale": "de",
+  "name": "Ungültige Anzahl Möglichkeiten für Verschränkung oder Superposition",
+  "hint": "Eine Quantenverschränkung oder -superposition benötigt mindestens eine mögliche Ausprägung. Ein Wert unter 1 wird bei der Ausführung zu keiner Möglichkeit und kann den Quantenzustand unbrauchbar machen.",
+  "instruction": "Setze die Anzahl der Möglichkeiten auf mindestens 1 und prüfe dynamische Eingaben, bevor du eine Verschränkung oder Superposition startest.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when superposition started :: events hat #5c068c\nforever\nturn right (15) degrees\nwait (0.1) seconds\nend\n\nwhen green flag clicked\nsuperpose [position v] possibilities: (0) :: #5c068c"
+    }
+  ]
+}

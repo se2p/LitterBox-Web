@@ -1,0 +1,13 @@
+{
+  "finderId": "duplicated_scripts_covering",
+  "locale": "en",
+  "name": "Duplicated Scripts Covering",
+  "hint": "This smell identifies two structurally identical scripts for the same actor that occupy the same place in the Scratch editor. One script covers the other, even though both can execute and duplicate the program's effects.",
+  "instruction": "Remove the hidden copy unless the duplication is intentional. If both scripts are needed, separate them visibly and give their responsibilities a clear structure.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\ngo to x: (0) y: (0)\nsay [Hello!] for (2) seconds\nrepeat (10)\nmove (50) steps\nturn right (90) degrees\nwait (1) seconds\nend\n\nwhen green flag clicked\ngo to x: (0) y: (0)\nsay [Hello!] for (2) seconds\nrepeat (10)\nmove (50) steps\nturn right (90) degrees\nwait (1) seconds\nend"
+    }
+  ]
+}

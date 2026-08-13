@@ -1,0 +1,13 @@
+{
+  "finderId": "multiple_attribute_modifications_robot",
+  "locale": "de",
+  "name": "Redundante Roboterzustandsänderung",
+  "hint": "Zwei direkt aufeinanderfolgende Roboterbefehle steuern dieselbe Ressource, etwa die eingebauten LEDs, die LED-Matrix oder Anzeige, Rockys Licht oder die Motorbewegung beziehungsweise -leistung. Ohne weiteres Verhalten dazwischen ersetzt der spätere Befehl den vorherigen sofort; der frühere Zustand ist meist nicht wahrnehmbar und erschwert das Verständnis der Absicht.",
+  "instruction": "Behalte den letztlich gewünschten Befehl bei, fasse kompatible Änderungen zusammen oder füge bewusstes Verhalten beziehungsweise eine zeitliche Abstimmung ein, wenn Zwischenzustände sichtbar sein sollen.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\n@codeyB RGB LED lights up [#ff0000] :: lighting\n@codeyB RGB LED lights up [#003bff] :: lighting"
+    }
+  ]
+}

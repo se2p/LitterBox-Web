@@ -1,0 +1,17 @@
+{
+  "finderId": "custom_block_with_forever",
+  "locale": "nl",
+  "name": "Eigen blok met oneindige lus",
+  "hint": "Een eigen blok bevat een [sbi]forever[/sbi]-lus. Wanneer je het vanuit het midden van een ander script aanroept, keert de uitvoering niet terug en kunnen volgende blokken niet worden uitgevoerd.",
+  "instruction": "Vervang de oneindige lus door gedrag met een begrensde of voorwaardelijke herhaling, of structureer het programma zo dat de langlopende lus niet verborgen zit in het eigen blok.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "define longMarch\nforever :: #ff0000 //⇦  🐛\nmove (10) steps\nend\n\nwhen green flag clicked\nlongMarch\nsay [Hello!] //⇦  🐛\n"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "define longMarch\nrepeat (10) //⇦  👍\nmove (10) steps\nend\n\nwhen green flag clicked\nlongMarch\nsay [Hello!]\n"
+    }
+  ]
+}

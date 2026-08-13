@@ -1,0 +1,13 @@
+{
+  "finderId": "movement_in_loop",
+  "locale": "de",
+  "name": "Fließende Figuren-Bewegung",
+  "hint": "Die Bewegungen deiner Figuren sind sehr flüssig und natürlich. Das kommt daher, dass du sie innerhalb einer Wiederholung programmiert hast.",
+  "instruction": "Die Bewegungen deiner Figuren sind sehr flüssig und natürlich. Das kommt daher, dass du sie innerhalb einer Wiederholung programmiert hast.",
+  "examples": [
+    {
+      "label": "Eleganter Code",
+      "scratchblocks": "when green flag clicked\nforever\nchange x by (1) //⇦  👍\nend"
+    }
+  ]
+}

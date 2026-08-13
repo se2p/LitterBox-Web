@@ -1,0 +1,17 @@
+{
+  "finderId": "message_naming",
+  "locale": "de",
+  "name": "Bedeutungsloser Nachrichtenname",
+  "hint": "Deine Nachricht hat keinen aussagekräftigen Namen. Du verwendest den Standardnamen oder eine Nachricht, die bereits genutzt wird, gefolgt von einer Zahl. Dadurch wird dein Programm schwerer zu verstehen.",
+  "instruction": "Verwende aussagekräftige, eindeutige Nachrichten.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nshow\nbroadcast (message1 v) :: #ff0000 //⇦  🐛"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\nshow\nbroadcast (startGame v) :: #007000 //⇦  👍"
+    }
+  ]
+}

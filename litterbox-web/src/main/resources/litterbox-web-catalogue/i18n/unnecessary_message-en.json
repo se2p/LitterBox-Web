@@ -1,0 +1,8 @@
+{
+  "finderId": "unnecessary_message",
+  "locale": "en",
+  "name": "Unnecessary Message",
+  "hint": "You are using a [sbi]broadcast ( v)[/sbi] block immediately after the event handler block.",
+  "instruction": "You are using a [sbi]broadcast ( v)[/sbi] block immediately after the event handler block.",
+  "examples": []
+}

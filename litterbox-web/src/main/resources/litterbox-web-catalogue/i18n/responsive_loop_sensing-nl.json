@@ -1,0 +1,13 @@
+{
+  "finderId": "responsive_loop_sensing",
+  "locale": "nl",
+  "name": "Responsieve lus-detectie",
+  "hint": "Een lus die invoer controleert kan direct reageren op acties van de gebruiker en de besturing responsief houden.",
+  "instruction": "Controleer de invoer binnen de lus en voer de bedoelde reactie direct uit in de bijbehorende tak.",
+  "examples": [
+    {
+      "label": "Voorbeeld",
+      "scratchblocks": "when green flag clicked\nforever\nif <key (space v) pressed?> then\nsay [Hello!]\nend\nmove (10) steps\nend"
+    }
+  ]
+}

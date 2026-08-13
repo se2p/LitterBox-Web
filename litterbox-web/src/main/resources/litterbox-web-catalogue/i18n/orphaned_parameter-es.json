@@ -1,0 +1,17 @@
+{
+  "finderId": "orphaned_parameter",
+  "locale": "es",
+  "name": "Parámetro huérfano",
+  "hint": "Si eliminas un parámetro de un bloque propio, asegúrate de eliminarlo de todas las ubicaciones donde lo usaste antes.",
+  "instruction": "Si eliminas un parámetro de un bloque propio, asegúrate de eliminarlo de todas las ubicaciones donde lo usaste antes.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "define sing\nset volume to (100) %\nrepeat (count :: #ff6680) :: #ff0000 //⇦  🐛\nplay sound (LadyGaga v) until done\nend"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "define sing\nset volume to (100) %\nrepeat (3) :: #007000 //⇦  👍\nplay sound (LadyGaga v) until done\nend"
+    }
+  ]
+}

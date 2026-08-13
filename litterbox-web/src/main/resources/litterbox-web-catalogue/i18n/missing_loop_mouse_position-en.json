@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_loop_mouse_position",
+  "locale": "en",
+  "name": "Missing Loop Movement to Mouse",
+  "hint": "The finder detects mouse-dependent motion or direction code that runs once outside a loop. It uses the mouse position only at that moment, so later pointer movement is not followed and the actor can appear to stop responding.",
+  "instruction": "Put all mouse-dependent motion or direction updates in a suitable repeating loop, and include a small wait when necessary so the project remains responsive.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nset x to (mouse x)"
+    },
+    {
+      "label": "Possible solution",
+      "scratchblocks": "when green flag clicked\nforever\nset x to (mouse x)\nend"
+    }
+  ]
+}

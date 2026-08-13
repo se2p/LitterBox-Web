@@ -1,0 +1,13 @@
+{
+  "finderId": "waiting_check_stop",
+  "locale": "de",
+  "name": "Warten auf Bedingung zur Beendigung",
+  "hint": "Das Warten auf eine konkrete Bedingung ermöglicht es, einen Ablauf erst nach einem klaren Ereignis gezielt zu beenden.",
+  "instruction": "Setze „warte bis“ vor den Beendigungsblock, wenn das Programm nach dem Eintreten einer überprüfbaren Bedingung stoppen soll.",
+  "examples": [
+    {
+      "label": "Beispiel",
+      "scratchblocks": "when green flag clicked\nwait until <touching (mouse-pointer v) ?>\nmove (10) steps\nstop [all v]"
+    }
+  ]
+}

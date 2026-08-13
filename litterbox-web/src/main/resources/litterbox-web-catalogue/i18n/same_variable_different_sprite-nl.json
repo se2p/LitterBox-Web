@@ -1,0 +1,8 @@
+{
+  "finderId": "same_variable_different_sprite",
+  "locale": "nl",
+  "name": "Dezelfde variabele in verschillende sprites",
+  "hint": "Verschillende sprites gebruiken lokale variabelen met dezelfde naam. Hoewel het om aparte variabelen gaat, maken gelijke namen eigenaarschap en verwijzingen verwarrend.",
+  "instruction": "Kies namen die de sprite of het doel van elke variabele duidelijk maken, tenzij identieke lokale namen bewust en ondubbelzinnig zijn.",
+  "examples": []
+}

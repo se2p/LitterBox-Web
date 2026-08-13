@@ -1,0 +1,13 @@
+{
+  "finderId": "matrix_off_script",
+  "locale": "de",
+  "name": "Ausschalten der LED Matrix",
+  "hint": "Ein Ausschalt-Skript setzt die LED-Matrix zurück, wenn sie nicht mehr benötigt wird oder das Programm endet. Das schafft einen vorhersehbaren Anzeigezustand und einen klaren Lebenszyklus der Hardware.",
+  "instruction": "Zeige die gewünschte Matrixanzeige und schalte die Matrix anschließend aus, bevor das Programm beendet wird.",
+  "examples": [
+    {
+      "label": "Beispiel",
+      "scratchblocks": "when green flag clicked\n@codeyB show image @matrix :: looks\n@codeyB turn off screen :: looks\nstop [all v]"
+    }
+  ]
+}

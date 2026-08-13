@@ -1,0 +1,8 @@
+{
+  "finderId": "unnecessary_message",
+  "locale": "de",
+  "name": "Unnötige Nachricht",
+  "hint": "Du benutzt einen [sbi]sende ( v) an alle[/sbi] Baustein sofort nach einem Ereignisverarbeiter.",
+  "instruction": "Du benutzt einen [sbi]sende ( v) an alle[/sbi] Baustein sofort nach einem Ereignisverarbeiter.",
+  "examples": []
+}

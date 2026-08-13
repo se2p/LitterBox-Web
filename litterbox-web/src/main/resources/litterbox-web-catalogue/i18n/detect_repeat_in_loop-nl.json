@@ -1,0 +1,13 @@
+{
+  "finderId": "detect_repeat_in_loop",
+  "locale": "nl",
+  "name": "Invoerverzoek in een lus",
+  "hint": "Een snelle lus controleert een robotsensor en voert meteen een actie uit zonder te wachten tot de voorwaarde die de actie activeerde niet meer geldt. Eén fysieke gebeurtenis kan daardoor herhaald worden geaccepteerd en acties of toestandswijzigingen dupliceren.",
+  "instruction": "Wacht tot de voorwaarde onwaar is, detecteer een overgang of gebruik een debounce-status zodat de lus pas na het vorige event een nieuw event accepteert.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when Codey starts up :: events hat\nforever\nif <@codeyB shaken ? :: sensing> then\nchange [aas v] by (1)\nend\nend"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "controlled_broadcast_or_stop",
+  "locale": "es",
+  "name": "Transmisión examinada o stop",
+  "hint": "Para tener más control sobre su programa, verifica continuamente ciertas condiciones antes de transmitir o detener el programa/guión.",
+  "instruction": "Para tener más control sobre su programa, verifica continuamente ciertas condiciones antes de transmitir o detener el programa/guión.",
+  "examples": [
+    {
+      "label": "Código bello",
+      "scratchblocks": "when green flag clicked\nforever\nif <(score) = (100)> then\nstop [all v] //⇦  👍\nend"
+    }
+  ]
+}

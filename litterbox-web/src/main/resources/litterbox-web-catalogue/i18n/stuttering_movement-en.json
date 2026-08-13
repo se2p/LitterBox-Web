@@ -1,0 +1,17 @@
+{
+  "finderId": "stuttering_movement",
+  "locale": "en",
+  "name": "Stuttering Movement",
+  "hint": "When you use the [sbi]When [ v] key pressed[/sbi] event for movement, this could result in stuttering movement.",
+  "instruction": "Using the [sbi]When [ v] key pressed[/sbi] event for continuous movement can cause stuttering: Depending on how often the key input is registered by the keyboard, your sprite may not move fluidly.[newLine]You can make the movement more consistent by using an [sbi]if < > then[/sbi] block inside a [sbi]forever[/sbi] loop.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when [left arrow v] key pressed :: #ff0000 //⇦  🐛\nmove (-5) steps\n\nwhen [right arrow v] key pressed :: #ff0000 //⇦  🐛\nmove (5) steps"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "when green flag clicked :: #007000 //⇦  👍\nforever\nif <key (left arrow v) pressed ?> then\nmove (-5) steps\nend\nif <key (right arrow v) pressed ?> then\nmove (5) steps\nend\nend"
+    }
+  ]
+}

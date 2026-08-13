@@ -1,0 +1,8 @@
+{
+  "finderId": "sprite_naming",
+  "locale": "en",
+  "name": "Sprite Naming",
+  "hint": "Your sprite doesn't have a meaningful name. You are using the default name or one that is already used followed by a number. This makes your program hard to understand.",
+  "instruction": "Give your sprite a meaningful, unique name.",
+  "examples": []
+}

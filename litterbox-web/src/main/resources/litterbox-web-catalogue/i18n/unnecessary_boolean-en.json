@@ -1,0 +1,13 @@
+{
+  "finderId": "unnecessary_boolean",
+  "locale": "en",
+  "name": "Unnecessary Comparison to Boolean Value",
+  "hint": "This smell identifies a Boolean expression compared with true or 1, or with false or 0. The extra comparison makes the logic harder to read without changing its meaning.",
+  "instruction": "Use the Boolean expression directly when comparing it with true or 1. For false or 0, negate the expression with [not < >] instead.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nif <<touching (Sprite2 v) ?> = [true]> then\nsay [Touching]\nend"
+    }
+  ]
+}

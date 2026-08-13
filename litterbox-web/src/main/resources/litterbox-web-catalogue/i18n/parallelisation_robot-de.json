@@ -1,0 +1,13 @@
+{
+  "finderId": "parallelisation_robot",
+  "locale": "de",
+  "name": "Skripte werden parallel ausgeführt",
+  "hint": "Mehrere Skripte, die auf dasselbe mBlock-Ereignis reagieren, können unabhängige Roboteraktionen gleichzeitig starten und so ein abgestimmtes Verhalten ermöglichen.",
+  "instruction": "Verwende für beide unabhängigen Skripte denselben Ereignis-Hut und gib jedem eine eigene Aktion, die beim Ereignis beginnen soll.",
+  "examples": [
+    {
+      "label": "Beispiel",
+      "scratchblocks": "when Codey starts up :: events hat\n@codeyA move forward at power (50) % for (1) secs :: motion\n\nwhen Codey starts up :: events hat\n@codeyB RGB LED lights up [#00ff00] :: lighting"
+    }
+  ]
+}

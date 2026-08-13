@@ -1,0 +1,13 @@
+{
+  "finderId": "invalid_quantum_entanglement_target",
+  "locale": "nl",
+  "name": "Ongeldig verstrengelingsdoel",
+  "hint": "Een verstrengelingsbewerking heeft een andere actor nodig die in het project bestaat. Een sprite met zichzelf verstrengelen of een niet-bestaande actor opgeven laat de relatie ongedefinieerd en kan het bedoelde kwantumgedrag verhinderen.",
+  "instruction": "Kies een andere bestaande sprite of een ondersteund doel op het speelveld en controleer vóór de bewerking of de naam exact overeenkomt met een actor in het project.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nentangle [position v] with [non-existing] possibilities: (1) :: #5c068c"
+    }
+  ]
+}

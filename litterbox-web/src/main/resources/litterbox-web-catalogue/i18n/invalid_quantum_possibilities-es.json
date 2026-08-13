@@ -1,0 +1,13 @@
+{
+  "finderId": "invalid_quantum_possibilities",
+  "locale": "es",
+  "name": "Número de posibilidades no válido para entrelazamiento o superposición",
+  "hint": "Un entrelazamiento o una superposición cuántica necesita al menos un resultado posible. Un valor menor que 1 se convierte en cero durante la ejecución y puede dejar inutilizable el estado cuántico.",
+  "instruction": "Establece al menos 1 posibilidad y valida las entradas dinámicas antes de iniciar un entrelazamiento o una superposición.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when superposition started :: events hat #5c068c\nforever\nturn right (15) degrees\nwait (0.1) seconds\nend\n\nwhen green flag clicked\nsuperpose [position v] possibilities: (0) :: #5c068c"
+    }
+  ]
+}

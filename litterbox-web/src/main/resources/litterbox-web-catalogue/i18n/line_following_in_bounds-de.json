@@ -1,0 +1,13 @@
+{
+  "finderId": "line_following_in_bounds",
+  "locale": "de",
+  "name": "Linienverfolgungsmessung im Messbereich",
+  "hint": "Der Linienverfolgungssensor liefert die vier Zustände 0 bis 3 für die möglichen Schwarz-Weiß-Kombinationen.",
+  "instruction": "Ordne die Sensorzustände 0, 1, 2 und 3 gezielt zu und behandle andere Werte als ungültige Eingaben.",
+  "examples": [
+    {
+      "label": "Beispiel",
+      "scratchblocks": "when green flag clicked\nif <(@mBot line follower sensor [port2 v] value :: sensing) = (1)> then\nsay [Line detected]\nend"
+    }
+  ]
+}

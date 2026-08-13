@@ -1,0 +1,8 @@
+{
+  "finderId": "variable_initialization_race",
+  "locale": "es",
+  "name": "Condición de carrera de inicialización variable",
+  "hint": "Una variable se inicializa en diferentes scripts activados por el mismo evento. El resultado puede cambiar según el orden en que se ejecuten los scripts. Intenta asignar los valores en solo uno de los scripts.",
+  "instruction": "Una variable se inicializa en diferentes scripts activados por el mismo evento. El resultado puede cambiar según el orden en que se ejecuten los scripts. Intenta asignar los valores en solo uno de los scripts.",
+  "examples": []
+}

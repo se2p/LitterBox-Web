@@ -1,0 +1,13 @@
+{
+  "finderId": "matrix_off_script_missing",
+  "locale": "nl",
+  "name": "Uitschakelscript voor matrix ontbreekt",
+  "hint": "De ledmatrix wordt gebruikt, maar geen bereikbaar opruimscript wist of schakelt haar uit voordat de uitvoering eindigt. Een oude weergave kan zichtbaar blijven en later gedrag verstoren.",
+  "instruction": "Voeg na de benodigde matrixweergave een bereikbare wis- of uitactie toe en neem die op in normale en alternatieve beëindigingspaden.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\n@codeyB show image @matrix :: looks\nstop [this script v]"
+    }
+  ]
+}

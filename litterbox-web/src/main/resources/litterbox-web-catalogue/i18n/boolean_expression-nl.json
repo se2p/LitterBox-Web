@@ -1,0 +1,13 @@
+{
+  "finderId": "boolean_expression",
+  "locale": "nl",
+  "name": "Booleaanse expressies gebruiken",
+  "hint": "Booleaanse expressies maken voorwaarden expliciet en kunnen beslissingen in je programma helder weergeven.",
+  "instruction": "Gebruik Booleaanse expressies in voorwaarden, lussen en logische combinaties om beslissingen direct uit te drukken.",
+  "examples": [
+    {
+      "label": "Elegante code",
+      "scratchblocks": "when green flag clicked\nset [xpos v] to (mouse x)\nwait (3) seconds\nif <(xpos) = (mouse x)> then  //⇦  👍\ngo to (mouse-pointer v)\nend"
+    }
+  ]
+}

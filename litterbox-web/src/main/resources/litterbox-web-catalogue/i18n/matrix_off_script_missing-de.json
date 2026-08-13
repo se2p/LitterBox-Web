@@ -1,0 +1,13 @@
+{
+  "finderId": "matrix_off_script_missing",
+  "locale": "de",
+  "name": "Matrix-Ausschalt-Skript fehlt",
+  "hint": "Die LED-Matrix wird verwendet, aber kein erreichbares Aufräumskript löscht sie oder schaltet sie vor dem Ende der Ausführung aus. Dadurch kann eine alte Anzeige sichtbar bleiben und spätere Abläufe stören.",
+  "instruction": "Füge nach der benötigten Matrixanzeige ein erreichbares Löschen oder Ausschalten ein und berücksichtige dabei auch normale und alternative Beendigungspfade.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\n@codeyB show image @matrix :: looks\nstop [this script v]"
+    }
+  ]
+}

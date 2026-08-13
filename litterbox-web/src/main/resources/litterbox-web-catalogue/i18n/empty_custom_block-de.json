@@ -1,0 +1,17 @@
+{
+  "finderId": "empty_custom_block",
+  "locale": "de",
+  "name": "Leerer eigener Baustein",
+  "hint": "Du hast einen eigenen Baustein definiert, der keine Befehle enthält.",
+  "instruction": "Du hast einen eigenen Baustein definiert, der keine Befehle enthält.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "define Jump :: #ff0000 //⇦  🐛\n\nwhen green flag clicked\nJump :: #ff0000 //⇦  🐛\nmove (10) steps\n"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\n"
+    }
+  ]
+}

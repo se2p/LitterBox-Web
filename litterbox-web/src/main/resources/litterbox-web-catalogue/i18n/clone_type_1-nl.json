@@ -1,0 +1,8 @@
+{
+  "finderId": "clone_type_1",
+  "locale": "nl",
+  "name": "Gedupliceerde code",
+  "hint": "Identieke instructies staan in meerdere scripts. Dubbele code is moeilijker consequent te onderhouden en vergroot de kans op fouten.",
+  "instruction": "Haal de gemeenschappelijke reeks uit de scripts, zet die in een eigen blok en roep dat blok aan waar nodig.",
+  "examples": []
+}

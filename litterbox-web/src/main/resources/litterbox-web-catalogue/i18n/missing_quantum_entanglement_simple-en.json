@@ -1,0 +1,13 @@
+{
+  "finderId": "missing_quantum_entanglement_simple",
+  "locale": "en",
+  "name": "Missing Entanglement Handler",
+  "hint": "An entanglement-start handler can run only when the actor participates in an entanglement. If no operation entangles the actor directly or through another participant, the script is unreachable and its behavior never occurs.",
+  "instruction": "Keep the handler on an actor that a suitable entanglement block can reach, or add an entanglement operation that includes this actor.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when entanglement started :: events hat #5c068c\nforever\nturn right (15) degrees\nwait (0.1) seconds\nend"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "finderId": "terminated_loop",
+  "locale": "de",
+  "name": "Unterbrochene Wiederholung",
+  "hint": "Die Wiederholung wird unterbrochen (z.B. durch einen Stop-Baustein) und wird gar nicht wiederholt.",
+  "instruction": "Entferne entweder die Wiederholung oder den Abbruchsbaustein.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nrepeat (10)\ngo to x: (100) y: (100)\nturn left (20) degrees\nmove(10) steps\nstop [this script v] :: #ff0000 //⇦  🐛\nend\nhide"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\nrepeat (10)\ngo to x: (100) y: (100)\nturn left (20) degrees\nmove(10) steps\nend\nhide"
+    }
+  ]
+}

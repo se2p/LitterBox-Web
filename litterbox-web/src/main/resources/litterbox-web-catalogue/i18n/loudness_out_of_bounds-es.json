@@ -1,0 +1,13 @@
+{
+  "finderId": "loudness_out_of_bounds",
+  "locale": "es",
+  "name": "Volumen fuera de límites",
+  "hint": "Una comparación del volumen fuera de 0–100 usa un valor que el sensor no puede informar, por lo que la respuesta al sonido puede no activarse como se espera.",
+  "instruction": "Mantén los umbrales y las lecturas validadas del volumen dentro del intervalo 0–100 antes de tomar decisiones.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB loudness :: sensing) > (150)> then\nsay [Invalid loudness]\nend"
+    }
+  ]
+}

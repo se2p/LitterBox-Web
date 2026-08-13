@@ -1,0 +1,13 @@
+{
+  "finderId": "codey_upload_stop_timed",
+  "locale": "en",
+  "name": "Stop Script in Upload Mode Prevents End of Runtime",
+  "hint": "In an uploaded Codey program, stopping all scripts while a timed hardware action is still running can leave that action incomplete and the device in an unexpected resource state. The same risk exists when upload-mode execution is only a possible path.",
+  "instruction": "Give each timed hardware action an explicit stop or reset before stopping all scripts, and make every upload-mode entry path follow that cleanup sequence.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when on-board button [B v] :: events hat\n@codeyA turn right at power (50) % for (60) secs :: motion\n\nwhen on-board button [C v] :: events hat\nstop [all v]"
+    }
+  ]
+}

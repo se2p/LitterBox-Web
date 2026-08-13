@@ -1,0 +1,8 @@
+{
+  "finderId": "missing_resource",
+  "locale": "en",
+  "name": "Missing Resource",
+  "hint": "Your program is missing the sound or picture you're trying to use.",
+  "instruction": "Your program is missing the sound or picture you're trying to use.",
+  "examples": []
+}

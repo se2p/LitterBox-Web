@@ -1,0 +1,13 @@
+{
+  "finderId": "coordination",
+  "locale": "en",
+  "name": "Coordination",
+  "hint": "You can coordinate your scripts within the program very well! That is essential for larger programs.",
+  "instruction": "You can coordinate your scripts within the program very well! That is essential for larger programs.",
+  "examples": [
+    {
+      "label": "Elegant code",
+      "scratchblocks": "when green flag clicked\nshow\nset [score v] to (0)\nwait until <key (up arrow v) pressed?>"
+    }
+  ]
+}

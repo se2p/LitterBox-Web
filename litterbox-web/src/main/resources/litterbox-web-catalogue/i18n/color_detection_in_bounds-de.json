@@ -1,0 +1,13 @@
+{
+  "finderId": "color_detection_in_bounds",
+  "locale": "de",
+  "name": "Farbwerterkennung im Messbereich",
+  "hint": "Ein erkannter Farbkanal liegt im Bereich von 0 bis 255. Dadurch bleiben Farberkennung und darauf basierende Reaktionen zuverlässig.",
+  "instruction": "Halte Farbvergleiche zwischen 0 und 255 und validiere Messwerte, bevor du sie für Entscheidungen verwendest.",
+  "examples": [
+    {
+      "label": "Beispiel",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB [red v] color value detected :: sensing) > (128)> then\nsay [Red detected]\nend"
+    }
+  ]
+}

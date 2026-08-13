@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_erase_all",
+  "locale": "de",
+  "name": "Fehlender Löschen-Baustein",
+  "hint": "Wenn du in Scratch zeichnest und keinen [sbi]lösche alles[/sbi]-Baustein verwendest, wird bei der nächsten Ausführung des Programms über deine vorhandene Zeichnung gemalt.",
+  "instruction": "Stelle sicher, dass du zu Beginn des Programms die alten Zeichnungen löschst, indem du den [sbi]lösche alles[/sbi] Block an den Anfang deines Programms anfügst.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\npen down\nrepeat (4)\nmove (10) steps\nturn left (90) degrees\nend\npen up\n"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\nerase all //⇦  👍\npen down\nrepeat (4)\nmove (10) steps\nturn left (90) degrees\nend\npen up\n"
+    }
+  ]
+}

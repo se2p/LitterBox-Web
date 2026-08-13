@@ -1,0 +1,13 @@
+{
+  "finderId": "motor_low_power",
+  "locale": "nl",
+  "name": "Motor te zwak",
+  "hint": "Een niet-nul motoropdracht voor mBot onder 25% overwint mogelijk de startbelasting niet, waardoor de robot niet betrouwbaar beweegt.",
+  "instruction": "Gebruik 0 of minstens 25% vermogen voor motoropdrachten van mBot en stem beide kanten op elkaar af wanneer de wielen afzonderlijk worden bestuurd.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\n@codeyA move forward at power (20) % for (1) secs :: motion\nstop [this script v]"
+    }
+  ]
+}

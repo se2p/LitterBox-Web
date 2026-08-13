@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_loop_sensing",
+  "locale": "en",
+  "name": "Missing Loop",
+  "hint": "If a statement should be executed as soon as a condition is met, one has to be careful about the timing. The condition has to be checked at the right time or repeatedly.",
+  "instruction": "Consider using a loop like [sbi]forever[/sbi] or [sbi]repeat until < >[/sbi]that surrounds your [sbi]if < > then[/sbi].[newLine]In some cases, using a [sbi]wait until < >[/sbi] instead of your [sbi]if < > then[/sbi] could be sufficient, too.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nif &lt;touching (mouse-pointer v) ?:: #ff0000 &gt; then //⇦  🐛\nturn left (15) degrees\n"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "when green flag clicked\nforever :: #007000 //⇦  👍\nif <touching (mouse-pointer v)> then\nturn left (15) degrees\n"
+    }
+  ]
+}

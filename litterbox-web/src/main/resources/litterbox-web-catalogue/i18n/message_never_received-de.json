@@ -1,0 +1,25 @@
+{
+  "finderId": "message_never_received",
+  "locale": "de",
+  "name": "Nachricht nie empfangen",
+  "hint": "Wenn du eine Nachricht sendest, stelle sicher, dass sie auch von einer Figur empfangen wird.",
+  "instruction": "Wenn du eine Nachricht sendest, stelle sicher, dass sie auch von einer Figur empfangen wird.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\n broadcast [elephantStart v]"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\n broadcast [elephantStart v]"
+    },
+    {
+      "label": "Fehler 2",
+      "scratchblocks": "when green flag clicked :: #ff0000 //⇦  🐛\nrepeat (4)\nmove (10) steps\nturn left (90) degrees\nend"
+    },
+    {
+      "label": "Mögliche Lösung 2",
+      "scratchblocks": "when I receive [elephantStart v] :: #007000 //⇦  👍\nrepeat (4)\nmove (10) steps\nturn left (90) degrees\nend"
+    }
+  ]
+}

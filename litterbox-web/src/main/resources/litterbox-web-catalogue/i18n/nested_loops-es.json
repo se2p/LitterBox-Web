@@ -1,0 +1,8 @@
+{
+  "finderId": "nested_loops",
+  "locale": "es",
+  "name": "Bucles anidados",
+  "hint": "Si se anidan dos o más bucles, a menudo se producen problemas impredecibles. Evita hacerlo.",
+  "instruction": "Si se anidan dos o más bucles, a menudo se producen problemas impredecibles. Evita hacerlo.",
+  "examples": []
+}

@@ -1,0 +1,17 @@
+{
+  "finderId": "interrupted_loop_sensing",
+  "locale": "de",
+  "name": "Unterbrochene Wiederholungsprüfung",
+  "hint": "Der Baustein verhindert während seiner Ausführung die Überprüfung der Bedingung im [sbi]falls (), dann[/sbi] Baustein. Es kann also sein, dass die Bedingung eintritt, aber dein Skript nicht passend reagiert, da es zu diesem Zeitpunkt mit dem Baustein beschäftigt ist.",
+  "instruction": "Überlege, ob du die Prüfung parallel (in einem eigenen Skript) durchführen kannst.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching (edge v) ?> then\nchange (score v) by (-1)\nend\nplay sound (Miau v) until done :: #ff0000 //⇦  🐛\nend"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching (edge v) ?> then\nchange (score v) by (-1)\nend\nend\n\nwhen green flag clicked :: #007000 //⇦  👍\nforever\nplay sound (Miau v) until done\nend"
+    }
+  ]
+}

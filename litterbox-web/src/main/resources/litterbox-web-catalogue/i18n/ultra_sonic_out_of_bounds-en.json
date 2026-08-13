@@ -1,0 +1,13 @@
+{
+  "finderId": "ultra_sonic_out_of_bounds",
+  "locale": "en",
+  "name": "Ultrasonic out of Bounds",
+  "hint": "An ultrasonic distance comparison outside 3–400 cm is outside the sensor's measurable range, so obstacle decisions may be impossible or unreliable.",
+  "instruction": "Accept ultrasonic distances only from 3 cm through 400 cm and validate thresholds before comparing them.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nif <(@mBot ultrasonic sensor [port3 v] distance \\(cm\\) :: sensing) > (500)> then\nsay [Invalid distance]\nend"
+    }
+  ]
+}

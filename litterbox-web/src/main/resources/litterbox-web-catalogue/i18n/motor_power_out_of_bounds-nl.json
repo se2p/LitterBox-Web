@@ -1,0 +1,13 @@
+{
+  "finderId": "motor_power_out_of_bounds",
+  "locale": "nl",
+  "name": "Motorvermogen buiten grenzen",
+  "hint": "Een motorvermogensopdracht boven 100% valt buiten het bereik van de actuator en kan worden afgekapt, genegeerd of onbetrouwbare beweging veroorzaken.",
+  "instruction": "Beperk motorvermogen voor mBot tot 0–100%; Codey staat voor achteruit ook waarden tot -100% toe, dus controleer het apparaatspecifieke bereik vóór de opdracht.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\n@codeyA move forward at power (120) % for (1) secs :: motion"
+    }
+  ]
+}

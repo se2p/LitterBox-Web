@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_initialization",
+  "locale": "en",
+  "name": "Missing Initialization",
+  "hint": "A variable or attribute in your sprite is not initalized. It will use whatever value it contained at the end of the last run.",
+  "instruction": "Is the executed program supposed to influence the next run of the program?[newLine]If not: Initialise the values of your variables and attributes, that have to have a certain value at the start of your program.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "(score)\n\nwhen green flag clicked\nforever\nif <touching (edge v) ?> then\nchange [score v] by (1)\nend\nend"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "(score)\n\nwhen green flag clicked\nset [score] to (0) :: #007000 //⇦  👍\nforever\nif <touching (edge v) ?> then\nchange [score v] by (1)\nend\nend"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "collision",
+  "locale": "en",
+  "name": "Sprite reaction to collision",
+  "hint": "Your sprite shows a certain behavior (e.g. changes its looks or moves) when it collides with or touches something.",
+  "instruction": "Your sprite shows a certain behavior (e.g. changes its looks or moves) when it collides with or touches something.",
+  "examples": [
+    {
+      "label": "Elegant code",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching color (#000)> then  //⇦  👍\ngo to x: (-182) y: (150)\nnext backdrop\nend"
+    }
+  ]
+}

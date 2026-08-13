@@ -1,0 +1,17 @@
+{
+  "finderId": "custom_block_with_forever",
+  "locale": "en",
+  "name": "Custom Block With Forever",
+  "hint": "If a custom block contains a [sbi]forever[/sbi] loop and the custom block is used in the middle of another script, the script will never be able to finish.[newLine]The [sbi]forever[/sbi] loop in the custom block cannot be left, resulting in the calling script never being able to proceed.",
+  "instruction": "Delete the [sbi]forever[/sbi] loop from your custom block.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "define longMarch\nforever :: #ff0000 //⇦  🐛\nmove (10) steps\nend\n\nwhen green flag clicked\nlongMarch\nsay [Hello!] //⇦  🐛\n"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "define longMarch\nrepeat (10) //⇦  👍\nmove (10) steps\nend\n\nwhen green flag clicked\nlongMarch\nsay [Hello!]\n"
+    }
+  ]
+}

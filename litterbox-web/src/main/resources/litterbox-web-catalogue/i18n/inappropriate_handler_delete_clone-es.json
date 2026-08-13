@@ -1,0 +1,17 @@
+{
+  "finderId": "inappropriate_handler_delete_clone",
+  "locale": "es",
+  "name": "Controlador inapropiado junto con eliminación de clon",
+  "hint": "El script contiene un bloque de [sbi]eliminar este clon[/sbi]. Sin embargo,no se puede ejecutar porque en el controlador de eventos no Estás claro a qué clon te refieres.",
+  "instruction": "El script tiene que comenzar con un [sbi]al comenzar como clon[/sbi] o un [sbi]al hacer clic en este objeto[/sbi]. Otra posibilidad sería mover el bloque [sbi]eliminar este clon[/sbi] a un script que comience con uno de estos bloques.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked :: #ff0000 //⇦  🐛\nshow\ngo to x: (100) y: (10)\nrepeat (10)\nmove (20) steps\nturn left (90) degrees\nend\ndelete this clone"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when I start as a clone :: #007000 //⇦  👍\nshow\ngo to x: (100) y: (10)\nrepeat (10)\nmove (20) steps\nturn left (90) degrees\nend\ndelete this clone "
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "finderId": "ambiguous_parameter_name_used",
+  "locale": "nl",
+  "name": "Ambigue gebruikte parameternaam",
+  "hint": "Een eigen blok bevat en gebruikt meerdere parameters met dezelfde naam. Scratch kan ze niet betrouwbaar onderscheiden en gebruikt de meest rechtse overeenkomst.",
+  "instruction": "Geef elke parameter een unieke naam en pas de verwijzingen naar de gewijzigde namen aan.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "define checkScore (score) (score :: #ff0000) //⇦  🐛\nif &lt;(score) = (0)&gt; then\nsay [You are bad!]\nsay (join [Score of your Rival: ] (score :: #ff0000)) //⇦  🐛\nend"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "define checkScore (score) (rivalScore :: #007000) //⇦  👍\nif &lt;(score) = (0)&gt; then\nsay [You are bad!]\nsay (join [Score of your Rival: ] (rivalScore :: #007000)) //⇦  👍\nend"
+    }
+  ]
+}

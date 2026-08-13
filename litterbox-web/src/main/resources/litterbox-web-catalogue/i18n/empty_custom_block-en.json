@@ -1,0 +1,17 @@
+{
+  "finderId": "empty_custom_block",
+  "locale": "en",
+  "name": "Empty Custom Block",
+  "hint": "You created a custom block which contains no statements. When the custom block is invoked, nothing happens.",
+  "instruction": "You created a custom block which contains no statements. When the custom block is invoked, nothing happens.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "define Jump :: #ff0000 //⇦  🐛\n\nwhen green flag clicked\nJump :: #ff0000 //⇦  🐛\nmove (10) steps\n"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\n"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "finderId": "duplicated_script",
+  "locale": "en",
+  "name": "Duplicated Script",
+  "hint": "Your project contains the identical script twice. You probably only need one of them, and could delete all copies.",
+  "instruction": "Your project contains the identical script twice. You probably only need one of them, and could delete all copies.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\nwhen green flag clicked :: #ff0000 //⇦  🐛\nmove (10) steps\n"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\n"
+    }
+  ]
+}

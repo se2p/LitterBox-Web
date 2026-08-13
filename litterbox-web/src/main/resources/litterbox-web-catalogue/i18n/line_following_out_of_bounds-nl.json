@@ -1,0 +1,13 @@
+{
+  "finderId": "line_following_out_of_bounds",
+  "locale": "nl",
+  "name": "Lijnvolgen buiten grenzen",
+  "hint": "Een vergelijking met een lijnvolgstatus buiten 0, 1, 2 of 3 kan nooit overeenkomen met een sensorstatus, waardoor de tak onbereikbaar is.",
+  "instruction": "Verwerk alleen de vier ondersteunde lijnvolgstatussen 0, 1, 2 en 3 en valideer een status voordat je die vergelijkt.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nif <(@mBot line follower sensor [port2 v] value :: sensing) = (4)> then\nsay [Invalid line state]\nend"
+    }
+  ]
+}

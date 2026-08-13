@@ -1,0 +1,13 @@
+{
+  "finderId": "ambient_light_out_of_bounds",
+  "locale": "de",
+  "name": "Umgebungslichtmessung außerhalb des Messbereichs",
+  "hint": "Dieser Vergleich verwendet einen Umgebungslichtwert außerhalb des vom Sensor unterstützten Bereichs. Dadurch kann die Bedingung keinen verlässlichen Messwert beschreiben und das Roboterverhalten unvorhersehbar werden.",
+  "instruction": "Begrenze Umgebungslichtwerte bei Codey auf 0 bis 100 und bei mBot auf 0 bis 1020; prüfe oder begrenze Schwellenwerte vor dem Vergleich.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB ambient light intensity :: sensing) > (150)> then\nsay [Invalid light reading]\nend"
+    }
+  ]
+}

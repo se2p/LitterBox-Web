@@ -1,0 +1,17 @@
+{
+  "finderId": "message_as_literal",
+  "locale": "nl",
+  "name": "Bericht als tekst",
+  "hint": "De vinder detecteert een berichtnaam die als gewone tekst wordt gebruikt terwijl het bericht scripts hoort te coördineren. Tekst in een zeg-, vergelijkings-, lijst- of vergelijkbaar blok verstuurt geen bericht, waardoor ontvangende scripts mogelijk nooit starten en de tekst misleidend kan zijn.",
+  "instruction": "Gebruik een zend signaal- of zend signaal en wacht-blok wanneer je andere scripts wilt informeren; laat de berichtnaam alleen als tekst staan wanneer die bewust wordt weergegeven of vergeleken.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nsay [myMsg]\nwhen I receive \\[myMsg v\\]\nmove (10) steps"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\nbroadcast (myMsg v)\nsay [Hello]\nwhen I receive \\[myMsg v\\]\nmove (10) steps"
+    }
+  ]
+}

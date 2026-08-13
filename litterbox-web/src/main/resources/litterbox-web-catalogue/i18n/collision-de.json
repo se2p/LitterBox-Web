@@ -1,0 +1,13 @@
+{
+  "finderId": "collision",
+  "locale": "de",
+  "name": "Reaktion auf eine Kollision",
+  "hint": "Deine Figur reagiert auf eine Kollision mit etwas anderem.",
+  "instruction": "Deine Figur reagiert auf eine Kollision mit etwas anderem.",
+  "examples": [
+    {
+      "label": "Eleganter Code",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching color (#000)> then  //⇦  👍\ngo to x: (-182) y: (150)\nnext backdrop\nend"
+    }
+  ]
+}

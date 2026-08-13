@@ -1,0 +1,13 @@
+{
+  "finderId": "list_usage",
+  "locale": "en",
+  "name": "Usage of lists",
+  "hint": "You can use a list and therefore handle important concepts of collections in programming.",
+  "instruction": "You can use a list and therefore handle important concepts of collections in programming.",
+  "examples": [
+    {
+      "label": "Elegant code",
+      "scratchblocks": "when green flag clicked\nset (score v) to (0)\nrepeat until <touching (bear v) ?>\nchange (score v) by (1)\nwait (1) seconds\nend\nadd (score v) to [highscore v] //⇦  👍"
+    }
+  ]
+}

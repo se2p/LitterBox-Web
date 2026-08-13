@@ -1,0 +1,13 @@
+{
+  "finderId": "multiple_quantum_measurements",
+  "locale": "de",
+  "name": "Mehrere Quantenmessungen",
+  "hint": "Eine Quantenmessung legt den Zustand fest. Wiederholte Messungen ohne eine neue Superposition oder Verschränkung liefern deshalb keinen neuen Zustand und können die beabsichtigte Animation oder Reaktion verfälschen.",
+  "instruction": "Führe eine Messung erst nach dem Start eines neuen Quantenzustands erneut aus oder speichere das erste Ergebnis für weitere Entscheidungen.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when superposition started :: events hat #5c068c\nforever\nturn right (15) degrees\nwait (0.1) seconds\nend\n\nwhen green flag clicked\nsuperpose [position v] possibilities: (30) :: #5c068c\n\nwhen [space v] key pressed\nmeasure :: #5c068c\nmeasure :: #5c068c"
+    }
+  ]
+}

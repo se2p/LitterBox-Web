@@ -1,0 +1,8 @@
+{
+  "finderId": "clone_type_3",
+  "locale": "nl",
+  "name": "Vergelijkbare code",
+  "hint": "Structureel vergelijkbare code staat in meerdere scripts, ook al verschillen de details meer. De gedeelde bedoeling kan daardoor verborgen raken en wijzigingen kunnen inconsistent worden.",
+  "instruction": "Bepaal welke verantwoordelijkheid wordt gedeeld en bundel die in herbruikbaar gedrag wanneer dat de duidelijkheid verbetert.",
+  "examples": []
+}

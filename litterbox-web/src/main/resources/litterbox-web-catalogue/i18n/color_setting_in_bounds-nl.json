@@ -1,0 +1,13 @@
+{
+  "finderId": "color_setting_in_bounds",
+  "locale": "nl",
+  "name": "Kleurinstelling binnen grenzen",
+  "hint": "Elk RGB-kanaal kan waarden van 0 tot 255 weergeven, zodat de gekozen kleur zonder afgekapte of genegeerde componenten wordt getoond.",
+  "instruction": "Beperk rood-, groen- en blauwwaarden tot 0–255 voordat je ze aan het verlichtingsblok doorgeeft.",
+  "examples": [
+    {
+      "label": "Voorbeeld",
+      "scratchblocks": "when green flag clicked\n@codeyB set the indicator [red v] with color value (234) :: lighting\n@codeyB set the indicator [green v] with color value (255) :: lighting\n@codeyB set the indicator [blue v] with color value (0) :: lighting"
+    }
+  ]
+}

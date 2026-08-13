@@ -1,0 +1,13 @@
+{
+  "finderId": "directed_motion",
+  "locale": "de",
+  "name": "Geführte Bewegung durch Tastendruck",
+  "hint": "Eine Tastatursteuerung kann die Richtung einer Figur mit ihrer Bewegung verbinden und so direkte Spielsteuerung ermöglichen.",
+  "instruction": "Verwende in einem Tastatur-Ereignis zuerst „setze Richtung auf“ und anschließend einen Bewegungsblock, wenn die Figur in diese Richtung laufen soll.",
+  "examples": [
+    {
+      "label": "Beispiel",
+      "scratchblocks": "when [right arrow v] key pressed\npoint in direction (90)\nmove (10) steps"
+    }
+  ]
+}

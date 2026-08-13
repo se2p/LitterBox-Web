@@ -1,0 +1,17 @@
+{
+  "finderId": "terminated_loop",
+  "locale": "en",
+  "name": "Terminated Loop",
+  "hint": "The loop is terminated before it actually repeats (e.g. by a stop-block).",
+  "instruction": "Please delete the loop or the stop block.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nrepeat (10)\ngo to x: (100) y: (100)\nturn left (20) degrees\nmove(10) steps\nstop [this script v] :: #ff0000 //⇦  🐛\nend\nhide"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "when green flag clicked\nrepeat (10)\ngo to x: (100) y: (100)\nturn left (20) degrees\nmove(10) steps\nend\nhide"
+    }
+  ]
+}

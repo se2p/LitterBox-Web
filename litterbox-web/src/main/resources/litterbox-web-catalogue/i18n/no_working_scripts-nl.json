@@ -1,0 +1,17 @@
+{
+  "finderId": "no_working_scripts",
+  "locale": "nl",
+  "name": "Geen werkend script",
+  "hint": "Losse blokken zijn niet verbonden met een gebeurtenisblok. Zonder zo'n startpunt kan de reeks nooit worden uitgevoerd.",
+  "instruction": "Verbind de reeks met het passende gebeurtenisblok of voeg haar toe aan een bereikbaar script.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "forever :: #ff0000 //⇦  🐛\nmove (1) steps\nturn left (5) degrees\nend"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked :: #007000 //⇦  👍\nforever\nmove (1) steps\nturn left (5) degrees\nend"
+    }
+  ]
+}

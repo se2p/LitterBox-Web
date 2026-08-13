@@ -1,0 +1,17 @@
+{
+  "finderId": "hide_without_show",
+  "locale": "de",
+  "name": "Verstecken ohne Zeigen",
+  "hint": "Der Finder erkennt eine Figur, die versteckt wird und danach sichtbare Änderungen ohne erreichbaren Zeige-Baustein erhält. Bewegungen und Aussehensänderungen können dann unsichtbar bleiben, sodass das Programm scheinbar nicht reagiert.",
+  "instruction": "Zeige die Figur vor sichtbaren Änderungen wieder an, die sichtbar sein sollen, oder entferne diese Änderungen, wenn sie absichtlich verborgen bleiben soll.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\nhide"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\nshow\nmove (10) steps\nhide"
+    }
+  ]
+}

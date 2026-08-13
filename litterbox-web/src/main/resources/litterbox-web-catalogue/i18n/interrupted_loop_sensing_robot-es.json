@@ -1,0 +1,13 @@
+{
+  "finderId": "interrupted_loop_sensing_robot",
+  "locale": "es",
+  "name": "Detección de bucle interrumpido robot",
+  "hint": "Una operación temporizada o bloqueante comparte un bucle o una ruta condicional con la detección continua del robot. Mientras se ejecuta, no se comprueban nuevos cambios del sensor, por lo que las reacciones pueden retrasarse o perderse.",
+  "instruction": "Mueve la detección continua a un script paralelo separado cuando sea posible, o mantén la ruta de detección breve y no bloqueante.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nforever\nif <@mBot obstacles ahead? :: sensing> then\n@codeyA move forward at power (50) % for (1) secs :: motion\nend\nend"
+    }
+  ]
+}

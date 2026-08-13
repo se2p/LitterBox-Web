@@ -1,0 +1,13 @@
+{
+  "finderId": "roll_angle_in_bounds",
+  "locale": "nl",
+  "name": "Rol hoek binnen grenzen",
+  "hint": "De rolhoek wordt ondersteund van -90 tot 90 graden, zodat de zijdelingse kanteling betrouwbaar kan worden gebruikt.",
+  "instruction": "Houd rol-drempelwaarden tussen -90 en 90 graden en behandel metingen buiten dat interval afzonderlijk.",
+  "examples": [
+    {
+      "label": "Voorbeeld",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB roll angle° :: sensing) > (30)> then\nsay [Tilted sideways]\nend"
+    }
+  ]
+}

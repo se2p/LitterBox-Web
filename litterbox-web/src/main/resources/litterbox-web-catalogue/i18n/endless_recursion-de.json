@@ -1,0 +1,17 @@
+{
+  "finderId": "endless_recursion",
+  "locale": "de",
+  "name": "Endlose Rekursion",
+  "hint": "Dieser Baustein ruft sich rekursiv selbst auf, jedoch ist keine Abbruchbedingung implementiert. Er wird sich also unendlich oft selbst aufrufen.",
+  "instruction": "Implementiere eine Abbruchbedingung.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "define Jump\nmove (10) steps\nturn left (180) degrees\nmove (10) steps\nturn right (180) degrees\nJump :: #ff0000 //⇦  🐛\n\nwhen green flag clicked\nJump\nsay [I am great!]\n"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "define Jump\nmove (10) steps\nturn left (180) degrees\nmove (10) steps\nturn right (180) degrees\nif &lt;not&lt;touching (edge v)&gt; &gt;then :: #007000 //⇦  👍\nJump\nend\n\nwhen green flag clicked\nJump\nsay [I am great!]\n"
+    }
+  ]
+}

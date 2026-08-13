@@ -1,0 +1,17 @@
+{
+  "finderId": "double_if",
+  "locale": "de",
+  "name": "Doppelte Bedingung",
+  "hint": "Dein Programm enthält zwei aufeinanderfolgende bedingte Anweisungen mit derselben Bedingung.[newLine]Überlege, ob du diese zu einem Block zusammenfassen kannst, um das Programm kürzer und verständlicher zu machen.",
+  "instruction": "Dein Programm enthält zwei aufeinanderfolgende bedingte Anweisungen mit derselben Bedingung.[newLine]Überlege, ob du diese zu einem Block zusammenfassen kannst, um das Programm kürzer und verständlicher zu machen.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching (mouse-pointer v)?> then\nmove (10) steps\nend\nif <touching (mouse-pointer v)?> then :: #ff0000 //⇦  🐛\nturn left (15) degrees\nend\nend\n"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching (mouse-pointer v)?> then\nmove (10) steps\nturn left (15) degrees :: #007000 //⇦  👍\nend\nend\n"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "color_setting_out_of_bounds",
+  "locale": "es",
+  "name": "Configuración de color fuera de límites",
+  "hint": "Un canal RGB fuera de 0–255 no puede ser representado por el LED; el color solicitado puede recortarse o ignorarse.",
+  "instruction": "Limita los canales rojo, verde y azul a enteros entre 0 y 255 antes de enviar el comando de color.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\n@codeyB set the indicator [red v] with color value (300) :: lighting"
+    }
+  ]
+}

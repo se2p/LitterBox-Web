@@ -1,0 +1,13 @@
+{
+  "finderId": "motor_stop_script_missing",
+  "locale": "en",
+  "name": "Motor Stop Script Missing",
+  "hint": "A motor movement can start, but no reachable motor-stop action follows before the program ends, so the robot may keep moving.",
+  "instruction": "Add an explicit motor stop or zero-power command after persistent movement on every termination path.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\n@codeyA [move forward v] at power (50) % :: motion\nstop [this script v]"
+    }
+  ]
+}

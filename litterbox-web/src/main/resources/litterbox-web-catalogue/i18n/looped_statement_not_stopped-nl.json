@@ -1,0 +1,13 @@
+{
+  "finderId": "looped_statement_not_stopped",
+  "locale": "nl",
+  "name": "Bronnen in lussen worden niet gestopt",
+  "hint": "Een bron wordt in een lus geactiveerd terwijl de bijbehorende stop alleen lokaal of op een ander pad wordt uitgevoerd. Een volgende iteratie kan de bron opnieuw activeren, waardoor die niet betrouwbaar uit is wanneer de uitvoering moet eindigen.",
+  "instruction": "Gebruik buiten de lus die de bron opnieuw activeert een definitieve globale stopactie en zorg dat elk beëindigingspad die opruiming uitvoert.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nforever\n@codeyB RGB LED lights up [#ff0000] for (1) secs :: lighting\nend\n\nwhen [space v] key pressed\n@codeyB RGB LED lights off :: lighting"
+    }
+  ]
+}

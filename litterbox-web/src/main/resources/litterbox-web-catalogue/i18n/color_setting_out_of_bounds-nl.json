@@ -1,0 +1,13 @@
+{
+  "finderId": "color_setting_out_of_bounds",
+  "locale": "nl",
+  "name": "Kleurinstelling buiten grenzen",
+  "hint": "Een RGB-kanaalopdracht buiten 0–255 kan niet door de led worden weergegeven, waardoor de gevraagde kleur kan worden afgekapt of genegeerd.",
+  "instruction": "Beperk rode, groene en blauwe kanalen vóór de kleur opdracht tot gehele getallen van 0 tot en met 255.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\n@codeyB set the indicator [red v] with color value (300) :: lighting"
+    }
+  ]
+}

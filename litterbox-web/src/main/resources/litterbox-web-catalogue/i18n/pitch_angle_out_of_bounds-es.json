@@ -1,0 +1,13 @@
+{
+  "finderId": "pitch_angle_out_of_bounds",
+  "locale": "es",
+  "name": "Ángulo de inclinación fuera de límites",
+  "hint": "Una comparación del ángulo de inclinación fuera de -180° a 180° describe una orientación imposible, por lo que el comportamiento dependiente de la inclinación puede ser poco fiable.",
+  "instruction": "Limita las lecturas y los umbrales del ángulo de inclinación al rango inclusivo de -180° a 180° antes de compararlos.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB pitch angle° :: sensing) > (200)> then\nsay [Invalid pitch]\nend"
+    }
+  ]
+}

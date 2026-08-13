@@ -1,0 +1,13 @@
+{
+  "finderId": "unnecessary_boolean",
+  "locale": "es",
+  "name": "Comparación innecesaria con un valor booleano",
+  "hint": "Este olor identifica una expresión booleana comparada con verdadero o 1, o con falso o 0. La comparación adicional dificulta la lectura de la lógica sin cambiar su significado.",
+  "instruction": "Usa directamente la expresión booleana cuando la compares con verdadero o 1. Para falso o 0, niega la expresión con [not < >].",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nif <<touching (Sprite2 v) ?> = [true]> then\nsay [Touching]\nend"
+    }
+  ]
+}

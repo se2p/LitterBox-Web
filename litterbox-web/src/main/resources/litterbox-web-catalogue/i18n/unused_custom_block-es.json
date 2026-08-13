@@ -1,0 +1,8 @@
+{
+  "finderId": "unused_custom_block",
+  "locale": "es",
+  "name": "Bloque personalizado no utilizado",
+  "hint": "Has creado un bloque propio pero nunca lo usas en tu proyecto. Esto hace que el proyecto esté desordenado. Elimina el bloque propio.",
+  "instruction": "Has creado un bloque propio pero nunca lo usas en tu proyecto. Esto hace que el proyecto esté desordenado. Elimina el bloque propio.",
+  "examples": []
+}

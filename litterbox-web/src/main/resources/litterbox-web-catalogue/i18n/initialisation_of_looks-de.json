@@ -1,0 +1,13 @@
+{
+  "finderId": "initialisation_of_looks",
+  "locale": "de",
+  "name": "Initialisieren des Aussehens",
+  "hint": "Du initialisierst das Aussehen deiner Figur bei jedem neuen Programmstart.",
+  "instruction": "Du initialisierst das Aussehen deiner Figur bei jedem neuen Programmstart.",
+  "examples": [
+    {
+      "label": "Eleganter Code",
+      "scratchblocks": "when green flag clicked\nswitch costume to (fish v) //⇦  👍\nforever\nmove (10) steps\nwait (1) seconds\nend"
+    }
+  ]
+}

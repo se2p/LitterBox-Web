@@ -1,0 +1,17 @@
+{
+  "finderId": "empty_custom_block",
+  "locale": "es",
+  "name": "Bloque personalizado vacío",
+  "hint": "Creaste un bloque propio que no contiene instrucciones. Cuando se invoca este bloque propio, no sucede nada. Considera eliminarlo si no lo necesitas.",
+  "instruction": "Creaste un bloque propio que no contiene instrucciones. Cuando se invoca este bloque propio, no sucede nada. Considera eliminarlo si no lo necesitas.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "define Jump :: #ff0000 //⇦  🐛\n\nwhen green flag clicked\nJump :: #ff0000 //⇦  🐛\nmove (10) steps\n"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\n"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "invalid_quantum_possibilities_list",
+  "locale": "es",
+  "name": "Lista no válida para entrelazamiento o superposición",
+  "hint": "Los bloques cuánticos que reciben una lista de posibilidades necesitan un reportero de lista real de Scratch. Un número literal o una variable normal no proporciona una lista de estados posibles y puede hacer que la operación no funcione.",
+  "instruction": "Crea una lista de Scratch para los estados posibles, rellénala cuando sea necesario e inserta su reportero de lista en el bloque cuántico. No uses allí el nombre de la lista como un valor normal.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nentangle [position v] with [Sprite2] possibilities: (1) list: (6) :: #5c068c"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "useless_wait",
+  "locale": "es",
+  "name": "Espera inútil",
+  "hint": "Este olor identifica un bloque [wait] en una rama del script donde no sigue ningún comportamiento significativo y no sirve para marcar el ritmo de un bucle. La espera no puede retrasar ninguna acción observable y dificulta entender el flujo.",
+  "instruction": "Elimina la espera o colócala antes de un comportamiento que realmente deba retrasarse. En un bucle, conserva una espera solo cuando controle intencionadamente su ritmo.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\nif <touching color [#2727c2] ?> then\nwait (1) seconds\nelse\nwait until <mouse down?>\nend"
+    }
+  ]
+}

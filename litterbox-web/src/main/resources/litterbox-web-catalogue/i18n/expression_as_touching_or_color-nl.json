@@ -1,0 +1,17 @@
+{
+  "finderId": "expression_as_touching_or_color",
+  "locale": "nl",
+  "name": "Expressie als rakend of kleur",
+  "hint": "Dit blok verwacht een kleur of een selecteerbare sprite als invoer. Gewone tekst, een getal of een andere ongeschikte expressie werkt daar niet correct mee.",
+  "instruction": "Kies een geldige kleur of een geldig doelwit uit de beschikbare opties voor dit blok.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nforever\nif &lt;touching color (answer) ? :: #ff0000&gt; then //⇦  🐛\nstop [all v]\nend\nend"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\nforever\nif &lt;touching color (#00FF00) ? :: #007000 &gt;then //⇦  👍\nstop [all v]\nend\nend"
+    }
+  ]
+}

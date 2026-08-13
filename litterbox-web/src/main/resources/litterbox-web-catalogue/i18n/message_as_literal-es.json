@@ -1,0 +1,17 @@
+{
+  "finderId": "message_as_literal",
+  "locale": "es",
+  "name": "Mensaje como texto",
+  "hint": "El buscador detecta el nombre de un mensaje usado como texto normal mientras se espera que ese mensaje coordine scripts. El texto de un bloque decir, una comparación, una lista u otro bloque similar no envía ningún mensaje, por lo que los scripts receptores podrían no ejecutarse y el texto puede resultar engañoso.",
+  "instruction": "Usa un bloque enviar o enviar y esperar cuando quieras avisar a otros scripts; conserva el nombre como texto solo si mostrarlo o compararlo es intencionado.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nsay [myMsg]\nwhen I receive \\[myMsg v\\]\nmove (10) steps"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\nbroadcast (myMsg v)\nsay [Hello]\nwhen I receive \\[myMsg v\\]\nmove (10) steps"
+    }
+  ]
+}

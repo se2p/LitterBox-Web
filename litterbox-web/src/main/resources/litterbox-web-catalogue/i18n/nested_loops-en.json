@@ -1,0 +1,8 @@
+{
+  "finderId": "nested_loops",
+  "locale": "en",
+  "name": "Nested Loops",
+  "hint": "If more than two loops are nested, the program gets difficult to read. As a result, mistakes are made more frequently.",
+  "instruction": "If more than two loops are nested, the program gets difficult to read. As a result, mistakes are made more frequently.",
+  "examples": []
+}

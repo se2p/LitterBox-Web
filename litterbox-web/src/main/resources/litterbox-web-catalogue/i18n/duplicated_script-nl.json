@@ -1,0 +1,17 @@
+{
+  "finderId": "duplicated_script",
+  "locale": "nl",
+  "name": "Gedupliceerd script",
+  "hint": "Hetzelfde volledige script staat twee keer voor één sprite. Beide kopieën kunnen worden uitgevoerd en effecten dubbel veroorzaken.",
+  "instruction": "Verwijder de overbodige kopie of voeg bewust gedeeld gedrag samen in één script.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\nwhen green flag clicked :: #ff0000 //⇦  🐛\nmove (10) steps\n"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\n"
+    }
+  ]
+}

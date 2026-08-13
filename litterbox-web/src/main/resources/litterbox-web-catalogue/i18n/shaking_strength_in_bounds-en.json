@@ -1,0 +1,13 @@
+{
+  "finderId": "shaking_strength_in_bounds",
+  "locale": "en",
+  "name": "Shaking Strength in Bounds",
+  "hint": "Shaking strength is measured from 0 to 100, allowing movement reactions to be based on a dependable reading.",
+  "instruction": "Compare shaking strength with thresholds from 0 to 100 and validate the reading before evaluating it.",
+  "examples": [
+    {
+      "label": "Example",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB shaking strength :: sensing) > (50)> then\nsay [Strong shaking]\nend"
+    }
+  ]
+}

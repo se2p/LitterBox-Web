@@ -1,0 +1,13 @@
+{
+  "finderId": "matrix_off_script",
+  "locale": "es",
+  "name": "Apagar matriz LED",
+  "hint": "Un script de apagado restablece la matriz LED cuando deja de necesitarse o cuando termina el programa. Así la pantalla queda en un estado final predecible y el ciclo de vida del hardware es claro.",
+  "instruction": "Muestra la imagen necesaria en la matriz y apágala después, antes de terminar el programa.",
+  "examples": [
+    {
+      "label": "Ejemplo",
+      "scratchblocks": "when green flag clicked\n@codeyB show image @matrix :: looks\n@codeyB turn off screen :: looks\nstop [all v]"
+    }
+  ]
+}

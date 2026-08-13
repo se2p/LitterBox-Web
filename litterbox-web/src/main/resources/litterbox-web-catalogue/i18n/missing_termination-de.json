@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_termination",
+  "locale": "de",
+  "name": "Fehlende Abbruchbedingung",
+  "hint": "In den [sbi]wiederhole bis < >[/sbi]Baustein wurde keine Abbruchbedingung eingefügt. Durch die Scratch-Standardbelegung von Wahrheitswerten mit FALSCH entsteht hier eine Endloswiederholung.",
+  "instruction": "Ist an dieser Programmstelle eine Endlosschleife vorgesehen?[newLine]Falls ja: Verwende den Baustein [sbi]forever[/sbi].[newLine]Falls nein: Füge eine geeignete Abbruchbedingung ein.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nrepeat until < > :: #ff0000 //⇦  🐛\nplay sound (BumBum v) until done\nend"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\nforever :: #007000 //⇦  👍\nplay sound (BumBum v) until done\nend"
+    }
+  ]
+}

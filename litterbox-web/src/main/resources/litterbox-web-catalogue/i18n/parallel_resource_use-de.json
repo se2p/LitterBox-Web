@@ -1,0 +1,13 @@
+{
+  "finderId": "parallel_resource_use",
+  "locale": "de",
+  "name": "Paralleles Ansteuern von Ressourcen",
+  "hint": "Zwei oder mehr parallele Skripte senden Befehle an dieselbe Roboterressource. Ihre zeitliche Reihenfolge und der jeweils letzte Befehl können sich widersprechen und zu unvorhersehbarer Bewegung oder einem unerwarteten Zustand führen.",
+  "instruction": "Gib jeder Ressource ein eindeutig steuerndes Skript oder koordiniere den Zugriff mit Nachrichten und klarer Besitzlogik.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when on-board button [A v] :: events hat\n@codeyA keep straight forward at power (50) % for (1) secs :: motion\n\nwhen on-board button [B v] :: events hat\n@codeyA left wheel turns at power (50)(50) % :: motion"
+    }
+  ]
+}

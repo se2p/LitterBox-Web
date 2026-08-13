@@ -1,0 +1,17 @@
+{
+  "finderId": "comparing_literals",
+  "locale": "en",
+  "name": "Comparing Literals",
+  "hint": "Reporter blocks are used to evaluate the truth value of certain expressions. If you compare two literals, the result will always be the same, TRUE or FALSE.[newLine]The blocks in the control body will be executed always or never. Therefore comparison is not necessary.",
+  "instruction": "Maybe you wanted to create a new Variable [sbi](score)[/sbi] to store information.[newLine]New variables can be created in the Variables category.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when I start as a clone\nif &lt; [score] &gt; (20) :: #ff0000 &gt; then //⇦  🐛\nswitch costume to (profi v)\nend\n"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "(score)\n\nwhen I start as a clone\nif &lt; (score) &gt; (20) :: #007000 &gt; then //⇦  👍\nswitch costume to (profi v)\nend"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "unnecessary_size_change",
+  "locale": "en",
+  "name": "Unnecessary Size Change",
+  "hint": "This smell identifies size operations with no useful controlled effect: changing size by zero, changing it by an extreme value of at least 540 in magnitude, or setting a literal size at or beyond meaningful bounds. Such values are clamped or fail to express an intentional size change.",
+  "instruction": "Remove an ineffective size operation, or use a moderate, deliberate value that reliably expresses the intended size.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nchange size by (0)"
+    }
+  ]
+}

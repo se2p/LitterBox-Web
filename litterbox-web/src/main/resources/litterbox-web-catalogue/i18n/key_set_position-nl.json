@@ -1,0 +1,17 @@
+{
+  "finderId": "key_set_position",
+  "locale": "nl",
+  "name": "Toets zet positie",
+  "hint": "De vinder detecteert een door een toets gestuurde handler die een absolute positie op de betreffende as instelt in plaats van een relatieve beweging toe te passen. Herhaalde toetsaanslagen zetten de actor daardoor steeds op dezelfde coördinaat in plaats van hem de bedoelde afstand te verplaatsen.",
+  "instruction": "Gebruik een blok om x of y te veranderen, of bereken de volgende coördinaat vanuit de huidige positie; blijf de toets in een lus controleren wanneer de beweging moet doorgaan zolang de toets wordt ingedrukt.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when [right arrow v] key pressed\nset x to (10)"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\nforever\nif <key (right arrow v) pressed?> then\nchange x by (10)\nend\nend"
+    }
+  ]
+}

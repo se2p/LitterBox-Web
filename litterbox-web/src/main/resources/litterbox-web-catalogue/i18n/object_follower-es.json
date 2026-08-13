@@ -1,0 +1,13 @@
+{
+  "finderId": "object_follower",
+  "locale": "es",
+  "name": "Siguiendo un objeto",
+  "hint": "Un objeto puede alinear su movimiento con otro para crear comportamientos de seguimiento y acompañamiento.",
+  "instruction": "Apunta el objeto hacia el objetivo o muévelo hasta él y repite el movimiento cuando deba seguirlo continuamente.",
+  "examples": [
+    {
+      "label": "Ejemplo",
+      "scratchblocks": "when green flag clicked\nrepeat (10)\npoint towards (Sprite1 v)\nmove (10) steps\nend"
+    }
+  ]
+}

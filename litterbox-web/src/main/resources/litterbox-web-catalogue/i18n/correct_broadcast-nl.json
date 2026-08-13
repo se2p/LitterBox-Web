@@ -1,0 +1,17 @@
+{
+  "finderId": "correct_broadcast",
+  "locale": "nl",
+  "name": "Correcte signaalzending",
+  "hint": "Je gebruikt een bericht correct en koppelt het aan een passend ontvangend script. Zo kunnen scripts eenvoudig en betrouwbaar samenwerken.",
+  "instruction": "Blijf voor samenwerking een duidelijke zender en ontvanger aan hetzelfde bericht koppelen, zodat elke reactie op het juiste moment start.",
+  "examples": [
+    {
+      "label": "Elegante code",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching (#000) ?> then\nbroadcast (black v) //⇦  👍\nend\nend"
+    },
+    {
+      "label": "Elegante code 2",
+      "scratchblocks": "when i receive [black v] //⇦  👍\nmove (10) steps"
+    }
+  ]
+}

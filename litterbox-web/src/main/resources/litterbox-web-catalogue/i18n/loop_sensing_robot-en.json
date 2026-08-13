@@ -1,0 +1,13 @@
+{
+  "finderId": "loop_sensing_robot",
+  "locale": "en",
+  "name": "Continuous Check for Events",
+  "hint": "A loop that repeatedly checks a sensor or robot event lets the program react when the condition becomes true instead of checking only once.",
+  "instruction": "Place the sensing condition inside a forever or until loop and put the appropriate response in its branch.",
+  "examples": [
+    {
+      "label": "Example",
+      "scratchblocks": "when green flag clicked\nforever\nif <@codeyB shaken ? :: sensing> then\nsay [Robot shaken]\nend\nend"
+    }
+  ]
+}

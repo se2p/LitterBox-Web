@@ -1,0 +1,13 @@
+{
+  "finderId": "initialisation_of_looks",
+  "locale": "en",
+  "name": "Initialisation of looks",
+  "hint": "You initialize the looks of your sprite with every new program start.",
+  "instruction": "You initialize the looks of your sprite with every new program start.",
+  "examples": [
+    {
+      "label": "Elegant code",
+      "scratchblocks": "when green flag clicked\nswitch costume to (fish v) //⇦  👍\nforever\nmove (10) steps\nwait (1) seconds\nend"
+    }
+  ]
+}

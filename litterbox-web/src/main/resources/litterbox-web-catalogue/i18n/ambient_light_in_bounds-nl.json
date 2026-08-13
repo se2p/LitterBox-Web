@@ -1,0 +1,13 @@
+{
+  "finderId": "ambient_light_in_bounds",
+  "locale": "nl",
+  "name": "Omgevingslicht binnen grenzen",
+  "hint": "De omgevingslichtsensor levert bruikbare metingen van 0 tot 100 op Codey en van 0 tot 1020 op mBot, zodat besturingsbeslissingen betrouwbaar blijven.",
+  "instruction": "Gebruik de gedocumenteerde grenzen van de aangesloten robot voor drempelwaarden en controleer of beperk invoer vóór de vergelijking.",
+  "examples": [
+    {
+      "label": "Voorbeeld",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB ambient light intensity :: sensing) > (50)> then\nsay [Bright]\nend"
+    }
+  ]
+}

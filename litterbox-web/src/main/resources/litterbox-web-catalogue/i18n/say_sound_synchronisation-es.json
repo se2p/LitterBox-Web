@@ -1,0 +1,13 @@
+{
+  "finderId": "say_sound_synchronisation",
+  "locale": "es",
+  "name": "Sincronización de sonido y habla",
+  "hint": "Combinar una burbuja de diálogo con un sonido hace que el diálogo sea más claro y atractivo para quienes usan el proyecto.",
+  "instruction": "Reproduce el sonido justo después del diálogo y elimina la burbuja después cuando ambos deban estar sincronizados.",
+  "examples": [
+    {
+      "label": "Ejemplo",
+      "scratchblocks": "when green flag clicked\nsay [Hello!]\nplay sound (recording1 v) until done\nsay []"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_loop_sensing",
+  "locale": "de",
+  "name": "Fehlende Wiederholung",
+  "hint": "Wenn etwas beim Eintritt einer bestimmten Aktion passieren soll, muss man beim Timing aufpassen. Die Bedingung muss zur richtigen Zeit oder kontinuierlich abgefragt werden.",
+  "instruction": "Soll die Bedingung nur einmalig kurz abgefragt werden?[newLine]Falls nein: Verwende einen [sbi]wiederhole fortlaufend[/sbi] Block, der deine Bedingungsabfrage umschließt oder einen [sbi]warte bis < >[/sbi] Block vor deiner Bedingungsabfrage.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nif &lt;touching (mouse-pointer v) ?:: #ff0000 &gt; then //⇦  🐛\nturn left (15) degrees\n"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\nforever :: #007000 //⇦  👍\nif <touching (mouse-pointer v)> then\nturn left (15) degrees\n"
+    }
+  ]
+}

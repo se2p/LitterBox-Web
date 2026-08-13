@@ -1,0 +1,13 @@
+{
+  "finderId": "controlled_broadcast_or_stop",
+  "locale": "nl",
+  "name": "Gecontroleerde signaalzending of stop",
+  "hint": "Je controleert herhaaldelijk een passende voorwaarde voordat je een signaal verzendt of het programma of script stopt. Zo blijven communicatie en beëindiging voorspelbaar.",
+  "instruction": "Koppel het verzenden of stoppen aan de voorwaarde die de gewenste toestand beschrijft, zodat het programma alleen communiceert of eindigt wanneer dat nodig is.",
+  "examples": [
+    {
+      "label": "Elegante code",
+      "scratchblocks": "when green flag clicked\nforever\nif <(score) = (100)> then\nstop [all v] //⇦  👍\nend"
+    }
+  ]
+}

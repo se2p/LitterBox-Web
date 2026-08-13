@@ -1,0 +1,25 @@
+{
+  "finderId": "message_never_sent",
+  "locale": "de",
+  "name": "Nachricht nie versandt",
+  "hint": "Wenn du eine Nachricht empfangen willst, stelle sicher, dass diese auch (von einer anderen Figur) vorher versandt wird.",
+  "instruction": "Versende die Nachricht im gewollten Programmteil.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when [space v] key pressed\nsay [Hello] for (2) seconds\n"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when [space v] key pressed\nsay [Hello] for (2) seconds\nbroadcast [startToFly v] and wait :: #007000 //⇦  👍\n"
+    },
+    {
+      "label": "Fehler 2",
+      "scratchblocks": "when I receive [startToFly v] :: #ff0000 // ⇦  🐛\nglide (1) secs to [random position v]\n"
+    },
+    {
+      "label": "Mögliche Lösung 2",
+      "scratchblocks": "when I receive [startToFly v] :: #007000 // ⇦  👍\nglide (1) secs to [random position v]\n"
+    }
+  ]
+}

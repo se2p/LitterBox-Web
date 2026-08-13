@@ -1,0 +1,8 @@
+{
+  "finderId": "ambiguous_parameter_name_unused",
+  "locale": "es",
+  "name": "Nombres de parámetros ambiguos sin usar en bloques propios",
+  "hint": "Scratch permite múltiples parámetros con el mismo nombre en un bloque propio. Sin embargo, luego no puede distinguir entre estos parámetros, lo que causa problemas en tu programa.",
+  "instruction": "Scratch permite múltiples parámetros con el mismo nombre en un bloque propio. Sin embargo, luego no puede distinguir entre estos parámetros, lo que causa problemas en tu programa.",
+  "examples": []
+}

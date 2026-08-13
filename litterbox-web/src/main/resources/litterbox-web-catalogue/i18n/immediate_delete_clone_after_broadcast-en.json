@@ -1,0 +1,17 @@
+{
+  "finderId": "immediate_delete_clone_after_broadcast",
+  "locale": "en",
+  "name": "Immediate Delete Clone after Broadcast",
+  "hint": "The script deletes the clone immediately after the [sbi]broadcast ( v)[/sbi] block. The script that starts with [sbi]when I receive [ v][/sbi] for this message in this clone of the Sprite won't be executed right.",
+  "instruction": "It is better to use a [sbi]broadcast ( v) and wait[/sbi] block instead.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when i start as a clone\nforever\nif <touching (#000) ?> then\nchange [points v] by (1)\nbroadcast (boom v) :: #ff0000 //⇦  🐛\ndelete this clone\nend\nend\n\nwhen i receive (boom v)\nplay sound (explosion v) until done"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "when i start as a clone\nforever\nif <touching (#000) ?> then\nchange [points v] by (1)\nbroadcast (boom v) and wait :: #007000 //⇦  👍\ndelete this clone\nend\nend\n\nwhen i receive (boom v)\nplay sound (explosion v) until done"
+    }
+  ]
+}

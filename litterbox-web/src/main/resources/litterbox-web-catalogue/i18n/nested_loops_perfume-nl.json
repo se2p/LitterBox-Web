@@ -1,0 +1,13 @@
+{
+  "finderId": "nested_loops_perfume",
+  "locale": "nl",
+  "name": "Geneste lussen",
+  "hint": "Betekenisvolle geneste lussen drukken herhaald werk op meerdere niveaus uit, bijvoorbeeld een herhaalde reeks die zelf herhaling bevat. Dat helpt bij gestructureerde herhalingsproblemen wanneer beide lussen een duidelijk doel hebben.",
+  "instruction": "Gebruik een binnenste lus voor de herhaling binnen elke buitenste iteratie en houd voor beide lussen een duidelijke, afzonderlijke verantwoordelijkheid aan.",
+  "examples": [
+    {
+      "label": "Elegante code",
+      "scratchblocks": "when i start as a clone\nforever\nturn left (15) degrees\nrepeat (4) //⇦  👍\nmove (10) steps\nwait (1) seconds\nend\nend"
+    }
+  ]
+}

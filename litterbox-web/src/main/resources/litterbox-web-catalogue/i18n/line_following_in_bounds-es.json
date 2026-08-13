@@ -1,0 +1,13 @@
+{
+  "finderId": "line_following_in_bounds",
+  "locale": "es",
+  "name": "Seguidor de línea en límites",
+  "hint": "El sensor de seguimiento de línea proporciona los cuatro estados del 0 al 3 para sus combinaciones posibles de blanco y negro.",
+  "instruction": "Asocia los estados 0, 1, 2 y 3 con los comportamientos previstos y considera inválidas las demás lecturas.",
+  "examples": [
+    {
+      "label": "Ejemplo",
+      "scratchblocks": "when green flag clicked\nif <(@mBot line follower sensor [port2 v] value :: sensing) = (1)> then\nsay [Line detected]\nend"
+    }
+  ]
+}

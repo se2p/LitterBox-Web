@@ -1,0 +1,17 @@
+{
+  "finderId": "message_as_literal",
+  "locale": "de",
+  "name": "Nachricht als Text",
+  "hint": "Der Finder erkennt den Namen einer Nachricht, der als gewöhnlicher Text verwendet wird, obwohl die Nachricht Skripte koordinieren soll. Text in einem Sage-, Vergleichs-, Listen- oder ähnlichen Baustein versendet keine Nachricht; dadurch laufen empfangende Skripte möglicherweise nie und der Text ist irreführend.",
+  "instruction": "Verwende zum Benachrichtigen anderer Skripte einen Sende- oder Sende-und-warte-Baustein. Belasse den Nachrichtennamen nur dann als Text, wenn er absichtlich angezeigt oder verglichen wird.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nsay [myMsg]\nwhen I receive \\[myMsg v\\]\nmove (10) steps"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\nbroadcast (myMsg v)\nsay [Hello]\nwhen I receive \\[myMsg v\\]\nmove (10) steps"
+    }
+  ]
+}

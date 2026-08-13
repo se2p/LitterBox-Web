@@ -1,0 +1,17 @@
+{
+  "finderId": "ambiguous_parameter_name_used",
+  "locale": "de",
+  "name": "Mehrdeutige Parameternamen eigener Bausteine",
+  "hint": "Scratch lässt es zu, dass du die Eingabefelder von eigenen Bausteinen gleich benennst. Verwende für Eingabefelder unbedingt eindeutige Namen.",
+  "instruction": "Beim Definieren von eigenen Blöcken ist es in Scratch zulässig, für verschiedene Parameter den gleichen Namen zu vergeben, sodass die Bezeichner nicht eindeutig sind. Das Programm kann dann nicht bestimmen, welcher Parameter gemeint ist, und verwendet einfach immer den letzten, was zu unerwünschtem Verhalten führen kann.[newLine]Achte daher stets darauf, dass jeder Parameter einen eindeutigen Namen besitzt.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "define checkScore (score) (score :: #ff0000) //⇦  🐛\nif &lt;(score) = (0)&gt; then\nsay [You are bad!]\nsay (join [Score of your Rival: ] (score :: #ff0000)) //⇦  🐛\nend"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "define checkScore (score) (rivalScore :: #007000) //⇦  👍\nif &lt;(score) = (0)&gt; then\nsay [You are bad!]\nsay (join [Score of your Rival: ] (rivalScore :: #007000)) //⇦  👍\nend"
+    }
+  ]
+}

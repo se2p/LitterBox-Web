@@ -1,0 +1,13 @@
+{
+  "finderId": "motor_power_out_of_bounds",
+  "locale": "en",
+  "name": "Motor Power out of Bounds",
+  "hint": "A motor-power command above 100% is outside the actuator range and may be clipped, ignored, or produce unreliable movement.",
+  "instruction": "Limit motor power to 0–100% for mBot; Codey also permits reverse values down to -100%, so validate the device-specific range before issuing the command.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\n@codeyA move forward at power (120) % for (1) secs :: motion"
+    }
+  ]
+}

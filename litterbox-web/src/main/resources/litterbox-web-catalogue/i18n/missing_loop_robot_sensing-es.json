@@ -1,0 +1,13 @@
+{
+  "finderId": "missing_loop_robot_sensing",
+  "locale": "es",
+  "name": "Error de condición de repetición robot",
+  "hint": "Una condición de sensor del robot se comprueba una sola vez fuera de un bucle, por lo que se ignoran los cambios posteriores y el robot solo puede responder a su estado inicial.",
+  "instruction": "Coloca la condición del sensor y su respuesta dentro de un bucle apropiado de repetición o hasta que, o usa un evento para cada ocurrencia.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nif <@codeyB shaken ? :: sensing> then\nsay [Shaken]\nend"
+    }
+  ]
+}

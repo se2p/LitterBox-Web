@@ -1,0 +1,13 @@
+{
+  "finderId": "coordination",
+  "locale": "nl",
+  "name": "Coördinatie",
+  "hint": "Je coördineert scripts duidelijk met passende gebeurtenissen, berichten, voorwaarden en wachtmomenten. Dat maakt grotere programma's voorspelbaar en begrijpelijk.",
+  "instruction": "Kies voor elke samenwerking het eenvoudigste passende mechanisme, zodat scripts op het juiste moment reageren en elkaar niet onnodig in de weg zitten.",
+  "examples": [
+    {
+      "label": "Elegante code",
+      "scratchblocks": "when green flag clicked\nshow\nset [score v] to (0)\nwait until <key (up arrow v) pressed?>"
+    }
+  ]
+}

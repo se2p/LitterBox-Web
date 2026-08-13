@@ -1,0 +1,17 @@
+{
+  "finderId": "endless_recursion",
+  "locale": "es",
+  "name": "Recursión infinita",
+  "hint": "Si se envía un mensaje en el mismo script en el que se recibió y el script no tiene ninguna condición para detener la recursividad, se ejecutará para siempre.",
+  "instruction": "Si se envía un mensaje en el mismo script en el que se recibió y el script no tiene ninguna condición para detener la recursividad, se ejecutará para siempre.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "define Jump\nmove (10) steps\nturn left (180) degrees\nmove (10) steps\nturn right (180) degrees\nJump :: #ff0000 //⇦  🐛\n\nwhen green flag clicked\nJump\nsay [I am great!]\n"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "define Jump\nmove (10) steps\nturn left (180) degrees\nmove (10) steps\nturn right (180) degrees\nif &lt;not&lt;touching (edge v)&gt; &gt;then :: #007000 //⇦  👍\nJump\nend\n\nwhen green flag clicked\nJump\nsay [I am great!]\n"
+    }
+  ]
+}

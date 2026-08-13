@@ -1,0 +1,13 @@
+{
+  "finderId": "pitch_angle_out_of_bounds",
+  "locale": "en",
+  "name": "Pitch Angle out of Bounds",
+  "hint": "A pitch comparison outside -180° to 180° describes an impossible orientation, so tilt-dependent behaviour can become unreliable.",
+  "instruction": "Constrain pitch readings and thresholds to the inclusive -180° through 180° range before comparing them.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB pitch angle° :: sensing) > (200)> then\nsay [Invalid pitch]\nend"
+    }
+  ]
+}

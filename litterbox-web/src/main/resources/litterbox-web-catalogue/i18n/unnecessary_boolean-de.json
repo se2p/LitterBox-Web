@@ -1,0 +1,13 @@
+{
+  "finderId": "unnecessary_boolean",
+  "locale": "de",
+  "name": "Unnötiger Vergleich mit Wahrheitswert",
+  "hint": "Der Geruch erkennt einen Vergleich eines booleschen Ausdrucks mit wahr oder 1 beziehungsweise mit falsch oder 0. Dieser zusätzliche Vergleich macht die Logik schwerer lesbar, ohne ihre Bedeutung zu ändern.",
+  "instruction": "Verwende den booleschen Ausdruck direkt, wenn du ihn mit wahr oder 1 vergleichst. Bei einem Vergleich mit falsch oder 0 negiere ihn stattdessen mit [not < >].",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nif <<touching (Sprite2 v) ?> = [true]> then\nsay [Touching]\nend"
+    }
+  ]
+}

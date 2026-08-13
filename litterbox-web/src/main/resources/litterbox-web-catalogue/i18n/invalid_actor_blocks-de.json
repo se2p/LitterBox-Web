@@ -1,0 +1,17 @@
+{
+  "finderId": "invalid_actor_blocks",
+  "locale": "de",
+  "name": "Fehlplatzierte Blöcke",
+  "hint": "Der Finder erkennt Bausteine, die beim falschen Aktortyp verwendet werden: etwa nur für Figuren geeignete Bewegungs-, Aussehens-, Klon- oder Sichtbarkeitsbausteine auf der Bühne sowie bühnenbezogene Hintergrundbausteine bei einer Figur. Solche Bausteine können den vorgesehenen Aktor nicht verändern und werden möglicherweise ignoriert oder verhalten sich unerwartet.",
+  "instruction": "Verschiebe das Skript oder den betroffenen Baustein zu dem Aktortyp, der ihn unterstützt, oder ersetze ihn durch einen passenden Baustein für den aktuellen Aktor.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "// Stage\nwhen green flag clicked\nmove (10) steps"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "// Sprite\nwhen green flag clicked\nmove (10) steps"
+    }
+  ]
+}

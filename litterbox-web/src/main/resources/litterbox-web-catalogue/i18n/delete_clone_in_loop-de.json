@@ -1,0 +1,13 @@
+{
+  "finderId": "delete_clone_in_loop",
+  "locale": "de",
+  "name": "Klon in Wiederholung gelöscht",
+  "hint": "Dieser Geruch erkennt ein unbedingtes [delete this clone] in einer Wiederholung eines Klon-Start-Skripts. Der Klon wird bereits im ersten Durchlauf gelöscht, sodass spätere Durchläufe nie stattfinden und die Wiederholung den tatsächlichen Ablauf verschleiert.",
+  "instruction": "Lass die Wiederholung zuerst ihre wiederkehrende Aufgabe erledigen und lösche den Klon danach, wenn er entfernt werden soll. Wenn die Löschung von einer Bedingung abhängt, behalte sie bedingt und mache den Ausstieg nachvollziehbar.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when I start as a clone\nforever\ndelete this clone\nend"
+    }
+  ]
+}

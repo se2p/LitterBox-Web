@@ -1,0 +1,13 @@
+{
+  "finderId": "initialisation_of_looks",
+  "locale": "es",
+  "name": "Inicializatión del aspecto",
+  "hint": "Inicializas el aspecto de tu sprite con cada nuevo inicio de programa.",
+  "instruction": "Inicializas el aspecto de tu sprite con cada nuevo inicio de programa.",
+  "examples": [
+    {
+      "label": "Código bello",
+      "scratchblocks": "when green flag clicked\nswitch costume to (fish v) //⇦  👍\nforever\nmove (10) steps\nwait (1) seconds\nend"
+    }
+  ]
+}

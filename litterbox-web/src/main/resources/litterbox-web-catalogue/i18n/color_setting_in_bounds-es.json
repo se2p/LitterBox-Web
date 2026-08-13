@@ -1,0 +1,13 @@
+{
+  "finderId": "color_setting_in_bounds",
+  "locale": "es",
+  "name": "Configuración de color en límites",
+  "hint": "Cada canal RGB puede representar valores de 0 a 255, de modo que el color elegido se muestra sin componentes recortados o ignorados.",
+  "instruction": "Limita los valores rojo, verde y azul al intervalo 0–255 antes de pasarlos al bloque de iluminación.",
+  "examples": [
+    {
+      "label": "Ejemplo",
+      "scratchblocks": "when green flag clicked\n@codeyB set the indicator [red v] with color value (234) :: lighting\n@codeyB set the indicator [green v] with color value (255) :: lighting\n@codeyB set the indicator [blue v] with color value (0) :: lighting"
+    }
+  ]
+}

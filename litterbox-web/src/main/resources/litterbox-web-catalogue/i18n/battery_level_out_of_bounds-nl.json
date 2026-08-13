@@ -1,0 +1,13 @@
+{
+  "finderId": "battery_level_out_of_bounds",
+  "locale": "nl",
+  "name": "Batterijniveau buiten grenzen",
+  "hint": "Een batterijvergelijking buiten 0–100 beschrijft een onmogelijke lading en kan beslissingen over de voeding onbetrouwbaar maken.",
+  "instruction": "Gebruik en vergelijk batterijniveaus alleen van 0 tot en met 100 en beperk berekende drempelwaarden tot dat interval.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB battery level :: sensing) > (150)> then\nsay [Invalid battery level]\nend"
+    }
+  ]
+}

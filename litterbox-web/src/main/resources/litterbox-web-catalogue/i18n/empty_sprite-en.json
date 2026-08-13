@@ -1,0 +1,13 @@
+{
+  "finderId": "empty_sprite",
+  "locale": "en",
+  "name": "Empty Sprite",
+  "hint": "Your sprite contains no blocks. It will never be part of the game.",
+  "instruction": "Your sprite contains no blocks. It will never be part of the game.",
+  "examples": [
+    {
+      "label": "Elegant code",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\nsay [Hello!]\n"
+    }
+  ]
+}

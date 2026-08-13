@@ -1,0 +1,17 @@
+{
+  "finderId": "long_script",
+  "locale": "de",
+  "name": "Langes Skript",
+  "hint": "Dein Programm ist sehr lang. Versuche es in mehrere kürzere Skripte zu teilen, die inhaltlich zusammenhängen. Dadurch behältst du den Überblick.",
+  "instruction": "Dein Programm ist sehr lang. Versuche es in mehrere kürzere Skripte zu teilen, die inhaltlich zusammenhängen. Dadurch behältst du den Überblick.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\npen down\nrepeat (4)\nmove (10) steps\nturn left (90) degrees\nend\nrepeat (6)\nmove (10) steps\nturn left (60) degrees\nend\nrepeat (8)\nmove (10) steps\nturn left (45) degrees\nend\nrepeat (10)\nmove (10) steps\nturn left (36) degrees\nend\n"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "define square\nrepeat (4)\nmove (10) steps\nturn left (90) degrees\nend\ndefine hexagon\nrepeat (6)\nmove (10) steps\nturn left (60) degrees\nend\ndefine octagon\nrepeat (8)\nmove (10) steps\nturn left (45) degrees\nend \ndefine decagon\nrepeat (10)\nmove (10) steps\nturn left (36) degrees\nend\nwhen green flag clicked\npen down\nsquare\nhexagon\noctagon\ndecagon\n"
+    }
+  ]
+}

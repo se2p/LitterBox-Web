@@ -1,0 +1,8 @@
+{
+  "finderId": "clone_type_1",
+  "locale": "es",
+  "name": "Código duplicado",
+  "hint": "Hay insturcciones idénticas en varios guiones.",
+  "instruction": "Hay insturcciones idénticas en varios guiones.",
+  "examples": []
+}

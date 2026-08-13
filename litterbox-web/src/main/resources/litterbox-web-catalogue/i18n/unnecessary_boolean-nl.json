@@ -1,0 +1,13 @@
+{
+  "finderId": "unnecessary_boolean",
+  "locale": "nl",
+  "name": "Onnodige vergelijking met Booleaanse waarde",
+  "hint": "Deze geur herkent een Booleaanse expressie die wordt vergeleken met waar of 1, of met onwaar of 0. De extra vergelijking maakt de logica moeilijker leesbaar zonder de betekenis te veranderen.",
+  "instruction": "Gebruik de Booleaanse expressie direct bij een vergelijking met waar of 1. Gebruik bij onwaar of 0 in plaats daarvan [not < >] om de expressie te ontkennen.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nif <<touching (Sprite2 v) ?> = [true]> then\nsay [Touching]\nend"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "finderId": "same_variable_different_sprite",
+  "locale": "de",
+  "name": "Gleiche Variable in verschiedenen Sprites",
+  "hint": "Wenn du gleichnamige Variablen in verschiedenen Figuren hast, kann das verwirrend sein. Stelle deshalb sicher, dass du eindeutige Namen für deine Variablen verwendest.",
+  "instruction": "Wenn du gleichnamige Variablen in verschiedenen Figuren hast, kann das verwirrend sein. Stelle deshalb sicher, dass du eindeutige Namen für deine Variablen verwendest.",
+  "examples": []
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "invalid_quantum_attribute",
+  "locale": "de",
+  "name": "Ungültiges Attribut für Verschränkung oder Superposition",
+  "hint": "Bei Quantenverschränkung und -superposition müssen die verwendeten Attribute zum jeweiligen Aktor passen. Die Bühne unterstützt dafür Farbe und Kostüm, aber nicht Position, Richtung oder Größe. Ein ungeeignetes Attribut kann die Operation verhindern oder zu unerwartetem Verhalten führen.",
+  "instruction": "Verwende für die Bühne nur Farbe oder Kostüm und nutze Position, Richtung oder Größe ausschließlich mit einer Figur. Prüfe den Aktorkontext, bevor du die Quantenoperation einfügst.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nsuperpose [position v] possibilities: (1) :: #5c068c"
+    }
+  ]
+}

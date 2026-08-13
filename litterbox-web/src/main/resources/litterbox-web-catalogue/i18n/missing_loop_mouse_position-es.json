@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_loop_mouse_position",
+  "locale": "es",
+  "name": "Falta movimiento continuo hacia el ratón",
+  "hint": "El buscador detecta un movimiento o una dirección dependiente del ratón que se ejecuta una sola vez fuera de un bucle. La posición del ratón solo se usa en ese momento, de modo que los movimientos posteriores no se siguen y el objeto puede parecer que deja de responder.",
+  "instruction": "Coloca todas las actualizaciones de movimiento o dirección dependientes del ratón en un bucle de repetición adecuado e incluye una pequeña espera cuando sea necesario para mantener el proyecto receptivo.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nset x to (mouse x)"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\nforever\nset x to (mouse x)\nend"
+    }
+  ]
+}

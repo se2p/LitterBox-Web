@@ -1,0 +1,13 @@
+{
+  "finderId": "say_sound_synchronisation",
+  "locale": "en",
+  "name": "Say Sound Synchronisation",
+  "hint": "Combining a speech bubble with a sound can make dialogue clearer and more engaging for users.",
+  "instruction": "Play the sound immediately after the speech and clear the speech bubble afterward when they should be timed together.",
+  "examples": [
+    {
+      "label": "Example",
+      "scratchblocks": "when green flag clicked\nsay [Hello!]\nplay sound (recording1 v) until done\nsay []"
+    }
+  ]
+}

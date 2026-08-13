@@ -1,0 +1,13 @@
+{
+  "finderId": "list_usage",
+  "locale": "de",
+  "name": "Verwendung einer Liste",
+  "hint": "Du benutzt eine Liste, somit kannst du bereits mit Kollektionen umgehen.",
+  "instruction": "Du benutzt eine Liste, somit kannst du bereits mit Kollektionen umgehen.",
+  "examples": [
+    {
+      "label": "Eleganter Code",
+      "scratchblocks": "when green flag clicked\nset (score v) to (0)\nrepeat until <touching (bear v) ?>\nchange (score v) by (1)\nwait (1) seconds\nend\nadd (score v) to [highscore v] //⇦  👍"
+    }
+  ]
+}

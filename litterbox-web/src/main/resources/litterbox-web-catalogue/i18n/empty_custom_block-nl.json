@@ -1,0 +1,17 @@
+{
+  "finderId": "empty_custom_block",
+  "locale": "nl",
+  "name": "Leeg eigen blok",
+  "hint": "De definitie van een eigen blok bevat geen instructies, dus aanroepen ervan doen niets.",
+  "instruction": "Voeg de bedoelde uitvoering toe of verwijder de definitie en de bijbehorende aanroepen.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "define Jump :: #ff0000 //⇦  🐛\n\nwhen green flag clicked\nJump :: #ff0000 //⇦  🐛\nmove (10) steps\n"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\n"
+    }
+  ]
+}

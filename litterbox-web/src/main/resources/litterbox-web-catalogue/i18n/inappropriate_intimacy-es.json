@@ -1,0 +1,13 @@
+{
+  "finderId": "inappropriate_intimacy",
+  "locale": "es",
+  "name": "Lógica en el lugar equivocado",
+  "hint": "Este olor identifica un script que accede a los atributos de otro objeto con mucha más frecuencia que a los propios. El comportamiento podría pertenecer al otro objeto y la organización actual crea un acoplamiento innecesario entre los actores.",
+  "instruction": "Mueve el comportamiento al objeto cuyo estado utiliza principalmente, o reduce los accesos y coordina de forma explícita la dependencia entre objetos que quede.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nsay ([x position v] of (Sprite2 v))\nsay ([y position v] of (Sprite2 v))"
+    }
+  ]
+}

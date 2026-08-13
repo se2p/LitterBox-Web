@@ -1,0 +1,8 @@
+{
+  "finderId": "ambiguous_parameter_name_unused",
+  "locale": "de",
+  "name": "Nicht verwendete uneindeutige Parameternamen bei eigenen Blöcken",
+  "hint": "Scratch lässt es zu, dass du die Eingabefelder von eigenen Blöcken gleich benennst. Das Programm kann anschließend nicht mehr zwischen den einzelnen Parametern unterscheiden.",
+  "instruction": "Scratch lässt es zu, dass du die Eingabefelder von eigenen Blöcken gleich benennst. Das Programm kann anschließend nicht mehr zwischen den einzelnen Parametern unterscheiden.",
+  "examples": []
+}

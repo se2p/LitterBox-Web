@@ -1,0 +1,13 @@
+{
+  "finderId": "pointless_timer_reset",
+  "locale": "en",
+  "name": "Pointless Timer Reset",
+  "hint": "This smell identifies a timer reset in a project that never reads the timer value. The reset therefore cannot influence behavior and suggests unfinished or obsolete timing logic.",
+  "instruction": "Use the timer value in a meaningful condition or calculation when timing is needed. Otherwise remove the reset so the program's intent remains clear.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nreset timer"
+    }
+  ]
+}

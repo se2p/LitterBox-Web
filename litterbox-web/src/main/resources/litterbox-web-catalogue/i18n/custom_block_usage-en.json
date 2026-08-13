@@ -1,0 +1,13 @@
+{
+  "finderId": "custom_block_usage",
+  "locale": "en",
+  "name": "Using Custom Blocks",
+  "hint": "Custom blocks package reusable behaviour and keep a project’s scripts easier to understand.",
+  "instruction": "Define a custom block for a repeated task and call it wherever the surrounding behaviour needs that task.",
+  "examples": [
+    {
+      "label": "Example",
+      "scratchblocks": "define jump [height]\nglide (1) secs to x: (x position) y: ((y position) + (height))\nglide (1) secs to x: (x position) y: ((y position) - (height))\n\nwhen green flag clicked\nforever\nif <key (up arrow v) pressed?> then\njump (50)\nend\nend"
+    }
+  ]
+}

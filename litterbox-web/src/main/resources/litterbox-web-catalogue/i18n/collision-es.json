@@ -1,0 +1,13 @@
+{
+  "finderId": "collision",
+  "locale": "es",
+  "name": "Respuesta a una colisión",
+  "hint": "Tu sprite muestra un cierto comportamiento cuando choca o toca algo.",
+  "instruction": "Tu sprite muestra un cierto comportamiento cuando choca o toca algo.",
+  "examples": [
+    {
+      "label": "Código bello",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching color (#000)> then  //⇦  👍\ngo to x: (-182) y: (150)\nnext backdrop\nend"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "loop_sensing_robot",
+  "locale": "es",
+  "name": "Comprobación continua de eventos",
+  "hint": "Un bucle que comprueba repetidamente un sensor o evento del robot permite reaccionar cuando la condición se cumple, en lugar de comprobarla solo una vez.",
+  "instruction": "Coloca la condición de detección dentro de un bucle por siempre o hasta que y pon la respuesta en su rama.",
+  "examples": [
+    {
+      "label": "Ejemplo",
+      "scratchblocks": "when green flag clicked\nforever\nif <@codeyB shaken ? :: sensing> then\nsay [Robot shaken]\nend\nend"
+    }
+  ]
+}

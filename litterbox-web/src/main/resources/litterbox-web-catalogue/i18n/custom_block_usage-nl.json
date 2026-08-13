@@ -1,0 +1,13 @@
+{
+  "finderId": "custom_block_usage",
+  "locale": "nl",
+  "name": "Gebruik van eigen blokken",
+  "hint": "Eigen blokken bundelen herbruikbaar gedrag en maken de scripts van een programma overzichtelijker.",
+  "instruction": "Definieer een eigen blok voor een terugkerende taak en roep het aan waar de omliggende werking die taak nodig heeft.",
+  "examples": [
+    {
+      "label": "Voorbeeld",
+      "scratchblocks": "define jump [height]\nglide (1) secs to x: (x position) y: ((y position) + (height))\nglide (1) secs to x: (x position) y: ((y position) - (height))\n\nwhen green flag clicked\nforever\nif <key (up arrow v) pressed?> then\njump (50)\nend\nend"
+    }
+  ]
+}

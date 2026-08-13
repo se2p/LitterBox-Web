@@ -1,0 +1,13 @@
+{
+  "finderId": "pointless_timer_reset",
+  "locale": "nl",
+  "name": "Zinloze timerreset",
+  "hint": "Deze geur herkent een timerreset in een project dat de timerwaarde nergens leest. De reset kan daardoor het gedrag niet beïnvloeden en wijst op onvoltooide of verouderde tijdlogica.",
+  "instruction": "Gebruik de timerwaarde in een betekenisvolle voorwaarde of berekening als tijdmeting nodig is. Verwijder de reset anders, zodat de bedoeling van het programma duidelijk blijft.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nreset timer"
+    }
+  ]
+}

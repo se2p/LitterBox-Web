@@ -1,0 +1,13 @@
+{
+  "finderId": "invalid_quantum_entanglement_target",
+  "locale": "de",
+  "name": "Ungültiges Verschränkungsziel",
+  "hint": "Eine Verschränkung benötigt einen anderen Aktor, der im Projekt vorhanden ist. Eine Figur mit sich selbst zu verschränken oder einen nicht vorhandenen Aktor anzugeben, lässt die Beziehung undefiniert und kann das erwartete Quantenverhalten verhindern.",
+  "instruction": "Wähle eine andere vorhandene Figur oder ein unterstütztes Bühnenziel und prüfe, ob der Name genau mit einem Aktor im Projekt übereinstimmt, bevor du die Verschränkung ausführst.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nentangle [position v] with [non-existing] possibilities: (1) :: #5c068c"
+    }
+  ]
+}

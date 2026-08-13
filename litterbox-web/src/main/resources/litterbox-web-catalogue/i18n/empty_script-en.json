@@ -1,0 +1,17 @@
+{
+  "finderId": "empty_script",
+  "locale": "en",
+  "name": "Empty Script",
+  "hint": "You use an empty event block. When the event occurs, nothing will happen.",
+  "instruction": "Do you need this event block for your program?[newLine]case yes: Implement the demanded functionality.[newLine]case no: Delete this blocks.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked :: #ff0000 //⇦  🐛\n"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "when green flag clicked\nmove (10) steps :: #007000 //⇦  👍\n"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "useless_wait",
+  "locale": "de",
+  "name": "Unnützes Warten",
+  "hint": "Der Geruch erkennt ein [wait]-Baustein in einem Skriptzweig, nach dem kein sinnvolles Verhalten mehr folgt und der nicht der Taktung einer Wiederholung dient. Die Verzögerung kann dann keine beobachtbare Aktion aufschieben und macht den Ablauf schwerer verständlich.",
+  "instruction": "Entferne das Warten oder setze es vor ein Verhalten, das tatsächlich verzögert werden soll. Verwende es in einer Wiederholung nur dann, wenn es deren Taktung bewusst festlegt.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\nif <touching color [#2727c2] ?> then\nwait (1) seconds\nelse\nwait until <mouse down?>\nend"
+    }
+  ]
+}

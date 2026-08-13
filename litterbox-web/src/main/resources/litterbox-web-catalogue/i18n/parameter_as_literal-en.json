@@ -1,0 +1,17 @@
+{
+  "finderId": "parameter_as_literal",
+  "locale": "en",
+  "name": "Parameter as Literal",
+  "hint": "The finder detects a custom block that uses a parameter's name as literal text instead of its parameter reporter. The procedure then receives an argument but uses the label itself, producing surprising output or decisions.",
+  "instruction": "Replace the literal name with the parameter reporter in the relevant input slot, and check every use of the parameter in the custom block.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "define myBlock [myParam]\nsay ([myParam])"
+    },
+    {
+      "label": "Possible solution",
+      "scratchblocks": "define myBlock [myParam]\nsay (myParam)"
+    }
+  ]
+}

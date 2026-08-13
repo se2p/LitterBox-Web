@@ -1,0 +1,13 @@
+{
+  "finderId": "directed_motion",
+  "locale": "es",
+  "name": "Movimiento dirigido con tecla",
+  "hint": "El control con el teclado puede unir la dirección de un objeto con su movimiento y facilitar el control directo de un juego.",
+  "instruction": "En un evento de pulsación de tecla, establece primero la dirección y añade después el movimiento si el objeto debe avanzar en ella.",
+  "examples": [
+    {
+      "label": "Ejemplo",
+      "scratchblocks": "when [right arrow v] key pressed\npoint in direction (90)\nmove (10) steps"
+    }
+  ]
+}

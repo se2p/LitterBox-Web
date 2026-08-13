@@ -1,0 +1,13 @@
+{
+  "finderId": "rocky_light_off_script_missing",
+  "locale": "nl",
+  "name": "Uitschakelscript voor Rocky's licht ontbreekt",
+  "hint": "Rocky's licht wordt ingeschakeld, maar geen bereikbaar opruimscript schakelt Rocky's licht expliciet uit voordat de uitvoering eindigt. Het kan aan blijven en later gedrag beïnvloeden.",
+  "instruction": "Schakel Rocky's licht na de gewenste verlichting en vóór het einde van het programma op elk bereikbaar pad expliciet uit.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when on-board button [B v] :: events hat\n@rocky set Rocky's light with color ['red v'] :: lighting\nstop [this script v]"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "roll_angle_out_of_bounds",
+  "locale": "de",
+  "name": "Rollwinkelmessung außerhalb des Messbereichs",
+  "hint": "Ein Rollvergleich außerhalb von -90° bis 90° beschreibt eine unmögliche Ausrichtung und kann rollabhängiges Verhalten unzuverlässig machen.",
+  "instruction": "Begrenze Roll-Messwerte und Schwellenwerte vor dem Vergleich auf den inklusiven Bereich von -90° bis 90°.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB roll angle° :: sensing) > (100)> then\nsay [Invalid roll]\nend"
+    }
+  ]
+}

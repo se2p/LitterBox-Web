@@ -1,0 +1,17 @@
+{
+  "finderId": "clone_type_2",
+  "locale": "es",
+  "name": "Declaraciones idénticas",
+  "hint": "Hay instrucciones similares en varios scripts, que solo difieren en los parámetros.",
+  "instruction": "Un bloque personalizado podría simplificar tu código.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\nturn left (15) degrees\nmove (5) steps\nturn left (15) degrees\nmove (15) steps\nturn left (15) degrees"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\nmoveAndTurn(10)\nmoveAndTurn(5)\nmoveAndTurn(15)\n\ndefine moveAndTurn (num) :: #007000 //⇦  👍\nmove (num) steps\nturn left (15) degrees"
+    }
+  ]
+}

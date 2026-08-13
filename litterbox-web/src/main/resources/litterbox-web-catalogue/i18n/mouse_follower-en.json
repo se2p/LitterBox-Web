@@ -1,0 +1,13 @@
+{
+  "finderId": "mouse_follower",
+  "locale": "en",
+  "name": "Following the mouse",
+  "hint": "Your sprite can follow the mouse. That can be a nice concept for lots of games.",
+  "instruction": "Your sprite can follow the mouse. That can be a nice concept for lots of games.",
+  "examples": [
+    {
+      "label": "Elegant code",
+      "scratchblocks": "when green flag clicked\nforever\ngo to (mouse-pointer v) //⇦  👍\nend"
+    }
+  ]
+}

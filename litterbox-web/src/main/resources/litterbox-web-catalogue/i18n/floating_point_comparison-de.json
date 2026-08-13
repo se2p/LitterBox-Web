@@ -1,0 +1,17 @@
+{
+  "finderId": "floating_point_comparison",
+  "locale": "de",
+  "name": "Gleitkommazahlenvergleich",
+  "hint": "Der Finder erkennt exakte Gleichheitsvergleiche mit gemessenen oder berechneten Werten wie Positionen, Entfernungen, Richtung, Lautstärke, Timer oder Mauskoordinaten. Diese Werte können Nachkommastellen haben oder sich laufend ändern; dadurch wird der Vergleich selten exakt wahr und eine Bedingung oder Schleife arbeitet unerwartet.",
+  "instruction": "Formuliere den Vergleich als Näherung oder Bereich, etwa mit <= oder >=, oder verwende einen passenden Fühl-Baustein für den beabsichtigten Kontakt.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nif <(timer) = (mouse x)> then\nmove (10) steps\nend"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\nif <(timer) < (mouse x)> then\nmove (10) steps\nend"
+    }
+  ]
+}

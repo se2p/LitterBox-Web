@@ -1,0 +1,25 @@
+{
+  "finderId": "message_never_received",
+  "locale": "en",
+  "name": "Message Never Received",
+  "hint": "When a sprite sends a message, you have to make sure, that it is recieved.",
+  "instruction": "When a sprite sends a message, you have to make sure, that it is recieved.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\n broadcast [elephantStart v]"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\n broadcast [elephantStart v]"
+    },
+    {
+      "label": "Error 2",
+      "scratchblocks": "when green flag clicked :: #ff0000 //⇦  🐛\nrepeat (4)\nmove (10) steps\nturn left (90) degrees\nend"
+    },
+    {
+      "label": "Possible Solution 2",
+      "scratchblocks": "when I receive [elephantStart v] :: #007000 //⇦  👍\nrepeat (4)\nmove (10) steps\nturn left (90) degrees\nend"
+    }
+  ]
+}

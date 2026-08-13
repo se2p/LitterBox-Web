@@ -1,0 +1,17 @@
+{
+  "finderId": "duplicated_script",
+  "locale": "de",
+  "name": "Dupliziertes Script",
+  "hint": "In einer Figur befindet sich das gleiche Skript unnötigerweise doppelt.",
+  "instruction": "In einer Figur befindet sich das gleiche Skript unnötigerweise doppelt.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\nwhen green flag clicked :: #ff0000 //⇦  🐛\nmove (10) steps\n"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\n"
+    }
+  ]
+}

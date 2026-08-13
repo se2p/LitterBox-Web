@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_clone_initialization",
+  "locale": "es",
+  "name": "Inicialización de clon errónea",
+  "hint": "Cuando se clona un objeto, pero este no tiene secuencias de comandos iniciadas por los eventos [sbi]al comenzar como clon[/sbi] o [sbi]al hacer clic en este objeto[/sbi], los clones no realizarán ninguna acción.[newLine]Quizás quieras usar un controlador de eventos en tu proyecto. De lo contrario, puedes usar el bloque [sbi]sellar[/sbi] en la extensión del lápiz si el clon solo debe ser visible.",
+  "instruction": "Cuando se clona un objeto, pero este no tiene secuencias de comandos iniciadas por los eventos [sbi]al comenzar como clon[/sbi] o [sbi]al hacer clic en este objeto[/sbi], los clones no realizarán ninguna acción.[newLine]Quizás quieras usar un controlador de eventos en tu proyecto. De lo contrario, puedes usar el bloque [sbi]sellar[/sbi] en la extensión del lápiz si el clon solo debe ser visible.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nglide (1) secs to [random position v]\ncreate clone of [myself v] :: #ff0000 //⇦  🐛\n"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\nglide (1) secs to [random position v]\ncreate clone of [myself v] :: #007000 //⇦  👍\n\nwhen I start as a clone :: #007000 //⇦  👍\nchange size by (10)\n"
+    }
+  ]
+}

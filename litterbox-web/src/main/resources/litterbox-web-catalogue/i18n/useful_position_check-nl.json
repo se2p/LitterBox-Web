@@ -1,0 +1,13 @@
+{
+  "finderId": "useful_position_check",
+  "locale": "nl",
+  "name": "Nuttige controle voor decimale getallen",
+  "hint": "Posities, muiscoördinaten en afstanden kunnen decimale waarden zijn of een exacte waarde overslaan tijdens beweging. Een gelijkheidscontrole kan daardoor mislukken, ook wanneer een sprite een grens passeert.",
+  "instruction": "Gebruik een kleiner-dan- of groter-dan-vergelijking om te testen of een positie of afstand een drempel heeft overschreden; behoud gelijkheid wanneer een exacte waarde echt bedoeld is.",
+  "examples": [
+    {
+      "label": "Elegante code",
+      "scratchblocks": "when I start as a clone\nshow\nrepeat until <(y position) < (120)> //⇦  👍\nchange y by (-10)\nwait (1) seconds\nend"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "battery_level_in_bounds",
+  "locale": "de",
+  "name": "Batterieladung im Messbereich",
+  "hint": "Die Batterieladung wird als Prozentwert von 0 bis 100 angegeben und ermöglicht verlässliche Entscheidungen über den Energiezustand.",
+  "instruction": "Vergleiche den Batteriewert nur mit Schwellen zwischen 0 und 100 und behandle Werte außerhalb dieses Bereichs ausdrücklich.",
+  "examples": [
+    {
+      "label": "Beispiel",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB battery level :: sensing) < (20)> then\nsay [Low battery]\nend"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "unnecessary_rotation",
+  "locale": "en",
+  "name": "Unnecessary Rotation",
+  "hint": "This smell identifies a turn by zero degrees or by a whole multiple of 360 degrees. The sprite ends with the same orientation, although the block suggests that it rotates.",
+  "instruction": "Remove the ineffective turn, or use an angle that produces the intended change in orientation.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nturn right (360) degrees"
+    }
+  ]
+}

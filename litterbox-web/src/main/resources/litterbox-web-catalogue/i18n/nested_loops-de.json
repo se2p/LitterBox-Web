@@ -1,0 +1,8 @@
+{
+  "finderId": "nested_loops",
+  "locale": "de",
+  "name": "Verschachtelte Wiederholungen",
+  "hint": "Wenn mehr als zwei Wiederholungen ineinander verschachtelt werden, wird das Programm leichter unübersichtlich. Deshalb kommen in solchen Programmteilen oft mehr Fehler vor.",
+  "instruction": "Wenn mehr als zwei Wiederholungen ineinander verschachtelt werden, wird das Programm leichter unübersichtlich. Deshalb kommen in solchen Programmteilen oft mehr Fehler vor.",
+  "examples": []
+}

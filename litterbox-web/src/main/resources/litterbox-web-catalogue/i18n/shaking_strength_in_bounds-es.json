@@ -1,0 +1,13 @@
+{
+  "finderId": "shaking_strength_in_bounds",
+  "locale": "es",
+  "name": "Fuerza de agitación en límites",
+  "hint": "La fuerza de agitación se mide de 0 a 100, de modo que las reacciones al movimiento pueden basarse en una lectura fiable.",
+  "instruction": "Compara la fuerza de agitación con umbrales de 0 a 100 y valida la lectura antes de evaluarla.",
+  "examples": [
+    {
+      "label": "Ejemplo",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB shaking strength :: sensing) > (50)> then\nsay [Strong shaking]\nend"
+    }
+  ]
+}

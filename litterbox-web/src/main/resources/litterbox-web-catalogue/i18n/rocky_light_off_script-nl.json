@@ -1,0 +1,13 @@
+{
+  "finderId": "rocky_light_off_script",
+  "locale": "nl",
+  "name": "Zet Rocky's licht uit",
+  "hint": "Een uitschakelscript zet Rockys licht terug nadat het is gebruikt of wanneer het programma eindigt. Zo blijft de uiteindelijke lichttoestand voorspelbaar en wordt de hardware duidelijk vrijgegeven.",
+  "instruction": "Schakel Rockys licht uit na de gewenste verlichting, voordat je het programma stopt of de besturing overdraagt.",
+  "examples": [
+    {
+      "label": "Voorbeeld",
+      "scratchblocks": "when green flag clicked\n@rocky set Rocky's light with color ['red v'] :: lighting\n@rocky Rocky lights off\nstop [all v]"
+    }
+  ]
+}

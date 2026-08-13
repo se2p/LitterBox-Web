@@ -1,0 +1,13 @@
+{
+  "finderId": "timer",
+  "locale": "en",
+  "name": "Variable Serves as Timer",
+  "hint": "A variable used as a counter in a timed loop helps make durations and repeated progress explicit.",
+  "instruction": "Initialize the variable, wait for a fixed interval inside the loop, and update its value after each interval.",
+  "examples": [
+    {
+      "label": "Example",
+      "scratchblocks": "when green flag clicked\nset [my variable v] to (20)\nforever\nwait (1) seconds\nchange [my variable v] by (-1)\nend"
+    }
+  ]
+}

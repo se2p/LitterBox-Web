@@ -1,0 +1,13 @@
+{
+  "finderId": "motor_low_power",
+  "locale": "de",
+  "name": "Motor zu schwach",
+  "hint": "Ein von null verschiedener mBot-Motorwert unter 25 % überwindet möglicherweise die Anlaufbelastung nicht, sodass sich der Roboter nicht zuverlässig bewegt.",
+  "instruction": "Verwende für mBot-Motorbefehle entweder 0 oder mindestens 25 % Leistung und stimme beide Seiten ab, wenn die Räder getrennt gesteuert werden.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\n@codeyA move forward at power (20) % for (1) secs :: motion\nstop [this script v]"
+    }
+  ]
+}

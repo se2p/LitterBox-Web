@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_initialization",
+  "locale": "es",
+  "name": "Inicialización errónea",
+  "hint": "En este sprite, la variable no se inicializa antes de ser utilizado por primera vez. Utilizará cualquier valor que contenga al final de la última ejecución, lo que puede que no sea lo que quieras.",
+  "instruction": "En este sprite, la variable no se inicializa antes de ser utilizado por primera vez. Utilizará cualquier valor que contenga al final de la última ejecución, lo que puede que no sea lo que quieras.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "(score)\n\nwhen green flag clicked\nforever\nif <touching (edge v) ?> then\nchange [score v] by (1)\nend\nend"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "(score)\n\nwhen green flag clicked\nset [score] to (0) :: #007000 //⇦  👍\nforever\nif <touching (edge v) ?> then\nchange [score v] by (1)\nend\nend"
+    }
+  ]
+}

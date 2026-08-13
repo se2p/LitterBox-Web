@@ -1,0 +1,13 @@
+{
+  "finderId": "motor_off_script",
+  "locale": "en",
+  "name": "Turn off Motors",
+  "hint": "A shutdown script stops the motors after movement or when the program ends. This prevents unintended continued movement and makes the motor lifecycle explicit.",
+  "instruction": "Finish a motor action with a stop command before the program terminates or another routine takes control.",
+  "examples": [
+    {
+      "label": "Example",
+      "scratchblocks": "when green flag clicked\n@codeyA move forward at power (50) % for (1) secs :: motion\n@codeyA stop moving :: motion\nstop [all v]"
+    }
+  ]
+}

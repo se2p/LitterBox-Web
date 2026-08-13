@@ -1,0 +1,13 @@
+{
+  "finderId": "useful_position_check",
+  "locale": "de",
+  "name": "Sinnvolle Abfrage bei Kommazahlen",
+  "hint": "In Scratch sind die Werte für die X- und Y-Koordinaten sehr genau und mit vielen Nachkommastellen. Einen genauen [sbi]<() = ()>[/sbi] -Abgleich mit solchen Zahlen zu machen, ist problematisch. Hier hast du alles richtig gemacht und nur mit [sbi]<() < ()>[/sbi] bzw. [sbi]<() > ()>[/sbi] -Operatoren gearbeitet.",
+  "instruction": "In Scratch sind die Werte für die X- und Y-Koordinaten sehr genau und mit vielen Nachkommastellen. Einen genauen [sbi]<() = ()>[/sbi] -Abgleich mit solchen Zahlen zu machen, ist problematisch. Hier hast du alles richtig gemacht und nur mit [sbi]<() < ()>[/sbi] bzw. [sbi]<() > ()>[/sbi] -Operatoren gearbeitet.",
+  "examples": [
+    {
+      "label": "Eleganter Code",
+      "scratchblocks": "when I start as a clone\nshow\nrepeat until <(y position) < (120)> //⇦  👍\nchange y by (-10)\nwait (1) seconds\nend"
+    }
+  ]
+}

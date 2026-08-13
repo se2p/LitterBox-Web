@@ -1,0 +1,13 @@
+{
+  "finderId": "ambient_light_in_bounds",
+  "locale": "es",
+  "name": "Luz ambiental en límites",
+  "hint": "El sensor de luz ambiental ofrece lecturas significativas de 0 a 100 en Codey y de 0 a 1020 en mBot, lo que permite tomar decisiones fiables.",
+  "instruction": "Usa los límites documentados del robot conectado para establecer umbrales y valida o limita los datos antes de compararlos.",
+  "examples": [
+    {
+      "label": "Ejemplo",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB ambient light intensity :: sensing) > (50)> then\nsay [Bright]\nend"
+    }
+  ]
+}

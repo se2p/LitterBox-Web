@@ -1,0 +1,13 @@
+{
+  "finderId": "loudness_out_of_bounds",
+  "locale": "nl",
+  "name": "Geluidssterkte buiten grenzen",
+  "hint": "Een vergelijking van geluidssterkte buiten 0–100 gebruikt een waarde die de sensor niet kan melden, waardoor geluidsreacties mogelijk niet worden geactiveerd zoals bedoeld.",
+  "instruction": "Houd drempelwaarden en gevalideerde metingen van geluidssterkte binnen het interval 0–100 voordat je beslissingen neemt.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB loudness :: sensing) > (150)> then\nsay [Invalid loudness]\nend"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "roll_angle_out_of_bounds",
+  "locale": "nl",
+  "name": "Rol hoek buiten grenzen",
+  "hint": "Een vergelijking van de rolhoek buiten -90° tot 90° beschrijft een onmogelijke oriëntatie, waardoor rolafhankelijk gedrag onbetrouwbaar kan worden.",
+  "instruction": "Beperk metingen en drempelwaarden van de rolhoek vóór de vergelijking tot het inclusieve bereik van -90° tot 90°.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB roll angle° :: sensing) > (100)> then\nsay [Invalid roll]\nend"
+    }
+  ]
+}

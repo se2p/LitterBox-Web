@@ -1,0 +1,13 @@
+{
+  "finderId": "rocky_light_off_script",
+  "locale": "es",
+  "name": "Apagar la luz de Rocky",
+  "hint": "Un script de apagado restablece la luz de Rocky después de usarla o cuando termina el programa. Así el estado final de la luz es predecible y el hardware queda claramente liberado.",
+  "instruction": "Apaga la luz de Rocky después de la iluminación prevista, antes de detener el programa o devolver el control.",
+  "examples": [
+    {
+      "label": "Ejemplo",
+      "scratchblocks": "when green flag clicked\n@rocky set Rocky's light with color ['red v'] :: lighting\n@rocky Rocky lights off\nstop [all v]"
+    }
+  ]
+}

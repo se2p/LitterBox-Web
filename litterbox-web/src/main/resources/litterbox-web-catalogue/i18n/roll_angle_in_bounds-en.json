@@ -1,0 +1,13 @@
+{
+  "finderId": "roll_angle_in_bounds",
+  "locale": "en",
+  "name": "Roll Angle in Bounds",
+  "hint": "Roll is supported from -90 to 90 degrees, making the robot’s side-to-side tilt available for dependable decisions.",
+  "instruction": "Keep roll thresholds between -90 and 90 degrees and handle readings outside that interval separately.",
+  "examples": [
+    {
+      "label": "Example",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB roll angle° :: sensing) > (30)> then\nsay [Tilted sideways]\nend"
+    }
+  ]
+}

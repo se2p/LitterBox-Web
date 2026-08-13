@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_wait_until_condition",
+  "locale": "es",
+  "name": "Falta condición de espera",
+  "hint": "El buscador detecta un bloque espera hasta que sin una condición booleana. El bloque no puede saber cuándo continuar, por lo que espera indefinidamente e impide ejecutar el código posterior.",
+  "instruction": "Añade una condición que pueda llegar a ser verdadera y represente el evento que el script debe esperar; usa una espera temporizada cuando no se necesite ninguna condición.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nwait until <>\nsay [done]"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\nwait until <key \\[space v\\] pressed?>\nsay [done]"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "finderId": "recursive_cloning",
+  "locale": "en",
+  "name": "Recursive Cloning",
+  "hint": "Scripts starting with [sbi]When I start as a clone[/sbi] should not create clones of itself. This could result in an infinite number of clones.",
+  "instruction": "Delete the [sbi]create clone of [ v][/sbi] statement.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when i start as a clone\nshow\nforever\nchange [color v] effect by (10)\ncreate clone of (myself v) :: #ff0000 //⇦  🐛\nend"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "when green flag clicked\nhide\ncreate clone of (myself v) :: #007000 //⇦  👍\n\nwhen i start as a clone\nshow\nforever\nchange [color v] effect by (10)\nend"
+    }
+  ]
+}

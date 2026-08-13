@@ -1,0 +1,13 @@
+{
+  "finderId": "gear_potentiometer_out_of_bounds",
+  "locale": "en",
+  "name": "Gear Potentiometer out of Bounds",
+  "hint": "A gear potentiometer comparison outside 0–100 refers to a value the sensor cannot produce, so position-based behaviour becomes unreliable.",
+  "instruction": "Validate potentiometer readings and thresholds as integers from 0 through 100 before using them.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB gear potentiometer value :: sensing) > (150)> then\nsay [Invalid gear value]\nend"
+    }
+  ]
+}

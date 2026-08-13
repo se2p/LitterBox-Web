@@ -1,0 +1,13 @@
+{
+  "finderId": "valid_termination",
+  "locale": "es",
+  "name": "Condición de terminación válida",
+  "hint": "Implementó una condición de finalización válida en su ciclo, que evita que el ciclo se ejecute para siempre.",
+  "instruction": "Implementó una condición de finalización válida en su ciclo, que evita que el ciclo se ejecute para siempre.",
+  "examples": [
+    {
+      "label": "Código bello",
+      "scratchblocks": "when green flag clicked\nrepeat until <touching (mouse-pointer v) ?> //⇦  👍\ngo to (random position v)\nwait (1) seconds\nend"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "finderId": "immediate_stop_after_say_think",
+  "locale": "nl",
+  "name": "Onmiddellijke stop na zeg of denk",
+  "hint": "Het script stopt alles direct na een ongetimed [sbi]say ()[/sbi]- of [sbi]think ()[/sbi]-blok. De tekst wordt verwijderd voordat deze zichtbaar kan worden.",
+  "instruction": "Gebruik een getimed zeg- of denk-blok zodat de tekst zichtbaar blijft. Als andere scripts moeten stoppen of samenwerken, gebruik dan een passende stopactie of een bericht in plaats van alles meteen te stoppen.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when i start as a clone\nforever\nif <touching (mouse-pointer v) ?> then\nchange [points v] by (1)\nsay [Ooohhh...] :: #ff0000 //⇦  🐛\nstop [all v]\nend\nend"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when i start as a clone\nforever\nif <touching (mouse-pointer v) ?> then\nchange [points v] by (1)\nsay [Ooohhh...] for (3) seconds  :: #007000 //⇦  👍\nstop [all v]\nend\nend"
+    }
+  ]
+}

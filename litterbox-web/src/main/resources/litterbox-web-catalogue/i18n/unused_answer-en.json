@@ -1,0 +1,13 @@
+{
+  "finderId": "unused_answer",
+  "locale": "en",
+  "name": "Unused Answer",
+  "hint": "This smell identifies an [ask and wait] block whose answer is never read by the same sprite. The user's input therefore cannot affect the behavior and the question becomes misleading.",
+  "instruction": "Use [answer] in a condition, calculation, or message when the input matters. Otherwise remove the question or replace it with an action that does not expect a response.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nask [What is your name?] and wait\nsay [Hello!]"
+    }
+  ]
+}

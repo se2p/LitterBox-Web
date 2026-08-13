@@ -1,0 +1,13 @@
+{
+  "finderId": "initialisation_of_position",
+  "locale": "en",
+  "name": "Initialisation of position",
+  "hint": "You initialize the location of your sprite with every new program start.",
+  "instruction": "You initialize the location of your sprite with every new program start.",
+  "examples": [
+    {
+      "label": "Elegant code",
+      "scratchblocks": "when green flag clicked\ngo to x: (-10) y: (23) //⇦  👍\nforever\nchange y by (30)\nwait (1) seconds\nchange y by (-30)\nwait (1) seconds\nend"
+    }
+  ]
+}

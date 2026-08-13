@@ -1,0 +1,13 @@
+{
+  "finderId": "roll_angle_out_of_bounds",
+  "locale": "es",
+  "name": "Ángulo de balanceo fuera de límites",
+  "hint": "Una comparación del ángulo de balanceo fuera de -90° a 90° describe una orientación imposible, por lo que el comportamiento dependiente del balanceo puede ser poco fiable.",
+  "instruction": "Limita las lecturas y los umbrales del ángulo de balanceo al rango inclusivo de -90° a 90° antes de compararlos.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB roll angle° :: sensing) > (100)> then\nsay [Invalid roll]\nend"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "finderId": "clone_type_1",
+  "locale": "en",
+  "name": "Duplicated Code",
+  "hint": "There are identical statements in multiple scripts.",
+  "instruction": "There are identical statements in multiple scripts.",
+  "examples": []
+}

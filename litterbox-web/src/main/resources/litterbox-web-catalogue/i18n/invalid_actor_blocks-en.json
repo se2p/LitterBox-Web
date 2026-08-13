@@ -1,0 +1,17 @@
+{
+  "finderId": "invalid_actor_blocks",
+  "locale": "en",
+  "name": "Misplaced Blocks",
+  "hint": "The finder detects blocks that are used on the wrong actor type: sprite-only blocks such as motion, appearance, clone, or visibility blocks on the stage, and stage-only backdrop blocks on a sprite. Such blocks cannot affect the intended actor and may be ignored or behave unexpectedly.",
+  "instruction": "Move the script or the affected block to the actor type it supports, or replace it with an equivalent block that is available for the current actor.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "// Stage\nwhen green flag clicked\nmove (10) steps"
+    },
+    {
+      "label": "Possible solution",
+      "scratchblocks": "// Sprite\nwhen green flag clicked\nmove (10) steps"
+    }
+  ]
+}

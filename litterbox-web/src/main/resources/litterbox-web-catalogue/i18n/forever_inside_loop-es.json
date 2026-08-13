@@ -1,0 +1,17 @@
+{
+  "finderId": "forever_inside_loop",
+  "locale": "es",
+  "name": "Bucle infinito dentro de un bucle",
+  "hint": "Si dos bucles están anidados y el bucle interno es un bucle infinito, el bucle interno nunca terminará. Por lo tanto, las instrucciones después del bucle interno no se ejecutarán nunca.",
+  "instruction": "Si dos bucles están anidados y el bucle interno es un bucle infinito, el bucle interno nunca terminará. Por lo tanto, las instrucciones después del bucle interno no se ejecutarán nunca.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\npen down\nrepeat (4)\nturn left (90) degrees\nforever :: #ff0000 //⇦  🐛\nmove (20) steps\nend\nend"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\npen down\nrepeat (4)\nturn left (90) degrees\nmove (20) steps\nend"
+    }
+  ]
+}

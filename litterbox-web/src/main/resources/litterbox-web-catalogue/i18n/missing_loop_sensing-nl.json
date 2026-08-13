@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_loop_sensing",
+  "locale": "nl",
+  "name": "Ontbrekende lus voor waarneming",
+  "hint": "Een waarnemingsvoorwaarde wordt slechts één keer gecontroleerd, terwijl latere veranderingen nog moeten worden opgemerkt. Die veranderingen worden daardoor genegeerd.",
+  "instruction": "Controleer de voorwaarde herhaaldelijk met een passende lus, gebruik [sbi]wacht tot < >[/sbi] of kies een geschikt gebeurtenisblok wanneer dat beschikbaar is.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nif &lt;touching (mouse-pointer v) ?:: #ff0000 &gt; then //⇦  🐛\nturn left (15) degrees\n"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\nforever :: #007000 //⇦  👍\nif <touching (mouse-pointer v)> then\nturn left (15) degrees\n"
+    }
+  ]
+}

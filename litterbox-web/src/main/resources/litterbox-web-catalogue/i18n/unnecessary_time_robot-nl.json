@@ -1,0 +1,13 @@
+{
+  "finderId": "unnecessary_time_robot",
+  "locale": "nl",
+  "name": "Onnodige robotduur",
+  "hint": "Een getimede robotopdracht heeft een duur van nul of een lege duur die als nul wordt geïnterpreteerd. De hardware krijgt daardoor geen zinvolle tijd voor de gevraagde beweging, licht-, display- of geluidsactie, waardoor de opdracht ineffectief of misleidend is.",
+  "instruction": "Geef een zinvolle positieve duur op, gebruik een passende opdracht zonder tijdsduur als die beschikbaar is, of verwijder de ineffectieve actie.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\n@codeyA move forward at power (50) % for (0) secs :: motion"
+    }
+  ]
+}

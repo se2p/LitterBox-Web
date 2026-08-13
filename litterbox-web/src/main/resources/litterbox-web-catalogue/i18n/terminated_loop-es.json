@@ -1,0 +1,17 @@
+{
+  "finderId": "terminated_loop",
+  "locale": "es",
+  "name": "Bucle terminado",
+  "hint": "El bucle finaliza antes de que realmente se repita (por ejemplo, mediante un bloque de parada).",
+  "instruction": "Elimina el bucle o el bloque de parada.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nrepeat (10)\ngo to x: (100) y: (100)\nturn left (20) degrees\nmove(10) steps\nstop [this script v] :: #ff0000 //⇦  🐛\nend\nhide"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\nrepeat (10)\ngo to x: (100) y: (100)\nturn left (20) degrees\nmove(10) steps\nend\nhide"
+    }
+  ]
+}

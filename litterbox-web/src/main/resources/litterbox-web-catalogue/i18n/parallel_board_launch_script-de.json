@@ -1,0 +1,13 @@
+{
+  "finderId": "parallel_board_launch_script",
+  "locale": "de",
+  "name": "Keine parallelen Skripte",
+  "hint": "Mehrere Board-Start-Skripte sollen auf einem mBot im Uploadmodus parallel laufen, obwohl dieser Ausführungsmodus solche Skripte nicht wie erwartet parallel verarbeitet. Dadurch können Aktionen ausbleiben oder in einer unerwarteten Reihenfolge erfolgen.",
+  "instruction": "Verwende für parallele Board-Reaktionen den Live-Modus oder fasse das Programm so um, dass der Uploadmodus nur einen koordinierten Board-Startpfad benötigt.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when Codey starts up :: events hat\n@codeyA move forward at power (50) % for (1) secs :: motion\n\nwhen Codey starts up :: events hat\n@codeyA move backward at power (50) % for (1) secs :: motion"
+    }
+  ]
+}

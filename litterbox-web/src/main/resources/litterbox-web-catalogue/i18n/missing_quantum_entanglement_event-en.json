@@ -1,0 +1,13 @@
+{
+  "finderId": "missing_quantum_entanglement_event",
+  "locale": "en",
+  "name": "Missing Entanglement Event",
+  "hint": "When an entanglement block links actors, at least one participating actor needs a non-empty handler for the entanglement-start event. Without that event, no behavior is defined for the entangled state and the program may not react as intended.",
+  "instruction": "Add a non-empty [when entanglement started] handler to one of the participating actors and define its response to the entangled state there.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nentangle [costume v] with [Cat Flying] possibilities: (2) :: #5c068c"
+    }
+  ]
+}

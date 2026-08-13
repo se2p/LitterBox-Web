@@ -1,0 +1,17 @@
+{
+  "finderId": "unused_variables",
+  "locale": "nl",
+  "name": "Ongebruikte variabele",
+  "hint": "Een variabele of lijst is gedefinieerd maar wordt nergens betekenisvol gebruikt. Dat voegt rommel toe en kan wijzen op ontbrekende of verouderde logica.",
+  "instruction": "Gebruik de variabele of lijst voor het bedoelde doel, of verwijder haar als ze niet meer nodig is.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "(score)"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "(score)\n\nwhen green flag clicked\nset (score v) to (0)"
+    }
+  ]
+}

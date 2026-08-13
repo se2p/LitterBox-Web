@@ -1,0 +1,13 @@
+{
+  "finderId": "useless_wait",
+  "locale": "nl",
+  "name": "Nutteloos wachten",
+  "hint": "Deze geur herkent een [wait]-blok in een scriptvertakking waarna geen betekenisvol gedrag volgt en die niet voor de timing van een lus dient. De vertraging kan dan geen zichtbare actie uitstellen en maakt de besturingsstroom moeilijker te begrijpen.",
+  "instruction": "Verwijder het wachten of plaats het vóór gedrag dat werkelijk moet worden vertraagd. Houd een wachtblok in een lus alleen wanneer het bewust het tempo van de lus bepaalt.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\nif <touching color [#2727c2] ?> then\nwait (1) seconds\nelse\nwait until <mouse down?>\nend"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "backdrop_switch",
+  "locale": "de",
+  "name": "Ereignis für Bühnenbild-Wechsel",
+  "hint": "Ein Bühnenbild-Wechsel kann passende Abläufe auslösen und die Szenen eines Projekts koordinieren.",
+  "instruction": "Kombiniere einen Bühnenbild-Wechsel mit dem Ereignis „Wenn das Bühnenbild zu ... wechselt“, wenn ein bestimmter Szenenwechsel weitere Aktionen starten soll.",
+  "examples": [
+    {
+      "label": "Beispiel",
+      "scratchblocks": "when green flag clicked\nwait (1) seconds\nswitch backdrop to (backdrop1 v)\n\nwhen backdrop switches to [backdrop1 v]\nmove (10) steps"
+    }
+  ]
+}

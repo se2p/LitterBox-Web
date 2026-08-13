@@ -1,0 +1,13 @@
+{
+  "finderId": "parallelisation",
+  "locale": "nl",
+  "name": "Parallellisatie van verschillende scripts",
+  "hint": "Twee of meer scripts starten door dezelfde gebeurtenis en voeren hun onafhankelijke gedrag gelijktijdig uit. Zo kunnen verantwoordelijkheden van één trigger worden gescheiden zonder een vaste volgorde te beloven.",
+  "instruction": "Verdeel onafhankelijke verantwoordelijkheden over parallelle scripts met dezelfde gebeurtenis en coördineer ze expliciet wanneer de volgorde wel belangrijk is.",
+  "examples": [
+    {
+      "label": "Elegante code",
+      "scratchblocks": "when green flag clicked  //⇦  👍\nforever\nturn left (10) degrees\nend\n\nwhen green flag clicked  //⇦  👍\nforever\nmove (10) steps\nend"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "line_following_out_of_bounds",
+  "locale": "en",
+  "name": "Line Following out of Bounds",
+  "hint": "A line-follower comparison with a state outside 0, 1, 2, or 3 cannot match a sensor state, making the branch impossible.",
+  "instruction": "Handle only the four supported line-follower states 0, 1, 2, and 3, and validate any state value before comparing it.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nif <(@mBot line follower sensor [port2 v] value :: sensing) = (4)> then\nsay [Invalid line state]\nend"
+    }
+  ]
+}

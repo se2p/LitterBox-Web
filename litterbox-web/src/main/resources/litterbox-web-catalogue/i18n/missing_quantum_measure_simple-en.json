@@ -1,0 +1,13 @@
+{
+  "finderId": "missing_quantum_measure_simple",
+  "locale": "en",
+  "name": "Missing Measurement Handler",
+  "hint": "A measured-event handler can run only when the actor is measured. If no measurement reaches the actor directly or through an entangled actor, the script is unreachable and its response never occurs.",
+  "instruction": "Use the handler for an actor reached by a suitable measure block, or add a measurement of this actor or of an actor entangled with it.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when measured :: events hat #5c068c\nforever\nturn right (15) degrees\nwait (0.1) seconds\nend"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "parallel_resource_use",
+  "locale": "en",
+  "name": "Parallel Control of Resources",
+  "hint": "Two or more parallel scripts issue commands to the same robot resource. Their timing and final command can conflict, producing unpredictable movement or hardware state.",
+  "instruction": "Give each resource one clear controlling script, or coordinate access with messages and explicit ownership.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when on-board button [A v] :: events hat\n@codeyA keep straight forward at power (50) % for (1) secs :: motion\n\nwhen on-board button [B v] :: events hat\n@codeyA left wheel turns at power (50)(50) % :: motion"
+    }
+  ]
+}

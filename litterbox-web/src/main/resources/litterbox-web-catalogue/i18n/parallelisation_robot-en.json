@@ -1,0 +1,13 @@
+{
+  "finderId": "parallelisation_robot",
+  "locale": "en",
+  "name": "Parallelisation of Different Scripts",
+  "hint": "Multiple scripts responding to the same mBlock event can start independent robot actions concurrently, enabling coordinated behaviour.",
+  "instruction": "Give both independent scripts the same event hat and assign each one a distinct action to start when the event occurs.",
+  "examples": [
+    {
+      "label": "Example",
+      "scratchblocks": "when Codey starts up :: events hat\n@codeyA move forward at power (50) % for (1) secs :: motion\n\nwhen Codey starts up :: events hat\n@codeyB RGB LED lights up [#00ff00] :: lighting"
+    }
+  ]
+}

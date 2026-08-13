@@ -1,0 +1,13 @@
+{
+  "finderId": "empty_sprite",
+  "locale": "nl",
+  "name": "Lege sprite",
+  "hint": "Je sprite bevat geen blokken en kan daardoor niet reageren of aan het programma deelnemen.",
+  "instruction": "Laat de sprite leeg als dat bewust is; voeg anders passende blokken toe.",
+  "examples": [
+    {
+      "label": "Elegante code",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\nsay [Hello!]\n"
+    }
+  ]
+}

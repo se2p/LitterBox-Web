@@ -1,0 +1,8 @@
+{
+  "finderId": "busy_waiting",
+  "locale": "nl",
+  "name": "Actief wachten in een lus",
+  "hint": "Een lus controleert voortdurend een voorwaarde om daarna alleen de uitvoering te beëindigen: alles te stoppen, het script te stoppen of de kloon te verwijderen. Dat herhaald peilen is onnodig omslachtig.",
+  "instruction": "Gebruik [sbi]wacht tot < >[/sbi] om op de voorwaarde te wachten en voer daarna de bedoelde stopactie uit.",
+  "examples": []
+}

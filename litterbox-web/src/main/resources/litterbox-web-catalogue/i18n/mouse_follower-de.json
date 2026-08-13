@@ -1,0 +1,13 @@
+{
+  "finderId": "mouse_follower",
+  "locale": "de",
+  "name": "Verfolgen des Mauszeigers",
+  "hint": "Deine Figur kann dem Mauszeiger folgen. Das kann für einige Spiele ein gutes Konzept sein.",
+  "instruction": "Deine Figur kann dem Mauszeiger folgen. Das kann für einige Spiele ein gutes Konzept sein.",
+  "examples": [
+    {
+      "label": "Eleganter Code",
+      "scratchblocks": "when green flag clicked\nforever\ngo to (mouse-pointer v) //⇦  👍\nend"
+    }
+  ]
+}

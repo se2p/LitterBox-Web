@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_loop_mouse_position",
+  "locale": "de",
+  "name": "Fehlende Wiederholung Bewegung zur Maus",
+  "hint": "Der Finder erkennt eine von der Maus abhängige Bewegung oder Richtung, die außerhalb einer Schleife nur einmal ausgeführt wird. Die Mausposition wird dadurch nur in diesem Moment verwendet; spätere Mausbewegungen werden nicht verfolgt und die Figur scheint nicht mehr zu reagieren.",
+  "instruction": "Führe alle von der Maus abhängigen Bewegungs- oder Richtungsaktualisierungen in einer passenden Wiederholung aus und füge bei Bedarf eine kurze Wartezeit ein, damit das Projekt reaktionsfähig bleibt.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nset x to (mouse x)"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\nforever\nset x to (mouse x)\nend"
+    }
+  ]
+}

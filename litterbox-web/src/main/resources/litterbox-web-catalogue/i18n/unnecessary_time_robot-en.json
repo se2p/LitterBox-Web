@@ -1,0 +1,13 @@
+{
+  "finderId": "unnecessary_time_robot",
+  "locale": "en",
+  "name": "Unnecessary Robot Timing",
+  "hint": "A timed robot command has either a duration of zero or a blank duration that is interpreted as zero. The hardware is given no meaningful time for the requested movement, light, display, or sound action, so the command is ineffective or misleading.",
+  "instruction": "Provide a meaningful positive duration, use an appropriate untimed command when available, or remove the ineffective action.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\n@codeyA move forward at power (50) % for (0) secs :: motion"
+    }
+  ]
+}

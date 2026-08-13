@@ -1,0 +1,13 @@
+{
+  "finderId": "interrupted_loop_sensing_robot",
+  "locale": "en",
+  "name": "Interrupted Loop Sensing Robot",
+  "hint": "A timed or blocking operation shares a loop or conditional path with continuous robot sensing. While it runs, later sensor changes are not checked, so reactions can be delayed or missed.",
+  "instruction": "Move continuous sensing into a separate parallel script when possible, or keep the sensing path short and nonblocking.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nforever\nif <@mBot obstacles ahead? :: sensing> then\n@codeyA move forward at power (50) % for (1) secs :: motion\nend\nend"
+    }
+  ]
+}

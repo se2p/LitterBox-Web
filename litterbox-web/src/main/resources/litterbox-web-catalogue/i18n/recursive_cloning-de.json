@@ -1,0 +1,17 @@
+{
+  "finderId": "recursive_cloning",
+  "locale": "de",
+  "name": "Rekursives Klonen",
+  "hint": "Ein Klon sollte keine weiteren Klone von sich selbst erzeugen, da sonst im schlimmsten Fall unendlich viele Klone entstehen.",
+  "instruction": "Lösche den [sbi]erzeuge Klon von [ v][/sbi]-Baustein.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when i start as a clone\nshow\nforever\nchange [color v] effect by (10)\ncreate clone of (myself v) :: #ff0000 //⇦  🐛\nend"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\nhide\ncreate clone of (myself v) :: #007000 //⇦  👍\n\nwhen i start as a clone\nshow\nforever\nchange [color v] effect by (10)\nend"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "finderId": "unnecessary_time",
+  "locale": "nl",
+  "name": "Onnodig tijdsblok",
+  "hint": "Een tijdsblok met duur nul heeft geen zichtbaar timingseffect. Dat geldt bijvoorbeeld voor wachten, zeg- of denkblokken met tijd, glijden en vergelijkbare getimede acties.",
+  "instruction": "Verwijder het blok als geen vertraging bedoeld is, of kies een betekenisvolle positieve duur wanneer timing wel nodig is.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\nwait (0) seconds :: #ff0000 //⇦  🐛\nturn left (15) degrees"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\nturn left (15) degrees"
+    }
+  ]
+}

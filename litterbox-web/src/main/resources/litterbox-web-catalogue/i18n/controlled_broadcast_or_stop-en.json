@@ -1,0 +1,13 @@
+{
+  "finderId": "controlled_broadcast_or_stop",
+  "locale": "en",
+  "name": "Controlled broadcast or stop",
+  "hint": "To have more control over your program, you continouosly check for certain conditions before broadcasting or stopping the program/script.",
+  "instruction": "To have more control over your program, you continouosly check for certain conditions before broadcasting or stopping the program/script.",
+  "examples": [
+    {
+      "label": "Elegant code",
+      "scratchblocks": "when green flag clicked\nforever\nif <(score) = (100)> then\nstop [all v] //⇦  👍\nend"
+    }
+  ]
+}

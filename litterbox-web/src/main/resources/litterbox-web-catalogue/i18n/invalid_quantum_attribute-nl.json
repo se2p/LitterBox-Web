@@ -1,0 +1,13 @@
+{
+  "finderId": "invalid_quantum_attribute",
+  "locale": "nl",
+  "name": "Ongeldig attribuut voor verstrengeling of superpositie",
+  "hint": "Kwantumverstrengeling en superpositie moeten attributen gebruiken die door de gekozen actor worden ondersteund. Het speelveld ondersteunt voor deze bewerkingen kleur en uiterlijk, maar geen positie, richting of grootte. Een niet-ondersteund attribuut kan de bewerking verhinderen of onverwacht gedrag veroorzaken.",
+  "instruction": "Gebruik alleen kleur of uiterlijk wanneer het speelveld betrokken is, en gebruik positie, richting of grootte uitsluitend bij een sprite. Controleer de actorcontext voordat je de kwantumbewerking toevoegt.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nsuperpose [position v] possibilities: (1) :: #5c068c"
+    }
+  ]
+}

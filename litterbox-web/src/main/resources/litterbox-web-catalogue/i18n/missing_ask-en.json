@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_ask",
+  "locale": "en",
+  "name": "Missing Ask Block",
+  "hint": "Your project uses the [sbi](answer)[/sbi] block, but the [sbi]ask [ ] and wait[/sbi] block is never used in the project. Therefore, this block will remain empty.",
+  "instruction": "Your project uses the [sbi](answer)[/sbi] block, but the [sbi]ask [ ] and wait[/sbi] block is never used in the project. Therefore, this block will remain empty.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when this sprite clicked\ngo to [random position v]\nsay (join [Hello] (answer :: #ff0000)) //⇦  🐛\n"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "when this sprite clicked\nask [What is your name?] and wait :: #007000 // ⇦  👍\ngo to [random position v]\nsay (join [Hello] (answer  :: #007000)) // ⇦  👍\n"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "shaking_strength_in_bounds",
+  "locale": "de",
+  "name": "Vibrationsstärkemessung im Messbereich",
+  "hint": "Die Vibrationsstärke wird im Bereich von 0 bis 100 gemessen und ermöglicht eine verlässliche Reaktion auf Bewegung.",
+  "instruction": "Vergleiche die Vibrationsstärke mit Schwellen zwischen 0 und 100 und prüfe den Messwert vor der Auswertung.",
+  "examples": [
+    {
+      "label": "Beispiel",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB shaking strength :: sensing) > (50)> then\nsay [Strong shaking]\nend"
+    }
+  ]
+}

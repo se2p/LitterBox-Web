@@ -1,0 +1,13 @@
+{
+  "finderId": "motor_low_power",
+  "locale": "es",
+  "name": "Motor demasiado débil",
+  "hint": "Un comando de motor de mBot distinto de cero y menor que el 25 % puede no vencer la carga inicial, por lo que el robot puede no moverse de forma fiable.",
+  "instruction": "Usa 0 o al menos un 25 % de potencia en los comandos de motor de mBot y ajusta ambos lados conjuntamente cuando controles las ruedas por separado.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\n@codeyA move forward at power (20) % for (1) secs :: motion\nstop [this script v]"
+    }
+  ]
+}

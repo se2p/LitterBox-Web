@@ -1,0 +1,13 @@
+{
+  "finderId": "motor_power_minus",
+  "locale": "es",
+  "name": "Potencia de motor negativa",
+  "hint": "Un comando de motor con potencia negativa representa la dirección contraria y dificulta leer el movimiento previsto. Sin un bloque de dirección explícito puede producir un desplazamiento inesperado.",
+  "instruction": "Elige el bloque de dirección adecuado y utiliza una potencia positiva dentro del intervalo admitido.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\n@codeyA move forward at power (-100) % for (1) secs :: motion"
+    }
+  ]
+}

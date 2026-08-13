@@ -1,0 +1,13 @@
+{
+  "finderId": "detect_repeat_in_loop",
+  "locale": "es",
+  "name": "Solicitud de entrada en un bucle",
+  "hint": "Un bucle rápido comprueba un sensor del robot y ejecuta de inmediato una acción sin esperar a que termine la condición que la activó. Por ello, un solo evento físico puede aceptarse varias veces y duplicar acciones o cambios de estado.",
+  "instruction": "Espera hasta que la condición sea falsa, detecta un cambio de estado o usa una variable de antirrebote para aceptar un nuevo evento solo después de que termine el anterior.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when Codey starts up :: events hat\nforever\nif <@codeyB shaken ? :: sensing> then\nchange [aas v] by (1)\nend\nend"
+    }
+  ]
+}

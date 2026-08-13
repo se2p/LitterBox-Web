@@ -1,0 +1,17 @@
+{
+  "finderId": "floating_point_comparison",
+  "locale": "es",
+  "name": "Comparación de punto flotante",
+  "hint": "El buscador detecta comprobaciones de igualdad exacta que usan valores medidos o calculados, como posiciones, distancias, dirección, volumen, temporizador o coordenadas del ratón. Estos valores suelen tener decimales o cambiar continuamente, por lo que rara vez coinciden exactamente con el número comparado y una condición o un bucle puede fallar de forma inesperada.",
+  "instruction": "Sustituye la igualdad exacta por una comprobación de tolerancia o de intervalo, por ejemplo con <= o >=, o usa una condición de detección que exprese el contacto que buscas.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nif <(timer) = (mouse x)> then\nmove (10) steps\nend"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\nif <(timer) < (mouse x)> then\nmove (10) steps\nend"
+    }
+  ]
+}

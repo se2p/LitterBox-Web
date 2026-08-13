@@ -1,0 +1,17 @@
+{
+  "finderId": "invalid_actor_blocks",
+  "locale": "nl",
+  "name": "Verkeerd geplaatste blokken",
+  "hint": "De vinder detecteert blokken die bij het verkeerde actortype worden gebruikt: bijvoorbeeld bewegings-, uiterlijk-, kloon- of zichtbaarheidsblokken die alleen voor sprites bedoeld zijn op het speelveld, of achtergrondblokken van het speelveld op een sprite. Zulke blokken kunnen de bedoelde actor niet beïnvloeden en worden mogelijk genegeerd of gedragen zich onverwacht.",
+  "instruction": "Verplaats het script of het betreffende blok naar het actortype dat het ondersteunt, of vervang het door een gelijkwaardig blok dat bij de huidige actor beschikbaar is.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "// Stage\nwhen green flag clicked\nmove (10) steps"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "// Sprite\nwhen green flag clicked\nmove (10) steps"
+    }
+  ]
+}

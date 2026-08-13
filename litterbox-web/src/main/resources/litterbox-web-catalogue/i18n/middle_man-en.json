@@ -1,0 +1,29 @@
+{
+  "finderId": "middle_man",
+  "locale": "en",
+  "name": "Unnecessary Middle Man",
+  "hint": "Using a broadcast receiver only to send a broadcast again is considered a code smell, as the script is a middle man between the original sender and the final receiver.[newLine]Consider changing the message of the final receiver to the message sent of the first broadcast and then delete the middle man eliminate redundant code.",
+  "instruction": "Using a broadcast receiver only to send a broadcast again is considered a code smell, as the script is a middle man between the original sender and the final receiver.[newLine]Consider changing the message of the final receiver to the message sent of the first broadcast and then delete the middle man eliminate redundant code.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when [space v] key pressed\nbroadcast [message1 v] :: #ff0000 //⇦  🐛\n"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "when [space v] key pressed\nbroadcast [message v] :: #007000 //⇦  👍\n"
+    },
+    {
+      "label": "Error 2",
+      "scratchblocks": "when I receive [message1 v] :: #ff0000 //⇦  🐛\nbroadcast [message2 v] :: #ff0000 //⇦  🐛\n"
+    },
+    {
+      "label": "Error 3",
+      "scratchblocks": "when I receive [message2 v] :: #ff0000 //⇦  🐛\nglide (2) secs to [Baby v]\n"
+    },
+    {
+      "label": "Possible Solution 3",
+      "scratchblocks": "when I receive [message v] :: #007000 //⇦ 👍 \nglide (2) secs to [Baby v]\n"
+    }
+  ]
+}

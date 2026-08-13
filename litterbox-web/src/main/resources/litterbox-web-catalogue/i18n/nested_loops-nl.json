@@ -1,0 +1,8 @@
+{
+  "finderId": "nested_loops",
+  "locale": "nl",
+  "name": "Diep geneste lussen",
+  "hint": "Diep geneste lussen maken de besturingsstroom moeilijker te volgen en vergroten de kans op fouten.",
+  "instruction": "Verwijder onnodige nesting of splits onafhankelijk gedrag op wanneer dat de leesbaarheid en duidelijkheid verbetert.",
+  "examples": []
+}

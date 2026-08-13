@@ -1,0 +1,13 @@
+{
+  "finderId": "motor_low_power",
+  "locale": "en",
+  "name": "Motor Too Weak",
+  "hint": "A nonzero mBot motor command below 25% may not overcome the motor's starting load, so the robot may fail to move reliably.",
+  "instruction": "Use 0 or at least 25% power for mBot motor commands, and tune both sides together when the wheels are controlled independently.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\n@codeyA move forward at power (20) % for (1) secs :: motion\nstop [this script v]"
+    }
+  ]
+}

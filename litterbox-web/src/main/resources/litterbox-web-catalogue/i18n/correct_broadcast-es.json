@@ -1,0 +1,17 @@
+{
+  "finderId": "correct_broadcast",
+  "locale": "es",
+  "name": "Transmisión correcto",
+  "hint": "Implementaste correctamente una transmisión, ahora puedes coordinar fácilmente todos tus scripts.",
+  "instruction": "Implementaste correctamente una transmisión, ahora puedes coordinar fácilmente todos tus scripts.",
+  "examples": [
+    {
+      "label": "Código bello",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching (#000) ?> then\nbroadcast (black v) //⇦  👍\nend\nend"
+    },
+    {
+      "label": "Código bello 2",
+      "scratchblocks": "when i receive [black v] //⇦  👍\nmove (10) steps"
+    }
+  ]
+}

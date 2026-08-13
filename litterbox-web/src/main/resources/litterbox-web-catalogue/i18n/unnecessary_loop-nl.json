@@ -1,0 +1,8 @@
+{
+  "finderId": "unnecessary_loop",
+  "locale": "nl",
+  "name": "Onnodige lus",
+  "hint": "Een [sbi]repeat (1)[/sbi]-lus voert het lichaam maar één keer uit, terwijl [sbi]repeat (0)[/sbi] het lichaam nooit uitvoert. In beide gevallen voegt de lusomhulling geen nuttige herhaling toe.",
+  "instruction": "Verwijder bij één herhaling de lus en behoud het lichaam rechtstreeks. Verwijder bij nul herhalingen onbereikbare code, of corrigeer het aantal wanneer het lichaam wel moet worden uitgevoerd.",
+  "examples": []
+}

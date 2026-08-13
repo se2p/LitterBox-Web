@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_clone_initialization",
+  "locale": "nl",
+  "name": "Ontbrekende klooninitialisatie",
+  "hint": "Een sprite maakt een kloon maar heeft geen passend script voor [sbi]When I start as a clone[/sbi] of [sbi]When this sprite clicked[/sbi]. De kloon voert daardoor geen actief gedrag uit.",
+  "instruction": "Voeg het bedoelde initialisatie- of gedragsscript toe. Als alleen een statische visuele kopie nodig is, kan [sbi]stamp[/sbi] duidelijker zijn.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nglide (1) secs to [random position v]\ncreate clone of [myself v] :: #ff0000 //⇦  🐛\n"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\nglide (1) secs to [random position v]\ncreate clone of [myself v] :: #007000 //⇦  👍\n\nwhen I start as a clone :: #007000 //⇦  👍\nchange size by (10)\n"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "ultra_sonic_out_of_bounds",
+  "locale": "nl",
+  "name": "Ultrasoon buiten grenzen",
+  "hint": "Een vergelijking van ultrasone afstand buiten 3–400 cm valt buiten het meetbereik van de sensor, waardoor obstakelbeslissingen onmogelijk of onbetrouwbaar kunnen zijn.",
+  "instruction": "Accepteer ultrasone afstanden alleen van 3 cm tot en met 400 cm en valideer drempelwaarden vóór de vergelijking.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nif <(@mBot ultrasonic sensor [port3 v] distance \\(cm\\) :: sensing) > (500)> then\nsay [Invalid distance]\nend"
+    }
+  ]
+}

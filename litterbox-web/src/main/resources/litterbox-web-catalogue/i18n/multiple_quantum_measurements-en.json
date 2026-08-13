@@ -1,0 +1,13 @@
+{
+  "finderId": "multiple_quantum_measurements",
+  "locale": "en",
+  "name": "Multiple Quantum Measurements",
+  "hint": "A quantum measurement fixes the state. Repeating a measurement without creating a new superposition or entanglement therefore produces no new state and can distort the intended animation or response.",
+  "instruction": "Measure again only after starting a new quantum state, or store the first result for subsequent decisions.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when superposition started :: events hat #5c068c\nforever\nturn right (15) degrees\nwait (0.1) seconds\nend\n\nwhen green flag clicked\nsuperpose [position v] possibilities: (30) :: #5c068c\n\nwhen [space v] key pressed\nmeasure :: #5c068c\nmeasure :: #5c068c"
+    }
+  ]
+}

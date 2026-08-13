@@ -1,0 +1,17 @@
+{
+  "finderId": "call_without_definition",
+  "locale": "en",
+  "name": "Call Without Definition",
+  "hint": "If you used a custom block in your program and deleted it, there may still be pieces of code referring to this custom block.[newLine]Make sure to delete all instances, where the deleted custom block was used.",
+  "instruction": "If you used a custom block in your program and deleted it, there may still be pieces of code referring to this custom block.[newLine]Make sure to delete all instances, where the deleted custom block was used.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nDo It :: #ff0000 &gt; then //⇦  🐛\n"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "when green flag clicked\nmove (10) steps :: #007000 //⇦  👍\n"
+    }
+  ]
+}

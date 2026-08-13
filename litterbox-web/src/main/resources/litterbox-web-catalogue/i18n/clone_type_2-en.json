@@ -1,0 +1,17 @@
+{
+  "finderId": "clone_type_2",
+  "locale": "en",
+  "name": "Identical Statements",
+  "hint": "There are similar statements in multiple scripts, differing only in parameters.",
+  "instruction": "A custom block could simplify your code.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\nturn left (15) degrees\nmove (5) steps\nturn left (15) degrees\nmove (15) steps\nturn left (15) degrees"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "when green flag clicked\nmoveAndTurn(10)\nmoveAndTurn(5)\nmoveAndTurn(15)\n\ndefine moveAndTurn (num) :: #007000 //⇦  👍\nmove (num) steps\nturn left (15) degrees"
+    }
+  ]
+}

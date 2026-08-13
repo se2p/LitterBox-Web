@@ -1,0 +1,13 @@
+{
+  "finderId": "sensor_value_equals",
+  "locale": "es",
+  "name": "Consulta del valor exacto",
+  "hint": "Una lectura variable de un sensor del robot se compara mediante igualdad exacta. El ruido y la precisión de coma flotante hacen que una coincidencia exacta sea rara o inestable, por lo que la respuesta puede fallar o parpadear.",
+  "instruction": "Compara con una tolerancia, un umbral o un intervalo en lugar de un único valor exacto, teniendo en cuenta el ruido de medición esperado.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when on-board button [A v] :: events hat\nif <(@codeyB loudness :: sensing) = (50)> then\nsay [Loud]\nend"
+    }
+  ]
+}

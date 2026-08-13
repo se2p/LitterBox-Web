@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_clone_initialization",
+  "locale": "de",
+  "name": "Fehlende Initialisierung des Klons",
+  "hint": "Wenn eine Figur einen Klon von sich selbst erstellt aber keine Skript, das mit den Bausteinen [sbi]Wenn ich als Klon entstehe[/sbi] oder [sbi]Wenn diese Figur angeklickt wird[/sbi] beginnt, enthält, wird der Klon keinerlei Handlungen ausführen.",
+  "instruction": "Wenn eine Figur einen Klon von sich selbst erstellt aber keine Skript, das mit den Bausteinen [sbi]Wenn ich als Klon entstehe[/sbi] oder [sbi]Wenn diese Figur angeklickt wird[/sbi] beginnt, enthält, wird der Klon keinerlei Handlungen ausführen.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nglide (1) secs to [random position v]\ncreate clone of [myself v] :: #ff0000 //⇦  🐛\n"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\nglide (1) secs to [random position v]\ncreate clone of [myself v] :: #007000 //⇦  👍\n\nwhen I start as a clone :: #007000 //⇦  👍\nchange size by (10)\n"
+    }
+  ]
+}

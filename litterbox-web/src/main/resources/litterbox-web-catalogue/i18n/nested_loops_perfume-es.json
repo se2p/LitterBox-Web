@@ -1,0 +1,13 @@
+{
+  "finderId": "nested_loops_perfume",
+  "locale": "es",
+  "name": "Repeticiones intercalados",
+  "hint": "Usaste bucles anidados. Eso puede ayudarte a resolver problemas más avanzados.",
+  "instruction": "Usaste bucles anidados. Eso puede ayudarte a resolver problemas más avanzados.",
+  "examples": [
+    {
+      "label": "Código bello",
+      "scratchblocks": "when i start as a clone\nforever\nturn left (15) degrees\nrepeat (4) //⇦  👍\nmove (10) steps\nwait (1) seconds\nend\nend"
+    }
+  ]
+}

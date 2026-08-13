@@ -1,0 +1,13 @@
+{
+  "finderId": "battery_level_out_of_bounds",
+  "locale": "de",
+  "name": "Batterieladung außerhalb des Messbereichs",
+  "hint": "Ein Batterievergleich außerhalb von 0 bis 100 beschreibt einen unmöglichen Ladezustand und kann Entscheidungen zur Stromversorgung unzuverlässig machen.",
+  "instruction": "Verwende Batteriewerte und Schwellenwerte nur im inklusiven Bereich von 0 bis 100 und begrenze berechnete Grenzwerte entsprechend.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB battery level :: sensing) > (150)> then\nsay [Invalid battery level]\nend"
+    }
+  ]
+}

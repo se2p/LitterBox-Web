@@ -1,0 +1,13 @@
+{
+  "finderId": "invalid_quantum_attribute",
+  "locale": "es",
+  "name": "Atributo no válido para entrelazamiento o superposición",
+  "hint": "El entrelazamiento y la superposición cuánticos deben usar atributos compatibles con el actor seleccionado. El escenario admite color y disfraz en estas operaciones, pero no posición, dirección ni tamaño. Un atributo no compatible puede impedir la operación o producir un comportamiento inesperado.",
+  "instruction": "Usa solo color o disfraz cuando intervenga el escenario, y reserva posición, dirección y tamaño para los objetos. Comprueba el contexto del actor antes de añadir la operación cuántica.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nsuperpose [position v] possibilities: (1) :: #5c068c"
+    }
+  ]
+}

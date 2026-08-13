@@ -1,0 +1,17 @@
+{
+  "finderId": "forever_inside_loop",
+  "locale": "de",
+  "name": "Innere Endloswiederholung",
+  "hint": "Wenn zwei Wiederholungen ineinander verschachtelt sind und die innere Wiederholung eine fortlaufende Wiederholung ist, wird die innere Wiederholung nie verlassen.[newLine]Die Bausteine vor der inneren Wiederholung werden nur einmal ausgeführt und die Bausteine nach der inneren Wiederholung werden nie ausgeführt.",
+  "instruction": "Versuche die fortlaufende Wiederholung in nebenläufigen Code auszulagern.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\npen down\nrepeat (4)\nturn left (90) degrees\nforever :: #ff0000 //⇦  🐛\nmove (20) steps\nend\nend"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\npen down\nrepeat (4)\nturn left (90) degrees\nmove (20) steps\nend"
+    }
+  ]
+}

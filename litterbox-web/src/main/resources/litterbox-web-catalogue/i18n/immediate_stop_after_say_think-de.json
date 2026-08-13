@@ -1,0 +1,17 @@
+{
+  "finderId": "immediate_stop_after_say_think",
+  "locale": "de",
+  "name": "Sofortiger Stopp nach Sage oder Denke",
+  "hint": "Das Skript stoppt alles sofort nach dem [sbi]sage ()[/sbi] oder [sbi]denke ()[/sbi] Baustein. Der Text wird nie angezeigt.",
+  "instruction": "Ersetze den [sbi]sage ()[/sbi] oder [sbi]denke ()[/sbi] Baustein durch einen [sbi]sage () für () Sekunden[/sbi] oder [sbi]denke () für () Sekunden[/sbi] Baustein.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when i start as a clone\nforever\nif <touching (mouse-pointer v) ?> then\nchange [points v] by (1)\nsay [Ooohhh...] :: #ff0000 //⇦  🐛\nstop [all v]\nend\nend"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when i start as a clone\nforever\nif <touching (mouse-pointer v) ?> then\nchange [points v] by (1)\nsay [Ooohhh...] for (3) seconds  :: #007000 //⇦  👍\nstop [all v]\nend\nend"
+    }
+  ]
+}

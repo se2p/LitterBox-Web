@@ -1,0 +1,13 @@
+{
+  "finderId": "gear_potentiometer_out_of_bounds",
+  "locale": "nl",
+  "name": "Tandwiel-potentiometer buiten grenzen",
+  "hint": "Een vergelijking van de tandwielpotentiometer buiten 0–100 verwijst naar een waarde die de sensor niet kan leveren, waardoor positiebesturing onbetrouwbaar wordt.",
+  "instruction": "Valideer metingen en drempelwaarden van de potentiometer als gehele getallen van 0 tot en met 100 voordat je ze gebruikt.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB gear potentiometer value :: sensing) > (150)> then\nsay [Invalid gear value]\nend"
+    }
+  ]
+}

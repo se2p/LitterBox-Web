@@ -1,0 +1,13 @@
+{
+  "finderId": "controlled_broadcast_or_stop",
+  "locale": "de",
+  "name": "Überprüfte Nachricht oder Stopp",
+  "hint": "Um mehr Kontrolle über dein Programm zu haben, fragst du kontinuierlich ob bestimmmte Bedingungen erfüllt sind, bevor du eine Nachricht verwendest oder das Programm/Skript stoppst.",
+  "instruction": "Um mehr Kontrolle über dein Programm zu haben, fragst du kontinuierlich ob bestimmmte Bedingungen erfüllt sind, bevor du eine Nachricht verwendest oder das Programm/Skript stoppst.",
+  "examples": [
+    {
+      "label": "Eleganter Code",
+      "scratchblocks": "when green flag clicked\nforever\nif <(score) = (100)> then\nstop [all v] //⇦  👍\nend"
+    }
+  ]
+}

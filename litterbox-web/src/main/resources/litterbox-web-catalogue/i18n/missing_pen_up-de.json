@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_pen_up",
+  "locale": "de",
+  "name": "Fehlendes Stiftausschalten",
+  "hint": "Wenn du den Malstift irgendwo einschaltest, stelle sicher, dass er auch wieder ausgeschaltet wird. Sonst zeichnet deine Figur immer weiter.",
+  "instruction": "Wenn du den Malstift irgendwo einschaltest, stelle sicher, dass er auch wieder ausgeschaltet wird. Sonst zeichnet deine Figur immer weiter.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nerase all\npen down//⇦  🐛\nrepeat (10)\nglide (1) secs to [random position v]\nend\n"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\nerase all\npen down\nrepeat (10)\nglide (1) secs to [random position v]\nend\npen up //⇦  👍\n"
+    }
+  ]
+}

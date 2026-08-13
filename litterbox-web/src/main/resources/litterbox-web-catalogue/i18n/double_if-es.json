@@ -1,0 +1,17 @@
+{
+  "finderId": "double_if",
+  "locale": "es",
+  "name": "Condición if duplicada",
+  "hint": "Tu proyecto contiene una condición [sbi]si < > entonces[/sbi] duplicada. Esto hace que el proyecto esté desordenado.[newLine]Puedes acortar el programa fusionando las dos sentencias [sbi]si < > entonces[/sbi] en una única sentencia condicional.",
+  "instruction": "Tu proyecto contiene una condición [sbi]si < > entonces[/sbi] duplicada. Esto hace que el proyecto esté desordenado.[newLine]Puedes acortar el programa fusionando las dos sentencias [sbi]si < > entonces[/sbi] en una única sentencia condicional.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching (mouse-pointer v)?> then\nmove (10) steps\nend\nif <touching (mouse-pointer v)?> then :: #ff0000 //⇦  🐛\nturn left (15) degrees\nend\nend\n"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching (mouse-pointer v)?> then\nmove (10) steps\nturn left (15) degrees :: #007000 //⇦  👍\nend\nend\n"
+    }
+  ]
+}

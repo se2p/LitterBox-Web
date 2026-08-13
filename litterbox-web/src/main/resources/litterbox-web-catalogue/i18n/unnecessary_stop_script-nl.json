@@ -1,0 +1,13 @@
+{
+  "finderId": "unnecessary_stop_script",
+  "locale": "nl",
+  "name": "Onnodige scriptstop",
+  "hint": "Deze geur herkent een [stop this script]-blok als laatste blok van een script. Het bereiken van het einde stopt dat script al, dus de expliciete stop voegt geen gedrag toe.",
+  "instruction": "Verwijder de laatste stop zodat het natuurlijke einde van het script duidelijk is. Houd [stop all] en [stop other scripts] apart, omdat die nog wel andere uitvoeringen kunnen beïnvloeden.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nsay [Hello!] for (2) seconds\nstop [this script v]"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "finderId": "empty_project",
+  "locale": "nl",
+  "name": "Leeg project",
+  "hint": "Je project bevat nog geen betekenisvolle programmeerbare inhoud en kan daardoor nog geen gedrag uitvoeren.",
+  "instruction": "Voeg een eerste relevante sprite, script of ander projectonderdeel toe, tenzij het lege project bewust zo bedoeld is.",
+  "examples": []
+}

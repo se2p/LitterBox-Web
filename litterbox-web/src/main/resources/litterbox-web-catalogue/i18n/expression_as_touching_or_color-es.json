@@ -1,0 +1,17 @@
+{
+  "finderId": "expression_as_touching_or_color",
+  "locale": "es",
+  "name": "Error de contacto",
+  "hint": "Este bloque espera un color o un sprite como parámetro y no funciona correctamente con una cadena o un número.",
+  "instruction": "Este bloque espera un color o un sprite como parámetro y no funciona correctamente con una cadena o un número.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nforever\nif &lt;touching color (answer) ? :: #ff0000&gt; then //⇦  🐛\nstop [all v]\nend\nend"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\nforever\nif &lt;touching color (#00FF00) ? :: #007000 &gt;then //⇦  👍\nstop [all v]\nend\nend"
+    }
+  ]
+}

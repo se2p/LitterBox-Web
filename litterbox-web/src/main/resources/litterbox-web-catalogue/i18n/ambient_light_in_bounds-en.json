@@ -1,0 +1,13 @@
+{
+  "finderId": "ambient_light_in_bounds",
+  "locale": "en",
+  "name": "Ambient Light in Bounds",
+  "hint": "The ambient-light sensor provides meaningful readings from 0 to 100 on Codey and from 0 to 1020 on mBot, supporting reliable control decisions.",
+  "instruction": "Use the connected robot’s documented limits for thresholds, and validate or constrain inputs before comparing the reading.",
+  "examples": [
+    {
+      "label": "Example",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB ambient light intensity :: sensing) > (50)> then\nsay [Bright]\nend"
+    }
+  ]
+}

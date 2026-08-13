@@ -1,0 +1,17 @@
+{
+  "finderId": "double_if",
+  "locale": "nl",
+  "name": "Gedupliceerde als-voorwaarde",
+  "hint": "Twee opeenvolgende voorwaardelijke blokken testen dezelfde voorwaarde. De dubbele controle maakt het script langer en kan gedrag dat bij elkaar hoort opsplitsen.",
+  "instruction": "Voeg de twee lichamen samen onder één voorwaardelijk blok wanneer beide bij dezelfde voorwaarde moeten worden uitgevoerd.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching (mouse-pointer v)?> then\nmove (10) steps\nend\nif <touching (mouse-pointer v)?> then :: #ff0000 //⇦  🐛\nturn left (15) degrees\nend\nend\n"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching (mouse-pointer v)?> then\nmove (10) steps\nturn left (15) degrees :: #007000 //⇦  👍\nend\nend\n"
+    }
+  ]
+}

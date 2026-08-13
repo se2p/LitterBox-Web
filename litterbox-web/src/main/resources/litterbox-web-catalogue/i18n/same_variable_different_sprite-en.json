@@ -1,0 +1,8 @@
+{
+  "finderId": "same_variable_different_sprite",
+  "locale": "en",
+  "name": "Same Variable in Different Sprite",
+  "hint": "Using two variables with the same name for two different sprites can be confusing. Make sure to use unique names for all your variables.",
+  "instruction": "Using two variables with the same name for two different sprites can be confusing. Make sure to use unique names for all your variables.",
+  "examples": []
+}

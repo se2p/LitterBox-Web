@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_pen_down",
+  "locale": "es",
+  "name": "Error de bajada de lápiz",
+  "hint": "Usas el bloque [sbi]bajar lápiz[/sbi] pero nunca vuelves a levantar el lápiz, por lo que tu sprite dibujará para siempre. Asegúrate de usar un bloque de [sbi]subir lápiz[/sbi] en el sprite.",
+  "instruction": "Usas el bloque [sbi]bajar lápiz[/sbi] pero nunca vuelves a levantar el lápiz, por lo que tu sprite dibujará para siempre. Asegúrate de usar un bloque de [sbi]subir lápiz[/sbi] en el sprite.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nrepeat (10)\nglide (1) secs to [random position v]\nend\npen up//⇦  🐛\n"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\npen down//⇦  👍\nrepeat (10)\nglide (1) secs to [random position v]\nend\npen up\n"
+    }
+  ]
+}

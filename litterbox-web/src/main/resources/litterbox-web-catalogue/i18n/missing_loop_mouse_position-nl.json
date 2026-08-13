@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_loop_mouse_position",
+  "locale": "nl",
+  "name": "Ontbrekende lus bij beweging naar muis",
+  "hint": "De vinder detecteert muisafhankelijke beweging of richting die buiten een lus maar één keer wordt uitgevoerd. De muispositie wordt daardoor alleen op dat moment gebruikt, zodat latere muisbewegingen niet worden gevolgd en de actor niet meer lijkt te reageren.",
+  "instruction": "Zet alle muisafhankelijke bewegings- of richtingsupdates in een geschikte herhalingslus en voeg zo nodig een korte wachttijd toe zodat het project goed blijft reageren.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nset x to (mouse x)"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\nforever\nset x to (mouse x)\nend"
+    }
+  ]
+}

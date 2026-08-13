@@ -1,0 +1,13 @@
+{
+  "finderId": "led_off_script",
+  "locale": "es",
+  "name": "Apagar LEDs",
+  "hint": "Un script de apagado restablece los LED después de usarlos o cuando termina el programa. Así el robot queda en un estado final predecible y el ciclo de vida del hardware es claro.",
+  "instruction": "Después de iluminar los LED, añade una orden para apagarlos antes de detener el programa o devolver el control.",
+  "examples": [
+    {
+      "label": "Ejemplo",
+      "scratchblocks": "when green flag clicked\n@codeyB RGB LED lights up [#ff0000] :: lighting\n@codeyB RGB LED lights off :: lighting\nstop [all v]"
+    }
+  ]
+}

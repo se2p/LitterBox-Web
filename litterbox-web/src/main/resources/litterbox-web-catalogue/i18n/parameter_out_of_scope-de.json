@@ -1,0 +1,17 @@
+{
+  "finderId": "parameter_out_of_scope",
+  "locale": "de",
+  "name": "Parameter außerhalb der Gültigkeit",
+  "hint": "Den Wert eines Eingabefelds eines eigenen Bausteins kannst du lediglich innerhalb dieses eigenen Bausteins verwenden.",
+  "instruction": "Den Wert eines Eingabefelds eines eigenen Bausteins kannst du lediglich innerhalb dieses eigenen Bausteins verwenden.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "define circle (angle)\nrepeat (4)\nmove (10) steps\nturn left (angle) degrees\nend\n\nwhen green flag clicked\nshow\nturn left (angle :: #ff6680) degrees :: #ff0000 //⇦  🐛\ncircle (15)"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "define circle (angle)\nrepeat (4)\nmove (10) steps\nturn left (angle) degrees\nend\n\nwhen green flag clicked\nshow\nturn left (15) degrees :: #007000 //⇦  👍\ncircle (15)"
+    }
+  ]
+}

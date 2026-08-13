@@ -1,0 +1,13 @@
+{
+  "finderId": "parallelisation",
+  "locale": "es",
+  "name": "Ejecución paralela de programas",
+  "hint": "Inicia dos o más scripts en el mismo evento. Implementaste el concepto de paralelización.",
+  "instruction": "Inicia dos o más scripts en el mismo evento. Implementaste el concepto de paralelización.",
+  "examples": [
+    {
+      "label": "Código bello",
+      "scratchblocks": "when green flag clicked  //⇦  👍\nforever\nturn left (10) degrees\nend\n\nwhen green flag clicked  //⇦  👍\nforever\nmove (10) steps\nend"
+    }
+  ]
+}

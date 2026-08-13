@@ -1,0 +1,13 @@
+{
+  "finderId": "matrix_off_script_missing",
+  "locale": "en",
+  "name": "Matrix Off Script Missing",
+  "hint": "The LED matrix is used, but no reachable cleanup script clears or turns it off before execution ends. A stale display can remain visible and interfere with later behaviour.",
+  "instruction": "After the required matrix display, add a reachable clear or off action and include it on both normal and alternate termination paths.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\n@codeyB show image @matrix :: looks\nstop [this script v]"
+    }
+  ]
+}

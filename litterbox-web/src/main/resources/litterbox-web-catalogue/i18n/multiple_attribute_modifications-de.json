@@ -1,0 +1,17 @@
+{
+  "finderId": "multiple_attribute_modifications",
+  "locale": "de",
+  "name": "Redundante Zustandsänderung",
+  "hint": "Es gibt mehrere Änderungen der gleichen Variable oder des gleichen Attributs hintereinander, die zusammengefasst werden könnten.",
+  "instruction": "Es gibt mehrere Änderungen der gleichen Variable oder des gleichen Attributs hintereinander, die zusammengefasst werden könnten.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nswitch backdrop to (garden v)\ngo to x: (11) y: (120)\nset [points v] to (0)\nset [points v] to (0) :: #ff0000 //⇦  🐛"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\nswitch backdrop to (garden v)\ngo to x: (11) y: (120)\nset [points v] to (0) :: #007000 //⇦  👍"
+    }
+  ]
+}

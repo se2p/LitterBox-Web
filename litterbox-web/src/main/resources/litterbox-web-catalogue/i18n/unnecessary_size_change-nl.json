@@ -1,0 +1,13 @@
+{
+  "finderId": "unnecessary_size_change",
+  "locale": "nl",
+  "name": "Onnodige groottewijziging",
+  "hint": "Deze geur herkent groottebewerkingen zonder nuttig, beheerst effect: de grootte met nul veranderen, een extreme waarde van minstens 540 in absolute waarde gebruiken, of een letterlijke grootte op of buiten betekenisvolle grenzen instellen. Zulke waarden worden begrensd of drukken geen bewuste wijziging uit.",
+  "instruction": "Verwijder een groottebewerking zonder effect of gebruik een gematigde, bewuste waarde die de gewenste grootte betrouwbaar uitdrukt.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nchange size by (0)"
+    }
+  ]
+}

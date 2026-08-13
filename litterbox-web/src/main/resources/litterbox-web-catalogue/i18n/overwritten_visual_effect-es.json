@@ -1,0 +1,17 @@
+{
+  "finderId": "overwritten_visual_effect",
+  "locale": "es",
+  "name": "Efecto visual sobrescrito",
+  "hint": "El buscador detecta cambios consecutivos del mismo estado visual sin una pausa temporal, incluidos apariencia, tamaño, visibilidad, capa, diálogo o efectos gráficos. El bloque posterior tiene efecto de inmediato, por lo que el estado visual anterior no puede observarse.",
+  "instruction": "Introduce una espera entre los estados visuales cuando deban verse ambos, o elimina o combina el cambio anterior cuando no tenga un efecto visible intencionado.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nset [ghost v] effect to (50)\nset [ghost v] effect to (0)"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\nset [ghost v] effect to (50)"
+    }
+  ]
+}

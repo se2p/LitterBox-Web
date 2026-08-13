@@ -1,0 +1,13 @@
+{
+  "finderId": "ask_and_answer_perfume",
+  "locale": "es",
+  "name": "Pregunta y Respuesta",
+  "hint": "El patrón de pregunta y respuesta recoge datos y usa la respuesta para crear una interacción.",
+  "instruction": "Coloca un bloque de preguntar y esperar antes de una acción que dependa de lo que introduzca la persona usuaria.",
+  "examples": [
+    {
+      "label": "Ejemplo",
+      "scratchblocks": "when green flag clicked\nask [What's your name?] and wait\nsay (answer)"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "nested_conditional_checks",
+  "locale": "nl",
+  "name": "Geneste voorwaardelijke controles",
+  "hint": "Geneste voorwaarden drukken afhankelijke beslissingen uit: de binnenste voorwaarde wordt alleen gecontroleerd wanneer de buitenste voorwaarde waar is. Dat maakt regels met echte afhankelijkheden duidelijker.",
+  "instruction": "Gebruik geneste als-blokken wanneer de tweede beslissing van de eerste afhangt, en vermijd nesting wanneer de voorwaarden onafhankelijk zijn.",
+  "examples": [
+    {
+      "label": "Elegante code",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching color (#f00)> then\nnext costume\nif <key (up arrow v) pressed ?> then //⇦  👍\nchange [y v] by (1)\nend\nend\nend"
+    }
+  ]
+}

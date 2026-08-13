@@ -1,0 +1,13 @@
+{
+  "finderId": "led_off_script_missing",
+  "locale": "nl",
+  "name": "Uitschakelscript voor leds ontbreekt",
+  "hint": "Een led wordt ingeschakeld, maar geen bereikbaar opruimscript schakelt diezelfde led uit voordat de uitvoering eindigt. De led kan blijven branden en later robotgedrag beïnvloeden.",
+  "instruction": "Koppel elke opdracht om een led in te schakelen aan een bereikbaar uit- of zwartcommando bij normale beëindiging en alternatieve paden.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\n@mBot LED [left v] shows color [#ff0000] :: show\nstop [this script v]"
+    }
+  ]
+}

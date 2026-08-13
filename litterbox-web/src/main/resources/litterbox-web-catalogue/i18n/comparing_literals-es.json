@@ -1,0 +1,17 @@
+{
+  "finderId": "comparing_literals",
+  "locale": "es",
+  "name": "Comparación inútil",
+  "hint": "Estás comparando dos valores que no cambian mientras se ejecuta tu programa. Tu bloque en forma de diamante siempre devolverá FALSO. En consecuencia, tu código entre corchetes horizontales siempre ó nunca se ejecuta.[newLine]Cambie la comparación por algo significativo o reemplace la estructura.",
+  "instruction": "Estás comparando dos valores que no cambian mientras se ejecuta tu programa. Tu bloque en forma de diamante siempre devolverá FALSO. En consecuencia, tu código entre corchetes horizontales siempre ó nunca se ejecuta.[newLine]Cambie la comparación por algo significativo o reemplace la estructura.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when I start as a clone\nif &lt; [score] &gt; (20) :: #ff0000 &gt; then //⇦  🐛\nswitch costume to (profi v)\nend\n"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "(score)\n\nwhen I start as a clone\nif &lt; (score) &gt; (20) :: #007000 &gt; then //⇦  👍\nswitch costume to (profi v)\nend"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "finderId": "blocking_if_else",
+  "locale": "es",
+  "name": "Estructura si-entonces bloqueante",
+  "hint": "Estás utilizando los bloques [sbi]detener [todos v][/sbi] o [sbi]detener [este programa v][/sbi] en la rama [sbi]si :: #ffab19[/sbi] y [sbi]si no :: #ffab19[/sbi] de este bloque. Si lo haces así, el script terminará siempre y los bloques después de [sbi]si < > entonces[/sbi] nunca se ejecutan.",
+  "instruction": "Intenta utilizar mejor la instrucción de parada solo en una rama o elimina los bloques después de [sbi]si < > entonces[/sbi].",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching (bird v)> then\nshow\nstop [this script v] :: #ff0000 //⇦  🐛\nelse\nhide\nstop [this script v] :: #ff0000 //⇦  🐛\nend\nend"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching (bird v)> then\nshow\nstop [this script v] :: #007000 //⇦ 👍\nelse\nhide\nend\nend"
+    }
+  ]
+}

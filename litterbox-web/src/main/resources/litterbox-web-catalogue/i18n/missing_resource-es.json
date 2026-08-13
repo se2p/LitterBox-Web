@@ -1,0 +1,8 @@
+{
+  "finderId": "missing_resource",
+  "locale": "es",
+  "name": "Falta fichero",
+  "hint": "A tu programa le falta el sonido o la imagen que estás intentando utilizar.",
+  "instruction": "A tu programa le falta el sonido o la imagen que estás intentando utilizar.",
+  "examples": []
+}

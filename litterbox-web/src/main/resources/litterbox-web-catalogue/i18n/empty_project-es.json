@@ -1,0 +1,8 @@
+{
+  "finderId": "empty_project",
+  "locale": "es",
+  "name": "Proyecto vacío",
+  "hint": "Tu proyecto está completamente vacío. Empieza agregando el primer sprite.",
+  "instruction": "Tu proyecto está completamente vacío. Empieza agregando el primer sprite.",
+  "examples": []
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "matrix_off_script",
+  "locale": "en",
+  "name": "Turn off LED Matrix",
+  "hint": "A shutdown script resets the LED matrix when it is no longer needed or when the program ends. This provides a predictable display state and a clear hardware lifecycle.",
+  "instruction": "Show the required matrix display, then turn the matrix off before the program terminates.",
+  "examples": [
+    {
+      "label": "Example",
+      "scratchblocks": "when green flag clicked\n@codeyB show image @matrix :: looks\n@codeyB turn off screen :: looks\nstop [all v]"
+    }
+  ]
+}

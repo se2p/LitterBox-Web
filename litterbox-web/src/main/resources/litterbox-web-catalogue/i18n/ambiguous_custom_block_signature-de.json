@@ -1,0 +1,17 @@
+{
+  "finderId": "ambiguous_custom_block_signature",
+  "locale": "de",
+  "name": "Uneindeutige Namen eigener Bausteine",
+  "hint": "Scratch lässt es zu, dass du mehrere eigene Bausteine mit demselben Namen erstellst. Das Programm kann anschließend nicht mehr zwischen den einzelnen Bausteinen unterscheiden.[newLine]Verwende für eigene Bausteine immer eindeutige Namen.",
+  "instruction": "Scratch lässt es zu, dass du mehrere eigene Bausteine mit demselben Namen erstellst. Das Programm kann anschließend nicht mehr zwischen den einzelnen Bausteinen unterscheiden.[newLine]Verwende für eigene Bausteine immer eindeutige Namen.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "define Jump\nmove (10) steps\nturn left (180) degrees\nmove (10) steps\n\ndefine Jump :: #ff0000 //⇦  🐛\nmove (10) steps\nturn right(180) degrees\nmove (10) steps\n\nWhen green flag clicked\nJump\nJump //⇦  🐛\n"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "define JumpLeft\nmove (10) steps\nturn left (180) degrees\nmove (10) steps\n\ndefine JumpRight :: #007000 //⇦  👍\nmove (10) steps\nturn right (180) degrees\nmove (10) steps\n\nWhen green flag clicked\nJumpLeft\nJumpRight //⇦  👍\n"
+    }
+  ]
+}

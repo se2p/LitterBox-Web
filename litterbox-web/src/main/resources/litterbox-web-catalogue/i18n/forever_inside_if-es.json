@@ -1,0 +1,17 @@
+{
+  "finderId": "forever_inside_if",
+  "locale": "es",
+  "name": "Por siempre dentro de un bloque si",
+  "hint": "El buscador detecta un bucle infinito dentro de una condición que tiene código alcanzable después de ella. Al entrar en el bucle infinito, este nunca termina, por lo que la continuación de la condición y los bloques posteriores quedan inaccesibles.",
+  "instruction": "Reestructura la condición y el bucle para que la rama pueda terminar, o sustituye el bucle infinito por uno que tenga una condición de terminación fiable.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nif <(1) = (1)> then\nforever\nmove (10) steps\nend\nend\nmove (10) steps"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\nif <(1) = (1)> then\nmove (10) steps\nend\nmove (10) steps"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "rocky_light_off_script",
+  "locale": "de",
+  "name": "Ausschalten des Rocky Lichts",
+  "hint": "Ein Ausschalt-Skript setzt Rockys Licht nach der Nutzung oder beim Programmende zurück. Dadurch bleibt der finale Lichtzustand vorhersehbar und die Hardware wird klar freigegeben.",
+  "instruction": "Schalte Rockys Licht nach der gewünschten Beleuchtung aus, bevor du das Programm stoppst oder die Steuerung zurückgibst.",
+  "examples": [
+    {
+      "label": "Beispiel",
+      "scratchblocks": "when green flag clicked\n@rocky set Rocky's light with color ['red v'] :: lighting\n@rocky Rocky lights off\nstop [all v]"
+    }
+  ]
+}

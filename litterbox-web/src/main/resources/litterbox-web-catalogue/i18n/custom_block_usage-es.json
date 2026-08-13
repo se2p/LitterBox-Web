@@ -1,0 +1,13 @@
+{
+  "finderId": "custom_block_usage",
+  "locale": "es",
+  "name": "Uso de bloques personalizados",
+  "hint": "Los bloques personalizados reúnen comportamientos reutilizables y hacen que los scripts sean más fáciles de entender.",
+  "instruction": "Define un bloque personalizado para una tarea repetida y llámalo allí donde el flujo necesite realizar esa tarea.",
+  "examples": [
+    {
+      "label": "Ejemplo",
+      "scratchblocks": "define jump [height]\nglide (1) secs to x: (x position) y: ((y position) + (height))\nglide (1) secs to x: (x position) y: ((y position) - (height))\n\nwhen green flag clicked\nforever\nif <key (up arrow v) pressed?> then\njump (50)\nend\nend"
+    }
+  ]
+}

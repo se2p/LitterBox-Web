@@ -1,0 +1,17 @@
+{
+  "finderId": "call_without_definition",
+  "locale": "es",
+  "name": "Llamada sin definición",
+  "hint": "Si usaste un bloque propio en tu programa y lo eliminaste, todavía puede haber fragmentos de código que se refieran a este bloque propio.[newLine]Asegúrate de eliminar todas las instancias en las que se utilizó el bloque propio eliminado.",
+  "instruction": "Si usaste un bloque propio en tu programa y lo eliminaste, todavía puede haber fragmentos de código que se refieran a este bloque propio.[newLine]Asegúrate de eliminar todas las instancias en las que se utilizó el bloque propio eliminado.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nDo It :: #ff0000 &gt; then //⇦  🐛\n"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\nmove (10) steps :: #007000 //⇦  👍\n"
+    }
+  ]
+}

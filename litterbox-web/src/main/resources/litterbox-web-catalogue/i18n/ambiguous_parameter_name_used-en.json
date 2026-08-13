@@ -1,0 +1,17 @@
+{
+  "finderId": "ambiguous_parameter_name_used",
+  "locale": "en",
+  "name": "Ambiguous Parameter Name Used",
+  "hint": "The parameter names in custom blocks do not have to be unique. Never use two or more parameters with the same name in one custom block.",
+  "instruction": "When you create custom blocks, Scratch allows you to give the same name to multiple different parameters. In this case, since the identifiers aren't unique, the program will not be able to determine which parameter you are trying to refer to, and will simply use the rightmost one.[newLine]To prevent possible problems caused by this, always make sure that each parameter has a unique name.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "define checkScore (score) (score :: #ff0000) //⇦  🐛\nif &lt;(score) = (0)&gt; then\nsay [You are bad!]\nsay (join [Score of your Rival: ] (score :: #ff0000)) //⇦  🐛\nend"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "define checkScore (score) (rivalScore :: #007000) //⇦  👍\nif &lt;(score) = (0)&gt; then\nsay [You are bad!]\nsay (join [Score of your Rival: ] (rivalScore :: #007000)) //⇦  👍\nend"
+    }
+  ]
+}

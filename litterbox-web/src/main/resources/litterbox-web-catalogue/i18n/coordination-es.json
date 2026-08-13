@@ -1,0 +1,13 @@
+{
+  "finderId": "coordination",
+  "locale": "es",
+  "name": "Coordinación",
+  "hint": "Puedes coordinar muy bien tus guiones dentro del programa. Eso es esencial para programas más grandes.",
+  "instruction": "Puedes coordinar muy bien tus guiones dentro del programa. Eso es esencial para programas más grandes.",
+  "examples": [
+    {
+      "label": "Código bello",
+      "scratchblocks": "when green flag clicked\nshow\nset [score v] to (0)\nwait until <key (up arrow v) pressed?>"
+    }
+  ]
+}

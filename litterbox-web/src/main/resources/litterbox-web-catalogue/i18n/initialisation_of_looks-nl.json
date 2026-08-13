@@ -1,0 +1,13 @@
+{
+  "finderId": "initialisation_of_looks",
+  "locale": "nl",
+  "name": "Initialisatie van het uiterlijk",
+  "hint": "Je stelt bij elke programmastart het uiterlijk van je sprite of achtergrond expliciet in. Daardoor verlopen herhaalde uitvoeringen voorspelbaar.",
+  "instruction": "Kies aan het begin de gewenste spriteweergave, zoals kostuum, grootte, effecten of zichtbaarheid, en stel bij het speelveld de gewenste achtergrond in.",
+  "examples": [
+    {
+      "label": "Elegante code",
+      "scratchblocks": "when green flag clicked\nswitch costume to (fish v) //⇦  👍\nforever\nmove (10) steps\nwait (1) seconds\nend"
+    }
+  ]
+}

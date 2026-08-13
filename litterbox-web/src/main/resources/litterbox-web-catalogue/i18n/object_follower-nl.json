@@ -1,0 +1,13 @@
+{
+  "finderId": "object_follower",
+  "locale": "nl",
+  "name": "Volgen van een object",
+  "hint": "Een sprite kan haar beweging afstemmen op een ander object om volg- en begeleidingsgedrag te maken.",
+  "instruction": "Richt de sprite op het doelobject of ga ernaartoe en herhaal de beweging wanneer ze het voortdurend moet volgen.",
+  "examples": [
+    {
+      "label": "Voorbeeld",
+      "scratchblocks": "when green flag clicked\nrepeat (10)\npoint towards (Sprite1 v)\nmove (10) steps\nend"
+    }
+  ]
+}

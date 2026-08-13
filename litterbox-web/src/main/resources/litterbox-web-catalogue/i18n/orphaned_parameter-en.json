@@ -1,0 +1,17 @@
+{
+  "finderId": "orphaned_parameter",
+  "locale": "en",
+  "name": "Orphaned Parameter",
+  "hint": "If you delete a former defined parameter from a block definition, make sure all instances of usage of the parameter get deleted as well.",
+  "instruction": "When deleting the definition of a self defined block parameter without deleting every instance of usage.[newLine]To fix an orphaned paramter, the paramter every instance of usage can be deleted or if the paramter existed from a valid reason, redefin it.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "define sing\nset volume to (100) %\nrepeat (count :: #ff6680) :: #ff0000 //⇦  🐛\nplay sound (LadyGaga v) until done\nend"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "define sing\nset volume to (100) %\nrepeat (3) :: #007000 //⇦  👍\nplay sound (LadyGaga v) until done\nend"
+    }
+  ]
+}

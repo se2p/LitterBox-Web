@@ -1,0 +1,13 @@
+{
+  "finderId": "loudness_in_bounds",
+  "locale": "es",
+  "name": "Volumen en límites",
+  "hint": "El sensor de sonoridad proporciona valores de 0 a 100, por lo que los niveles de sonido se pueden comparar y procesar de forma significativa.",
+  "instruction": "Elige umbrales de sonoridad entre 0 y 100 y valida la lectura antes de usarla en una condición.",
+  "examples": [
+    {
+      "label": "Ejemplo",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB loudness :: sensing) > (50)> then\nsay [Loud sound]\nend"
+    }
+  ]
+}

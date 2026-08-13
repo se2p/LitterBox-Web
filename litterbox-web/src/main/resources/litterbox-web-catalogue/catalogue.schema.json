@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://litterbox.uni-passau.de/schema/catalogue-v1.json",
+  "title": "LitterBox presentation-neutral pattern catalogue resource",
+  "description": "A catalogue resource is a locale overlay: the text one finder is described by in one language. Which finders exist, what kind of finding each reports, and how bad an occurrence is are the analyser's to say, so no resource restates them.",
+  "type": "object",
+  "required": ["finderId", "locale"],
+  "properties": {
+    "finderId": { "type": "string", "minLength": 1 },
+    "locale": { "type": "string", "minLength": 2 },
+    "name": { "type": "string", "minLength": 1 },
+    "hint": { "type": "string", "minLength": 1 },
+    "instruction": { "type": "string", "minLength": 1 },
+    "examples": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["label", "scratchblocks"],
+        "properties": {
+          "label": { "type": "string", "minLength": 1 },
+          "scratchblocks": { "type": "string", "minLength": 1 }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

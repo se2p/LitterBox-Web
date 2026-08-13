@@ -1,0 +1,13 @@
+{
+  "finderId": "ask_and_answer_perfume",
+  "locale": "en",
+  "name": "Ask and Answer",
+  "hint": "The ask-and-answer pattern gathers input and uses the response to create an interaction.",
+  "instruction": "Place an ask-and-wait block before an action that should depend on what the user enters.",
+  "examples": [
+    {
+      "label": "Example",
+      "scratchblocks": "when green flag clicked\nask [What's your name?] and wait\nsay (answer)"
+    }
+  ]
+}

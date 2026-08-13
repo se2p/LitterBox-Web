@@ -1,0 +1,13 @@
+{
+  "finderId": "pitch_angle_in_bounds",
+  "locale": "en",
+  "name": "Pitch Angle in Bounds",
+  "hint": "Pitch can be evaluated meaningfully from -180 to 180 degrees, describing the robot’s forward or backward tilt.",
+  "instruction": "Use comparison limits between -180 and 180 degrees and validate readings that fall outside the interval.",
+  "examples": [
+    {
+      "label": "Example",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB pitch angle° :: sensing) > (30)> then\nsay [Tilted forward]\nend"
+    }
+  ]
+}

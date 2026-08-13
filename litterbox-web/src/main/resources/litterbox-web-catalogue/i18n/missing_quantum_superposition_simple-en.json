@@ -1,0 +1,13 @@
+{
+  "finderId": "missing_quantum_superposition_simple",
+  "locale": "en",
+  "name": "Missing Superposition Handler",
+  "hint": "A superposition-start handler can run only when a superposition operation is executed for that actor. Without such an operation, the script is unreachable and its response never occurs.",
+  "instruction": "Execute a suitable superposition operation for the same actor before the event is expected, or remove the handler when that state is not needed.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when superposition started :: events hat #5c068c\nforever\nturn right (15) degrees\nwait (0.1) seconds\nend"
+    }
+  ]
+}

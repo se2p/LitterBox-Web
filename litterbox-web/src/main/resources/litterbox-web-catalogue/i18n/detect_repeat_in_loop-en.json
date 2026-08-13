@@ -1,0 +1,13 @@
+{
+  "finderId": "detect_repeat_in_loop",
+  "locale": "en",
+  "name": "Input Request in a Loop",
+  "hint": "A fast loop tests a robot sensor and immediately performs an action without waiting for the triggering condition to clear. One physical event can therefore be accepted repeatedly, causing duplicated actions or state changes.",
+  "instruction": "Wait until the condition is false, detect an edge, or use a debounce state so the loop accepts a new event only after the previous one has ended.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when Codey starts up :: events hat\nforever\nif <@codeyB shaken ? :: sensing> then\nchange [aas v] by (1)\nend\nend"
+    }
+  ]
+}

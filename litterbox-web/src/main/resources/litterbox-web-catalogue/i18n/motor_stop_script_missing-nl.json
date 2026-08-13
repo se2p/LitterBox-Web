@@ -1,0 +1,13 @@
+{
+  "finderId": "motor_stop_script_missing",
+  "locale": "nl",
+  "name": "Stopscript voor motor ontbreekt",
+  "hint": "Een motorbeweging kan starten, maar vóór het einde van het programma volgt geen bereikbare motorstop, waardoor de robot kan blijven bewegen.",
+  "instruction": "Voeg na blijvende beweging op elk beëindigingspad een expliciete motorstop of nulvermogen toe.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\n@codeyA [move forward v] at power (50) % :: motion\nstop [this script v]"
+    }
+  ]
+}

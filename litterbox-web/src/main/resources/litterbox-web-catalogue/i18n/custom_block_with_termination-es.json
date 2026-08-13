@@ -1,0 +1,17 @@
+{
+  "finderId": "custom_block_with_termination",
+  "locale": "es",
+  "name": "Bloque personalizado con terminación",
+  "hint": "Si un bloque propio contiene [sbi]Detener [todos v][/sbi] o [sbi]Eliminar este clon[/sbi] y el bloque propio se llama en medio de otro script, el script nunca llegará a los bloques que siguen después de la llamada.",
+  "instruction": "Si un bloque propio contiene [sbi]Detener [todos v][/sbi] o [sbi]Eliminar este clon[/sbi] y el bloque propio se llama en medio de otro script, el script nunca llegará a los bloques que siguen después de la llamada.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "define walkSquare\nrepeat (4)\nmove (10) steps\nturn left (90) degrees\nend\nstop [all v] :: #ff0000 //⇦  🐛\n\nwhen green flag clicked\nwalkSquare\nsay [finished] for (2) seconds //⇦  🐛\n"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "define walkSquare\nrepeat (4)\nmove (10) steps\nturn left (90) degrees\nend\n\nwhen green flag clicked\nwalkSquare\nsay [finished]for (2) seconds\nstop [all v] :: #007000 //⇦  👍\n"
+    }
+  ]
+}

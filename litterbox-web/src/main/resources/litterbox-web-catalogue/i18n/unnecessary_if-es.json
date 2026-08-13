@@ -1,0 +1,17 @@
+{
+  "finderId": "unnecessary_if",
+  "locale": "es",
+  "name": "Innecesario Si",
+  "hint": "Usas dos si <> entonces[/ sbi] bloques uno tras otro con los mismos bloques adentro.",
+  "instruction": "Puede simplificar esto usando un bloque o <>> [/ sbi] y resumiendo las condiciones en un solo bloque si <> entonces[/ sbi].",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching color (#f00) ?> then\nmove (2) steps\nend\nif <touching color (#0f0) ?> then :: #ff0000 //⇦  🐛\nmove (2) steps\nend\nend"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\nforever\nif <<touching color (#f00) ?> or <touching color (#0f0) ?>> then :: #007000 //⇦  👍\nmove (2) steps\nend"
+    }
+  ]
+}

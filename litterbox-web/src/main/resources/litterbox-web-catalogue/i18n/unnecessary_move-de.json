@@ -1,0 +1,13 @@
+{
+  "finderId": "unnecessary_move",
+  "locale": "de",
+  "name": "Unnötige Bewegung",
+  "hint": "Der Geruch erkennt einen Bewegungsbaustein mit dem Literalwert null, etwa [move (0) steps] oder eine Änderung von X oder Y um null. Der Baustein verändert die Position der Figur nicht und erschwert die Lesbarkeit.",
+  "instruction": "Entferne die Nullbewegung oder ersetze sie durch einen bewusst gewählten Wert, wenn die Figur tatsächlich bewegt werden soll.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nmove (0) steps"
+    }
+  ]
+}

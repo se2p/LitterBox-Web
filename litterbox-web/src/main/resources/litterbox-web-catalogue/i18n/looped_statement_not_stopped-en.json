@@ -1,0 +1,13 @@
+{
+  "finderId": "looped_statement_not_stopped",
+  "locale": "en",
+  "name": "Resources in Loops are not Stopped",
+  "hint": "A resource is activated in a loop while its matching stop is handled only locally or on another path. A later iteration can reactivate it, so it is not reliably off when execution should end.",
+  "instruction": "Use a final global stop action outside the reactivating loop and ensure every termination path reaches that cleanup.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nforever\n@codeyB RGB LED lights up [#ff0000] for (1) secs :: lighting\nend\n\nwhen [space v] key pressed\n@codeyB RGB LED lights off :: lighting"
+    }
+  ]
+}

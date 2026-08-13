@@ -1,0 +1,17 @@
+{
+  "finderId": "interrupted_loop_sensing",
+  "locale": "es",
+  "name": "Detección de bucle interrumpido",
+  "hint": "El bloque interrumpe la comprobación de la condición del bloque [sbi]si () entonces[/sbi] mientras se ejecuta. Puede suceder que se produzca la condición, pero tu script no reacciona en consecuencia porque Estás ocupado haciendo el bloque.",
+  "instruction": "Considera realizar la verificación de la condición en un script separado (paralelo).",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching (edge v) ?> then\nchange (score v) by (-1)\nend\nplay sound (Miau v) until done :: #ff0000 //⇦  🐛\nend"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching (edge v) ?> then\nchange (score v) by (-1)\nend\nend\n\nwhen green flag clicked :: #007000 //⇦  👍\nforever\nplay sound (Miau v) until done\nend"
+    }
+  ]
+}

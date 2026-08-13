@@ -1,0 +1,8 @@
+{
+  "finderId": "unused_parameter",
+  "locale": "es",
+  "name": "Parámetro no utilizado",
+  "hint": "Has creado un parámetro pero nunca lo usas en tu procedimiento. Esto hace que el bloque propio sea más difícil de entender.",
+  "instruction": "Has creado un parámetro pero nunca lo usas en tu procedimiento. Esto hace que el bloque propio sea más difícil de entender.",
+  "examples": []
+}

@@ -1,0 +1,17 @@
+{
+  "finderId": "stuttering_movement",
+  "locale": "de",
+  "name": "Ruckelnde Bewegung",
+  "hint": "Drückt man eine Taste länger, dann erwartet man eine andauernde Ereignisverarbeitung. Leider tritt jedoch eine Verzögerung zwischen der ersten und der zweiten Verarbeitung auf, wodurch die Bewegung nicht flüssig ist.",
+  "instruction": "Du kannst diese Verzögerung umgehen, indem du mit dem Baustein [sbi]Taste ( v) gedrückt?[/sbi] aus der Kategorie Fühlen arbeitest.[newLine]Dazu musst du die Bedingung [sbi]falls <Taste ( v) gedrückt?>, dann[/sbi] innerhalb des Bausteins [sbi]wiederhole fortlaufend[/sbi] überprüfen und statt des Ereignisverarbeiters [sbi]Wenn Taste [ v] gedrückt wird[/sbi] den Ereignisverarbeiter [sbi]Wenn die grüne Flagge angeklickt[/sbi] verwenden.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when [left arrow v] key pressed :: #ff0000 //⇦  🐛\nmove (-5) steps\n\nwhen [right arrow v] key pressed :: #ff0000 //⇦  🐛\nmove (5) steps"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked :: #007000 //⇦  👍\nforever\nif <key (left arrow v) pressed ?> then\nmove (-5) steps\nend\nif <key (right arrow v) pressed ?> then\nmove (5) steps\nend\nend"
+    }
+  ]
+}

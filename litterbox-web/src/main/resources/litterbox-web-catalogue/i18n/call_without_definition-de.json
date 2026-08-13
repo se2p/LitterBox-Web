@@ -1,0 +1,17 @@
+{
+  "finderId": "call_without_definition",
+  "locale": "de",
+  "name": "Aufruf ohne Definition",
+  "hint": "Wenn ein eigener Baustein in Scratch gelöscht wird, bleiben manchmal Einsatzfragmente zurück. Stelle sicher, dass du den eigenen Baustein an allen Positionen, an denen du ihn verwendest, ebenfalls löschst.",
+  "instruction": "Wenn ein eigener Baustein in Scratch gelöscht wird, bleiben manchmal Einsatzfragmente zurück. Stelle sicher, dass du den eigenen Baustein an allen Positionen, an denen du ihn verwendest, ebenfalls löschst.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nDo It :: #ff0000 &gt; then //⇦  🐛\n"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\nmove (10) steps :: #007000 //⇦  👍\n"
+    }
+  ]
+}

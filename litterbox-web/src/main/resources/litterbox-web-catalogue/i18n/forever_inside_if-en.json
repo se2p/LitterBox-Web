@@ -1,0 +1,17 @@
+{
+  "finderId": "forever_inside_if",
+  "locale": "en",
+  "name": "Forever Inside an If-Block",
+  "hint": "The finder detects an endless loop nested in a conditional that has code after the conditional or another reachable continuation. Once entered, the endless loop never finishes, so the continuation and any later blocks remain unreachable.",
+  "instruction": "Restructure the conditional and loop so the branch can finish, or replace the endless loop with a loop that has a reliable termination condition.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nif <(1) = (1)> then\nforever\nmove (10) steps\nend\nend\nmove (10) steps"
+    },
+    {
+      "label": "Possible solution",
+      "scratchblocks": "when green flag clicked\nif <(1) = (1)> then\nmove (10) steps\nend\nmove (10) steps"
+    }
+  ]
+}

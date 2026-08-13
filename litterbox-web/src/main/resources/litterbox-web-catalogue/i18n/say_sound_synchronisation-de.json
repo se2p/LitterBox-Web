@@ -1,0 +1,13 @@
+{
+  "finderId": "say_sound_synchronisation",
+  "locale": "de",
+  "name": "Sprechblase und Sound synchron",
+  "hint": "Eine Sprechblase zusammen mit einem Sound kann Dialoge verständlicher und für die Benutzerinnen und Benutzer anschaulicher machen.",
+  "instruction": "Spiele den Sound direkt nach dem Sprechen ab und beende die Sprechblase anschließend, wenn beides zeitlich zusammengehören soll.",
+  "examples": [
+    {
+      "label": "Beispiel",
+      "scratchblocks": "when green flag clicked\nsay [Hello!]\nplay sound (recording1 v) until done\nsay []"
+    }
+  ]
+}

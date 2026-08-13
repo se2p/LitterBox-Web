@@ -1,0 +1,17 @@
+{
+  "finderId": "forever_inside_loop",
+  "locale": "en",
+  "name": "Forever Inside A Loop",
+  "hint": "If two loops are nested and the inner loop is a forever loop, the inner loop will never terminate. Thus the statements preceeding the inner loop are only executed once.[newLine]The statements following the inner loop will never be executed. Try to create a second script for the forever loop.",
+  "instruction": "If two loops are nested and the inner loop is a forever loop, the inner loop will never terminate. Thus the statements preceeding the inner loop are only executed once.[newLine]The statements following the inner loop will never be executed. Try to create a second script for the forever loop.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\npen down\nrepeat (4)\nturn left (90) degrees\nforever :: #ff0000 //⇦  🐛\nmove (20) steps\nend\nend"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "when green flag clicked\npen down\nrepeat (4)\nturn left (90) degrees\nmove (20) steps\nend"
+    }
+  ]
+}

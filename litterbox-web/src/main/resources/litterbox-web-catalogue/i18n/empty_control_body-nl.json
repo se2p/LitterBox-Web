@@ -1,0 +1,17 @@
+{
+  "finderId": "empty_control_body",
+  "locale": "nl",
+  "name": "Lege besturingsstructuur",
+  "hint": "De inhoud van een besturingsstructuur, zoals een voorwaarde of lus, is leeg. Bij uitvoering gebeurt er niets, waardoor de bedoeling van de code onduidelijk wordt.",
+  "instruction": "Voeg het bedoelde gedrag toe of verwijder het lege besturingsblok als het niet nodig is.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\nWhen this sprite clicked :: #ff0000 //⇦  🐛\n"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\n"
+    }
+  ]
+}

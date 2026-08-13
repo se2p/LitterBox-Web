@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_ask",
+  "locale": "de",
+  "name": "Fehlende Frage",
+  "hint": "Der [sbi](Antwort)[/sbi]-Baustein wird verwendet, aber es wird nie eine Frage gestellt. Der Baustein bleibt also immer leer.",
+  "instruction": "Verwende den [sbi]frage [ ] und warte[/sbi]-Block, bevor du den [sbi](Antwort)[/sbi]-Block verwendest.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when this sprite clicked\ngo to [random position v]\nsay (join [Hello] (answer :: #ff0000)) //⇦  🐛\n"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when this sprite clicked\nask [What is your name?] and wait :: #007000 // ⇦  👍\ngo to [random position v]\nsay (join [Hello] (answer  :: #007000)) // ⇦  👍\n"
+    }
+  ]
+}

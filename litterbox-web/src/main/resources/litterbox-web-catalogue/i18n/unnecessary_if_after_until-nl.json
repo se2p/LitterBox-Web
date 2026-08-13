@@ -1,0 +1,8 @@
+{
+  "finderId": "unnecessary_if_after_until",
+  "locale": "nl",
+  "name": "Onnodige als na herhaal-tot",
+  "hint": "Een als-blok volgt direct op een [sbi]herhaal tot < >[/sbi]-lus en test dezelfde voorwaarde. Bij het verlaten van de lus is die voorwaarde al waar, dus het lichaam van de als wordt altijd uitgevoerd.",
+  "instruction": "Verwijder de overbodige als-voorwaarde en voer het bedoelde gedrag direct na de lus uit.",
+  "examples": []
+}

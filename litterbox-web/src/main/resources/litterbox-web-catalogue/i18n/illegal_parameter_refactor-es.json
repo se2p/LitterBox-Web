@@ -1,0 +1,8 @@
+{
+  "finderId": "illegal_parameter_refactor",
+  "locale": "es",
+  "name": "Refactorización de parámetros ilegales",
+  "hint": "El parámetro tiene un tipo incorrecto. Al editar el bloque propio, el parámetro booleano se ha convirtido en un parámetro numérico o de texto.",
+  "instruction": "El parámetro tiene un tipo incorrecto. Al editar el bloque propio, el parámetro booleano se ha convirtido en un parámetro numérico o de texto.",
+  "examples": []
+}

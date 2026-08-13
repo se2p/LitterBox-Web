@@ -1,0 +1,17 @@
+{
+  "finderId": "custom_block_with_termination",
+  "locale": "en",
+  "name": "Custom Block With Termination",
+  "hint": "If a custom block contains a [sbi]stop [all v][/sbi] or [sbi]delete this clone[/sbi] and the custom block is called in the middle of another script, the script will never reach the blocks following the call.",
+  "instruction": "If a custom block contains a [sbi]stop [all v][/sbi] or [sbi]delete this clone[/sbi] and the custom block is called in the middle of another script, the script will never reach the blocks following the call.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "define walkSquare\nrepeat (4)\nmove (10) steps\nturn left (90) degrees\nend\nstop [all v] :: #ff0000 //⇦  🐛\n\nwhen green flag clicked\nwalkSquare\nsay [finished] for (2) seconds //⇦  🐛\n"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "define walkSquare\nrepeat (4)\nmove (10) steps\nturn left (90) degrees\nend\n\nwhen green flag clicked\nwalkSquare\nsay [finished]for (2) seconds\nstop [all v] :: #007000 //⇦  👍\n"
+    }
+  ]
+}

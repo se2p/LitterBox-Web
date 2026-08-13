@@ -1,0 +1,25 @@
+{
+  "finderId": "missing_backdrop_switch",
+  "locale": "nl",
+  "name": "Ontbrekende achtergrondwissel",
+  "hint": "Een script begint met [sbi]When backdrop switches to [ v][/sbi], maar het project schakelt nooit naar die achtergrond. De gebeurtenis kan daardoor niet optreden.",
+  "instruction": "Schakel op het bedoelde moment naar de gekozen achtergrond, of gebruik een gebeurtenisblok dat wel bij de programmastroom past.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when backdrop switches to [stage v]\nmove (10) steps\n"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when backdrop switches to [stage v]\nmove (10) steps\n"
+    },
+    {
+      "label": "Fout 2",
+      "scratchblocks": "when green flag clicked\n"
+    },
+    {
+      "label": "Mogelijke oplossing 2",
+      "scratchblocks": "when green flag clicked\nswitch backdrop to [stage v] :: #007000\n"
+    }
+  ]
+}

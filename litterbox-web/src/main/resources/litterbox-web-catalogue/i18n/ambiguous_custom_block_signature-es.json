@@ -1,0 +1,17 @@
+{
+  "finderId": "ambiguous_custom_block_signature",
+  "locale": "es",
+  "name": "Nombres de bloques propios ambiguos",
+  "hint": "Los nombres de los bloques propios no son únicos. Solo se pueden distinguir dos bloques propios con el mismo nombre si tienen un número u orden de parámetros diferente.[newLine]Trata de que los nombres de los bloques propios sean siempre únicos.",
+  "instruction": "Los nombres de los bloques propios no son únicos. Solo se pueden distinguir dos bloques propios con el mismo nombre si tienen un número u orden de parámetros diferente.[newLine]Trata de que los nombres de los bloques propios sean siempre únicos.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "define Jump\nmove (10) steps\nturn left (180) degrees\nmove (10) steps\n\ndefine Jump :: #ff0000 //⇦  🐛\nmove (10) steps\nturn right(180) degrees\nmove (10) steps\n\nWhen green flag clicked\nJump\nJump //⇦  🐛\n"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "define JumpLeft\nmove (10) steps\nturn left (180) degrees\nmove (10) steps\n\ndefine JumpRight :: #007000 //⇦  👍\nmove (10) steps\nturn right (180) degrees\nmove (10) steps\n\nWhen green flag clicked\nJumpLeft\nJumpRight //⇦  👍\n"
+    }
+  ]
+}

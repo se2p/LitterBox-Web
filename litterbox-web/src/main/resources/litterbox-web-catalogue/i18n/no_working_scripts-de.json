@@ -1,0 +1,17 @@
+{
+  "finderId": "no_working_scripts",
+  "locale": "de",
+  "name": "Nicht funktionierende Programme",
+  "hint": "Wenn dein Code nicht mit einem Ereignisblock beginnt, kann dieser nicht ausgeführt werden.",
+  "instruction": "Verbinde einen Ereignisblock mit deinem restlichen Programm.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "forever :: #ff0000 //⇦  🐛\nmove (1) steps\nturn left (5) degrees\nend"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked :: #007000 //⇦  👍\nforever\nmove (1) steps\nturn left (5) degrees\nend"
+    }
+  ]
+}

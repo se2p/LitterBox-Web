@@ -1,0 +1,13 @@
+{
+  "finderId": "color_setting_in_bounds",
+  "locale": "de",
+  "name": "Farbsetzung im möglichen Bereich",
+  "hint": "Jeder RGB-Farbkanal kann Werte von 0 bis 255 darstellen, sodass die eingestellte Farbe ohne abgeschnittene oder ignorierte Anteile ausgegeben wird.",
+  "instruction": "Begrenze Rot-, Grün- und Blauwerte jeweils auf 0 bis 255, bevor du sie an den Lichtbefehl übergibst.",
+  "examples": [
+    {
+      "label": "Beispiel",
+      "scratchblocks": "when green flag clicked\n@codeyB set the indicator [red v] with color value (234) :: lighting\n@codeyB set the indicator [green v] with color value (255) :: lighting\n@codeyB set the indicator [blue v] with color value (0) :: lighting"
+    }
+  ]
+}

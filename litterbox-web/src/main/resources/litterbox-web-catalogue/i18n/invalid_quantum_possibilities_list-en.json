@@ -1,0 +1,13 @@
+{
+  "finderId": "invalid_quantum_possibilities_list",
+  "locale": "en",
+  "name": "Invalid List for Entanglement or Superposition",
+  "hint": "Quantum blocks with a possibilities-list input expect a real Scratch list reporter. A number literal or an ordinary variable does not provide a list of possible states and can make the operation unusable.",
+  "instruction": "Create a Scratch list for the possible states, populate it when needed, and insert its list reporter into the quantum block. Do not use the list name as an ordinary value there.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nentangle [position v] with [Sprite2] possibilities: (1) list: (6) :: #5c068c"
+    }
+  ]
+}

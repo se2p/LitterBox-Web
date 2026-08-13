@@ -1,0 +1,13 @@
+{
+  "finderId": "unused_answer",
+  "locale": "es",
+  "name": "Respuesta sin usar",
+  "hint": "Este olor identifica un bloque [ask and wait] cuya respuesta nunca lee el mismo objeto. Por tanto, la entrada de la persona usuaria no puede afectar al comportamiento y la pregunta resulta engañosa.",
+  "instruction": "Usa [answer] en una condición, cálculo o mensaje cuando la entrada sea relevante. En caso contrario, elimina la pregunta o sustitúyela por una acción que no espere una respuesta.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nask [What is your name?] and wait\nsay [Hello!]"
+    }
+  ]
+}

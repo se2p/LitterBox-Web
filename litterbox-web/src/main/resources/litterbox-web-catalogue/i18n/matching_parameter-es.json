@@ -1,0 +1,13 @@
+{
+  "finderId": "matching_parameter",
+  "locale": "es",
+  "name": "Parámetro inicializado",
+  "hint": "Un parámetro con nombre transmite un valor a un bloque personalizado y permite adaptar su comportamiento.",
+  "instruction": "Añade el parámetro a la definición del bloque y úsalo en el cuerpo donde deba aplicarse el valor recibido.",
+  "examples": [
+    {
+      "label": "Ejemplo",
+      "scratchblocks": "define jump [height]\nforever\nif <key (up arrow v) pressed?> then\nglide (1) secs to x: (0) y: (height)\nglide (1) secs to x: (0) y: (0)\nend\nend"
+    }
+  ]
+}

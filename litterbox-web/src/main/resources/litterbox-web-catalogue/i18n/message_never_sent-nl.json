@@ -1,0 +1,25 @@
+{
+  "finderId": "message_never_sent",
+  "locale": "nl",
+  "name": "Bericht nooit verzonden",
+  "hint": "Een script wacht op een bericht dat nooit wordt verzonden. Daardoor kan de gebeurtenis van dit script nooit worden geactiveerd.",
+  "instruction": "Verzend het bericht op het bedoelde moment in het programma, zodat het ontvangende script kan starten.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when [space v] key pressed\nsay [Hello] for (2) seconds\n"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when [space v] key pressed\nsay [Hello] for (2) seconds\nbroadcast [startToFly v] and wait :: #007000 //⇦  👍\n"
+    },
+    {
+      "label": "Fout 2",
+      "scratchblocks": "when I receive [startToFly v] :: #ff0000 // ⇦  🐛\nglide (1) secs to [random position v]\n"
+    },
+    {
+      "label": "Mogelijke oplossing 2",
+      "scratchblocks": "when I receive [startToFly v] :: #007000 // ⇦  👍\nglide (1) secs to [random position v]\n"
+    }
+  ]
+}

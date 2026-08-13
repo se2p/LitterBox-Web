@@ -1,0 +1,25 @@
+{
+  "finderId": "message_never_sent",
+  "locale": "en",
+  "name": "Message Never Sent",
+  "hint": "When a sprite waits for a message to receive, you have to make sure, that it is sent.",
+  "instruction": "Send the message at the intended position.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when [space v] key pressed\nsay [Hello] for (2) seconds\n"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "when [space v] key pressed\nsay [Hello] for (2) seconds\nbroadcast [startToFly v] and wait :: #007000 //⇦  👍\n"
+    },
+    {
+      "label": "Error 2",
+      "scratchblocks": "when I receive [startToFly v] :: #ff0000 // ⇦  🐛\nglide (1) secs to [random position v]\n"
+    },
+    {
+      "label": "Possible Solution 2",
+      "scratchblocks": "when I receive [startToFly v] :: #007000 // ⇦  👍\nglide (1) secs to [random position v]\n"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "unnecessary_time_robot",
+  "locale": "de",
+  "name": "Unnötige Zeitangabe bei Robotern",
+  "hint": "Ein zeitgesteuerter Roboterbefehl hat entweder die Dauer 0 oder eine leere Dauerangabe, die als 0 verstanden wird. Dadurch erhält die Hardware keine sinnvolle Zeit für die gewünschte Bewegung, Licht-, Anzeige- oder Tonaktion; der Befehl bleibt wirkungslos oder führt in die Irre.",
+  "instruction": "Gib eine sinnvolle positive Dauer an, nutze einen passenden Befehl ohne Zeitvorgabe, sofern verfügbar, oder entferne die wirkungslose Aktion.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\n@codeyA move forward at power (50) % for (0) secs :: motion"
+    }
+  ]
+}

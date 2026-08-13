@@ -1,0 +1,8 @@
+{
+  "finderId": "variable_initialization_race",
+  "locale": "nl",
+  "name": "Raceconditie bij variabele-initialisatie",
+  "hint": "Dezelfde variabele wordt in meerdere scripts geïnitialiseerd die door dezelfde gebeurtenis worden gestart. Omdat die scripts parallel lopen, kan de uiteindelijke beginwaarde afhangen van de uitvoeringsvolgorde.",
+  "instruction": "Wijs de beginwaarde in één duidelijk verantwoordelijk script toe, of coördineer de scripts met verschillende gebeurtenissen.",
+  "examples": []
+}

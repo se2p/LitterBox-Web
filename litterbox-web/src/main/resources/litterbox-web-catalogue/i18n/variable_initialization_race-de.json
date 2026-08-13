@@ -1,0 +1,8 @@
+{
+  "finderId": "variable_initialization_race",
+  "locale": "de",
+  "name": "Wettlaufsituation bei der Initialisierung",
+  "hint": "Die gleiche Variable wird beim gleichen Ereignis an verschiedenen Stellen initialisiert. Wenn Scratch die Reihenfolge der Scripts ändert, kann sich das Ergebnis ändern. Versuche nur an einer Stelle die Werte zuzuweisen.",
+  "instruction": "Die gleiche Variable wird beim gleichen Ereignis an verschiedenen Stellen initialisiert. Wenn Scratch die Reihenfolge der Scripts ändert, kann sich das Ergebnis ändern. Versuche nur an einer Stelle die Werte zuzuweisen.",
+  "examples": []
+}

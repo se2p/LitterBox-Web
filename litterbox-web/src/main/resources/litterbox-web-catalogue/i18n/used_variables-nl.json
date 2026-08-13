@@ -1,0 +1,13 @@
+{
+  "finderId": "used_variables",
+  "locale": "nl",
+  "name": "Gebruikte variabele",
+  "hint": "Geïnitialiseerde variabelen en lijsten bewaren toestanden die een programma in zijn scripts kan hergebruiken.",
+  "instruction": "Maak een variabele of lijst aan vóór het eerste gebruik en lees of wijzig haar daarna in de blokken die die toestand nodig hebben.",
+  "examples": [
+    {
+      "label": "Voorbeeld",
+      "scratchblocks": "when green flag clicked\nset [my variable v] to (0)\nsay [Hello!] for (2) seconds\nchange [my variable v] by (1)"
+    }
+  ]
+}

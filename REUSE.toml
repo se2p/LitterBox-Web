@@ -1,0 +1,8 @@
+version = 1
+
+# JSON carries no comments, so the catalogue resources are covered here rather than each in a header of its own.
+[[annotations]]
+path = "litterbox-web/src/main/resources/litterbox-web-catalogue/**/*.json"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 LitterBox-Web contributors"
+SPDX-License-Identifier = "AGPL-3.0-only"

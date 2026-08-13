@@ -1,0 +1,13 @@
+{
+  "finderId": "roll_angle_out_of_bounds",
+  "locale": "en",
+  "name": "Roll Angle out of Bounds",
+  "hint": "A roll comparison outside -90° to 90° describes an impossible orientation, so roll-dependent behaviour can become unreliable.",
+  "instruction": "Constrain roll readings and thresholds to the inclusive -90° through 90° range before comparing them.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB roll angle° :: sensing) > (100)> then\nsay [Invalid roll]\nend"
+    }
+  ]
+}

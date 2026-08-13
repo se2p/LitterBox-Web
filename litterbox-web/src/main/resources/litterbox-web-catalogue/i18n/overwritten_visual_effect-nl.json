@@ -1,0 +1,17 @@
+{
+  "finderId": "overwritten_visual_effect",
+  "locale": "nl",
+  "name": "Overschreven visueel effect",
+  "hint": "De vinder detecteert opeenvolgende veranderingen van dezelfde visuele toestand zonder getimede pauze, zoals uiterlijk, grootte, zichtbaarheid, laag, tekstballon of grafische effecten. Het volgende blok werkt onmiddellijk, waardoor de eerdere visuele toestand niet kan worden waargenomen.",
+  "instruction": "Plaats een wachttijd tussen visuele toestanden wanneer beide zichtbaar moeten zijn, of verwijder of combineer de eerdere verandering wanneer die geen bedoeld zichtbaar effect heeft.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nset [ghost v] effect to (50)\nset [ghost v] effect to (0)"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\nset [ghost v] effect to (50)"
+    }
+  ]
+}

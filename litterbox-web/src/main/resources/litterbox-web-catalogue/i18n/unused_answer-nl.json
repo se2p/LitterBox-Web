@@ -1,0 +1,13 @@
+{
+  "finderId": "unused_answer",
+  "locale": "nl",
+  "name": "Ongebruikt antwoord",
+  "hint": "Deze geur herkent een [ask and wait]-blok waarvan het antwoord door dezelfde sprite nergens wordt gelezen. De invoer van de gebruiker kan het gedrag daardoor niet beïnvloeden en de vraag wordt misleidend.",
+  "instruction": "Gebruik [answer] in een voorwaarde, berekening of bericht wanneer de invoer ertoe doet. Verwijder de vraag anders of vervang die door een actie die geen antwoord verwacht.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nask [What is your name?] and wait\nsay [Hello!]"
+    }
+  ]
+}

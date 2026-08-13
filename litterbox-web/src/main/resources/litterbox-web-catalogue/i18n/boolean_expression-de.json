@@ -1,0 +1,13 @@
+{
+  "finderId": "boolean_expression",
+  "locale": "de",
+  "name": "Verwendung von boolschen Ausdrücken",
+  "hint": "Du benutzt boolesche Ausdrücke in deinem Programm.",
+  "instruction": "Du benutzt boolesche Ausdrücke in deinem Programm.",
+  "examples": [
+    {
+      "label": "Eleganter Code",
+      "scratchblocks": "when green flag clicked\nset [xpos v] to (mouse x)\nwait (3) seconds\nif <(xpos) = (mouse x)> then  //⇦  👍\ngo to (mouse-pointer v)\nend"
+    }
+  ]
+}

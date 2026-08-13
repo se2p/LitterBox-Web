@@ -1,0 +1,8 @@
+{
+  "finderId": "missing_resource",
+  "locale": "nl",
+  "name": "Ontbrekende bron",
+  "hint": "Een blok verwijst naar een geluid, kostuum, achtergrond of ander mediabestand dat niet meer in het project bestaat.",
+  "instruction": "Herstel of maak de bedoelde bron opnieuw, kies een bestaande bron of verwijder het verouderde blok.",
+  "examples": []
+}

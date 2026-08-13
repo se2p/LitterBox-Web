@@ -1,0 +1,17 @@
+{
+  "finderId": "forever_inside_loop",
+  "locale": "nl",
+  "name": "Oneindige lus binnen een lus",
+  "hint": "Een oneindige lus staat binnen een andere lus. Zodra de uitvoering de binnenste lus bereikt, kan de buitenste lus niet verdergaan en blijft code na de binnenste lus onbereikbaar.",
+  "instruction": "Vermijd onnodige nesten, vervang de binnenste lus door begrensde of voorwaardelijke herhaling, of verplaats onafhankelijk oneindig gedrag naar een ander script.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\npen down\nrepeat (4)\nturn left (90) degrees\nforever :: #ff0000 //⇦  🐛\nmove (20) steps\nend\nend"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\npen down\nrepeat (4)\nturn left (90) degrees\nmove (20) steps\nend"
+    }
+  ]
+}

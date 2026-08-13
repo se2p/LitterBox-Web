@@ -1,0 +1,13 @@
+{
+  "finderId": "unused_answer",
+  "locale": "de",
+  "name": "Unbenutzte Antwort",
+  "hint": "Der Geruch erkennt ein [ask and wait], dessen Antwort in derselben Figur nirgends gelesen wird. Die Eingabe der Nutzerin oder des Nutzers kann dadurch das Verhalten nicht beeinflussen und macht die Frage irreführend.",
+  "instruction": "Verwende [answer] in einer Bedingung, Berechnung oder Nachricht, wenn die Eingabe gebraucht wird. Entferne die Frage andernfalls oder ersetze sie durch eine Aktion ohne erwartete Antwort.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nask [What is your name?] and wait\nsay [Hello!]"
+    }
+  ]
+}

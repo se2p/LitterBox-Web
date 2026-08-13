@@ -1,0 +1,8 @@
+{
+  "finderId": "unused_parameter",
+  "locale": "de",
+  "name": "Nicht verwendeter Parameter",
+  "hint": "Du hast einen Parameter angelegt, den du nicht im eigenen Block verwendest. Das macht den eignen Block den unübersichtlich.",
+  "instruction": "Du hast einen Parameter angelegt, den du nicht im eigenen Block verwendest. Das macht den eignen Block den unübersichtlich.",
+  "examples": []
+}

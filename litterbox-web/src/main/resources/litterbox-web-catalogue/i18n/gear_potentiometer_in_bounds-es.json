@@ -1,0 +1,13 @@
+{
+  "finderId": "gear_potentiometer_in_bounds",
+  "locale": "es",
+  "name": "Potenciómetro de engranaje en límites",
+  "hint": "El potenciómetro del engranaje proporciona valores de 0 a 100 y ofrece información de posición útil para el robot.",
+  "instruction": "Usa umbrales entre 0 y 100 en las comparaciones y decisiones de control basadas en el potenciómetro.",
+  "examples": [
+    {
+      "label": "Ejemplo",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB gear potentiometer value :: sensing) > (50)> then\nsay [Gear position set]\nend"
+    }
+  ]
+}

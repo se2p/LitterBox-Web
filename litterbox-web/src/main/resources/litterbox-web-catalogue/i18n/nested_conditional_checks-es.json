@@ -1,0 +1,13 @@
+{
+  "finderId": "nested_conditional_checks",
+  "locale": "es",
+  "name": "Condiciones intercalados",
+  "hint": "Utilizas condiciones anidadas. Eso puede ayudarte a resolver problemas más avanzados.",
+  "instruction": "Utilizas condiciones anidadas. Eso puede ayudarte a resolver problemas más avanzados.",
+  "examples": [
+    {
+      "label": "Código bello",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching color (#f00)> then\nnext costume\nif <key (up arrow v) pressed ?> then //⇦  👍\nchange [y v] by (1)\nend\nend\nend"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "motor_power_out_of_bounds",
+  "locale": "de",
+  "name": "Motorleistung außerhalb des zulässigen Bereichs",
+  "hint": "Ein Motorleistungskommando über 100 Prozent liegt außerhalb des Aktuatorbereichs und kann begrenzt, ignoriert oder zu unzuverlässiger Bewegung führen.",
+  "instruction": "Begrenze die Motorleistung bei mBot auf 0 bis 100 Prozent; Codey erlaubt für Rückwärtsbewegungen zusätzlich -100 bis 100 Prozent, daher muss der gerätespezifische Bereich geprüft werden.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\n@codeyA move forward at power (120) % for (1) secs :: motion"
+    }
+  ]
+}

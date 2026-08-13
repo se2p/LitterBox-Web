@@ -1,0 +1,13 @@
+{
+  "finderId": "list_usage",
+  "locale": "nl",
+  "name": "Gebruik van lijsten",
+  "hint": "Je gebruikt een lijst om een verzameling samenhangende waarden te bewaren en te beheren. Zo blijft bij elkaar horende data overzichtelijk.",
+  "instruction": "Gebruik een lijst wanneer meerdere waarden bij elkaar horen, in plaats van voor elke waarde een losse variabele te maken.",
+  "examples": [
+    {
+      "label": "Elegante code",
+      "scratchblocks": "when green flag clicked\nset (score v) to (0)\nrepeat until <touching (bear v) ?>\nchange (score v) by (1)\nwait (1) seconds\nend\nadd (score v) to [highscore v] //⇦  👍"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "missing_quantum_measure_simple",
+  "locale": "de",
+  "name": "Fehlender Mess-Handler",
+  "hint": "Ein Handler für das Messereignis kann nur ausgelöst werden, wenn die Figur gemessen wird. Wird sie weder direkt noch über eine verschränkte Figur gemessen, bleibt das Skript unerreichbar und seine Reaktion tritt nie ein.",
+  "instruction": "Verwende den Handler für eine Figur, die durch einen passenden Messblock erreicht wird, oder füge eine Messung dieser Figur oder einer mit ihr verschränkten Figur hinzu.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when measured :: events hat #5c068c\nforever\nturn right (15) degrees\nwait (0.1) seconds\nend"
+    }
+  ]
+}

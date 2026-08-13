@@ -1,0 +1,13 @@
+{
+  "finderId": "matrix_off_script",
+  "locale": "nl",
+  "name": "Zet LED-matrix uit",
+  "hint": "Een uitschakelscript zet de LED-matrix terug wanneer die niet meer nodig is of wanneer het programma eindigt. Zo ontstaat een voorspelbare schermtoestand en een duidelijke levenscyclus van de hardware.",
+  "instruction": "Toon de gewenste matrixweergave en schakel de matrix daarna uit voordat het programma eindigt.",
+  "examples": [
+    {
+      "label": "Voorbeeld",
+      "scratchblocks": "when green flag clicked\n@codeyB show image @matrix :: looks\n@codeyB turn off screen :: looks\nstop [all v]"
+    }
+  ]
+}

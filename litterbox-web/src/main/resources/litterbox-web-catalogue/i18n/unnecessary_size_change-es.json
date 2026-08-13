@@ -1,0 +1,13 @@
+{
+  "finderId": "unnecessary_size_change",
+  "locale": "es",
+  "name": "Cambio de tamaño innecesario",
+  "hint": "Este olor identifica operaciones de tamaño sin un efecto útil y controlado: cambiar el tamaño en cero, usar un valor extremo de al menos 540 en valor absoluto o fijar un tamaño literal en los límites significativos o más allá. Esos valores se limitan o no expresan un cambio intencionado.",
+  "instruction": "Elimina la operación de tamaño sin efecto o usa un valor moderado y deliberado que exprese de forma fiable el tamaño deseado.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nchange size by (0)"
+    }
+  ]
+}

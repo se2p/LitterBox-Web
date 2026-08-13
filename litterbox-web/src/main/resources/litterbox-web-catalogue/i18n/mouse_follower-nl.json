@@ -1,0 +1,13 @@
+{
+  "finderId": "mouse_follower",
+  "locale": "nl",
+  "name": "Volgen van de muis",
+  "hint": "Door herhaaldelijk naar de muisaanwijzer te gaan, volgt een sprite de aanwijzer voortdurend. Dat is bruikbaar voor spellen en interacties met directe besturing.",
+  "instruction": "Gebruik een voortdurende lus met [sbi]ga naar muisaanwijzer[/sbi] voor direct volgen, of wijs herhaaldelijk naar de muis en beweeg wanneer een geleidelijke volgbeweging gewenst is.",
+  "examples": [
+    {
+      "label": "Elegante code",
+      "scratchblocks": "when green flag clicked\nforever\ngo to (mouse-pointer v) //⇦  👍\nend"
+    }
+  ]
+}

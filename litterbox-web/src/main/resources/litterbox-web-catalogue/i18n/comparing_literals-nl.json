@@ -1,0 +1,17 @@
+{
+  "finderId": "comparing_literals",
+  "locale": "nl",
+  "name": "Vergelijken van waarden",
+  "hint": "Een vergelijking van twee vaste waarden heeft altijd dezelfde uitkomst: waar of onwaar. In een voorwaarde wordt de code daardoor altijd of nooit uitgevoerd; bij [sbi]wacht tot < >[/sbi] gaat de uitvoering meteen verder of kan ze voor altijd wachten.",
+  "instruction": "Als de getypte naam een variabele moest voorstellen, gebruik dan het variabele-blok. Vereenvoudig of verwijder anders de vaste voorwaarde.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when I start as a clone\nif &lt; [score] &gt; (20) :: #ff0000 &gt; then //⇦  🐛\nswitch costume to (profi v)\nend\n"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "(score)\n\nwhen I start as a clone\nif &lt; (score) &gt; (20) :: #007000 &gt; then //⇦  👍\nswitch costume to (profi v)\nend"
+    }
+  ]
+}

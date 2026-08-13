@@ -1,0 +1,17 @@
+{
+  "finderId": "parameter_as_literal",
+  "locale": "es",
+  "name": "Parámetro como texto",
+  "hint": "El buscador detecta un bloque personalizado que usa como texto literal el nombre de un parámetro en lugar de su reportero. El procedimiento recibe un argumento, pero utiliza la etiqueta, lo que produce resultados o decisiones inesperados.",
+  "instruction": "Sustituye el nombre literal por el reportero del parámetro en la entrada correspondiente y revisa todos los usos del parámetro en el bloque personalizado.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "define myBlock [myParam]\nsay ([myParam])"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "define myBlock [myParam]\nsay (myParam)"
+    }
+  ]
+}

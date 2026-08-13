@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_clone_call",
+  "locale": "nl",
+  "name": "Ontbrekende kloonaanroep",
+  "hint": "Er is een [sbi]When I start as a clone[/sbi]-script, maar de sprite wordt nergens gekloond. De gebeurtenis kan daardoor nooit optreden.",
+  "instruction": "Maak de kloon voordat dit gedrag nodig is, of gebruik een ander gebeurtenisblok als geen kloon bedoeld is.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\n\nwhen i start as a clone :: #ff0000 // ⇦  🐛\ngo to (random position v)\nnext costume\n"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\ncreate clone of (myself v) :: #007000 // ⇦  👍\n\nwhen i start as a clone\ngo to (random position v)\nnext costume\n"
+    }
+  ]
+}

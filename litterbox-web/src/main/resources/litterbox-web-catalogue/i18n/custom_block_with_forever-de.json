@@ -1,0 +1,17 @@
+{
+  "finderId": "custom_block_with_forever",
+  "locale": "de",
+  "name": "Endloswiederholung im eigenen Baustein",
+  "hint": "Wenn du in einem eigenen Baustein [sbi]wiederhole fortlaufend[/sbi] verwendest, wird dieser Baustein nie wieder verlassen. Die Befehle, die nach deinem Bausteinaufruf im Programm stehen, können nie ausgeführt werden.",
+  "instruction": "Lösche den [sbi]wiederhole fortlaufend[/sbi] Baustein aus deinem eigenen Block.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "define longMarch\nforever :: #ff0000 //⇦  🐛\nmove (10) steps\nend\n\nwhen green flag clicked\nlongMarch\nsay [Hello!] //⇦  🐛\n"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "define longMarch\nrepeat (10) //⇦  👍\nmove (10) steps\nend\n\nwhen green flag clicked\nlongMarch\nsay [Hello!]\n"
+    }
+  ]
+}

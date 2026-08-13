@@ -1,0 +1,17 @@
+{
+  "finderId": "unnecessary_if",
+  "locale": "en",
+  "name": "Unnecessary If",
+  "hint": "You are using two [sbi]if < > then[/sbi] blocks after another with the same combination of blocks inside.",
+  "instruction": "You can make that easier to read by using an [sbi]<< > or < >>[/sbi] block combining the conditions in a single [sbi]if < > then[/sbi] block.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching color (#f00) ?> then\nmove (2) steps\nend\nif <touching color (#0f0) ?> then :: #ff0000 //⇦  🐛\nmove (2) steps\nend\nend"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "when green flag clicked\nforever\nif <<touching color (#f00) ?> or <touching color (#0f0) ?>> then :: #007000 //⇦  👍\nmove (2) steps\nend"
+    }
+  ]
+}

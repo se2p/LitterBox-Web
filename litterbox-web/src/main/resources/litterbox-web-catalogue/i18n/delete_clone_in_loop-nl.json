@@ -1,0 +1,13 @@
+{
+  "finderId": "delete_clone_in_loop",
+  "locale": "nl",
+  "name": "Clone verwijderen in lus",
+  "hint": "Deze geur detecteert een onvoorwaardelijk [delete this clone]-blok in een lus van een script dat als kloon start. De kloon wordt al in de eerste iteratie verwijderd, waardoor latere iteraties nooit kunnen plaatsvinden en de lus de werkelijke besturing verhult.",
+  "instruction": "Laat de lus eerst het herhaalde werk uitvoeren en verwijder de kloon daarna wanneer dat nodig is. Als verwijderen van een voorwaarde afhangt, houd het dan voorwaardelijk en maak de uitgang uit de lus duidelijk.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when I start as a clone\nforever\ndelete this clone\nend"
+    }
+  ]
+}

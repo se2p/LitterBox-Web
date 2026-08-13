@@ -1,0 +1,17 @@
+{
+  "finderId": "correct_broadcast",
+  "locale": "en",
+  "name": "Correct broadcast",
+  "hint": "You correctly implemented a broadcast, now you can easily coordinate all your scripts.",
+  "instruction": "You correctly implemented a broadcast, now you can easily coordinate all your scripts.",
+  "examples": [
+    {
+      "label": "Elegant code",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching (#000) ?> then\nbroadcast (black v) //⇦  👍\nend\nend"
+    },
+    {
+      "label": "Elegant code 2",
+      "scratchblocks": "when i receive [black v] //⇦  👍\nmove (10) steps"
+    }
+  ]
+}

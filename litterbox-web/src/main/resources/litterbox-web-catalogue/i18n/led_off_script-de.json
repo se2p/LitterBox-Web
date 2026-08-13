@@ -1,0 +1,13 @@
+{
+  "finderId": "led_off_script",
+  "locale": "de",
+  "name": "Ausschalten aller LEDs",
+  "hint": "Ein Ausschalt-Skript setzt LEDs nach ihrer Nutzung oder beim Programmende zurück. So bleibt der Roboter in einem vorhersehbaren Endzustand und der Lebenszyklus der Hardware ist klar.",
+  "instruction": "Füge nach jeder Nutzung der LEDs einen Ausschaltbefehl ein, bevor du das Programm stoppst oder die Steuerung zurückgibst.",
+  "examples": [
+    {
+      "label": "Beispiel",
+      "scratchblocks": "when green flag clicked\n@codeyB RGB LED lights up [#ff0000] :: lighting\n@codeyB RGB LED lights off :: lighting\nstop [all v]"
+    }
+  ]
+}

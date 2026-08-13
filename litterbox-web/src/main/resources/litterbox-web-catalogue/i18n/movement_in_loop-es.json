@@ -1,0 +1,13 @@
+{
+  "finderId": "movement_in_loop",
+  "locale": "es",
+  "name": "Movimiento fluido de las figuras",
+  "hint": "Los movimientos de tus sprites son muy fluidos y naturales porque los has implementado en un bucle.",
+  "instruction": "Los movimientos de tus sprites son muy fluidos y naturales porque los has implementado en un bucle.",
+  "examples": [
+    {
+      "label": "Código bello",
+      "scratchblocks": "when green flag clicked\nforever\nchange x by (1) //⇦  👍\nend"
+    }
+  ]
+}

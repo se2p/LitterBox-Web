@@ -1,0 +1,13 @@
+{
+  "finderId": "multiple_quantum_measurements",
+  "locale": "nl",
+  "name": "Meerdere kwantummetingen",
+  "hint": "Een kwantummeting legt de toestand vast. Een meting herhalen zonder een nieuwe superpositie of verstrengeling te maken levert daarom geen nieuwe toestand op en kan de bedoelde animatie of reactie verstoren.",
+  "instruction": "Meet pas opnieuw nadat je een nieuwe kwantumtoestand hebt gestart, of bewaar het eerste resultaat voor volgende beslissingen.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when superposition started :: events hat #5c068c\nforever\nturn right (15) degrees\nwait (0.1) seconds\nend\n\nwhen green flag clicked\nsuperpose [position v] possibilities: (30) :: #5c068c\n\nwhen [space v] key pressed\nmeasure :: #5c068c\nmeasure :: #5c068c"
+    }
+  ]
+}

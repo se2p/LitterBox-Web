@@ -1,0 +1,17 @@
+{
+  "finderId": "invalid_actor_blocks",
+  "locale": "es",
+  "name": "Bloques mal ubicados",
+  "hint": "El buscador detecta bloques usados en el tipo de objeto equivocado: por ejemplo, bloques de movimiento, apariencia, clon o visibilidad, que solo sirven para objetos, en el escenario, o bloques de fondos del escenario en un objeto. Esos bloques no pueden modificar al actor previsto y pueden ignorarse o comportarse de forma inesperada.",
+  "instruction": "Mueve el script o el bloque afectado al tipo de actor que lo admite, o sustitúyelo por un bloque equivalente disponible para el actor actual.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "// Stage\nwhen green flag clicked\nmove (10) steps"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "// Sprite\nwhen green flag clicked\nmove (10) steps"
+    }
+  ]
+}

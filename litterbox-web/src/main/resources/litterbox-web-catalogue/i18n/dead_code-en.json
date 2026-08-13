@@ -1,0 +1,17 @@
+{
+  "finderId": "dead_code",
+  "locale": "en",
+  "name": "Code Lying Around",
+  "hint": "Your project contains dead code. That means, there are blocks which will never be executed.",
+  "instruction": "Your project contains dead code. That means, there are blocks which will never be executed.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\n\nmove(20) steps :: #ff0000 //⇦  🐛\n\n turn left (15) degrees :: #ff0000 //⇦  🐛\n"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\nmove(20) steps :: #007000 //⇦  👍\n"
+    }
+  ]
+}

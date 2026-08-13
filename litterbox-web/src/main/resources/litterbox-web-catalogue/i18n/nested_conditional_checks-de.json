@@ -1,0 +1,13 @@
+{
+  "finderId": "nested_conditional_checks",
+  "locale": "de",
+  "name": "Verschachteltes Falls-Sonst",
+  "hint": "Du verwendest verschachtelte Bedingungen, wie zum Beispiel [sbi]falls < >, dann[/sbi] Blöcke.",
+  "instruction": "Du verwendest verschachtelte Bedingungen, wie zum Beispiel [sbi]falls < >, dann[/sbi] Blöcke.",
+  "examples": [
+    {
+      "label": "Eleganter Code",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching color (#f00)> then\nnext costume\nif <key (up arrow v) pressed ?> then //⇦  👍\nchange [y v] by (1)\nend\nend\nend"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_termination",
+  "locale": "nl",
+  "name": "Ontbrekende stopvoorwaarde",
+  "hint": "Een [sbi]repeat until < >[/sbi]-lus heeft geen stopvoorwaarde. De standaardwaarde is onwaar, waardoor de lus feitelijk oneindig blijft herhalen.",
+  "instruction": "Voeg de bedoelde stopvoorwaarde toe. Als oneindige herhaling opzettelijk is, gebruik dan [sbi]forever[/sbi] om die bedoeling duidelijk te maken.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nrepeat until < > :: #ff0000 //⇦  🐛\nplay sound (BumBum v) until done\nend"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\nforever :: #007000 //⇦  👍\nplay sound (BumBum v) until done\nend"
+    }
+  ]
+}

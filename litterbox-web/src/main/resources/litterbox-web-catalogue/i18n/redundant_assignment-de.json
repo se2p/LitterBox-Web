@@ -1,0 +1,17 @@
+{
+  "finderId": "redundant_assignment",
+  "locale": "de",
+  "name": "Redundante Zuweisung",
+  "hint": "Der Finder erkennt eine Zuweisung, deren Wert vor einer weiteren Zuweisung auf jedem oder auf manchen Kontrollflusswegen nicht gelesen wird. Der Schreibvorgang ist dadurch unnötig oder verschleiert, welchen Zustand das Programm verwenden soll.",
+  "instruction": "Verfolge die Variable oder das Attribut in allen betroffenen Zweigen bis zu seinen Verwendungen. Entferne die Zuweisung, wenn kein Lesen sie beobachten kann, oder verschiebe sie beziehungsweise nutze den Wert vor dem Überschreiben.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nset [myVar v] to (10)\nset [myVar v] to (10)"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\nset [myVar v] to (10)"
+    }
+  ]
+}

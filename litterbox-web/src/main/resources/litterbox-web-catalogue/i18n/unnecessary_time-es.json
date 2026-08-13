@@ -1,0 +1,17 @@
+{
+  "finderId": "unnecessary_time",
+  "locale": "es",
+  "name": "Bloque innecesario del tiempo",
+  "hint": "Utilizas un bloque espera () segundos[/ sbi]. Dado que el valor es 0, el bloque no tiene ningún efecto.",
+  "instruction": "Puedes eliminarlo.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\nwait (0) seconds :: #ff0000 //⇦  🐛\nturn left (15) degrees"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\nmove (10) steps\nturn left (15) degrees"
+    }
+  ]
+}

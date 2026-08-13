@@ -1,0 +1,13 @@
+{
+  "finderId": "unnecessary_move",
+  "locale": "nl",
+  "name": "Onnodige verplaatsing",
+  "hint": "Deze geur herkent een bewegingsblok met de letterlijke waarde nul, zoals [move (0) steps] of X of Y met nul veranderen. Het blok kan de positie van de sprite niet wijzigen en maakt het script moeilijker te lezen.",
+  "instruction": "Verwijder de nulverplaatsing of vervang die door een bewuste waarde wanneer de sprite werkelijk moet bewegen.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nmove (0) steps"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "unnecessary_rotation",
+  "locale": "nl",
+  "name": "Onnodige rotatie",
+  "hint": "Deze geur herkent een draaiing van nul graden of van een geheel veelvoud van 360 graden. De sprite eindigt daardoor in dezelfde richting, ook al lijkt het blok een draaiing te maken.",
+  "instruction": "Verwijder de rotatie zonder effect of gebruik een hoek die de bedoelde verandering van richting oplevert.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nturn right (360) degrees"
+    }
+  ]
+}

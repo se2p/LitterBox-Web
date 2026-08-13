@@ -1,0 +1,13 @@
+{
+  "finderId": "rocky_light_off_script",
+  "locale": "en",
+  "name": "Turn off Rocky's Light",
+  "hint": "A shutdown script resets Rocky's light after it is used or when the program ends. This keeps the final light state predictable and clearly releases the hardware.",
+  "instruction": "Turn Rocky's light off after the intended illumination, before stopping the program or handing control back.",
+  "examples": [
+    {
+      "label": "Example",
+      "scratchblocks": "when green flag clicked\n@rocky set Rocky's light with color ['red v'] :: lighting\n@rocky Rocky lights off\nstop [all v]"
+    }
+  ]
+}

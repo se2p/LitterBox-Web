@@ -1,0 +1,8 @@
+{
+  "finderId": "variable_initialization_race",
+  "locale": "en",
+  "name": "Variable Initialization Race Condition",
+  "hint": "A variable is initialized in different scripts triggered by the same event. The result may change depending on the order in which the scripts are executed.[newLine]Try assigning the values in only one of the scripts.",
+  "instruction": "A variable is initialized in different scripts triggered by the same event. The result may change depending on the order in which the scripts are executed.[newLine]Try assigning the values in only one of the scripts.",
+  "examples": []
+}

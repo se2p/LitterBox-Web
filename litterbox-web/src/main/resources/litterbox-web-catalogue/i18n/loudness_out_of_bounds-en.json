@@ -1,0 +1,13 @@
+{
+  "finderId": "loudness_out_of_bounds",
+  "locale": "en",
+  "name": "Loudness out of Bounds",
+  "hint": "A loudness comparison outside 0–100 uses a value the sensor cannot report, so sound-responsive behaviour may never trigger as intended.",
+  "instruction": "Keep loudness thresholds and validated readings within the 0–100 interval before making decisions.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB loudness :: sensing) > (150)> then\nsay [Invalid loudness]\nend"
+    }
+  ]
+}

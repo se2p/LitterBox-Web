@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_erase_all",
+  "locale": "en",
+  "name": "Missing Erase All",
+  "hint": "If a sprite uses a [sbi]pen down[/sbi] block but never an [sbi]erase all[/sbi] block, then all drawings from a previous execution remain for the next run too.",
+  "instruction": "If a sprite uses a [sbi]pen down[/sbi] block but never an [sbi]erase all[/sbi] block, then all drawings from a previous execution remain for the next run too.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\npen down\nrepeat (4)\nmove (10) steps\nturn left (90) degrees\nend\npen up\n"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "when green flag clicked\nerase all //⇦  👍\npen down\nrepeat (4)\nmove (10) steps\nturn left (90) degrees\nend\npen up\n"
+    }
+  ]
+}

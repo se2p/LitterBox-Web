@@ -1,0 +1,8 @@
+{
+  "finderId": "sprite_naming",
+  "locale": "nl",
+  "name": "Sprite-naamgeving",
+  "hint": "De naam van je sprite is standaard, genummerd of anderszins niet informatief. Daardoor zijn verwijzingen naar sprites en de structuur van het programma moeilijker te begrijpen.",
+  "instruction": "Geef elke sprite een unieke naam die haar rol duidelijk beschrijft.",
+  "examples": []
+}

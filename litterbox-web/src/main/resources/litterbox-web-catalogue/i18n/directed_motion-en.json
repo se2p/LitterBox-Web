@@ -1,0 +1,13 @@
+{
+  "finderId": "directed_motion",
+  "locale": "en",
+  "name": "Directed Motion with Key Press",
+  "hint": "Keyboard control can connect a sprite’s direction with its movement, enabling direct game control.",
+  "instruction": "In a key-press event, set the direction before adding movement when the sprite should travel that way.",
+  "examples": [
+    {
+      "label": "Example",
+      "scratchblocks": "when [right arrow v] key pressed\npoint in direction (90)\nmove (10) steps"
+    }
+  ]
+}

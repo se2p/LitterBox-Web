@@ -1,0 +1,17 @@
+{
+  "finderId": "empty_script",
+  "locale": "de",
+  "name": "Leeres Skript",
+  "hint": "In deiner Figur befindet sich ein leeres Programm.",
+  "instruction": "Wird dieser Programmbaustein für das Programm benötigt?[newLine]Falls ja: Implementiere die nötige Funktionalität.[newLine]Falls nein: Lösche den leeren Block.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked :: #ff0000 //⇦  🐛\n"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\nmove (10) steps :: #007000 //⇦  👍\n"
+    }
+  ]
+}

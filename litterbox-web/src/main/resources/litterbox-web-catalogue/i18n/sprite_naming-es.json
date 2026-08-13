@@ -1,0 +1,8 @@
+{
+  "finderId": "sprite_naming",
+  "locale": "es",
+  "name": "Nombre de Sprite",
+  "hint": "Tu sprite no tiene un nombre significativo, ya que utiliza el nombre predeterminado o uno que ya se utiliza seguido de un número. Esto hace que tu programa sea difícil de entender.",
+  "instruction": "Dale al sprite un nombre significativo y único.",
+  "examples": []
+}

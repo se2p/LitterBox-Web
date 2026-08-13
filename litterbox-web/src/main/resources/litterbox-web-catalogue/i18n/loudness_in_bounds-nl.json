@@ -1,0 +1,13 @@
+{
+  "finderId": "loudness_in_bounds",
+  "locale": "nl",
+  "name": "Geluidssterkte binnen grenzen",
+  "hint": "De geluidssterktesensor geeft waarden van 0 tot 100, zodat geluidsniveaus betekenisvol kunnen worden vergeleken en verwerkt.",
+  "instruction": "Kies drempelwaarden voor geluidssterkte tussen 0 en 100 en controleer de meting vóór gebruik in een voorwaarde.",
+  "examples": [
+    {
+      "label": "Voorbeeld",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB loudness :: sensing) > (50)> then\nsay [Loud sound]\nend"
+    }
+  ]
+}

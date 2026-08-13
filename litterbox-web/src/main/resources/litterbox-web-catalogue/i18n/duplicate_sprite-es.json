@@ -1,0 +1,21 @@
+{
+  "finderId": "duplicate_sprite",
+  "locale": "es",
+  "name": "Sprite duplicado",
+  "hint": "Tu proyecto contiene varias copias exactas del mismo sprite. Esto hace que el proyecto esté desordenado. Considera usar la clonación en su lugar.",
+  "instruction": "Tu proyecto contiene varias copias exactas del mismo sprite. Esto hace que el proyecto esté desordenado. Considera usar la clonación en su lugar.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nchange size by (10)\n"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\nchange size by (10)\ncreate clone of [myself v] :: #007000 //⇦  👍\n\nwhen I start as a clone\nchange size by (10)\n"
+    },
+    {
+      "label": "Error 2",
+      "scratchblocks": "when green flag clicked :: #ff0000 //⇦  🐛\nchange size by (10) :: #ff0000\n"
+    }
+  ]
+}

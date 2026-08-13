@@ -1,0 +1,13 @@
+{
+  "finderId": "waiting_check_stop",
+  "locale": "en",
+  "name": "Waiting for Condition To Stop",
+  "hint": "Waiting for a concrete condition lets a project finish an activity after a clear event occurs.",
+  "instruction": "Put a wait-until block before the stop block when the program should end after a condition becomes true.",
+  "examples": [
+    {
+      "label": "Example",
+      "scratchblocks": "when green flag clicked\nwait until <touching (mouse-pointer v) ?>\nmove (10) steps\nstop [all v]"
+    }
+  ]
+}

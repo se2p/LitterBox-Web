@@ -1,0 +1,17 @@
+{
+  "finderId": "expression_as_touching_or_color",
+  "locale": "en",
+  "name": "Expression As Touching Or Color",
+  "hint": "This block expects a colour or a sprite as parameter and does not work correctly with a string or a number.",
+  "instruction": "This block expects a colour or a sprite as parameter and does not work correctly with a string or a number.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nforever\nif &lt;touching color (answer) ? :: #ff0000&gt; then //⇦  🐛\nstop [all v]\nend\nend"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "when green flag clicked\nforever\nif &lt;touching color (#00FF00) ? :: #007000 &gt;then //⇦  👍\nstop [all v]\nend\nend"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "finderId": "variable_as_literal",
+  "locale": "de",
+  "name": "Variablenname als Text",
+  "hint": "Du hast den Namen einer Variable als Text verwendet. Wolltest Du eigentlich den Variablen Baustein [sbi](variable)[/sbi] verwenden?",
+  "instruction": "Du hast den Namen einer Variable als Text verwendet. Wolltest Du eigentlich den Variablen Baustein [sbi](variable)[/sbi] verwenden?",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "(score)\n\nwhen green flag clicked\nforever\nif <[score] > (20)> then :: #ff0000 //⇦  🐛\nswitch backdrop to (level2 v)\nend"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "(score)\n\nwhen green flag clicked\nforever\nif <(score) > (20)> then :: #007000 //⇦  👍\nswitch backdrop to (level2 v)\nend"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "finderId": "custom_block_with_termination",
+  "locale": "nl",
+  "name": "Eigen blok met beëindiging",
+  "hint": "Een eigen blok bevat een onvoorwaardelijke beëindiging zoals [sbi]stop [all v][/sbi] of [sbi]delete this clone[/sbi]. Wanneer het vanuit een ander script wordt aangeroepen, worden volgende blokken in dat script niet uitgevoerd.",
+  "instruction": "Verwijder de beëindiging of maak haar passend voor een voorwaarde; plaats de aanroep zo dat er geen onbereikbare vervolgstappen achter staan.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "define walkSquare\nrepeat (4)\nmove (10) steps\nturn left (90) degrees\nend\nstop [all v] :: #ff0000 //⇦  🐛\n\nwhen green flag clicked\nwalkSquare\nsay [finished] for (2) seconds //⇦  🐛\n"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "define walkSquare\nrepeat (4)\nmove (10) steps\nturn left (90) degrees\nend\n\nwhen green flag clicked\nwalkSquare\nsay [finished]for (2) seconds\nstop [all v] :: #007000 //⇦  👍\n"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "finderId": "missing_termination",
+  "locale": "en",
+  "name": "Missing Termination",
+  "hint": "The termination condition in the block [sbi]repeat until < >[/sbi] is missing. Scratch uses the default value FALSE there. Therefore, this code block will result in an infinite loop.",
+  "instruction": "Do you want an infinite loop in that position?[newLine]Case yes: Use the [sbi]forever[/sbi] code block. (light error)[newLine]Case no: Insert a suitable termination condition. (hard error)",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nrepeat until < > :: #ff0000 //⇦  🐛\nplay sound (BumBum v) until done\nend"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "when green flag clicked\nforever :: #007000 //⇦  👍\nplay sound (BumBum v) until done\nend"
+    }
+  ]
+}

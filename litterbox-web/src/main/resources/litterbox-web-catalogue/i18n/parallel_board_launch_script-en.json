@@ -1,0 +1,13 @@
+{
+  "finderId": "parallel_board_launch_script",
+  "locale": "en",
+  "name": "No Parallel Scripts",
+  "hint": "Multiple board-launch scripts are assigned to an mBot upload-mode program even though upload execution does not run those scripts in parallel as expected. Actions may be skipped or occur in an unexpected order.",
+  "instruction": "Use live mode for parallel board reactions, or restructure the program so upload mode has one coordinated board-launch path.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when Codey starts up :: events hat\n@codeyA move forward at power (50) % for (1) secs :: motion\n\nwhen Codey starts up :: events hat\n@codeyA move backward at power (50) % for (1) secs :: motion"
+    }
+  ]
+}

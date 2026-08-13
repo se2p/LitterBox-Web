@@ -1,0 +1,13 @@
+{
+  "finderId": "timed_statement_in_live_loop",
+  "locale": "nl",
+  "name": "Lussen haperen in livemodus",
+  "hint": "Een tijdsgebonden hardwareactie is de centrale bewerking die in livemodus of op een mogelijk live pad door een lus wordt herhaald. Het herhaald verzenden van die opdracht kan de robot laten pauzeren of haperen.",
+  "instruction": "Gebruik voor zulke acties waar passend uploadmodus, of structureer de lus zo dat de tijdsgebonden opdracht niet bij elke iteratie opnieuw wordt verzonden; pas dezelfde zorg toe op mogelijke livepaden.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when Codey is shaking :: events hat\nforever\n@codeyA keep straight forward at power (50) % for (1) secs :: motion\nend"
+    }
+  ]
+}

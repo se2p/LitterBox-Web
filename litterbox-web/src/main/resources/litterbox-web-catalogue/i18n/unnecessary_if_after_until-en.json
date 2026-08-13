@@ -1,0 +1,8 @@
+{
+  "finderId": "unnecessary_if_after_until",
+  "locale": "en",
+  "name": "Unnecessary If after Repeat-Until",
+  "hint": "You are using an [sbi]if < > then[/sbi] block after an [sbi]until < >[/sbi] block with the same condition. The blocks inside the [sbi]if < > then[/sbi] block are always executed.",
+  "instruction": "You are using an [sbi]if < > then[/sbi] block after an [sbi]until < >[/sbi] block with the same condition. The blocks inside the [sbi]if < > then[/sbi] block are always executed.",
+  "examples": []
+}

@@ -1,0 +1,8 @@
+{
+  "finderId": "unnecessary_loop",
+  "locale": "es",
+  "name": "Repetición innecesaria",
+  "hint": "Tu repetición es innecesaria y puedes eliminarla.",
+  "instruction": "Tu repetición es innecesaria y puedes eliminarla.",
+  "examples": []
+}

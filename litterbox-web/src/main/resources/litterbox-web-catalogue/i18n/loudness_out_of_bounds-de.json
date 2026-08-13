@@ -1,0 +1,13 @@
+{
+  "finderId": "loudness_out_of_bounds",
+  "locale": "de",
+  "name": "Lautstärke außerhalb des Messbereichs",
+  "hint": "Ein Lautstärkevergleich außerhalb von 0 bis 100 verwendet einen Wert, den der Sensor nicht melden kann, sodass die Klangreaktion möglicherweise nicht wie vorgesehen ausgelöst wird.",
+  "instruction": "Halte Lautstärkewerte und Schwellenwerte vor Entscheidungen im Bereich von 0 bis 100.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB loudness :: sensing) > (150)> then\nsay [Invalid loudness]\nend"
+    }
+  ]
+}

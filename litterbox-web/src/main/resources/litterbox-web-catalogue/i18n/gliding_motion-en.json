@@ -1,0 +1,13 @@
+{
+  "finderId": "gliding_motion",
+  "locale": "en",
+  "name": "Gliding Motion Through Key Press",
+  "hint": "Gliding makes a sprite’s response to keyboard input visible and supports smooth game movement.",
+  "instruction": "Use a glide block in a key-press event when the sprite should move smoothly toward a destination.",
+  "examples": [
+    {
+      "label": "Example",
+      "scratchblocks": "when [space v] key pressed\nglide (1) secs to (random position v)"
+    }
+  ]
+}

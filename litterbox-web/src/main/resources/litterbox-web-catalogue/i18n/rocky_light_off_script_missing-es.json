@@ -1,0 +1,13 @@
+{
+  "finderId": "rocky_light_off_script_missing",
+  "locale": "es",
+  "name": "Falta el script para apagar la luz de Rocky",
+  "hint": "La luz de Rocky se activa, pero ningún script de limpieza alcanzable apaga explícitamente la luz de Rocky antes de terminar la ejecución. Puede quedar encendida y afectar a comportamientos posteriores.",
+  "instruction": "Apaga explícitamente la luz de Rocky después de la iluminación prevista y antes de que termine el programa en todas las rutas alcanzables.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when on-board button [B v] :: events hat\n@rocky set Rocky's light with color ['red v'] :: lighting\nstop [this script v]"
+    }
+  ]
+}

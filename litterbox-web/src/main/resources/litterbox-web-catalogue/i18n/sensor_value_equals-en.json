@@ -1,0 +1,13 @@
+{
+  "finderId": "sensor_value_equals",
+  "locale": "en",
+  "name": "Query for Exact Value",
+  "hint": "A varying robot sensor reading is compared using exact equality. Noise and floating-point precision make an exact match rare or unstable, so the response may fail or flicker.",
+  "instruction": "Compare against a tolerance, threshold, or interval instead of one exact value, accounting for the expected measurement noise.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when on-board button [A v] :: events hat\nif <(@codeyB loudness :: sensing) = (50)> then\nsay [Loud]\nend"
+    }
+  ]
+}

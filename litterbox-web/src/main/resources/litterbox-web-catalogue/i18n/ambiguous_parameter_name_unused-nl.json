@@ -1,0 +1,8 @@
+{
+  "finderId": "ambiguous_parameter_name_unused",
+  "locale": "nl",
+  "name": "Ambigue ongebruikte parameternaam",
+  "hint": "Een eigen blok bevat meerdere parameters met dezelfde naam. Ook als die parameter momenteel niet wordt gebruikt, blijft de definitie verwarrend en kwetsbaar.",
+  "instruction": "Geef elke parameter binnen een eigen blok een unieke naam.",
+  "examples": []
+}

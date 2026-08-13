@@ -1,0 +1,17 @@
+{
+  "finderId": "endless_recursion",
+  "locale": "en",
+  "name": "Endless Recursion",
+  "hint": "If a custom block calls itself inside its body and has no condition to stop the recursion, it will run for an indefinite amount of time.",
+  "instruction": "Implement a termination condition.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "define Jump\nmove (10) steps\nturn left (180) degrees\nmove (10) steps\nturn right (180) degrees\nJump :: #ff0000 //⇦  🐛\n\nwhen green flag clicked\nJump\nsay [I am great!]\n"
+    },
+    {
+      "label": "Possible Solution",
+      "scratchblocks": "define Jump\nmove (10) steps\nturn left (180) degrees\nmove (10) steps\nturn right (180) degrees\nif &lt;not&lt;touching (edge v)&gt; &gt;then :: #007000 //⇦  👍\nJump\nend\n\nwhen green flag clicked\nJump\nsay [I am great!]\n"
+    }
+  ]
+}

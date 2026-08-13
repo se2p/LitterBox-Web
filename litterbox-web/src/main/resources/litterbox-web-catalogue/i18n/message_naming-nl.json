@@ -1,0 +1,17 @@
+{
+  "finderId": "message_naming",
+  "locale": "nl",
+  "name": "Berichtnaamgeving",
+  "hint": "Het bericht heeft geen betekenisvolle naam. Een standaardnaam of een al gebruikte naam met een nummer maakt het programma moeilijk te begrijpen.",
+  "instruction": "Geef elk bericht een unieke naam die de gebeurtenis of bedoeling ervan beschrijft.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nshow\nbroadcast (message1 v) :: #ff0000 //⇦  🐛"
+    },
+    {
+      "label": "Mogelijke oplossing",
+      "scratchblocks": "when green flag clicked\nshow\nbroadcast (startGame v) :: #007000 //⇦  👍"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "rocky_light_off_script_missing",
+  "locale": "en",
+  "name": "Rocky's Light Off Script Missing",
+  "hint": "Rocky's light is enabled, but no reachable cleanup script explicitly turns Rocky's light off before execution ends. It can remain on and affect later behaviour.",
+  "instruction": "Turn Rocky's light off after the intended illumination and before the program ends on every reachable path.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when on-board button [B v] :: events hat\n@rocky set Rocky's light with color ['red v'] :: lighting\nstop [this script v]"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "finderId": "invalid_quantum_possibilities_list",
+  "locale": "de",
+  "name": "Ungültige Liste für Verschränkung oder Superposition",
+  "hint": "Quantenblöcke mit Möglichkeitenliste erwarten einen echten Scratch-Listen-Reporter. Ein Zahlenliteral oder eine normale Variable liefert keine Liste von möglichen Zuständen und kann die Operation unbrauchbar machen.",
+  "instruction": "Lege eine Scratch-Liste für die möglichen Zustände an, fülle sie bei Bedarf und setze ihren Listen-Reporter in den Quantenblock ein. Verwende dort nicht den Listennamen als gewöhnlichen Wert.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nentangle [position v] with [Sprite2] possibilities: (1) list: (6) :: #5c068c"
+    }
+  ]
+}

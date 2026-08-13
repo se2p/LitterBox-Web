@@ -1,0 +1,13 @@
+{
+  "finderId": "interrupted_loop_sensing_robot",
+  "locale": "de",
+  "name": "Unterbrochene Wiederholungsprüfung bei Robotern",
+  "hint": "Eine zeitaufwendige oder blockierende Aktion teilt sich eine Schleife oder einen Bedingungspfad mit der kontinuierlichen Robotererfassung. Während diese Aktion läuft, werden weitere Sensoränderungen nicht geprüft, sodass Reaktionen verspätet erfolgen oder ausbleiben können.",
+  "instruction": "Verlagere die kontinuierliche Sensorprüfung nach Möglichkeit in ein separates paralleles Skript oder halte den Erfassungspfad kurz und nicht blockierend.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nforever\nif <@mBot obstacles ahead? :: sensing> then\n@codeyA move forward at power (50) % for (1) secs :: motion\nend\nend"
+    }
+  ]
+}

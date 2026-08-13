@@ -1,0 +1,17 @@
+{
+  "finderId": "unnecessary_if",
+  "locale": "de",
+  "name": "Unnötiges Falls",
+  "hint": "Du benutzt zwei [sbi]falls < >, dann[/sbi] Bausteine nacheinander mit den selben Blöcken im Inneren.",
+  "instruction": "Du kannst das vereinfachen, indem du einen [sbi]<< > oder < >>[/sbi] Baustein verwendest und die Bedingungen in einem einzelnen [sbi]falls < >, dann[/sbi] Baustein zusammenfasst.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nforever\nif <touching color (#f00) ?> then\nmove (2) steps\nend\nif <touching color (#0f0) ?> then :: #ff0000 //⇦  🐛\nmove (2) steps\nend\nend"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\nforever\nif <<touching color (#f00) ?> or <touching color (#0f0) ?>> then :: #007000 //⇦  👍\nmove (2) steps\nend"
+    }
+  ]
+}

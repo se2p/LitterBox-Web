@@ -1,0 +1,17 @@
+{
+  "finderId": "key_set_position",
+  "locale": "en",
+  "name": "Key Set Position",
+  "hint": "The finder detects a key-driven handler that assigns an absolute position on the corresponding axis instead of applying relative movement. Repeated key presses therefore snap the actor to the same coordinate rather than moving it by the intended amount.",
+  "instruction": "Use a change-x or change-y block, or calculate the next coordinate from the current position; keep continuous key polling when movement should continue while a key is held.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when [right arrow v] key pressed\nset x to (10)"
+    },
+    {
+      "label": "Possible solution",
+      "scratchblocks": "when green flag clicked\nforever\nif <key (right arrow v) pressed?> then\nchange x by (10)\nend\nend"
+    }
+  ]
+}

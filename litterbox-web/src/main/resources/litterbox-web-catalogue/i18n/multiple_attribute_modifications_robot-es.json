@@ -1,0 +1,13 @@
+{
+  "finderId": "multiple_attribute_modifications_robot",
+  "locale": "es",
+  "name": "Modificaciones redundantes de atributos del robot",
+  "hint": "Dos comandos consecutivos del robot controlan el mismo recurso, como los LED integrados, la matriz o pantalla LED, la luz de Rocky o el movimiento y la potencia de los motores. Si no hay otra acción entre ellos, el segundo sustituye de inmediato al primero; normalmente el estado anterior no llega a observarse y la intención del programa queda menos clara.",
+  "instruction": "Conserva el comando que expresa el estado final deseado, combina los cambios compatibles o añade una acción o una pausa intencionada si deben verse los estados intermedios.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\n@codeyB RGB LED lights up [#ff0000] :: lighting\n@codeyB RGB LED lights up [#003bff] :: lighting"
+    }
+  ]
+}

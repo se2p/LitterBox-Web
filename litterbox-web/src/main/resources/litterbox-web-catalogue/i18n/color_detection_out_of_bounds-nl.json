@@ -1,0 +1,13 @@
+{
+  "finderId": "color_detection_out_of_bounds",
+  "locale": "nl",
+  "name": "Kleurdetectie buiten grenzen",
+  "hint": "Een gedetecteerde RGB-kanaalwaarde buiten 0–255 kan geen geldige kleurmeting voorstellen, waardoor kleurafhankelijke beslissingen onbetrouwbaar kunnen worden.",
+  "instruction": "Zorg dat elk gedetecteerd kleurkanaal vóór een vergelijking een geheel getal van 0 tot en met 255 is.",
+  "examples": [
+    {
+      "label": "Fout",
+      "scratchblocks": "when green flag clicked\nif <(@codeyB [red v] color value detected :: sensing) > (300)> then\nsay [Invalid color]\nend"
+    }
+  ]
+}

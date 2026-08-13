@@ -1,0 +1,13 @@
+{
+  "finderId": "motor_off_script",
+  "locale": "es",
+  "name": "Apagar motores",
+  "hint": "Un script de apagado detiene los motores después del movimiento o cuando termina el programa. Así se evita que sigan moviéndose sin intención y se hace explícito su ciclo de vida.",
+  "instruction": "Termina cada acción de motor con una orden de parada antes de finalizar el programa o ceder el control a otro proceso.",
+  "examples": [
+    {
+      "label": "Ejemplo",
+      "scratchblocks": "when green flag clicked\n@codeyA move forward at power (50) % for (1) secs :: motion\n@codeyA stop moving :: motion\nstop [all v]"
+    }
+  ]
+}

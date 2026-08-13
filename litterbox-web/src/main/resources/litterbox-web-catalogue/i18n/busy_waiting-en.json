@@ -1,0 +1,8 @@
+{
+  "finderId": "busy_waiting",
+  "locale": "en",
+  "name": "Busy Waiting",
+  "hint": "In your script you are constantly checking a condition, just to stop everything once the condition is met.",
+  "instruction": "In your script you are constantly checking a condition, just to stop everything once the condition is met.",
+  "examples": []
+}

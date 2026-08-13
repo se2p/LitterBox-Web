@@ -1,0 +1,17 @@
+{
+  "finderId": "multiple_attribute_modifications",
+  "locale": "es",
+  "name": "Modificaciones de atributos redundante",
+  "hint": "Hay varios cambios de la misma variable o atributo uno detrás de otro, que podrían ser reemplazados por una única instrucción.",
+  "instruction": "Hay varios cambios de la misma variable o atributo uno detrás de otro, que podrían ser reemplazados por una única instrucción.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nswitch backdrop to (garden v)\ngo to x: (11) y: (120)\nset [points v] to (0)\nset [points v] to (0) :: #ff0000 //⇦  🐛"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\nswitch backdrop to (garden v)\ngo to x: (11) y: (120)\nset [points v] to (0) :: #007000 //⇦  👍"
+    }
+  ]
+}
