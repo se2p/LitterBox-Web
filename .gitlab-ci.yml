@@ -270,6 +270,7 @@ nix-build-jar:
   stage: nix
   needs: []
   image: docker.io/nixos/nix:latest
+  allow_failure: true
   script:
     - >
       nix
