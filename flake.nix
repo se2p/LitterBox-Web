@@ -128,6 +128,10 @@
                 pkgs.reuse
                 mvn-lint
               ];
+              languages.javascript = {
+                enable = true;
+                package = pkgs.nodejs_24;
+              };
               languages.java = {
                 enable = true;
                 jdk.package = jdk;

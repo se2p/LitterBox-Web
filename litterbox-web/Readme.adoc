@@ -64,6 +64,8 @@ You can import this in link:https://www.postman.com/[Postman], link:https://gith
 [source,bash]
 ----
 mvn package spring-boot:repackage
+# to include the web-interface used on the LitterBox website:
+mvn -DskipTests package -P build-frontend
 ----
 
 Afterwards, you can start the litterbox-web server using
