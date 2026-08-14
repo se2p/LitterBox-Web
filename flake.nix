@@ -182,14 +182,8 @@
         connectors-screenshot = import ./connectors/screenshot/shell.nix {
           inherit pkgs;
         };
-        connectors = pkgs.mkShell {
-          name = "litterbox-web-connector-shells";
-          passthru = {
-            api = connectors-api;
-            code-completion-dummy = connectors-code-completion-dummy;
-            code-readability = connectors-code-readability;
-            screenshot = connectors-screenshot;
-          };
+        frontend = import ./frontend/shell.nix {
+          inherit pkgs;
         };
       });
   };
