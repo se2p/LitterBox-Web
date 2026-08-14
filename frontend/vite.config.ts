@@ -17,4 +17,11 @@ export default defineConfig({
         // wrong. Long enough to absorb that, and still short enough that something genuinely stuck says so.
         testTimeout: 15_000,
     },
+    server: {
+        proxy: {
+            '/litterbox/api': {
+                target: 'http://localhost:8080',
+            },
+        },
+    },
 });
