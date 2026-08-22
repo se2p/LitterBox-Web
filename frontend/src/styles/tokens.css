@@ -52,6 +52,16 @@
     --color-backdrop: rgba(49, 59, 72, 0.78);
     --color-dialog-shadow: rgba(32, 41, 51, 0.3);
 
+    --color-scratch-motion: #4c97ff;
+    --color-scratch-looks: #9966ff;
+    --color-scratch-sound: #cf63cf;
+    --color-scratch-events: #ffbf00;
+    --color-scratch-control: #ffab19;
+    --color-scratch-sensing: #5cb1d6;
+    --color-scratch-operators: #59c059;
+    --color-scratch-variables: #ff8c1a;
+    --color-scratch-my-blocks: #ff6680;
+
     --space-1: 0.25rem;
     --space-2: 0.5rem;
     --space-3: 0.75rem;

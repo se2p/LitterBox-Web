@@ -739,7 +739,7 @@
     height: 1.1rem;
     place-items: center;
     border-radius: 50%;
-    background: #ff8c1a;
+    background: var(--color-scratch-variables);
     color: var(--color-surface);
     font-size: 0.65rem;
     line-height: 1;

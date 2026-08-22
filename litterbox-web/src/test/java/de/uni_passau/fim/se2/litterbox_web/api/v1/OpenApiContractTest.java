@@ -97,6 +97,28 @@ class OpenApiContractTest extends LitterboxWebIntegrationTest {
     }
 
     @Test
+    void documentsThePublicStatisticsContractConsumedByTheFrontend() {
+        final JsonNode specification = requestUtilService.get(
+            "/v3/api-docs", JsonNode.class, HttpStatus.OK
+        );
+        final JsonNode paths = specification.path("paths");
+        final JsonNode schema = specification.path(COMPONENTS).path(SCHEMAS).path("PublicStatisticsDto");
+
+        assertThat(paths.has("/api/v1/statistics/public")).isTrue();
+        assertThat(schema.path(PROPERTIES).propertyNames()).containsExactlyInAnyOrder(
+            "schemaVersion", "available", "generatedAt", "totals", "distributions", "findingGroups",
+            "blockCategories"
+        );
+        final String distributionReference = schema.at("/properties/distributions/items/$ref").asString();
+        final String distributionName = distributionReference.substring(distributionReference.lastIndexOf('/') + 1);
+        final JsonNode distribution = specification.path(COMPONENTS).path(SCHEMAS).path(distributionName);
+        assertThat(distribution.path(PROPERTIES).propertyNames()).containsExactlyInAnyOrder(
+            "metric", "sampleSize", "minimum", "p25", "median", "p75", "p95", "displayMaximum", "zeroCount",
+            "zeroPrevalence", "points"
+        );
+    }
+
+    @Test
     void documentsTheSourceDerivedCapabilityContracts() {
         final JsonNode specification = requestUtilService.get(
             "/v3/api-docs", JsonNode.class, HttpStatus.OK

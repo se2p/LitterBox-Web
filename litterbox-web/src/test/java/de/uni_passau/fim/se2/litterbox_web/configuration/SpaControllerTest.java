@@ -71,6 +71,7 @@ class SpaControllerTest {
                 // Reachable from the menu, so a reload or a bookmark has to resolve as well.
                 "/litterbox/advanced",
                 "/litterbox/compare",
+                "/litterbox/statistics",
                 "/litterbox/questions",
                 "/litterbox/questions/synthetic-token",
                 "/litterbox/teacher/questions",

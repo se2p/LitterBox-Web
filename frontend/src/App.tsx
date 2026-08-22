@@ -18,6 +18,9 @@ import { SubmissionPage } from './pages/SubmissionPage';
 const CataloguePage = lazy(() =>
     import('./pages/CataloguePage').then((module) => ({ default: module.CataloguePage })),
 );
+const StatisticsPage = lazy(() =>
+    import('./pages/StatisticsPage').then((module) => ({ default: module.StatisticsPage })),
+);
 const ComparisonPage = lazy(() =>
     import('./pages/ComparisonPage').then((module) => ({ default: module.ComparisonPage })),
 );
@@ -113,6 +116,7 @@ export function App() {
             navigationItems={navLinks}
             navigationLoading={state.status === 'loading'}
             footerLinks={[
+                { path: '/statistics', label: t('navStatistics') },
                 { path: '/contact', label: t('navContact') },
                 { path: '/faq', label: t('navFaq') },
                 { path: '/imprint', label: t('navImprint') },
@@ -261,6 +265,11 @@ export function App() {
                                 />
                             )}
                         />
+                        <Route exact path="/statistics">
+                            <StatisticsPage
+                                applicationLocale={applicationLocale as SupportedLocale}
+                            />
+                        </Route>
                         <Route exact path="/about">
                             <InformationalPage kind="about" />
                         </Route>

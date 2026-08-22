@@ -164,6 +164,14 @@ describe('app shell', () => {
             'Catalogue',
             'About',
         ]);
+        expect(
+            within(screen.getByRole('navigation', { name: 'Footer navigation' })).getByRole(
+                'link',
+                {
+                    name: 'Statistics',
+                },
+            ),
+        ).toHaveAttribute('href', '/statistics');
         expect(navigation).not.toHaveAttribute('aria-busy');
         expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('aria-current', 'page');
         // The version appears only once the service has answered; before that the footer says nothing about it.

@@ -38,7 +38,8 @@ class MariaDbMigrationIntegrationTest {
         "submission", "submission_event", "source_artifact", "submission_artifact", "analysis",
         "analysis_metric", "scratch_project_stats", "asset", "analysis_asset", "issue_feedback",
         "quiz_answer", "legacy_id_map", "external_id", "contact_message", "idempotency_key",
-        "analysis_job"
+        "analysis_job", "statistics_processed_analysis", "statistics_total", "statistics_distribution",
+        "statistics_finding", "statistics_block_category"
     );
 
     @Test
@@ -51,14 +52,70 @@ class MariaDbMigrationIntegrationTest {
         }
     }
 
+    @Test
+    void clearsTheAnonymousProjectionWhenUpgradingFromV4() {
+        try (TestDatabase database = TestDatabase.freshSchema("statistics_rebuild")) {
+            final Flyway throughV4 = Flyway.configure()
+                .dataSource(database.dataSource())
+                .locations("classpath:db/migration")
+                .target("4")
+                .load();
+            throughV4.migrate();
+            final JdbcTemplate jdbc = database.jdbcTemplate();
+            jdbc.update(
+                "INSERT INTO submission (share_token, source_type, locale, state) "
+                    + "VALUES ('statistics-rebuild', 'UPLOAD', 'en', 'DONE')"
+            );
+            jdbc.update(
+                "INSERT INTO source_artifact (sha256, storage_key, byte_size, source_kind, retention_state) "
+                    + "VALUES (UNHEX(SHA2('statistics-rebuild', 256)), 'statistics/rebuild.sb3', 1, "
+                    + "'PROJECT', 'ACTIVE')"
+            );
+            jdbc.update(
+                "INSERT INTO analysis (submission_id, source_artifact_id, provenance, report_schema_version, "
+                    + "litterbox_artifact_version, detector_set, locale, status, from_creation, completed_at) "
+                    + "VALUES (1, 1, 'NEW', '1', 'test', 'all', 'en', 'DONE', TRUE, '2026-08-13 12:00:00')"
+            );
+            jdbc.update("INSERT INTO statistics_processed_analysis (analysis_id) VALUES (1)");
+            jdbc.update(
+                "INSERT INTO statistics_total (singleton, projects, finding_projects, block_category_projects) "
+                    + "VALUES (1, 1, 1, 1)"
+            );
+            jdbc.update(
+                "INSERT INTO statistics_distribution (metric, metric_value, count) VALUES ('block_count', 1, 1)"
+            );
+            jdbc.update(
+                "INSERT INTO statistics_finding (finder_id, issue_type, projects_affected, occurrences) "
+                    + "VALUES ('type_error', 'bug', 1, 1)"
+            );
+            jdbc.update(
+                "INSERT INTO statistics_block_category (metric, projects_using, blocks) "
+                    + "VALUES ('motion_block_count', 1, 1)"
+            );
+
+            final Flyway latest = Flyway.configure()
+                .dataSource(database.dataSource())
+                .locations("classpath:db/migration")
+                .load();
+            assertThat(latest.migrate().migrationsExecuted).isEqualTo(1);
+
+            assertThat(latest.info().current().getVersion().getVersion()).isEqualTo("5");
+            assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM statistics_processed_analysis", Long.class)).isZero();
+            assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM statistics_total", Long.class)).isZero();
+            assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM statistics_distribution", Long.class)).isZero();
+            assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM statistics_finding", Long.class)).isZero();
+            assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM statistics_block_category", Long.class)).isZero();
+        }
+    }
+
     @SuppressWarnings("checkstyle:MethodLength")
     private void migrateAndAssert(final TestDatabase database) throws Exception {
         final Flyway flyway = Flyway.configure()
             .dataSource(database.dataSource())
             .locations("classpath:db/migration")
             .load();
-        assertThat(flyway.migrate().migrationsExecuted).isEqualTo(1);
-        assertThat(flyway.info().current().getVersion().getVersion()).isEqualTo("1");
+        assertThat(flyway.migrate().migrationsExecuted).isGreaterThanOrEqualTo(2);
+        assertThat(flyway.info().current().getVersion().getVersion()).isEqualTo("5");
 
         try (Connection connection = database.dataSource().getConnection()) {
             final Set<String> tables;
@@ -190,6 +247,16 @@ class MariaDbMigrationIntegrationTest {
                 assertThatThrownBy(
                     () -> statement.executeUpdate(
                         "INSERT INTO analysis_metric (analysis_id, name, value) VALUES (1, 'block_count', 2)"
+                    )
+                ).isInstanceOf(SQLException.class);
+                statement.executeUpdate(
+                    "INSERT INTO statistics_distribution (metric, metric_value, count) "
+                        + "VALUES ('block_count', 37, 1)"
+                );
+                assertThatThrownBy(
+                    () -> statement.executeUpdate(
+                        "INSERT INTO statistics_distribution (metric, metric_value, count) "
+                            + "VALUES ('block_count', -1, 1)"
                     )
                 ).isInstanceOf(SQLException.class);
                 // The old site's SQL is not going to be run again, so the schema carries the tables and nothing

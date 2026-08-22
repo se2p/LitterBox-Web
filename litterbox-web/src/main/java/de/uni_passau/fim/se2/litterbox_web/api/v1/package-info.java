@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EUPL-1.2
  */
 @ApplicationModule(
-    allowedDependencies = { "capabilities", "catalogue", "single_project" },
+    allowedDependencies = { "capabilities", "catalogue", "single_project", "statistics" },
     type = ApplicationModule.Type.CLOSED
 )
 package de.uni_passau.fim.se2.litterbox_web.api.v1;

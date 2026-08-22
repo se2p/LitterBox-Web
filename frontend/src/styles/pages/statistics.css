@@ -1,0 +1,407 @@
+/* SPDX-License-Identifier: EUPL-1.2 */
+/* SPDX-FileCopyrightText: 2026 LitterBox-Web contributors */
+
+.statistics-page {
+    display: grid;
+    gap: var(--space-8);
+}
+
+.statistics-hero {
+    margin-bottom: 0;
+}
+
+.statistics-content {
+    display: grid;
+    min-width: 0;
+    gap: var(--space-8);
+}
+
+.statistics-updated {
+    margin: var(--space-3) 0 0;
+    color: var(--color-ink-muted);
+    font-size: 0.9rem;
+}
+
+.statistics-section,
+.statistics-unavailable {
+    min-width: 0;
+}
+
+.statistics-section > h2,
+.statistics-unavailable > h2 {
+    margin-top: 0;
+}
+
+.statistics-section-lead,
+.statistics-muted {
+    color: var(--color-ink-muted);
+    line-height: 1.55;
+}
+
+.statistics-totals {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin: var(--space-4) 0 0;
+}
+
+.statistics-totals > div {
+    min-width: 0;
+    padding: var(--space-4);
+    border-top: 0.25rem solid var(--color-brand-cyan-dark);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-muted);
+}
+
+.statistics-totals dt,
+.statistics-prevalence-detail dt {
+    color: var(--color-ink-muted);
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.statistics-totals dd {
+    margin: var(--space-2) 0 0;
+    color: var(--color-brand-slate);
+    font-size: clamp(1.35rem, 3vw, 2rem);
+    font-weight: 700;
+}
+
+.statistics-chart-grid,
+.statistics-finding-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-5);
+    margin-top: var(--space-5);
+}
+
+.statistics-chart,
+.statistics-prevalence-section {
+    min-width: 0;
+    margin: 0;
+    padding: var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+}
+
+.statistics-chart h3,
+.statistics-prevalence-section h3 {
+    margin: 0;
+    color: var(--color-brand-slate);
+    font-size: 1rem;
+}
+
+.statistics-chart figcaption > .statistics-muted {
+    margin: var(--space-2) 0 var(--space-4);
+    font-size: 0.9rem;
+}
+
+.statistics-zero-share {
+    display: inline-block;
+    margin: calc(-1 * var(--space-2)) 0 var(--space-3);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    background: var(--color-info-surface);
+    color: var(--color-info-text);
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.statistics-prevalence-track {
+    appearance: none;
+    display: block;
+    min-width: 0;
+    height: 1rem;
+    overflow: hidden;
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-muted);
+    color: var(--color-brand-yellow-hover);
+}
+
+.statistics-prevalence-track::-webkit-progress-bar {
+    background: var(--color-surface-muted);
+}
+
+.statistics-prevalence-track::-webkit-progress-value {
+    background: var(--color-brand-yellow-hover);
+}
+
+.statistics-prevalence-track::-moz-progress-bar {
+    background: var(--color-brand-yellow-hover);
+}
+
+.statistics-curve {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+}
+
+.statistics-axis,
+.statistics-tick {
+    stroke: var(--color-border-strong);
+    stroke-width: 1;
+}
+
+.statistics-axis-label,
+.statistics-median-label {
+    fill: var(--color-ink-muted);
+    font-family: inherit;
+    font-size: 22px;
+}
+
+.statistics-curve-area {
+    fill: var(--color-cyan-wash);
+}
+
+.statistics-curve-line {
+    fill: none;
+    stroke: var(--color-brand-cyan-dark);
+    stroke-width: 3;
+}
+
+.statistics-median-marker {
+    stroke: var(--color-warning);
+    stroke-dasharray: 4 3;
+    stroke-width: 2;
+}
+
+.statistics-median-label {
+    fill: var(--color-warning-text);
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.statistics-percentiles {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: var(--space-2);
+    margin: var(--space-3) 0 0;
+}
+
+.statistics-percentiles > div {
+    min-width: 0;
+    padding-top: var(--space-2);
+    border-top: 1px solid var(--color-border);
+}
+
+.statistics-percentiles dt {
+    color: var(--color-ink-muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.statistics-percentiles dd {
+    margin: var(--space-1) 0 0;
+    font-size: 0.82rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.statistics-prevalence-list {
+    display: grid;
+    min-width: 0;
+    gap: var(--space-4);
+    margin: var(--space-4) 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.statistics-prevalence-row {
+    display: grid;
+    min-width: 0;
+    gap: var(--space-2);
+}
+
+.statistics-prevalence-label {
+    display: flex;
+    min-width: 0;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+}
+
+.statistics-prevalence-label strong {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.statistics-prevalence-label span {
+    flex: 0 0 auto;
+    color: var(--color-ink-muted);
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.statistics-prevalence-detail {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin: 0;
+}
+
+.statistics-prevalence-detail > div {
+    display: flex;
+    gap: var(--space-1);
+}
+
+.statistics-prevalence-detail dd {
+    margin: 0;
+    font-size: 0.85rem;
+}
+
+.statistics-composition-legend {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-2);
+    margin: var(--space-4) 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.statistics-composition-legend li {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.statistics-composition-legend li > span:last-child {
+    display: grid;
+    min-width: 0;
+}
+
+.statistics-composition-legend small {
+    color: var(--color-ink-muted);
+}
+
+.statistics-composition {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-top: var(--space-5);
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+}
+
+.statistics-composition-segment {
+    stroke: var(--color-surface);
+    stroke-width: 2;
+}
+
+.statistics-composition-swatch {
+    flex: 0 0 1rem;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 0.2rem;
+}
+
+.statistics-composition-motion {
+    fill: var(--color-scratch-motion);
+    background: var(--color-scratch-motion);
+}
+
+.statistics-composition-looks {
+    fill: var(--color-scratch-looks);
+    background: var(--color-scratch-looks);
+}
+
+.statistics-composition-sound {
+    fill: var(--color-scratch-sound);
+    background: var(--color-scratch-sound);
+}
+
+.statistics-composition-events {
+    fill: var(--color-scratch-events);
+    background: var(--color-scratch-events);
+}
+
+.statistics-composition-control {
+    fill: var(--color-scratch-control);
+    background: var(--color-scratch-control);
+}
+
+.statistics-composition-sensing {
+    fill: var(--color-scratch-sensing);
+    background: var(--color-scratch-sensing);
+}
+
+.statistics-composition-operators {
+    fill: var(--color-scratch-operators);
+    background: var(--color-scratch-operators);
+}
+
+.statistics-composition-variables {
+    fill: var(--color-scratch-variables);
+    background: var(--color-scratch-variables);
+}
+
+.statistics-composition-my-blocks {
+    fill: var(--color-scratch-my-blocks);
+    background: var(--color-scratch-my-blocks);
+}
+
+.statistics-composition-other {
+    fill: #63788c;
+    background: #63788c;
+}
+
+.statistics-scope-note {
+    max-width: 58rem;
+    margin: 0;
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--color-border);
+    color: var(--color-ink-muted);
+    line-height: 1.6;
+}
+
+@media (max-width: 54rem) {
+    .statistics-chart-grid,
+    .statistics-finding-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .statistics-chart-grid {
+        gap: var(--space-3);
+    }
+
+    .statistics-composition-legend {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 38rem) {
+    .statistics-totals {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .statistics-percentiles {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .statistics-composition-legend {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 24rem) {
+    .statistics-totals {
+        grid-template-columns: 1fr;
+    }
+
+    .statistics-chart,
+    .statistics-prevalence-section {
+        padding: var(--space-3);
+    }
+
+    .statistics-prevalence-detail > div {
+        display: grid;
+        gap: 0;
+    }
+
+    .statistics-percentiles {
+        grid-template-columns: 1fr;
+    }
+}

@@ -20,6 +20,63 @@ export interface MetricReferenceDto {
     metrics: MetricBandDto[];
 }
 
+export interface PublicStatisticsTotalsDto {
+    projects: number;
+    blocks: number;
+    scripts: number;
+    sprites: number;
+}
+
+export interface PublicStatisticsCurvePointDto {
+    value: number;
+    relativeDensity: number;
+}
+
+export interface PublicStatisticsDistributionDto {
+    metric: string;
+    sampleSize: number;
+    minimum: number;
+    p25: number;
+    median: number;
+    p75: number;
+    p95: number;
+    displayMaximum: number;
+    zeroCount: number;
+    zeroPrevalence: number;
+    points: PublicStatisticsCurvePointDto[];
+}
+
+export interface PublicStatisticsFindingDto {
+    finderId: string;
+    name: string;
+    projectsAffected: number;
+    occurrences: number;
+    prevalence: number;
+}
+
+export interface PublicStatisticsFindingGroupDto {
+    type: string;
+    findings: PublicStatisticsFindingDto[];
+}
+
+export interface PublicStatisticsBlockCategoryDto {
+    metric: string;
+    projectsUsing: number;
+    prevalence: number;
+    blocks: number;
+    blockShare: number;
+}
+
+export interface PublicStatisticsDto {
+    schemaVersion: number;
+    available: boolean;
+    generatedAt: string;
+    totals: PublicStatisticsTotalsDto | null;
+    distributions: PublicStatisticsDistributionDto[];
+    findingGroups: PublicStatisticsFindingGroupDto[];
+    blockCategories: PublicStatisticsBlockCategoryDto[];
+}
+
 export interface CreatedSubmissionDto {
     submissionId: number;
     token: string;

@@ -74,6 +74,9 @@ const getLocale = (): Locale => (isLocale(i18n.language) ? i18n.language : 'en')
 export const formatNumber = (value: number, locale = getLocale()): string =>
     new Intl.NumberFormat(locale).format(value);
 
+export const formatPercent = (value: number, locale = getLocale()): string =>
+    new Intl.NumberFormat(locale, { style: 'percent', maximumFractionDigits: 1 }).format(value);
+
 const RELATIVE_UNITS: [Intl.RelativeTimeFormatUnit, number][] = [
     ['year', 365 * 24 * 60 * 60 * 1000],
     ['month', 30 * 24 * 60 * 60 * 1000],

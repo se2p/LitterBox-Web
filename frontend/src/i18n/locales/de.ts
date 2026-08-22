@@ -74,11 +74,90 @@ export const pack: Partial<TranslationPack> = {
     homeVisualSource:
         'Wenn ich [Programm auswerten v] empfange\ngehe zu [Litterbox v]\nfrage [Was ist falsch am Programm?] und warte\nwechsle zu Bühnenbild [Fehlerauswertung v]',
     navCatalogue: 'Katalog',
+    navStatistics: 'Statistiken',
     navAbout: 'Über LitterBox',
     navContact: 'Kontakt',
     navFaq: 'FAQ',
     navImprint: 'Impressum',
     navPrivacy: 'Datenschutz',
+    statisticsTitle: 'Einblicke in Scratch-Projekte',
+    statisticsLead:
+        'Hier kannst du entdecken, wie analysierte Scratch-Projekte aufgebaut sind: wie groß und komplex sie sind, welche Fehler und Code Smells häufig vorkommen und welche guten Programmierpraktiken LitterBox erkennt.',
+    statisticsUpdated: 'Daten zuletzt aktualisiert: {{formatted}}.',
+    statisticsLoading: 'Öffentliche Statistiken werden geladen …',
+    statisticsError: 'Die öffentlichen Statistiken konnten nicht geladen werden.',
+    statisticsRetry: 'Erneut versuchen',
+    statisticsUnavailableTitle: 'Statistiken sind noch nicht verfügbar',
+    statisticsUnavailableBody:
+        'Für eine aussagekräftige kumulierte Zusammenfassung liegen noch nicht genügend abgeschlossene Analysen vor.',
+    statisticsTotalsHeading: 'Kumulierte Gesamtzahlen',
+    statisticsTotalProjects: 'Projektanalysen',
+    statisticsTotalBlocks: 'Blöcke',
+    statisticsTotalSprites: 'Figuren',
+    statisticsTotalScripts: 'Skripte',
+    statisticsDistributionsHeading: 'Verteilung der Projektgrößen',
+    statisticsDistributionsLead:
+        'Für alle Kurven auf dieser Seite gilt: Je höher die Linie, desto mehr Projekte haben Werte in diesem Bereich. Die horizontale Skala ist logarithmisch; seltene Extremwerte oberhalb des 99. Perzentils liegen außerhalb des angezeigten Bereichs, damit die wesentliche Form lesbar bleibt.',
+    statisticsDistributionBlocks: 'Blöcke pro Projekt',
+    statisticsDistributionScripts: 'Skripte pro Projekt',
+    statisticsDistributionSprites: 'Figuren pro Projekt',
+    statisticsDistributionBugs: 'Fehler pro Projekt',
+    statisticsDistributionSmells: 'Code Smells pro Projekt',
+    statisticsDistributionPerfumes: 'Perfumes pro Projekt',
+    statisticsBurdenHeading: 'Befunde pro Projekt',
+    statisticsBurdenLead:
+        'Diese Kurven zeigen, wie viele Fehler, Code Smells und Perfumes in jedem analysierten Projekt gemeldet wurden.',
+    statisticsZeroShare: '{{percentage}} der Projekte haben keine.',
+    statisticsComplexityHeading: 'Komplexitätsprofil',
+    statisticsComplexityLead:
+        'Strukturmaße zeigen die Bandbreite von kleinen, direkten Programmen bis zu umfangreicheren Projekten.',
+    statisticsDistributionCyclomaticComplexity: 'Zyklomatische Komplexität',
+    statisticsDistributionMostComplexScript: 'Komplexestes Skript',
+    statisticsDistributionNestedBlocks: 'Maximale Verschachtelungstiefe',
+    statisticsDistributionLongestScript: 'Länge des längsten Skripts',
+    statisticsDistributionProcedures: 'Eigene Prozeduren pro Projekt',
+    statisticsDistributionVariables: 'Variablen pro Projekt',
+    statisticsDistributionUnavailable: 'Für diese Messgröße ist keine Verteilung verfügbar.',
+    statisticsSampleSize: 'Auf Grundlage von {{formatted}} Projektanalysen.',
+    statisticsCurveDescription:
+        'Geglättete Verteilung für {{metric}} von {{minimum}} bis zum angezeigten Höchstwert {{maximum}} mit dem Median {{median}}.',
+    statisticsPercentileMinimum: 'Min.',
+    statisticsPercentileP25: 'P25',
+    statisticsPercentileMedian: 'Median',
+    statisticsPercentileP75: 'P75',
+    statisticsPercentileP95: 'P95',
+    statisticsMedianMarker: 'Median',
+    statisticsPercentileSummary: 'Perzentile der Verteilung',
+    statisticsFindingsHeading: 'Häufigkeit von Befunden',
+    statisticsFindingsLead:
+        'Die Prozentangaben beziehen sich nur auf Projekte mit detaillierten Befundberichten.',
+    statisticsFindingsBugs: 'Fehler',
+    statisticsFindingsSmells: 'Code Smells',
+    statisticsFindingsPerfumes: 'Perfumes',
+    statisticsNoFindings: 'In dieser Gruppe sind keine Befunde vertreten.',
+    statisticsProjectsWithPattern: 'Projekte mit diesem Muster',
+    statisticsOccurrences: 'Vorkommen',
+    statisticsPrevalenceAccessible:
+        '{{name}}: {{percentage}} der Projekte, {{projects}} Projekte mit diesem Muster, {{occurrences}} Vorkommen.',
+    statisticsBlockCategoryMotion: 'Bewegung',
+    statisticsBlockCategoryLooks: 'Aussehen',
+    statisticsBlockCategorySound: 'Klang',
+    statisticsBlockCategoryEvents: 'Ereignisse',
+    statisticsBlockCategoryControl: 'Steuerung',
+    statisticsBlockCategorySensing: 'Fühlen',
+    statisticsBlockCategoryOperators: 'Operatoren',
+    statisticsBlockCategoryVariables: 'Variablen',
+    statisticsBlockCategoryMyBlocks: 'Meine Blöcke',
+    statisticsBlockCategoryOther: 'Andere Blockfamilie',
+    statisticsCompositionHeading: 'Zusammensetzung der Blockfamilien',
+    statisticsCompositionLead:
+        'Der Balken zeigt den Anteil jeder Familie an den klassifizierten Blöcken; die Legende zeigt ihre Verbreitung unter Projekten mit vergleichbaren Blockfamilien-Metriken.',
+    statisticsCompositionAccessible:
+        'Anteile der Blockfamilien und Anteil der Projekte, die jede Familie verwenden.',
+    statisticsCompositionLegend:
+        '{{share}} der Blöcke ({{blocks}}) · in {{prevalence}} der Projekte verwendet',
+    statisticsScopeNote:
+        'Diese Statistiken fassen Projekte zusammen, die an LitterBox übermittelt wurden, und sind möglicherweise nicht repräsentativ für alle Scratch-Projekte.',
     submitTitle: 'Ein Scratch-Projekt analysieren',
     submitLead:
         'Lade ein vollständiges Projektarchiv hoch oder gib eine numerische Scratch-Projekt-URL ein.',
@@ -638,7 +717,7 @@ export const pack: Partial<TranslationPack> = {
         'Jede Einreichung antwortet mit einem eigenen Link. Hebe ihn auf — er ist der einzige Weg zurück zu diesem Ergebnis, und wer ihn hat, kann den Bericht lesen. Alte Einreichungen werden nach etwa einer Woche entfernt; sichere also, was du behalten möchtest.',
     privacyDataHeading: 'Für die Analyse übermittelte Daten',
     privacyDataBody:
-        'Nur für die Analyse erforderliche Projektdaten werden an den konfigurierten Analysedienst gesendet. Das Ergebnis wird unter dem bei der Einreichung zurückgegebenen Link aufbewahrt. Dein Browser merkt sich außerdem auf diesem Gerät die Links zu deinen letzten Ergebnissen, damit du sie wiederfindest; die Schaltfläche „Diese vergessen“ auf der Startseite entfernt sie.',
+        'Nur für die Analyse erforderliche Projektdaten werden an den konfigurierten Analysedienst gesendet. Das Ergebnis wird unter dem bei der Einreichung zurückgegebenen Link aufbewahrt. Aus abgeschlossenen Analyseergebnissen können verzögerte anonyme kumulierte Statistiken abgeleitet werden; einzelne Projekte werden nicht veröffentlicht oder aufgelistet. Dein Browser merkt sich außerdem auf diesem Gerät die Links zu deinen letzten Ergebnissen, damit du sie wiederfindest; die Schaltfläche „Diese vergessen“ auf der Startseite entfernt sie.',
     privacyUploadHeading: 'Deine Verantwortung',
     privacyUploadBody:
         'Lade keine personenbezogenen Daten hoch. Ein Scratch-Projekt kann Namen, Fotos oder Tonaufnahmen enthalten; entferne diese, bevor du es einreichst.',
@@ -651,7 +730,7 @@ export const pack: Partial<TranslationPack> = {
     privacyOfficerHeading: 'Kontaktdaten des bestellten behördlichen Datenschutzbeauftragten',
     privacyPurposesHeading: 'Zwecke und Rechtsgrundlagen der Verarbeitung',
     privacyPurposesBody:
-        'Wir bieten gemäß Art. 2 Abs. 6 BayHSchG, Art. 4 Abs. 1 S. 1 und 2 BayEGovG auf unseren Webseiten unsere Dienste sowie Informationen für die Öffentlichkeit über unsere Tätigkeit an. Wir ermöglichen eine schnelle elektronische Kontaktaufnahme und unmittelbare Kommunikation, § 5 Abs. 1 Nr. 2 TMG. Protokolldateien verwenden wir zur Prüfung und Wartung unseres Webdienstes und zur Gewährleistung der Netz- und Informationssicherheit gemäß Art. 6 Abs. 1 BayDSG und Art. 11 Abs. 1 BayEGovG. Soweit der Verarbeitungszweck nicht beeinträchtigt wird, anonymisieren oder pseudonymisieren wir personenbezogene Daten.',
+        'Wir bieten gemäß Art. 2 Abs. 6 BayHSchG, Art. 4 Abs. 1 S. 1 und 2 BayEGovG auf unseren Webseiten unsere Dienste sowie Informationen für die Öffentlichkeit über unsere Tätigkeit an. Wir ermöglichen eine schnelle elektronische Kontaktaufnahme und unmittelbare Kommunikation, § 5 Abs. 1 Nr. 2 TMG. Aus abgeschlossenen Analysen erstellen wir verzögerte anonyme kumulierte Dienststatistiken, um die eingereichten Projekte zu beschreiben, ohne einzelne Projekte zu veröffentlichen oder aufzulisten. Protokolldateien verwenden wir zur Prüfung und Wartung unseres Webdienstes und zur Gewährleistung der Netz- und Informationssicherheit gemäß Art. 6 Abs. 1 BayDSG und Art. 11 Abs. 1 BayEGovG. Soweit der Verarbeitungszweck nicht beeinträchtigt wird, anonymisieren oder pseudonymisieren wir personenbezogene Daten.',
     privacyCategoriesHeading: 'Datenkategorien',
     privacyCategoriesBody:
         'Wenn du diese Internetseite aufrufst, übermittelst du über deinen Internetbrowser Daten an unseren Webserver. Zur Analyse eingereichte Projekte und die daraus abgeleiteten Ergebnisse werden unter dem bei der Einreichung zurückgegebenen Token gespeichert. Wenn du uns ein Anliegen oder eine Meinung per E-Mail, Post, Telefon oder Fax mitteilst, werden die gemachten Angaben zum Zwecke der Bearbeitung des Anliegens sowie für mögliche Anschlussfragen und zum Meinungsaustausch verarbeitet. Dafür setzen wir immer den gleichen Kommunikationsweg ein, sofern du keinen Wechsel wünschst.',

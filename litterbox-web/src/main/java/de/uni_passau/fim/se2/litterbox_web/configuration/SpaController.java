@@ -43,7 +43,7 @@ public class SpaController {
             "/litterbox/compare", "/litterbox/questions",
             "/litterbox/teacher/questions", "/litterbox/teacher/questions/{token}",
             "/litterbox/questions/{token}", "/litterbox/submissions/{token}", "/litterbox/catalogue",
-            "/litterbox/about", "/litterbox/contact", "/litterbox/faq", "/litterbox/imprint",
+            "/litterbox/statistics", "/litterbox/about", "/litterbox/contact", "/litterbox/faq", "/litterbox/imprint",
             "/litterbox/privacy"
         },
         produces = MediaType.TEXT_HTML_VALUE
