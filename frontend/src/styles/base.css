@@ -1,0 +1,116 @@
+/* SPDX-License-Identifier: EUPL-1.2 */
+/* SPDX-FileCopyrightText: 2025 LitterBox-Web contributors */
+* {
+    box-sizing: border-box;
+}
+
+html {
+    background: var(--color-canvas);
+    scroll-behavior: smooth;
+}
+
+body {
+    min-width: 20rem;
+    margin: 0;
+    background: var(--color-canvas);
+    color: var(--color-ink);
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button,
+input,
+select {
+    min-height: 2.75rem;
+}
+
+button,
+a,
+input,
+select,
+textarea,
+summary {
+    -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible,
+.table-region:focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: 3px;
+    box-shadow: var(--focus-shadow);
+}
+
+a {
+    color: var(--color-link);
+}
+
+a:hover {
+    color: var(--color-ink);
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+img,
+svg,
+video,
+canvas {
+    max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+    border-radius: var(--radius-sm);
+}
+
+p,
+li,
+dd,
+dt,
+label,
+button,
+a,
+summary,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    overflow-wrap: anywhere;
+}
+
+/* The mark for a family of findings. Sized against the text it sits beside, so it grows when the reader's own font
+   size does, and it never stands in for the family's name — one is always printed next to it. */
+.family-icon {
+    display: block;
+    width: 1.15em;
+    height: 1.15em;
+    flex: 0 0 auto;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}

@@ -1,0 +1,109 @@
+/* SPDX-License-Identifier: EUPL-1.2 */
+/* SPDX-FileCopyrightText: 2026 LitterBox-Web contributors */
+
+.static-page {
+    max-width: 62rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+}
+
+.static-hero {
+    margin-bottom: var(--space-6);
+}
+
+.static-page-layout .lead {
+    max-width: 48rem;
+}
+
+.static-section {
+    max-width: 52rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+}
+
+.static-section + .static-section {
+    margin-top: var(--space-6);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--color-border);
+}
+
+.static-section h2,
+.static-section p,
+.static-section li {
+    max-width: 52rem;
+}
+
+.static-section p {
+    line-height: 1.6;
+}
+
+/* A postal address, not prose: each line keeps its own line however wide the page gets. */
+.static-lines {
+    display: grid;
+    gap: var(--space-1);
+}
+
+.static-steps {
+    margin: 0;
+    padding-left: 1.35rem;
+    line-height: 1.6;
+}
+
+.static-steps li + li {
+    margin-top: var(--space-2);
+}
+
+.static-links {
+    margin: var(--space-3) 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* Two acknowledgements that carry equal weight, so they sit beside each other rather than one under the other. */
+.static-funding {
+    max-width: 62rem;
+    margin-top: var(--space-8);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--color-border);
+}
+
+.static-funding h2 {
+    margin-top: 0;
+}
+
+.static-funding-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.static-funding-list > li {
+    min-width: 0;
+    padding: var(--space-5);
+    border-radius: var(--radius-friendly);
+    background: var(--color-surface-muted);
+}
+
+.static-funding-list h3 {
+    margin: 0 0 var(--space-2);
+    font-size: 1rem;
+}
+
+.static-funding-list p {
+    margin: 0;
+    line-height: 1.55;
+}
+
+.static-funding-list p + p {
+    margin-top: var(--space-2);
+}
+
+.static-funding-reference {
+    color: var(--color-ink-muted);
+    font-size: 0.9rem;
+}

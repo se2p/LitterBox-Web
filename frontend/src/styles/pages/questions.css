@@ -1,0 +1,499 @@
+/* SPDX-License-Identifier: EUPL-1.2 */
+/* SPDX-FileCopyrightText: 2026 LitterBox-Web contributors */
+
+.questions-form {
+    max-width: 64rem;
+}
+
+.questions-results {
+    min-width: 0;
+}
+
+.questions-results > h2 {
+    margin-bottom: var(--space-3);
+}
+
+.questions-results > .hint {
+    margin-bottom: var(--space-5);
+}
+
+.questions-list {
+    display: grid;
+    min-width: 0;
+    gap: var(--space-4);
+}
+
+.questions-empty-state {
+    border-top-color: var(--color-brand-yellow);
+}
+
+.quiz-card {
+    display: grid;
+    gap: var(--space-4);
+    padding: 0;
+}
+
+/* An eyebrow, not a title: the heading only numbers the card, so it is sized as a label. */
+.quiz-question-number {
+    min-width: 0;
+    margin: 0;
+    color: var(--color-brand-cyan-dark);
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.quiz-question-text {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    line-height: 1.65;
+}
+
+.quiz-choice-group {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    /* The options are laid out against the width of this box, not of the window: the same card is read on a page
+       with a sidebar of filters and on one without. */
+    container-type: inline-size;
+}
+
+.quiz-choice-group legend {
+    margin-bottom: var(--space-2);
+    padding: 0;
+    color: var(--color-ink-muted);
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+/* Four answers laid out on a 17rem floor gave three across and one stranded underneath, which reads as though the
+   fourth were an afterthought rather than one of the four. The answers to one question are a set: they go across in
+   one row, or they go under each other. Nothing in between, whatever the count happens to be. */
+.quiz-choice-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+    min-width: 0;
+}
+
+/* Each threshold is the count times an 11rem column plus the gaps between them — the width at which that many
+   options can stand side by side without any of them turning into a column of single words. */
+@container (min-width: 22.75rem) {
+    .quiz-choice-grid[data-choice-count='2'] {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@container (min-width: 34.5rem) {
+    .quiz-choice-grid[data-choice-count='3'] {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@container (min-width: 46.25rem) {
+    .quiz-choice-grid[data-choice-count='4'] {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+/* Five or more never fitted across and are not made to try. */
+@container (min-width: 46.25rem) {
+    .quiz-choice-grid:not([data-choice-count='1']):not([data-choice-count='2']):not(
+            [data-choice-count='3']
+        ):not([data-choice-count='4']) {
+        grid-template-columns: repeat(auto-fit, minmax(min(17rem, 100%), 1fr));
+    }
+}
+
+.quiz-choice-card {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    min-width: 0;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    border: 0;
+    border-radius: 5px;
+    background: var(--color-surface-muted);
+    color: var(--color-ink);
+    cursor: pointer;
+    font-weight: 400;
+}
+
+.quiz-choice-card:focus-within {
+    outline: var(--focus-ring);
+    outline-offset: 0.15rem;
+}
+
+.quiz-choice-card:has(input:checked) {
+    background: var(--color-brand-yellow-soft);
+    box-shadow: inset 0 0 0 2px var(--color-brand-yellow);
+}
+
+.quiz-choice-card input {
+    width: 1.2rem;
+    height: 1.2rem;
+    margin: 0.2rem 0 0;
+    accent-color: var(--color-brand-cyan-dark);
+}
+
+.quiz-choice-card-content {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    line-height: 1.55;
+}
+
+.quiz-free-text-label {
+    display: grid;
+    min-width: 0;
+    gap: var(--space-1);
+    color: var(--color-ink-muted);
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.quiz-feedback {
+    display: grid;
+    min-width: 0;
+    gap: var(--space-2);
+    margin: 0;
+    color: var(--color-ink-muted);
+    font-weight: 700;
+}
+
+.quiz-verdict-line {
+    margin: 0;
+}
+
+/* The verdict is the one thing the reader looks for, so it is carried by a colour as well as by words. */
+.quiz-verdict-correct .quiz-verdict-line {
+    color: var(--color-success-text);
+}
+
+.quiz-verdict-incorrect .quiz-verdict-line {
+    color: var(--color-danger);
+}
+
+.quiz-card-correct {
+    border-top-color: var(--color-success-border);
+}
+
+.quiz-card-incorrect {
+    border-top-color: var(--color-danger);
+}
+
+.quiz-expected-answer {
+    display: grid;
+    min-width: 0;
+    gap: var(--space-1);
+    font-weight: 400;
+}
+
+.quiz-expected-answer p {
+    margin: 0;
+    font-weight: 700;
+}
+
+.quiz-expected-answer ul {
+    margin: 0;
+    padding-left: 1.25rem;
+}
+
+.quiz-expected-answer li {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.quiz-sprite {
+    margin: var(--space-1) 0 0;
+    color: var(--color-ink-muted);
+    font-size: 0.85rem;
+}
+
+/* The script a question is about is the question's other half; it reads as part of the prompt, not as an aside. */
+.quiz-question-code {
+    min-width: 0;
+    overflow-x: auto;
+}
+
+.quiz-question-code .scratchblocks-preview {
+    margin: 0;
+}
+
+.quiz-hint {
+    margin: 0;
+    color: var(--color-ink-muted);
+    line-height: 1.55;
+}
+
+/* The result of a whole round, drawn as the LitterBox questions report draws it: the fraction is the thing to see
+   from across a classroom, and the sentence under it says the same in words. */
+.questions-score {
+    margin: 0 0 var(--space-6);
+    padding: var(--space-5);
+    border: 1px solid var(--color-border);
+    border-radius: 5px;
+    background: var(--color-surface-muted);
+    text-align: center;
+}
+
+.questions-score h3 {
+    margin: 0 0 var(--space-2);
+    font-size: 1rem;
+}
+
+.questions-score-value {
+    margin: 0;
+    color: var(--color-brand-cyan-dark);
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.questions-score-detail {
+    margin: var(--space-2) 0 0;
+    color: var(--color-ink-muted);
+}
+
+/* Back and forward under the one question being answered. Forward is the primary action and sits on the right, where
+   a reader who has just read the reply to this question is already looking. */
+.learner-quiz-navigation {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+}
+
+.learner-quiz-forward {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+}
+
+/* The project's own scripts, under the question they are being read for. */
+.project-code {
+    margin-top: var(--space-6);
+    padding: var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface-muted);
+}
+
+.project-code > summary {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    cursor: pointer;
+    font-weight: 600;
+    list-style: none;
+}
+
+.project-code > summary::-webkit-details-marker {
+    display: none;
+}
+
+.project-code > summary::before {
+    content: '\25b8';
+    color: var(--color-brand-cyan-dark);
+    line-height: 1;
+}
+
+.project-code[open] > summary::before {
+    content: '\25be';
+}
+
+.project-code-sprite {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+}
+
+/* Its own scroll: a sprite with twenty scripts would otherwise push the question off the top of the screen, and
+   the question is what the code is being read for. */
+.project-code-scripts {
+    max-height: 28rem;
+    margin-top: var(--space-3);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.project-code-scripts ol {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* The way back into any question from the summary, so a reader can reread what they answered rather than only how
+   many they got, and how each of them went without opening any of them. */
+.learner-quiz-review {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: var(--space-4) 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.learner-quiz-review button {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+}
+
+.learner-quiz-review-mark {
+    font-weight: 700;
+}
+
+/* Colour on top of the mark and the word, never instead of either. */
+.learner-quiz-review-correct button {
+    border-color: var(--color-success-border);
+    background: var(--color-success-surface);
+    color: var(--color-success-text);
+}
+
+.learner-quiz-review-incorrect button {
+    border-color: var(--color-danger-border);
+    background: var(--color-danger-surface);
+    color: var(--color-danger-text);
+}
+
+.learner-quiz-review-outcome {
+    font-size: 0.85rem;
+}
+
+/* The second thing a teacher can do with a project. On its own page the questions form takes the wider measure;
+   sitting under the class-set workflows it lines its boxes up with theirs. What sets it off from them is the
+   separator every section of that page shares, in single-project.css. */
+.questions-form.teacher-questions-entry {
+    max-width: 58rem;
+}
+
+.teacher-questions-coverage,
+.teacher-questions-group {
+    display: grid;
+    min-width: 0;
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+}
+
+.teacher-questions-coverage h2,
+.teacher-questions-group h2 {
+    margin: 0;
+}
+
+.teacher-questions-group-count {
+    color: var(--color-ink-muted);
+    font-size: 0.85rem;
+    font-weight: 400;
+}
+
+/* Dimensions down, scopes across: the block model is a grid, so it is shown as one. */
+.block-model-grid {
+    min-width: 0;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+/* The cells are the controls now, so the padding moves onto the button inside each one: a target that stops short
+   of its own cell edge is a target a reader has to aim at. */
+.block-model-grid th,
+.block-model-grid td {
+    padding: 0;
+    border: 1px solid var(--color-border);
+    font-variant-numeric: tabular-nums;
+}
+
+.block-model-choice {
+    width: 100%;
+    min-height: 0;
+    padding: var(--space-2) var(--space-3);
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: inherit;
+}
+
+.block-model-choice:hover:not(:disabled) {
+    background: var(--color-surface-muted);
+}
+
+.block-model-choice:disabled {
+    color: var(--color-ink-muted);
+    cursor: default;
+    opacity: 1;
+}
+
+/* Which slice is being read has to survive being looked at, so it is marked in the cell itself and not by hover. */
+.block-model-choice[aria-pressed='true'] {
+    background: var(--color-brand-slate);
+    color: var(--color-surface);
+}
+
+.block-model-grid thead th,
+.block-model-grid tbody th {
+    color: var(--color-ink-muted);
+    font-size: 0.85rem;
+}
+
+.block-model-grid tbody th {
+    text-align: left;
+}
+
+.block-model-grid thead td {
+    border: 0;
+}
+
+.block-model-covered {
+    background: var(--color-brand-yellow-soft);
+    font-weight: 700;
+}
+
+.block-model-empty {
+    color: var(--color-ink-muted);
+}
+
+.teacher-questions-showing {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: var(--space-3) 0 0;
+    color: var(--color-ink-muted);
+    font-size: 0.9rem;
+}
+
+.teacher-questions-reset {
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--color-brand-cyan-dark);
+    font-size: 0.9rem;
+    text-decoration: underline;
+}
+
+.teacher-questions-filter {
+    min-width: 0;
+    margin: 0 0 var(--space-5);
+    padding: 0;
+    border: 0;
+}
+
+.teacher-questions-filter legend {
+    margin-bottom: var(--space-2);
+    padding: 0;
+    color: var(--color-ink-muted);
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+/* The narrow-viewport override that forced a single column is gone: one column is now the default the options
+   start from, and the container queries above are what lifts them out of it. */

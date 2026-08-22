@@ -1,0 +1,366 @@
+/* SPDX-License-Identifier: EUPL-1.2 */
+/* SPDX-FileCopyrightText: 2026 LitterBox-Web contributors */
+
+.injection-card {
+    display: grid;
+    min-width: 0;
+    gap: var(--space-4);
+    padding-top: var(--space-8);
+    border-top: 1px solid var(--color-border);
+}
+
+.injection-card h2,
+.injection-card h3,
+.injection-card p {
+    margin-bottom: 0;
+}
+
+.injection-lead {
+    color: var(--color-ink-muted);
+    line-height: 1.55;
+}
+
+.injection-selector,
+.injection-preview {
+    display: grid;
+    min-width: 0;
+    gap: var(--space-4);
+}
+
+.injection-selector fieldset,
+.injection-result-list {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.injection-selector legend,
+.injection-result-list legend {
+    margin-bottom: var(--space-2);
+    font-weight: 700;
+}
+
+.injection-catalogue-controls {
+    display: grid;
+    min-width: 0;
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+}
+
+.injection-search-field {
+    display: grid;
+    min-width: 0;
+    gap: var(--space-1);
+    max-width: 42rem;
+}
+
+.injection-search-field label {
+    font-weight: 700;
+}
+
+.injection-search-field input {
+    min-width: 0;
+}
+
+.injection-search-field .hint {
+    margin: 0;
+}
+
+.injection-catalogue-status {
+    margin: 0;
+    color: var(--color-ink-muted);
+}
+
+/* A row of buttons: the counts live in the one status line above, not wrapped around each one here. */
+.injection-bulk-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.injection-bulk-actions > .hint {
+    flex-basis: 100%;
+    margin: 0;
+    color: var(--color-ink-muted);
+    font-size: 0.9rem;
+}
+
+/* Roughly fifty injectors. A rule under every one of them drew fifty lines across the panel and made a plain list of
+   names look like a table of data; the names carry themselves, in as many columns as there is room for. The list is
+   not its own scroll region either — a scrollbar inside a scrolling page is a trap. */
+.injection-injector-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(19rem, 100%), 1fr));
+    min-width: 0;
+    align-content: start;
+    gap: 0 var(--space-6);
+    margin: var(--space-3) 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.injection-injector {
+    display: grid;
+    min-width: 0;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-2);
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
+}
+
+.injection-injector:hover {
+    background: var(--color-surface-muted);
+}
+
+.injection-injector:focus-within {
+    outline: var(--focus-ring);
+    outline-offset: 0.2rem;
+}
+
+.injection-injector-selected {
+    background: var(--color-surface-muted);
+}
+
+/* The mark sits with the name it explains, not pushed out to the column's edge where fifty of them form a ladder.
+   Everything in the row hangs from the top so that the three of them meet on the name's own line — centring them
+   instead would drop the box and the mark to the middle of an entry that has a second line. */
+.injection-injector-row {
+    display: flex;
+    align-items: start;
+    gap: var(--space-2);
+    min-width: 0;
+}
+
+.injection-injector-row > .injection-injector-select {
+    flex: 0 1 auto;
+}
+
+.injection-injector-select {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    min-width: 0;
+    cursor: pointer;
+}
+
+/* Every input on the site is given a comfortable 2.75rem so it can be tapped, which for a tick box means a 2.75rem
+   box with a 1rem tick floating in the middle of it: the name lined up with the top of that box and the tick with
+   its centre, and fifty of them made the panel three times as long as the list it holds. Sized to the line it
+   marks, the box, the name and the mark all sit on one line — the row is what carries the tap target now. */
+.injection-injector-select input {
+    width: 1.05rem;
+    height: 1.05rem;
+    min-height: 0;
+    flex: 0 0 auto;
+    /* Half the difference between the tick box and the line box of the name beside it. */
+    margin: 0.115rem 0 0;
+}
+
+.injection-injector-copy {
+    display: grid;
+    min-width: 0;
+    gap: 0;
+    overflow-wrap: anywhere;
+}
+
+/* Fifty names in a row of bold reads as a wall; the checkbox already marks what is selected. */
+.injection-injector-copy > span:first-child {
+    font-size: 0.95rem;
+    line-height: 1.35;
+}
+
+.injection-injector-selected .injection-injector-copy > span:first-child {
+    color: var(--color-brand-slate);
+    font-weight: 700;
+}
+
+.injection-finder-id {
+    color: var(--color-ink-muted);
+    font-size: 0.85rem;
+    overflow-wrap: anywhere;
+}
+
+/* A quiet mark beside the name rather than the word "Description" set fifty times down the panel. The comfortable
+   tap height every other button gets would stretch this one into an ellipse twice the height of the name it sits
+   beside, so it is sized to the line it annotates instead. */
+.injection-injector-explain {
+    display: inline-grid;
+    flex: 0 0 auto;
+    place-items: center;
+    width: 1.3rem;
+    height: 1.3rem;
+    min-height: 0;
+    padding: 0;
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--color-ink-muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.injection-injector-explain:hover,
+.injection-injector-explain[aria-expanded='true'] {
+    border-color: var(--color-brand-cyan-dark);
+    color: var(--color-brand-cyan-dark);
+}
+
+/* Indented to the name it belongs to: the tick box plus the gap after it. */
+.injection-injector-description {
+    min-width: 0;
+    padding: 0 0 var(--space-2) 1.55rem;
+    color: var(--color-ink-muted);
+    font-size: 0.9rem;
+    overflow-wrap: anywhere;
+}
+
+.injection-injector-description p {
+    margin: 0;
+}
+
+.injection-filtered-selection {
+    margin-top: var(--space-4);
+    padding-top: var(--space-3);
+    border-top: 1px dashed var(--color-border);
+}
+
+.injection-filtered-selection h4 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.injection-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+}
+
+.injection-status,
+.injection-preview {
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-border);
+}
+
+.injection-status {
+    display: grid;
+    min-width: 0;
+    gap: var(--space-3);
+}
+
+.injection-status h3,
+.injection-preview h3 {
+    margin: 0;
+}
+
+.injection-status h3:focus,
+.injection-preview h3:focus {
+    outline: var(--focus-ring);
+    outline-offset: 0.25rem;
+}
+
+.injection-status-prepared {
+    border-top-color: var(--color-success-border);
+}
+
+.injection-status-error {
+    border-top-color: var(--color-danger);
+}
+
+.injection-metadata,
+.injection-result-metadata {
+    display: grid;
+    min-width: 0;
+    gap: var(--space-3);
+    margin: 0;
+}
+
+.injection-metadata {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.injection-metadata > div,
+.injection-result-metadata > div {
+    min-width: 0;
+}
+
+.injection-metadata dt,
+.injection-result-metadata dt {
+    margin-bottom: var(--space-1);
+    color: var(--color-ink-muted);
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.injection-metadata dd,
+.injection-result-metadata dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.injection-result-list {
+    display: grid;
+    gap: var(--space-4);
+}
+
+.injection-result {
+    display: grid;
+    min-width: 0;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    border: 0;
+    border-radius: 5px;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-muted);
+}
+
+/* A mutation names itself and offers itself for saving on the same line, so the button sits with the thing it saves
+   rather than in a panel further down the page. */
+.injection-result-heading {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-3);
+    min-width: 0;
+}
+
+.injection-result-heading h4 {
+    min-width: 0;
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+/* Wanting all of them is the ordinary case, so it is offered once, above them, before the reading starts. */
+.injection-bulk-download {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-2);
+    min-width: 0;
+}
+
+.injection-result-metadata {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.injection-failure-list {
+    margin: var(--space-2) 0 0;
+    padding-left: 1.25rem;
+}
+
+.injection-failure-list li {
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 22rem) {
+    .injection-injector-row {
+        grid-template-columns: 1fr;
+    }
+
+    .injection-injector-description {
+        padding-left: 0;
+    }
+}

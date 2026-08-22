@@ -1,0 +1,16 @@
+/* SPDX-License-Identifier: EUPL-1.2 */
+/* SPDX-FileCopyrightText: 2025 LitterBox-Web contributors */
+@import './styles/tokens.css';
+@import './styles/base.css';
+@import './styles/components.css';
+@import './styles/pages/home.css';
+@import './styles/pages/single-project.css';
+@import './styles/pages/catalogue.css';
+@import './styles/pages/questions.css';
+@import './styles/pages/advanced-analysis.css';
+@import './styles/pages/static.css';
+@import './styles/capabilities/export.css';
+@import './styles/capabilities/injection.css';
+@import './styles/capabilities/metrics.css';
+@import './styles/capabilities/diff.css';
+@import './styles/shared.css';

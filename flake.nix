@@ -35,10 +35,14 @@
         devenv-up = self.devShells.${system}.default.config.procfileScript;
 
         default = import ./litterbox-web/default.nix {
-          inherit pkgs jdk litterboxWebVersion;
+          inherit pkgs jdk litterboxWebVersion litterbox-web-frontend;
         };
 
         litterbox-web-jar = default;
+
+        litterbox-web-frontend = import ./frontend/default.nix {
+          inherit pkgs;
+        };
 
         litterbox-web = pkgs.stdenvNoCC.mkDerivation rec {
           pname = "litterbox-web";
@@ -48,7 +52,7 @@
           dontUnpack = true;
           buildPhase = "";
           installPhase = ''
-            makeWrapper ${pkgs.jre}/bin/java $out/bin/litterbox-web \
+            makeWrapper ${jdk}/bin/java $out/bin/litterbox-web \
               --add-flags "-jar ${litterbox-web-jar}/litterbox-web-${version}.jar"
           '';
           meta = with pkgs.lib; {
@@ -60,24 +64,43 @@
           inherit pkgs jdk litterbox-web-jar;
         };
 
-        connector.api = import ./connectors/api/default.nix {
+        connector-api = import ./connectors/api/default.nix {
           inherit pkgs;
         };
-        connector.code-completion-dummy = import ./connectors/code_completion_dummy/default.nix {
+        connector-code-completion-dummy = import ./connectors/code_completion_dummy/default.nix {
           inherit pkgs;
-          litterbox-web-api = connector.api;
+          litterbox-web-api = connector-api;
         };
-        connector-container.code-completion-dummy = import ./connectors/code_completion_dummy/container.nix {
+        connector-container-code-completion-dummy = import ./connectors/code_completion_dummy/container.nix {
           inherit pkgs;
-          code-completion-dummy-app = connector.code-completion-dummy;
+          code-completion-dummy-app = connector-code-completion-dummy;
         };
-        connector.screenshot = import ./connectors/screenshot/default.nix {
+        connector-screenshot = import ./connectors/screenshot/default.nix {
           inherit pkgs;
         };
-        connector-container.screenshot = import ./connectors/screenshot/container.nix {
+        connector-container-screenshot = import ./connectors/screenshot/container.nix {
           inherit pkgs;
-          screenshot = connector.screenshot;
+          screenshot = connector-screenshot;
         };
+        connector =
+          pkgs.runCommand "litterbox-web-connectors" {
+            passthru = {
+              api = connector-api;
+              code-completion-dummy = connector-code-completion-dummy;
+              screenshot = connector-screenshot;
+            };
+          } ''
+            mkdir -p $out
+          '';
+        connector-container =
+          pkgs.runCommand "litterbox-web-connector-containers" {
+            passthru = {
+              code-completion-dummy = connector-container-code-completion-dummy;
+              screenshot = connector-container-screenshot;
+            };
+          } ''
+            mkdir -p $out
+          '';
       });
 
     devShells =
@@ -90,11 +113,17 @@
 
           mvn license:format spotless:apply checkstyle:check
         '';
-      in {
+      in rec {
         default = devenv.lib.mkShell {
           inherit inputs pkgs;
           modules = [
             {
+              devenv.root = let
+                explicitRoot = builtins.getEnv "DEVENV_ROOT";
+              in
+                if explicitRoot != ""
+                then explicitRoot
+                else builtins.getEnv "PWD";
               packages = [
                 pkgs.reuse
                 mvn-lint
@@ -141,17 +170,26 @@
             }
           ];
         };
-        connectors.api = import ./connectors/api/shell.nix {
+        connectors-api = import ./connectors/api/shell.nix {
           inherit pkgs;
         };
-        connectors.code-completion-dummy = import ./connectors/code_completion_dummy/shell.nix {
+        connectors-code-completion-dummy = import ./connectors/code_completion_dummy/shell.nix {
           inherit pkgs;
         };
-        connectors.code-readability = import ./connectors/code_readability/shell.nix {
+        connectors-code-readability = import ./connectors/code_readability/shell.nix {
           inherit pkgs;
         };
-        connectors.screenshot = import ./connectors/screenshot/shell.nix {
+        connectors-screenshot = import ./connectors/screenshot/shell.nix {
           inherit pkgs;
+        };
+        connectors = pkgs.mkShell {
+          name = "litterbox-web-connector-shells";
+          passthru = {
+            api = connectors-api;
+            code-completion-dummy = connectors-code-completion-dummy;
+            code-readability = connectors-code-readability;
+            screenshot = connectors-screenshot;
+          };
         };
       });
   };

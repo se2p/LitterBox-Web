@@ -1,0 +1,306 @@
+/* SPDX-License-Identifier: EUPL-1.2 */
+/* SPDX-FileCopyrightText: 2026 LitterBox-Web contributors */
+
+.catalogue-panel {
+    display: grid;
+    gap: var(--space-5);
+}
+
+.catalogue-controls {
+    display: grid;
+    grid-template-columns: minmax(14rem, 2fr) repeat(3, minmax(10rem, 1fr));
+    gap: var(--space-3);
+    padding: var(--space-5);
+    border: 0;
+    border-radius: 5px;
+    background: var(--color-surface-muted);
+}
+
+.catalogue-family-controls {
+    grid-column: 1 / -1;
+    min-width: 0;
+    margin: 0;
+    padding: 0 0 var(--space-4);
+    border: 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.catalogue-family-controls legend {
+    margin-bottom: var(--space-2);
+    padding: 0;
+    color: var(--color-brand-slate);
+    font-weight: 700;
+}
+
+.catalogue-family-buttons {
+    display: flex;
+    min-width: 0;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.catalogue-family-button {
+    display: inline-flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    border-color: var(--color-border-strong);
+    border-bottom-width: 0.25rem;
+    background: var(--color-surface);
+    color: var(--color-brand-slate);
+}
+
+.catalogue-family-button-bug {
+    border-bottom-color: var(--color-danger);
+}
+
+.catalogue-family-button-smell {
+    border-bottom-color: var(--color-warning);
+}
+
+.catalogue-family-button-perfume {
+    border-bottom-color: var(--color-success);
+}
+
+.catalogue-family-button-other {
+    border-bottom-color: var(--color-brand-cyan-dark);
+}
+
+.catalogue-family-button[aria-pressed='true'] {
+    background: var(--color-brand-yellow);
+    box-shadow: inset 0 0 0 2px var(--color-brand-slate);
+}
+
+.catalogue-family-count {
+    display: inline-grid;
+    min-width: 1.5rem;
+    min-height: 1.5rem;
+    place-items: center;
+    padding: 0 var(--space-1);
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    font-size: 0.75rem;
+}
+
+.catalogue-controls label {
+    display: grid;
+    min-width: 0;
+    gap: var(--space-1);
+    color: var(--color-ink-muted);
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.catalogue-controls input,
+.catalogue-controls select {
+    width: 100%;
+    min-width: 0;
+    padding: var(--space-3);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-sm);
+    color: var(--color-ink);
+}
+
+.catalogue-result-count {
+    margin: 0;
+    color: var(--color-ink-muted);
+    font-weight: 700;
+}
+
+/* The way back out of a filter that matched nothing, beside the sentence saying so. */
+.catalogue-clear-filters {
+    display: inline-block;
+    margin-left: var(--space-3);
+    min-height: 0;
+    padding: var(--space-1) var(--space-3);
+    font-size: 0.9rem;
+}
+
+/* A flat list separated by hairlines, not a stack of cards. */
+.catalogue-list {
+    display: grid;
+    gap: 0;
+}
+
+.catalogue-entry {
+    min-width: 0;
+    border: 0;
+    background: transparent;
+}
+
+.catalogue-entry + .catalogue-entry {
+    border-top: 1px solid var(--color-border);
+}
+
+/* Nearly two hundred entries: the closed row is the whole list, one line each. */
+.catalogue-entry-summary {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-3);
+    min-width: 0;
+    padding: var(--space-3) 0;
+    cursor: pointer;
+    list-style: none;
+}
+
+.catalogue-entry-summary::-webkit-details-marker {
+    display: none;
+}
+
+/* A flex summary loses the browser's own disclosure triangle, and without one the rows read as plain text. */
+.catalogue-entry-summary::before {
+    flex: 0 0 auto;
+    color: var(--color-ink-muted);
+    content: '\25b8';
+    font-size: 0.9em;
+}
+
+.catalogue-entry[open] > .catalogue-entry-summary::before {
+    content: '\25be';
+}
+
+.catalogue-entry-summary:focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: 0.2rem;
+}
+
+/* The title takes the rest of the row and wraps inside it rather than pushing itself onto a line of its own. */
+.catalogue-entry-title {
+    flex: 1 1 12rem;
+    min-width: 0;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+/* Only ever drawn beside a title that another entry also carries; see CatalogueEntryCard. */
+.catalogue-entry-qualifier {
+    flex: 0 1 auto;
+    min-width: 0;
+    color: var(--color-ink-muted);
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.85em;
+    overflow-wrap: anywhere;
+}
+
+.catalogue-block-set-badge {
+    display: inline-flex;
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 100%;
+    align-items: center;
+    gap: var(--space-1);
+    color: var(--color-ink-muted);
+    font-size: 0.82em;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.block-set-icon {
+    flex: 0 0 auto;
+    width: 1.2em;
+    height: 1.2em;
+}
+
+.catalogue-entry-body {
+    display: grid;
+    gap: var(--space-4);
+    min-width: 0;
+    padding: 0 0 var(--space-6) var(--space-4);
+}
+
+/* The family is the one thing worth seeing on every closed row, so it is a mark rather than a word.
+ *
+ * Every colour below is written against its own class, because the list greys its spans wholesale — one class and
+ * one element name, which outranks a lone class however far down the sheet it sits. That left every badge the same
+ * muted grey and the mark carrying nothing, while the filter buttons above the list, which are not spans, kept
+ * their colours: the same three families, coloured in one place and not the other. */
+.catalogue-family-badge {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-self: center;
+}
+
+.catalogue-family-badge.catalogue-family-badge-bug {
+    color: var(--color-danger);
+}
+
+.catalogue-family-badge.catalogue-family-badge-smell {
+    color: var(--color-warning);
+}
+
+.catalogue-family-badge.catalogue-family-badge-perfume {
+    color: var(--color-success);
+}
+
+.catalogue-family-badge.catalogue-family-badge-other {
+    color: var(--color-brand-cyan-dark);
+}
+
+.catalogue-description,
+.catalogue-meta {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+/* Only the entry separator is a rule; sections inside an entry are marked by their
+   label, so the hairlines cannot compete with the one that groups entries. */
+.catalogue-detail {
+    min-width: 0;
+    padding-top: var(--space-4);
+}
+
+.catalogue-detail h3 {
+    margin: 0 0 var(--space-2);
+    font-size: 1rem;
+}
+
+.catalogue-detail > p {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+/* The faulty script and the repaired one are the same script twice; reading them is comparing them, which is a
+   great deal easier when they sit side by side. Below the track width they fall back to one under the other. */
+.catalogue-examples {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(17rem, 100%), 1fr));
+    align-items: start;
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.catalogue-examples > li {
+    min-width: 0;
+}
+
+.catalogue-example-label {
+    margin: 0 0 var(--space-2);
+    color: var(--color-ink-muted);
+    font-weight: 700;
+}
+
+/* The caption above already stands the block off from the section, and a second gap here would read as though
+   the two belonged to different things. */
+.catalogue-examples .scratchblocks-preview {
+    margin-top: 0;
+}
+
+@media (max-width: 44rem) {
+    .catalogue-controls {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 22rem) {
+    h2,
+    .catalogue-family-controls legend {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        overflow-wrap: anywhere;
+    }
+}

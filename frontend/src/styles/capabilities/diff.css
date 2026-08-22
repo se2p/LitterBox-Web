@@ -1,0 +1,532 @@
+/* SPDX-License-Identifier: EUPL-1.2 */
+/* SPDX-FileCopyrightText: 2026 LitterBox-Web contributors */
+
+.comparison-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(25rem, 100%), 1fr));
+    gap: var(--space-4);
+}
+
+.comparison-side {
+    min-width: 0;
+}
+
+.comparison-side .scratchblocks-preview {
+    margin-top: 0;
+}
+
+.comparison-page {
+    min-width: 0;
+}
+
+.comparison-hero {
+    max-width: 60rem;
+}
+
+.diff-project-card {
+    min-width: 0;
+    background: transparent;
+}
+
+.diff-project-input-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-5);
+}
+
+.diff-project-side {
+    min-width: 0;
+    margin: 0;
+    padding: var(--space-5);
+    border: 0;
+    border-radius: 5px;
+    background: var(--color-surface-muted);
+}
+
+.diff-project-side legend {
+    max-width: calc(100% - var(--space-6));
+    padding: 0 var(--space-2);
+    color: var(--color-brand-slate);
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.diff-project-mode {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3) var(--space-5);
+    margin-bottom: var(--space-4);
+}
+
+.diff-project-mode label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.diff-project-side input[type='url'],
+.diff-project-side input[type='file'] {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+}
+
+.diff-project-file-name {
+    margin: var(--space-2) 0 0;
+    overflow-wrap: anywhere;
+}
+
+.diff-project-side-status {
+    min-width: 0;
+    margin: var(--space-4) 0 0;
+    overflow-wrap: anywhere;
+}
+
+.diff-project-actions {
+    margin-top: var(--space-5);
+}
+
+.diff-project-progress-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-5);
+    margin-top: var(--space-4);
+    color: var(--color-ink-muted);
+    font-size: 0.9rem;
+}
+
+.diff-project-progress-grid span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.diff-expert-disclosure {
+    min-width: 0;
+}
+
+.diff-expert-disclosure summary {
+    cursor: pointer;
+    color: var(--color-brand-slate);
+    font-weight: 700;
+}
+
+.diff-expert-disclosure[open] summary {
+    margin-bottom: var(--space-4);
+}
+
+.diff-input-card,
+.diff-summary,
+.diff-count-summary,
+.diff-issues,
+.diff-structure,
+.diff-identical,
+.diff-request-error {
+    min-width: 0;
+}
+
+.diff-input-card {
+    background: transparent;
+}
+
+.diff-reference-grid,
+.diff-source-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-5);
+}
+
+.diff-reference-fieldset {
+    min-width: 0;
+    margin: 0;
+    padding: var(--space-5);
+    border: 0;
+    border-radius: 5px;
+    background: var(--color-surface-muted);
+}
+
+.diff-reference-fieldset legend {
+    max-width: calc(100% - var(--space-6));
+    padding: 0 var(--space-2);
+    color: var(--color-brand-slate);
+    font-weight: 700;
+}
+
+.diff-reference-fields {
+    display: grid;
+    min-width: 0;
+    gap: var(--space-3);
+}
+
+.diff-reference-fieldset .form-field {
+    padding: 0;
+    border: 0;
+    background: transparent;
+}
+
+.diff-reference-fieldset input {
+    min-width: 0;
+}
+
+.diff-reference-fieldset input[aria-invalid='true'] {
+    border-color: var(--color-danger);
+    box-shadow: 0 0 0 1px var(--color-danger);
+}
+
+.diff-form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: var(--space-3);
+    margin-top: var(--space-5);
+}
+
+.diff-result {
+    display: grid;
+    min-width: 0;
+    gap: var(--space-6);
+    margin-top: var(--space-8);
+}
+
+.diff-result-heading {
+    margin-top: var(--space-10);
+}
+
+.diff-source-grid {
+    gap: var(--space-4);
+}
+
+.diff-source {
+    min-width: 0;
+    padding: var(--space-4);
+    border: 0;
+    border-radius: 5px;
+    background: var(--color-surface-muted);
+}
+
+.diff-source h3 {
+    margin-top: 0;
+}
+
+.diff-count-summary {
+    background: transparent;
+}
+
+.diff-counts {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: var(--space-3);
+}
+
+.diff-counts > div {
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+}
+
+.diff-counts dt {
+    color: var(--color-ink-muted);
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.diff-counts dd {
+    margin: var(--space-2) 0 0;
+    color: var(--color-brand-slate);
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+/* Both totals said as sums, under the numbers they add up. */
+.diff-counts-explained {
+    margin: var(--space-5) 0 0;
+    padding-left: 1.1rem;
+    color: var(--color-ink-muted);
+    line-height: 1.6;
+}
+
+.diff-counts-explained li + li {
+    margin-top: var(--space-1);
+}
+
+/* How big each part of the comparison is, and the way straight to it. */
+.diff-result-nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.diff-result-nav button {
+    display: flex;
+    align-items: center;
+    min-height: 0;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-border-strong);
+    background: var(--color-surface);
+    color: var(--color-ink);
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.diff-result-nav button:hover {
+    background: var(--color-surface-muted);
+}
+
+.diff-result-nav-count {
+    padding: 0 var(--space-2);
+    background: var(--color-brand-slate);
+    color: var(--color-surface);
+    font-variant-numeric: tabular-nums;
+}
+
+.diff-category-list {
+    display: grid;
+    min-width: 0;
+    gap: var(--space-10);
+}
+
+.diff-actor-list,
+.diff-issue-list,
+.diff-script-list {
+    display: grid;
+    min-width: 0;
+    gap: 0;
+}
+
+.diff-category {
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+}
+
+.diff-category-heading,
+.diff-issue-heading,
+.diff-actor-heading {
+    display: flex;
+    min-width: 0;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-3);
+}
+
+.diff-category-heading {
+    align-items: center;
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-2);
+    border-bottom: 2px solid var(--color-border);
+    cursor: pointer;
+    /* A flex summary loses its marker, so the disclosure mark is drawn below — the same one the findings and the
+       advanced workspace use, so a fold looks like a fold everywhere. */
+    list-style: none;
+}
+
+.diff-category-heading::-webkit-details-marker {
+    display: none;
+}
+
+.diff-category-heading::before {
+    content: '\25b8';
+    color: var(--color-brand-cyan-dark);
+    font-size: 1.3rem;
+    line-height: 1;
+}
+
+details[open] > .diff-category-heading::before {
+    content: '\25be';
+}
+
+.diff-category-heading h2,
+.diff-category-heading h3 {
+    flex: 1 1 auto;
+    margin: 0;
+}
+
+/* What the category means, said once at the top of it: "removed" and "fixed" are not the same thing, and neither
+   is obvious from the word alone. */
+.diff-category-meaning {
+    margin: 0 0 var(--space-4);
+    color: var(--color-ink-muted);
+    line-height: 1.6;
+}
+
+.diff-category-heading h3,
+.diff-actor-heading h3 {
+    min-width: 0;
+    margin: 0;
+}
+
+.diff-category-count,
+.diff-actor-kind,
+.diff-issue-type {
+    flex: 0 0 auto;
+    max-width: 100%;
+    padding: var(--space-1) var(--space-2);
+    border: 1px solid var(--color-border-strong);
+    background: var(--color-surface);
+    color: var(--color-ink);
+    font-size: 0.8rem;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.diff-issue-card,
+.diff-actor-change,
+.diff-script-change {
+    min-width: 0;
+    padding: var(--space-4) 0;
+    border: 0;
+    background: transparent;
+}
+
+.diff-issue-card + .diff-issue-card,
+.diff-actor-change + .diff-actor-change,
+.diff-script-change + .diff-script-change {
+    border-top: 1px solid var(--color-border);
+}
+
+.diff-issue-heading {
+    align-items: center;
+    margin-bottom: var(--space-3);
+}
+
+.diff-issue-heading h4,
+.diff-script-change h4 {
+    min-width: 0;
+    margin: 0;
+    color: var(--color-brand-slate);
+    overflow-wrap: anywhere;
+}
+
+/* The catalogue key, under the name rather than beside it: in a quarter-width column an identifier like
+   missing_loop_sensing had nowhere to go but to break itself across three lines. */
+.diff-issue-finder-id {
+    margin: 0 0 var(--space-3);
+    color: var(--color-ink-muted);
+    font-size: 0.8rem;
+    overflow-wrap: anywhere;
+}
+
+.diff-issue-finder-id span {
+    font-weight: 700;
+}
+
+.diff-issue-finder-id code {
+    font-size: 0.95em;
+}
+
+.diff-issue-details {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+}
+
+.diff-issue-details > div {
+    min-width: 0;
+}
+
+.diff-issue-details dt {
+    color: var(--color-ink-muted);
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.diff-issue-details dd {
+    margin: var(--space-1) 0 0;
+    overflow-wrap: anywhere;
+}
+
+.diff-actor-heading {
+    align-items: center;
+    margin-bottom: var(--space-4);
+}
+
+.diff-script-fields {
+    display: grid;
+    min-width: 0;
+    gap: var(--space-4);
+}
+
+.diff-script-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: var(--space-3);
+}
+
+.diff-script-fields .scratchblocks-preview {
+    min-width: 0;
+    margin-top: 0;
+}
+
+.diff-request-error {
+    margin-top: var(--space-8);
+}
+
+.diff-request-error h2:focus,
+.diff-result-heading:focus {
+    outline: var(--focus-ring);
+    outline-offset: 0.25rem;
+}
+
+@media (max-width: 60rem) {
+    .diff-counts {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 44rem) {
+    .diff-project-input-grid,
+    .diff-project-progress-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .diff-reference-grid,
+    .diff-source-grid,
+    .diff-script-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .diff-category,
+    .diff-project-card,
+    .diff-project-side,
+    .diff-input-card,
+    .diff-source,
+    .diff-issue-card,
+    .diff-actor-change,
+    .diff-script-change {
+        padding: var(--space-4);
+    }
+
+    .diff-issue-details,
+    .diff-counts {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 22rem) {
+    .diff-form-actions,
+    .diff-form-actions button {
+        width: 100%;
+    }
+
+    .diff-issue-details,
+    .diff-counts {
+        grid-template-columns: 1fr;
+    }
+
+    .diff-category,
+    .diff-project-card,
+    .diff-project-side,
+    .diff-input-card,
+    .diff-source,
+    .diff-issue-card,
+    .diff-actor-change,
+    .diff-script-change {
+        padding: var(--space-2);
+    }
+}

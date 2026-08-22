@@ -1,0 +1,95 @@
+/* SPDX-License-Identifier: EUPL-1.2 */
+/* SPDX-FileCopyrightText: 2026 LitterBox-Web contributors */
+
+.advanced-analysis-hero {
+    max-width: 60rem;
+}
+
+.advanced-analysis-section .metric-summary {
+    margin-top: 0;
+    padding-top: var(--space-3);
+}
+
+/* Five capabilities open at once made this page metres long. They fold now, and this is the row that reaches them.
+   It used to be drawn like the banner's navigation, on the reading that a row of names leading somewhere is what
+   navigation is. But the banner leaves the page and this does not: it picks which analysis of this project the
+   reader is looking at, which is the same act as picking a family of findings on the result page or a family of
+   patterns in the catalogue. Both of those are chips, so this is a chip, and the page stops offering two shapes
+   for one kind of choice. */
+.advanced-section-menu ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* The shape comes from the button itself; only being the chosen one is said here. `aria-expanded` already carries
+   that, truthfully, so it is what the style reads rather than a class kept beside it saying the same thing. */
+.advanced-section-menu button[aria-expanded='true'] {
+    background: var(--color-brand-yellow);
+    box-shadow: inset 0 0 0 2px var(--color-brand-slate);
+}
+
+.advanced-section {
+    min-width: 0;
+    border-top: 1px solid var(--color-border);
+}
+
+.advanced-section-summary {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4) 0;
+    cursor: pointer;
+    /* A flex summary loses its marker, so the disclosure mark is drawn below. */
+    list-style: none;
+}
+
+.advanced-section-summary::-webkit-details-marker {
+    display: none;
+}
+
+.advanced-section-summary::before {
+    content: '\25b8';
+    color: var(--color-brand-cyan-dark);
+    font-size: 1.1em;
+}
+
+.advanced-section[open] > .advanced-section-summary::before {
+    content: '\25be';
+}
+
+.advanced-section-title {
+    min-width: 0;
+    font-size: 1.15rem;
+    font-weight: 800;
+}
+
+.advanced-section-body {
+    min-width: 0;
+    padding-bottom: var(--space-6);
+}
+
+/* Each capability panel drew its own rule and top padding to hold itself apart from whatever came before. Inside a
+   fold it *is* the section, and that separation belongs to the fold. */
+.advanced-section-body > .card {
+    padding-top: 0;
+    border-top: 0;
+}
+
+/* Context, folded away: it says what produced the result, not what the result means. */
+.analysis-context > summary {
+    cursor: pointer;
+}
+
+.analysis-context > summary h2 {
+    display: inline;
+    margin: 0;
+}
+
+/* A digest and a configuration value are long and unbreakable by word; they wrap anywhere rather than widen. */
+.analysis-context-list dd {
+    overflow-wrap: anywhere;
+}

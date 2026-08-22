@@ -1,0 +1,170 @@
+/* SPDX-License-Identifier: EUPL-1.2 */
+/* SPDX-FileCopyrightText: 2026 LitterBox-Web contributors */
+
+.export-card {
+    display: grid;
+    min-width: 0;
+    gap: var(--space-4);
+    padding-top: var(--space-8);
+    border-top: 1px solid var(--color-border);
+}
+
+.export-card h2,
+.export-card p {
+    margin-bottom: 0;
+}
+
+.export-lead {
+    color: var(--color-ink-muted);
+    line-height: 1.55;
+}
+
+.export-form {
+    display: grid;
+    min-width: 0;
+    gap: var(--space-4);
+}
+
+.export-field-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+}
+
+.export-field-grid .form-field,
+.export-target-field {
+    min-width: 0;
+    height: 100%;
+}
+
+.export-target-field {
+    border-left-color: var(--color-brand-yellow);
+}
+
+.export-target-selector,
+.export-script-browser {
+    min-width: 0;
+}
+
+.export-target-status {
+    margin: 0;
+    color: var(--color-ink-muted);
+    line-height: 1.55;
+}
+
+.export-target-notice {
+    margin: 0;
+    padding: var(--space-3);
+    background: var(--color-surface-muted);
+    color: var(--color-ink);
+    font-weight: 700;
+}
+
+.export-script-browser {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+    padding: var(--space-5);
+    border: 0;
+    border-radius: 5px;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-muted);
+}
+
+.export-script-browser legend {
+    max-width: calc(100% - var(--space-6));
+    padding: 0 var(--space-2);
+    color: var(--color-brand-slate);
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.export-script-browser select {
+    width: 100%;
+    max-width: 100%;
+    padding: var(--space-3);
+    border: 1px solid var(--color-border-strong);
+    background: var(--color-surface);
+    color: var(--color-ink);
+}
+
+.export-script-navigation {
+    display: flex;
+    min-width: 0;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+}
+
+.export-script-navigation button {
+    min-width: 0;
+    flex: 1 1 8rem;
+}
+
+.export-script-position {
+    min-width: 7rem;
+    flex: 1 1 8rem;
+    color: var(--color-ink-muted);
+    font-weight: 700;
+    text-align: center;
+}
+
+.export-script-summary {
+    margin: 0;
+    color: var(--color-ink);
+    font-weight: 700;
+    text-align: center;
+}
+
+.export-script-preview,
+.export-script-preview .scratchblocks-preview {
+    min-width: 0;
+    margin: 0;
+}
+
+.export-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+}
+
+.export-status {
+    display: grid;
+    min-width: 0;
+    gap: var(--space-3);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-border);
+}
+
+.export-status h3 {
+    margin: 0;
+}
+
+.export-status h3:focus {
+    outline: var(--focus-ring);
+    outline-offset: 0.25rem;
+}
+
+.export-status-prepared {
+    border-top-color: var(--color-success-border);
+}
+
+.export-status-error {
+    border-top-color: var(--color-danger);
+}
+
+.export-metadata {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin: 0;
+}
+
+.export-metadata > div {
+    min-width: 0;
+    padding: var(--space-3);
+    border: 0;
+    border-radius: 5px;
+    background: var(--color-surface-muted);
+}

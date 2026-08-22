@@ -41,6 +41,11 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
           which the service says plainly at start-up.
         -->
         <frontend.dist>${project.basedir}/../frontend/dist</frontend.dist>
+        <!--
+          Set where a build reaches generate-resources without wanting a site and without npm to build one with:
+          `mvn test` runs that far, and the image the test job uses carries a JDK and Maven and nothing else.
+        -->
+        <frontend.build.skip>false</frontend.build.skip>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <checkstyle.version>13.10.0</checkstyle.version>
         <!-- Spring boot version defined in parent pom.xml -->
@@ -424,4 +429,77 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <!--
+          Builds the site when nobody else has, so that `mvn package` on its own produces a jar that can serve one.
+          Maven only copies ${frontend.dist}; without this a missing directory is skipped at INFO level and the
+          build succeeds with an API-only jar, which is the failure this profile exists to prevent.
+
+          Both activation conditions must hold, and each one turns off a build that already has its site:
+            - no frontend.dist on the command line: the Nix build passes the derivation that produced the site, and
+              builds offline, so it must never reach for the network to build it again;
+            - ../frontend/dist absent: the container image builds the site in an earlier stage and copies it in.
+
+          Only `missing` is given: Maven reads `exists` in preference to it and ignores the other, so a `file`
+          activation carrying both would be the `exists` half alone and this profile would run npm over a site that
+          had already been built.
+
+          npm has to be on PATH. Where it is not, build the site first or pass -Dfrontend.dist at a built one.
+        -->
+        <profile>
+            <id>build-frontend</id>
+            <activation>
+                <property>
+                    <name>!frontend.dist</name>
+                </property>
+                <file>
+                    <missing>${basedir}/../frontend/dist</missing>
+                </file>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.6.3</version>
+                        <configuration>
+                            <workingDirectory>${basedir}/../frontend</workingDirectory>
+                            <executable>npm</executable>
+                            <skip>${frontend.build.skip}</skip>
+                        </configuration>
+                        <executions>
+                            <!-- Before process-resources, which is where the built site is copied into the jar. -->
+                            <execution>
+                                <id>install-frontend-dependencies</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- `ci` rather than `install`: the lockfile decides, as it does everywhere else. -->
+                                    <arguments>
+                                        <argument>ci</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>build-frontend</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>
+                                        <argument>run</argument>
+                                        <argument>build</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

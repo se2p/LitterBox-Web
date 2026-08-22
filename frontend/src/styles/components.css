@@ -1,0 +1,1070 @@
+/* SPDX-License-Identifier: EUPL-1.2 */
+/* SPDX-FileCopyrightText: 2025 LitterBox-Web contributors */
+
+.app-shell {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+.main-region {
+    flex: 1;
+    min-width: 0;
+}
+
+.skip-link {
+    position: absolute;
+    z-index: 10;
+    top: var(--space-3);
+    left: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--color-focus);
+    border-radius: var(--radius-sm);
+    background: var(--color-brand-yellow);
+    color: var(--color-ink);
+    font-weight: 700;
+    transform: translateY(-200%);
+    transition: transform 120ms ease-in-out;
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+    transform: translateY(0);
+}
+
+.site-header {
+    background: var(--color-surface);
+}
+
+.site-banner {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 12 / 1;
+    overflow: hidden;
+    border-bottom: 1px solid var(--color-border);
+    background:
+        linear-gradient(90deg, var(--color-banner-wash), var(--color-banner-yellow-wash)),
+        var(--color-brand-yellow);
+}
+
+.image-slot {
+    display: block;
+    min-width: 0;
+}
+
+.site-banner-slot {
+    width: 100%;
+    height: 100%;
+}
+
+.site-banner-slot img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.site-banner-slot.image-slot-fallback {
+    display: grid;
+    height: 100%;
+    place-items: center;
+    background:
+        linear-gradient(
+            135deg,
+            transparent 0 35%,
+            var(--color-cyan-wash) 35% 37%,
+            transparent 37% 100%
+        ),
+        var(--color-brand-yellow);
+}
+
+.image-slot-text {
+    display: block;
+    overflow-wrap: anywhere;
+}
+
+.site-banner-slot .image-slot-text {
+    padding: var(--space-5);
+    color: var(--color-brand-slate);
+    font-size: clamp(1.6rem, 5vw, 3.5rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+}
+
+.site-header-bar {
+    display: flex;
+    width: min(100%, var(--content-width));
+    min-width: 0;
+    margin: 0 auto;
+    align-items: center;
+    gap: var(--space-5);
+    padding: var(--space-3) var(--space-5);
+    border-bottom: 2px solid var(--color-brand-yellow);
+    background: var(--color-surface);
+}
+
+.site-nav {
+    flex: 1;
+    min-width: 0;
+}
+
+.nav-toggle {
+    display: none;
+}
+
+.nav-list,
+.footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.nav-list {
+    justify-content: flex-start;
+    gap: var(--space-1) var(--space-5);
+}
+
+/* Plain text links, as on the legacy page. The horizontal budget the header has is
+   spent on labels, not on pill padding — that is what kept the German nav wrapping. */
+.site-nav a {
+    display: inline-block;
+    padding: var(--space-2) 0;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    color: var(--color-ink-muted);
+    font-size: 0.95rem;
+    font-weight: 400;
+    line-height: 1.35;
+    text-decoration: none;
+}
+
+.site-nav a:hover,
+.site-nav a.active {
+    border-bottom-color: var(--color-brand-yellow);
+    color: var(--color-brand-slate);
+}
+
+.site-nav a.active {
+    font-weight: 700;
+}
+
+.language-picker {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+/* Label is present for assistive technology only; the select is self-describing. */
+.language-picker label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.language-picker select {
+    min-width: 0;
+    max-width: 100%;
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-ink);
+    font-size: 0.9rem;
+}
+
+.page-content {
+    width: 100%;
+    max-width: var(--content-width);
+    margin: 0 auto;
+    padding: clamp(var(--space-8), 6vw, var(--space-12)) var(--space-5)
+        clamp(var(--space-10), 8vw, 5rem);
+}
+
+.hero {
+    max-width: 52rem;
+    margin-bottom: var(--space-10);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--color-brand-slate);
+    font-family: Verdana, Geneva, Tahoma, system-ui, sans-serif;
+}
+
+/* The banner carries the brand. Page titles stay secondary to it — Verdana is a wide,
+   heavy face and reads as a slab above ~2rem. */
+h1 {
+    margin: 0 0 var(--space-4);
+    color: var(--color-heading-muted);
+    font-size: clamp(1.5rem, 2.2vw, 2rem);
+    letter-spacing: normal;
+    line-height: 1.2;
+}
+
+h2 {
+    max-width: 100%;
+    margin: 0 0 var(--space-4);
+    color: var(--color-brand-cyan-dark);
+    font-size: 1.25rem;
+    line-height: 1.3;
+    text-align: left;
+}
+
+h3 {
+    overflow-wrap: anywhere;
+    margin: 0 0 var(--space-3);
+    color: var(--color-brand-slate);
+    font-size: 1.05rem;
+}
+
+.lead {
+    max-width: 52rem;
+    margin: 0 0 var(--space-4);
+    color: var(--color-ink-muted);
+    font-size: 1.05rem;
+    line-height: 1.6;
+}
+
+.hint {
+    margin: 0;
+    color: var(--color-ink-muted);
+    line-height: 1.6;
+}
+
+/* `.card` is a spacing class, not a chrome class. Depth is expressed with space and
+   heading weight; only `.panel` draws a visible container, matching the single legacy
+   `.chooseFile` box style. */
+.card {
+    padding: 0;
+    border: 0;
+    background: transparent;
+}
+
+.card + .card {
+    margin-top: var(--space-10);
+}
+
+.panel {
+    padding: var(--space-5);
+    border: 0;
+    border-radius: 5px;
+    background: var(--color-surface-muted);
+}
+
+.alert {
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    line-height: 1.55;
+}
+
+.alert p {
+    margin: 0;
+}
+
+.alert-error {
+    border-color: var(--color-danger-border);
+    background: var(--color-danger-surface);
+    color: var(--color-danger-text);
+}
+
+.alert-info {
+    border-color: var(--color-info-border);
+    background: var(--color-info-surface);
+    color: var(--color-info-text);
+}
+
+.alert-success {
+    border-color: var(--color-success-border);
+    background: var(--color-success-surface);
+    color: var(--color-success-text);
+}
+
+.alert-warning {
+    border-color: var(--color-warning-border);
+    background: var(--color-warning-surface);
+    color: var(--color-warning-text);
+}
+
+.status-line {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin: 0 0 var(--space-5);
+    color: var(--color-ink);
+    font-weight: 700;
+}
+
+.status-dot {
+    display: inline-block;
+    flex: 0 0 auto;
+    width: 0.7rem;
+    height: 0.7rem;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+    background: var(--color-success);
+    color: var(--color-success);
+}
+
+.status-line.status-queued .status-dot,
+.status-line.status-processing .status-dot {
+    border-radius: 0.1rem;
+    background: var(--color-warning);
+    color: var(--color-warning);
+}
+
+.status-line.status-processing .status-dot {
+    transform: rotate(45deg);
+}
+
+.status-line.status-failed .status-dot,
+.status-line.status-error .status-dot {
+    border-radius: 0.1rem;
+    background: var(--color-danger);
+    color: var(--color-danger);
+    transform: rotate(45deg);
+}
+
+.status-line.status-partial .status-dot,
+.status-line.status-cancelled .status-dot {
+    border-radius: 50% 50% 0.1rem 0.1rem;
+    background: var(--color-warning);
+    color: var(--color-warning);
+}
+
+.data-list,
+.capability-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(12rem, 100%), 1fr));
+    gap: var(--space-3);
+    margin: 0;
+}
+
+/* Stats read as label-over-value pairs, not as a row of boxes. */
+.data-list > div,
+.capability-list > div {
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+}
+
+.data-list dd,
+.capability-list dd {
+    color: var(--color-brand-slate);
+    font-size: 1.35rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.table-region {
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table caption {
+    margin-bottom: var(--space-3);
+    font-weight: 700;
+    text-align: left;
+}
+
+.data-table th,
+.data-table td {
+    padding: var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+    text-align: left;
+    vertical-align: top;
+}
+
+.data-table th {
+    color: var(--color-brand-slate);
+}
+
+dt {
+    margin-bottom: var(--space-1);
+    color: var(--color-ink-muted);
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.technical-detail {
+    margin: var(--space-2) 0 var(--space-4);
+    color: var(--color-technical-text);
+    font-size: 0.85rem;
+}
+
+/* One shape for everything a reader can press.
+ *
+ * The filter chips on the result page were the only controls anyone had a good word for, and the page beneath them
+ * had square buttons, full-width bordered links and underlined links doing the same job as each other — two offers
+ * at the foot of one result, a button and a stretched link, side by side. This is that chip, and it is the shape a
+ * button has everywhere now, whether the element is a button or a link with somewhere to go.
+ *
+ * A button is already marked out by its border and its background; setting the label in bold on top of that made
+ * every one of them shout, and a page with six of them shout in chorus. Verdana carries no weight between regular
+ * and bold, so this is the only step down there is. */
+button,
+.action-button {
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--color-border-strong);
+    border-radius: 999px;
+    background: var(--color-surface);
+    color: var(--color-brand-slate);
+    cursor: pointer;
+    font-weight: 400;
+    text-decoration: none;
+}
+
+/* An anchor is inline, so it needs telling to make room for the padding a button gets for free. */
+.action-button {
+    display: inline-block;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+}
+
+button:hover:not(:disabled),
+.action-button:hover {
+    border-color: var(--color-action-border);
+    background: var(--color-surface-muted);
+    color: var(--color-brand-slate);
+}
+
+button:disabled {
+    border-color: var(--color-border);
+    background: var(--color-surface-muted);
+    color: var(--color-ink-muted);
+}
+
+/* The one press a page is asking for, in the brand's yellow. Same shape, more weight. */
+.action-button-primary,
+.primary-action {
+    border-color: var(--color-action-border);
+    background: var(--color-brand-yellow);
+    color: var(--color-ink);
+}
+
+.action-button-primary:hover,
+button.primary-action:hover:not(:disabled) {
+    border-color: var(--color-focus);
+    background: var(--color-brand-yellow-hover);
+    color: var(--color-ink);
+}
+
+.submit-form {
+    display: grid;
+    max-width: 58rem;
+    gap: var(--space-5);
+    background: var(--color-surface);
+}
+
+/* The one legacy box shape (`.chooseFile`): soft grey fill, no border. Rounded further than the legacy 5px, because
+   this is the box a nine-year-old is asked to walk up to first and a square corner reads as paperwork. */
+.form-field {
+    display: grid;
+    min-width: 0;
+    gap: var(--space-2);
+    padding: var(--space-5);
+    border: 0;
+    border-radius: var(--radius-friendly);
+    background: var(--color-surface-muted);
+}
+
+.form-field label,
+.section-heading label {
+    font-weight: 700;
+}
+
+.form-field input,
+.form-field select,
+.quiz-card select,
+.section-heading select {
+    width: 100%;
+    max-width: 100%;
+    padding: var(--space-3);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    color: var(--color-ink);
+}
+
+/* A file input is a button and a filename, not a text box. Framing it like one put a white rectangle inside the grey
+   card for no purpose the eye could use; the styled button below carries the whole affordance. */
+.form-field input[type='file'] {
+    padding: 0;
+    border: 0;
+    background: transparent;
+}
+
+/* The browser's own "Choose File" button is the squarest thing on the page; dressed as the site's own action it stops
+   looking like a piece of the operating system that wandered in. */
+.form-field input[type='file']::file-selector-button {
+    margin-right: var(--space-3);
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--color-action-border);
+    /* The one shape every other pressable thing on the site wears. It was the only rounded rectangle left. */
+    border-radius: 999px;
+    background: var(--color-brand-yellow);
+    color: var(--color-ink);
+    cursor: pointer;
+    /* Not `font: inherit`: narrow viewports zero the input's own font size to hide a long filename, and the button
+       would inherit that and lose its label with it. */
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 400;
+}
+
+.form-field input[type='file']:enabled:hover::file-selector-button {
+    border-color: var(--color-focus);
+    background: var(--color-brand-yellow-hover);
+}
+
+.form-field p {
+    margin: 0;
+}
+
+.form-divider {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    color: var(--color-ink-muted);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.form-divider::before,
+.form-divider::after {
+    flex: 1;
+    height: 1px;
+    background: var(--color-border);
+    content: '';
+}
+
+/* A page whose last word is one offer sets it off from the prose above it. */
+.action-button-primary {
+    margin-top: var(--space-4);
+}
+
+.section-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-4);
+}
+
+.issue-list {
+    display: grid;
+    gap: 0;
+}
+
+.issue-card {
+    padding: var(--space-5) 0;
+    border: 0;
+    background: transparent;
+}
+
+.issue-card + .issue-card {
+    border-top: 1px solid var(--color-border);
+}
+
+.issue-card h3 {
+    margin: 0 0 var(--space-2);
+}
+
+.issue-card p {
+    margin: 0 0 var(--space-3);
+}
+
+.feedback-controls {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.feedback-controls[aria-label] {
+    width: fit-content;
+}
+
+/* An aside beside the finding's title, not a call to action under it. Two framed buttons the size of the site's own
+   submit button asked the question louder than the finding stated its case, so the frame goes and the thumb and its
+   word are left to carry it. */
+.feedback-controls button {
+    display: inline-flex;
+    min-height: 0;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-2);
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--color-ink-muted);
+    font-size: 0.78rem;
+}
+
+.feedback-controls button:hover:not(:disabled) {
+    border-color: var(--color-border);
+    background: var(--color-surface-muted);
+    color: var(--color-brand-slate);
+}
+
+.feedback-icon {
+    width: 1rem;
+    height: 1rem;
+    flex: 0 0 auto;
+    object-fit: contain;
+}
+
+.feedback-label {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+/* Without a frame to fill, the answer that was given has to show in the ink. */
+.feedback-controls button.selected,
+.feedback-controls button[aria-pressed='true'] {
+    border-color: var(--color-brand-slate);
+    background: var(--color-brand-yellow);
+    color: var(--color-ink);
+    font-weight: 700;
+}
+
+.feedback-controls span {
+    font-size: 0.78rem;
+}
+
+.item-list,
+.catalogue-list {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.catalogue-list li {
+    display: grid;
+    gap: var(--space-1);
+    min-width: 0;
+    padding: var(--space-3) 0;
+    border: 0;
+    background: transparent;
+}
+
+.catalogue-list li + li {
+    border-top: 1px solid var(--color-border);
+}
+
+.catalogue-list span {
+    color: var(--color-ink-muted);
+}
+
+.quiz-card {
+    display: grid;
+    gap: var(--space-3);
+}
+
+.quiz-card h2,
+.quiz-card p {
+    margin: 0;
+}
+
+.preflight-errors {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+    padding-left: var(--space-5);
+}
+
+.empty-state {
+    padding: var(--space-5);
+    border: 0;
+    border-radius: 5px;
+    background: var(--color-surface-muted);
+    color: var(--color-ink-muted);
+    text-align: center;
+}
+
+.empty-state p {
+    margin: 0;
+}
+
+.site-footer {
+    padding: var(--space-8) var(--space-5);
+    background: var(--color-brand-slate);
+    color: var(--color-surface);
+    font-size: 0.9rem;
+}
+
+.site-footer-inner {
+    display: flex;
+    width: min(100%, var(--content-width));
+    min-width: 0;
+    margin: 0 auto;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-6);
+}
+
+.footer-university-slot {
+    width: min(12rem, 45vw);
+    min-height: 3rem;
+    flex: 0 0 auto;
+}
+
+.footer-university-slot img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.footer-university-slot.image-slot-fallback {
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-brand-yellow);
+    color: var(--color-brand-yellow);
+    font-weight: 700;
+}
+
+/* The links and the version travel together on the right, so the logo keeps the far edge to itself. */
+.site-footer-meta {
+    display: grid;
+    min-width: 0;
+    gap: var(--space-2);
+    justify-items: flex-end;
+}
+
+.footer-links {
+    justify-content: flex-end;
+    gap: var(--space-2) var(--space-5);
+}
+
+.footer-links a {
+    color: var(--color-brand-yellow);
+    font-weight: 700;
+}
+
+.footer-version {
+    margin: 0;
+    opacity: 0.75;
+    font-size: 0.8rem;
+    overflow-wrap: anywhere;
+}
+
+.dialog-backdrop {
+    position: fixed;
+    z-index: 20;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: var(--space-5);
+    background: var(--color-backdrop);
+}
+
+.dialog {
+    width: min(100%, 34rem);
+    max-height: calc(100vh - 2 * var(--space-5));
+    overflow: auto;
+    padding: var(--space-6);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    box-shadow: 0 1rem 3rem var(--color-dialog-shadow);
+}
+
+.dialog-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-4);
+}
+
+.dialog-header h2 {
+    margin: 0;
+}
+
+.icon-button {
+    display: inline-grid;
+    width: 2.75rem;
+    place-items: center;
+    padding: 0;
+    border-color: var(--color-border);
+    background: var(--color-surface-muted);
+    color: var(--color-brand-slate);
+    font-size: 1.4rem;
+}
+
+.dialog-body {
+    margin-top: var(--space-5);
+}
+
+/* One script before and after a change, framed the way LitterBox's own diff report frames it: the side that loses
+   blocks in red, the side that gains them in green, with the differing blocks themselves tinted inside the drawing. */
+.script-diff {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    min-width: 0;
+    gap: var(--space-3);
+}
+
+.script-diff-single {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.script-diff-panel {
+    min-width: 0;
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.script-diff-heading {
+    margin: 0;
+    padding: var(--space-1) var(--space-3);
+    border-bottom: 1px solid var(--color-border-strong);
+    font-size: 0.78rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.script-diff-before {
+    border-color: var(--color-danger-border);
+}
+
+.script-diff-before .script-diff-heading {
+    border-bottom-color: var(--color-danger-border);
+    background: var(--color-danger-surface);
+    color: var(--color-danger-text);
+}
+
+.script-diff-after {
+    border-color: var(--color-success-border);
+}
+
+.script-diff-after .script-diff-heading {
+    border-bottom-color: var(--color-success-border);
+    background: var(--color-success-surface);
+    color: var(--color-success-text);
+}
+
+.script-diff-panel .scratchblocks-preview {
+    min-width: 0;
+    margin: 0;
+    padding: var(--space-3);
+}
+
+/* The two drawings are read against each other, so neither may push the other off the row. */
+.script-diff-panel .scratchblocks-rendered {
+    overflow-x: auto;
+}
+
+@media (max-width: 44rem) {
+    .script-diff {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+/* Collapse to the Menu button while the widest locale (de/nl) would still wrap.
+   Above this width every locale fits on one row; below it, nothing can wrap. */
+@media (max-width: 64rem) {
+    .site-header-bar {
+        position: relative;
+        flex-wrap: nowrap;
+    }
+
+    .nav-toggle {
+        display: inline-flex;
+        flex-shrink: 0;
+        align-items: center;
+        gap: var(--space-2);
+    }
+
+    .nav-toggle-icon,
+    .nav-toggle-icon::before,
+    .nav-toggle-icon::after {
+        display: block;
+        width: 1.1rem;
+        height: 2px;
+        background: currentColor;
+        content: '';
+    }
+
+    .nav-toggle-icon {
+        position: relative;
+    }
+
+    .nav-toggle-icon::before {
+        position: absolute;
+        top: -0.35rem;
+    }
+
+    .nav-toggle-icon::after {
+        position: absolute;
+        top: 0.35rem;
+    }
+
+    .site-nav {
+        flex: 0 0 auto;
+        width: auto;
+        min-width: 0;
+    }
+
+    .language-picker {
+        flex-shrink: 1;
+        min-width: 0;
+    }
+
+    .language-picker select {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .nav-list {
+        display: none;
+        position: absolute;
+        z-index: 5;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        gap: 0;
+        padding: var(--space-2);
+        border-bottom: 1px solid var(--color-border);
+        background: var(--color-surface-muted);
+        box-shadow: var(--shadow-overlay);
+    }
+
+    .nav-list-open {
+        display: flex;
+    }
+
+    .nav-list li {
+        width: 100%;
+    }
+
+    .site-nav a {
+        display: block;
+        padding: var(--space-3);
+        border-bottom: 0;
+        border-left: 3px solid transparent;
+    }
+
+    .site-nav a:hover,
+    .site-nav a.active {
+        border-left-color: var(--color-brand-yellow);
+        background: var(--color-surface);
+    }
+
+    .language-picker {
+        margin-left: auto;
+    }
+}
+
+@media (max-width: 44rem) {
+    .site-banner {
+        aspect-ratio: auto;
+        height: 6.5rem;
+        min-height: 6.5rem;
+    }
+
+    .site-banner-slot img {
+        height: 6.5rem;
+        object-fit: cover;
+    }
+
+    .site-header-bar {
+        gap: var(--space-3);
+        padding: var(--space-3) var(--space-4);
+    }
+
+    .site-nav a {
+        padding: var(--space-3) var(--space-2);
+    }
+
+    .page-content {
+        padding-right: var(--space-4);
+        padding-left: var(--space-4);
+    }
+
+    .section-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .site-footer-inner {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .site-footer-meta {
+        justify-items: flex-start;
+    }
+
+    .footer-links {
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 22rem) {
+    body {
+        min-width: 0;
+    }
+
+    .site-header-bar {
+        flex-wrap: wrap;
+        padding-right: var(--space-3);
+        padding-left: var(--space-3);
+    }
+
+    .language-picker {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        margin-left: 0;
+    }
+
+    .language-picker select {
+        width: 100%;
+    }
+
+    .form-field,
+    .panel {
+        padding: var(--space-4);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+}

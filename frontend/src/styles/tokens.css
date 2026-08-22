@@ -1,0 +1,74 @@
+/* SPDX-License-Identifier: EUPL-1.2 */
+/* SPDX-FileCopyrightText: 2025 LitterBox-Web contributors */
+:root {
+    color-scheme: light;
+    font-family: Verdana, Geneva, Tahoma, system-ui, sans-serif;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+
+    --color-brand-yellow: #ffc32d;
+    --color-brand-yellow-hover: #f7b460;
+    --color-brand-yellow-soft: #fff7dc;
+    --color-brand-cyan: #45bce4;
+    --color-brand-cyan-dark: #087b9b;
+    --color-brand-slate: #313b48;
+    --color-brand-slate-hover: #202933;
+    --color-brand-navy: var(--color-brand-slate);
+    --color-ink: #303030;
+    --color-ink-muted: #606060;
+    --color-ink-subtle: #5c5c5c;
+    --color-canvas: #ffffff;
+    --color-surface: #ffffff;
+    --color-surface-muted: #f1f1f1;
+    /* One finding, bounded. Distinct from the muted grey the catalogue aside uses, so a paragraph about this
+       project and a paragraph about the pattern in general do not sit on the same ground. */
+    --color-surface-finding: #f7fbfd;
+    --color-heading-muted: #666666;
+    --color-border: #d7d7d7;
+    --color-border-strong: #707070;
+    --color-action-border: #9c6f00;
+    --color-focus: #765400;
+    --color-link: #08718f;
+    --color-success: #2f7045;
+    --color-success-surface: #edf7ef;
+    --color-success-border: #83b895;
+    --color-success-text: #245735;
+    --color-warning: #805700;
+    --color-warning-surface: #fff8df;
+    --color-warning-border: #c6a343;
+    --color-warning-text: #654500;
+    --color-danger: #a32d2d;
+    --color-danger-surface: #fff0f0;
+    --color-danger-border: #c97878;
+    --color-danger-text: #7c2424;
+    --color-info: #0b6f8a;
+    --color-info-surface: #eaf7fb;
+    --color-info-border: #76b8ce;
+    --color-info-text: #07546b;
+    --color-technical-text: #7c4242;
+    --color-banner-wash: rgba(255, 255, 255, 0.97);
+    --color-banner-yellow-wash: rgba(255, 195, 45, 0.9);
+    --color-cyan-wash: rgba(69, 188, 228, 0.17);
+    --color-backdrop: rgba(49, 59, 72, 0.78);
+    --color-dialog-shadow: rgba(32, 41, 51, 0.3);
+
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.25rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-10: 2.5rem;
+    --space-12: 3rem;
+
+    --radius-sm: 0.2rem;
+    --radius-md: 0.35rem;
+    --radius-lg: 0.55rem;
+    /* For the few surfaces a child is meant to walk up to and use, where a square corner reads as a form. */
+    --radius-friendly: 0.9rem;
+    --shadow-overlay: 0 0.1rem 0.35rem rgba(49, 59, 72, 0.18);
+    --focus-ring: 3px solid var(--color-focus);
+    --focus-shadow: 0 0 0 2px var(--color-surface);
+    --content-width: 71.25rem;
+}

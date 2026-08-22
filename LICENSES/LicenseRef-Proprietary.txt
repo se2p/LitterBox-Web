@@ -1,0 +1,12 @@
+All rights reserved.
+
+This licence covers material that is not the LitterBox-Web contributors' to
+license, and that is included with permission rather than under an open licence.
+
+The University of Passau's name, arms and logo are the property of Universität
+Passau. They are carried here so that the deployment operated by the University
+can identify itself, and are not licensed for any other use. Anyone running
+their own copy of this software, or redistributing it, must remove them or
+obtain permission from Universität Passau to use them.
+
+Every other file in this repository carries its own SPDX licence identifier.

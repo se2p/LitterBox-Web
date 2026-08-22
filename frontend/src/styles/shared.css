@@ -1,0 +1,205 @@
+/* SPDX-License-Identifier: EUPL-1.2 */
+/* SPDX-FileCopyrightText: 2026 LitterBox-Web contributors */
+
+/* Rules whose selector list spans more than one feature area, or matches
+   none of the feature buckets above. Kept together and imported last so
+   responsive overrides here still win over the feature files' base rules. */
+
+.button-danger {
+    border-color: var(--color-danger-border);
+    background: var(--color-danger);
+    color: var(--color-surface);
+}
+
+.dialog-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: var(--space-3);
+    margin-top: var(--space-5);
+}
+
+/* Single-project result presentation. Keep these styles local to the application bundle. */
+.result-card,
+.issue-card-detailed,
+.quiz-card,
+.scratchblocks-preview,
+.comparison-grid > div {
+    min-width: 0;
+}
+
+.basic-statistics,
+.basic-statistics-panel,
+.advanced-analysis-page,
+.result-advanced-analysis {
+    min-width: 0;
+}
+
+.basic-statistics h2,
+.result-advanced-analysis h2 {
+    margin-bottom: 0;
+}
+
+.result-advanced-analysis {
+    display: grid;
+    gap: var(--space-3);
+    background: var(--color-surface-muted);
+}
+
+.advanced-comparison-section .action-button,
+.result-advanced-analysis .action-button {
+    width: fit-content;
+    max-width: 100%;
+}
+
+.issue-heading-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-3);
+}
+
+.issue-filters label,
+.quiz-free-text-label {
+    display: grid;
+    min-width: min(12rem, 100%);
+    gap: var(--space-1);
+    color: var(--color-ink-muted);
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.issue-filters select,
+.quiz-card select,
+.quiz-card input {
+    min-width: 0;
+}
+
+.validation-error {
+    margin: 0;
+    color: var(--color-danger);
+    font-weight: 700;
+}
+
+.locale-compatibility-alert {
+    max-width: 72rem;
+    margin: var(--space-4) auto 0;
+}
+
+.locale-compatibility-alert p {
+    margin: var(--space-1) 0 0;
+}
+
+@media (max-width: 44rem) {
+    body {
+        min-width: 0;
+    }
+
+    .home-introduction,
+    .analysis-choice-grid,
+    .issue-card-body,
+    .issue-context,
+    .comparison-grid,
+    .static-funding-list {
+        grid-template-columns: 1fr;
+    }
+
+    .home-programming-visual,
+    .analysis-choice-group,
+    .issue-family,
+    .static-page {
+        padding: var(--space-4);
+    }
+
+    .issue-heading-row {
+        flex-direction: column;
+    }
+
+    .export-field-grid,
+    .export-metadata,
+    .injection-result-metadata {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 22rem) {
+    .catalogue-family-buttons,
+    .catalogue-family-button,
+    .submit-analysis-button {
+        width: 100%;
+    }
+
+    .analysis-choice-grid .form-field,
+    .analysis-findings,
+    .quiz-card,
+    .quiz-choice-card,
+    .issue-card-detailed,
+    .scratchblocks-preview,
+    .catalogue-controls,
+    .metrics-graph-controls,
+    .metrics-graph-viewport,
+    .export-card,
+    .export-field-grid .form-field,
+    .export-target-field,
+    .injection-card,
+    .injection-injector,
+    .injection-result {
+        padding: var(--space-2);
+    }
+
+    .export-actions,
+    .export-actions button,
+    .export-script-navigation,
+    .export-script-navigation button,
+    .injection-actions,
+    .injection-actions button {
+        width: 100%;
+    }
+
+    input[type='file'] {
+        padding: var(--space-1);
+        font-size: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Matches the specificity of the base rule in components.css so the narrow sizing still wins here. */
+    .form-field input[type='file']::file-selector-button {
+        max-width: 100%;
+        min-height: 2.5rem;
+        font-size: 0.75rem;
+        white-space: normal;
+    }
+
+    .analysis-choice-group,
+    .issue-family,
+    .static-page,
+    .static-section {
+        padding: var(--space-3);
+    }
+}
+
+.result-tools {
+    min-width: 0;
+}
+
+.tools-list,
+.result-tools-list {
+    display: grid;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.result-tools h2,
+.result-tools p {
+    margin-bottom: 0;
+}
+
+.metrics-graph-card h2:focus,
+.export-card h2:focus,
+.injection-card h2:focus {
+    outline: var(--focus-ring);
+    outline-offset: 0.25rem;
+}

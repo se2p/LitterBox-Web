@@ -1,0 +1,27 @@
+/* SPDX-License-Identifier: EUPL-1.2 */
+/* SPDX-FileCopyrightText: 2026 LitterBox-Web contributors */
+
+.home-introduction {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(18rem, 0.8fr);
+    align-items: start;
+    gap: clamp(var(--space-6), 6vw, var(--space-12));
+}
+
+.home-hero {
+    margin-bottom: 0;
+}
+
+.home-programming-visual {
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+}
+
+/* Drawn ahead of time and shipped as a picture, so it scales with the column rather than overflowing it. */
+.home-programming-visual img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}

@@ -55,7 +55,8 @@ litterbox-web-test:
   before_script:
     - cd litterbox-web
   script:
-    - mvn clean test
+    # This image has no npm, and the tests do not read the site: packaging builds it, testing skips it.
+    - mvn clean test -Dfrontend.build.skip=true
     - mvn jacoco:report
   after_script:
     - sh $CI_PROJECT_DIR/scripts/coverage.sh $JACOCO_CSV_LOCATION
@@ -218,10 +219,8 @@ check-licence-headers-reuse:
     matrix:
       - NODE_VERSION:
           - "24"
-        SUBPROJECT:
-          - screenshot
   before_script:
-    - cd connectors/$SUBPROJECT
+    - cd $WORKDIR
     - npm ci
   cache: []
   rules:
@@ -229,12 +228,12 @@ check-licence-headers-reuse:
       allow_failure: true
       changes:
         paths:
-          - connectors/$SUBPROJECT/**/*
+          - $WORKDIR/**/*
     - when: on_success
       allow_failure: false
       changes:
         paths:
-          - connectors/$SUBPROJECT/**/*
+          - $WORKDIR/**/*
 
 check-licence-headers:
   <<: *java-lint-template
@@ -276,9 +275,145 @@ python-lint:
 
 js-lint:
   <<: *js-lint-template
+  variables:
+    WORKDIR: connectors/screenshot
   script:
     - npm run lint
     - npm run format:ci
+
+frontend-lint:
+  <<: *js-lint-template
+  variables:
+    WORKDIR: frontend
+  script:
+    - npm run lint
+    - npm run format:ci
+
+frontend-typecheck:
+  stage: test
+  image: docker.io/library/node:24
+  needs: []
+  before_script:
+    - cd frontend
+    - npm ci
+  script:
+    - npm run typecheck
+    # What a first visit downloads before it can show anything, held to a ceiling; see
+    # frontend/scripts/bundle-budget.mjs for what counts and how to raise it.
+    - npm run build
+    - npm run budget
+  cache: []
+  rules:
+    - changes:
+        - frontend/**/*
+
+frontend-test:
+  stage: test
+  image: docker.io/library/node:24
+  needs: []
+  before_script:
+    - cd frontend
+    - npm ci
+  script:
+    - npm test -- --run
+  cache: []
+  rules:
+    - changes:
+        - frontend/**/*
+
+frontend-build:
+  stage: test
+  image: docker.io/library/node:24
+  needs: []
+  before_script:
+    - cd frontend
+    - npm ci
+  script:
+    - npm run build
+  cache: []
+  artifacts:
+    paths:
+      - frontend/dist/
+  rules:
+    - changes:
+        - frontend/**/*
+
+frontend-smoke:
+  stage: test
+  image: mcr.microsoft.com/playwright:v1.62.1-noble
+  needs: []
+  # The suite drives the real service, and the service needs its database to start at all: the entity manager
+  # is built during start-up and asks the server what dialect it speaks. Flyway creates the schema inside it.
+  services:
+    - name: docker.io/library/mariadb:11.4
+      alias: mariadb
+      variables:
+        MARIADB_DATABASE: litterbox_ci_synthetic
+        MARIADB_USER: litterbox_ci_synthetic
+        MARIADB_PASSWORD: litterbox_ci_synthetic
+        MARIADB_ROOT_PASSWORD: synthetic
+  variables:
+    FF_NETWORK_PER_BUILD: "true"
+  before_script:
+    - apt-get update
+    - apt-get install -y curl openjdk-21-jdk-headless maven
+    - cd frontend
+    - npm ci
+  script:
+    - npm run build
+    - cd ..
+    - mvn -f litterbox-web/pom.xml -DskipTests package
+    - >
+      SPRING_PROFILES_ACTIVE=public-web
+      LITTERBOX_DB_URL=jdbc:mariadb://mariadb:3306/litterbox_ci_synthetic
+      LITTERBOX_DB_USER=litterbox_ci_synthetic
+      LITTERBOX_DB_PASSWORD=litterbox_ci_synthetic
+      LITTERBOX_SOURCE_STORAGE_ROOT=/tmp/litterbox-ci-synthetic-artifacts
+      LITTERBOX_WEB_STATIC_LOCATION="file:$CI_PROJECT_DIR/frontend/dist/"
+      java -jar litterbox-web/target/litterbox-web-*.jar
+      > /tmp/litterbox-web.log 2>&1 &
+    - export LITTERBOX_WEB_PID=$!
+    - trap 'kill "$LITTERBOX_WEB_PID"' EXIT
+    - >
+      for attempt in $(seq 1 60); do
+        if curl --fail --silent http://127.0.0.1:8080/litterbox/api/v1/capabilities > /dev/null; then
+          break;
+        fi;
+        if [ "$attempt" -eq 60 ]; then
+          cat /tmp/litterbox-web.log;
+          exit 1;
+        fi;
+        sleep 1;
+      done
+    - cd frontend
+    - >
+      PLAYWRIGHT_BASE_URL=http://127.0.0.1:8080/litterbox/
+      PLAYWRIGHT_REAL_API=true
+      npm run test:ui
+  cache: []
+  rules:
+    - changes:
+        - frontend/**/*
+        - litterbox-web/pom.xml
+        - litterbox-web/src/**/*
+        - .gitlab-ci.yml
+
+frontend-license-inventory:
+  stage: lint
+  image: docker.io/library/node:24
+  needs: []
+  before_script:
+    - cd frontend
+    - npm ci
+  script:
+    - npm query ':not(:root)' > dependency-licences.json
+  cache: []
+  artifacts:
+    paths:
+      - frontend/dependency-licences.json
+  rules:
+    - changes:
+        - frontend/**/*
 
 ################################################################################
 # nix
@@ -304,6 +439,48 @@ nix-build-jar:
         - flake.lock
         - litterbox-web/pom.xml
         - litterbox-web/default.nix
+        - litterbox-web/src/**/*
+
+nix-build-frontend:
+  stage: nix
+  needs: []
+  image: docker.io/nixos/nix:latest
+  script:
+    - >
+      nix
+      --extra-experimental-features nix-command
+      --extra-experimental-features flakes
+      build
+      --print-build-logs
+      .#litterbox-web-frontend
+  cache: []
+  rules:
+    - if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"
+    - changes:
+        - flake.nix
+        - flake.lock
+        - frontend/**/*
+
+nix-build-container:
+  stage: nix
+  needs: []
+  image: docker.io/nixos/nix:latest
+  script:
+    - >
+      nix
+      --extra-experimental-features nix-command
+      --extra-experimental-features flakes
+      build
+      --print-build-logs
+      .#litterbox-web-container
+  cache: []
+  rules:
+    - if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"
+    - changes:
+        - flake.nix
+        - flake.lock
+        - frontend/**/*
+        - litterbox-web/**/*
 
 nix-files-formatted:
   stage: nix
@@ -316,6 +493,8 @@ nix-files-formatted:
       --extra-experimental-features flakes
       run
       nixpkgs#alejandra
+      --
+      --check
       .
   cache: []
   rules:
