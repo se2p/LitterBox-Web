@@ -43,6 +43,15 @@ litterbox-web-test:
   stage: test
   needs: []
   coverage: '/Instruction Coverage: \d+.\d+ %/'
+  # Some tests need a real MariaDB: they check row locks taken under contention, INSERT IGNORE, window
+  # functions and the migrations themselves, none of which an in-memory stand-in answers truthfully. The
+  # runners have no Docker daemon for Testcontainers to talk to, so the runner supplies the server instead
+  # and the tests create a schema each inside it. See TestDatabase in the test sources.
+  services:
+    - name: docker.io/library/mariadb:11.4
+      alias: mariadb
+      variables:
+        MARIADB_ROOT_PASSWORD: synthetic
   before_script:
     - cd litterbox-web
   script:
@@ -53,6 +62,14 @@ litterbox-web-test:
     - sh $CI_PROJECT_DIR/scripts/coverage_metrics.sh "litterbox_web" $JACOCO_CSV_LOCATION >> metrics.txt
   variables:
     JACOCO_CSV_LOCATION: "$CI_PROJECT_DIR/litterbox-web/target/site/jacoco/jacoco.csv"
+    # A network for this build, so the service answers to the name it was given. Without it the job and the
+    # server are only linked, and which names resolve depends on how the runner was set up.
+    FF_NETWORK_PER_BUILD: "true"
+    # Root, because each test takes a schema of its own on the one server: a named account with rights on a
+    # named database cannot create the next one. The server is this job's alone and goes when it does.
+    LITTERBOX_TEST_DB_URL: "jdbc:mariadb://mariadb:3306/"
+    LITTERBOX_TEST_DB_USER: root
+    LITTERBOX_TEST_DB_PASSWORD: synthetic
   rules:
     - when: on_success
       allow_failure: false

@@ -9,7 +9,6 @@
  */
 package de.uni_passau.fim.se2.litterbox_web.linter;
 
-import java.util.Locale;
 import java.util.Set;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,17 +16,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import de.uni_passau.fim.se2.litterbox_web.execution.AnalysisWork;
 import de.uni_passau.fim.se2.litterbox_web.shared.LitterBoxAnalysisService;
 import de.uni_passau.fim.se2.litterbox_web.shared.dto.IssueDTO;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/linter")
 public class LinterController {
 
     private final LitterBoxAnalysisService litterBoxAnalysisService;
+    private final AnalysisWork analysisWork;
 
-    public LinterController(final LitterBoxAnalysisService litterBoxAnalysisService) {
+    public LinterController(final LitterBoxAnalysisService litterBoxAnalysisService, final AnalysisWork analysisWork) {
         this.litterBoxAnalysisService = litterBoxAnalysisService;
+        this.analysisWork = analysisWork;
     }
 
     /**
@@ -37,8 +40,11 @@ public class LinterController {
      * @return feedback for the submitted program as string.
      */
     @PostMapping("analyze")
-    public Set<IssueDTO> generateFeedback(@RequestBody final LinterRequest request) {
-        final Locale language = request.languageAsLocale();
-        return litterBoxAnalysisService.getIssues(request.program(), language, request.detectors());
+    public Mono<Set<IssueDTO>> generateFeedback(@RequestBody final LinterRequest request) {
+        return analysisWork.submit(
+            () -> litterBoxAnalysisService.getIssues(
+                request.program(), request.languageAsLocale(), request.detectors()
+            )
+        );
     }
 }

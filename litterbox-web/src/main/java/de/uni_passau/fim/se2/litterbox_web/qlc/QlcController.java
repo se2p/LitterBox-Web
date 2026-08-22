@@ -16,14 +16,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import de.uni_passau.fim.se2.litterbox_web.execution.AnalysisWork;
+import reactor.core.publisher.Mono;
+
 @RestController
 @RequestMapping("/qlc")
 public class QlcController {
 
     private final QlcService qlcService;
+    private final AnalysisWork analysisWork;
 
-    public QlcController(final QlcService qlcService) {
+    public QlcController(final QlcService qlcService, final AnalysisWork analysisWork) {
         this.qlcService = qlcService;
+        this.analysisWork = analysisWork;
     }
 
     /**
@@ -33,17 +38,14 @@ public class QlcController {
      * @return the generated questions.
      */
     @PostMapping("generate")
-    public List<QuestionDTO> generateQuestions(@RequestBody final QlcRequest request) {
+    public Mono<List<QuestionDTO>> generateQuestions(@RequestBody final QlcRequest request) {
+        return analysisWork.submit(() -> generate(request));
+    }
+
+    private List<QuestionDTO> generate(final QlcRequest request) {
         return qlcService.getQuestions(
-            request.program(),
-            request.languageAsLocale(),
-            request.finderNames(),
-            request.dimensions(),
-            request.scopes(),
-            request.maxQuestions(),
-            request.balanced(),
-            request.perCell(),
-            request.shuffle(),
+            request.program(), request.languageAsLocale(), request.finderNames(), request.dimensions(),
+            request.scopes(), request.maxQuestions(), request.balanced(), request.perCell(), request.shuffle(),
             request.seed()
         );
     }

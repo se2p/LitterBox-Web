@@ -41,6 +41,10 @@ public class RequestUtilService {
             .bindToApplicationContext(applicationContext)
             .webFilter(new WithAddressFilter("127.0.0.1"))
             .configureClient()
+            // Five seconds, the default, is the time a warm request takes many times over and a cold one
+            // does not always fit into: the first call for the OpenAPI document builds it by scanning every
+            // controller, on a runner that is sharing its CPU. A generous ceiling still fails a hung request.
+            .responseTimeout(java.time.Duration.ofSeconds(60))
             .build();
     }
 

@@ -28,13 +28,14 @@ public record QuestionDTO(
     ProgramDimension programDimension,
     ScopeOfFocus scopeOfFocus,
     @Nullable List<String> choices,
-    @Nullable List<String> correctAnswers
+    @Nullable List<String> correctAnswers,
+    @Nullable String hint
 ) {
 
     public QuestionDTO withExplanation(final String explanation) {
         return new QuestionDTO(
             id, type, name, translatedFinderName, explanation, sprite, scratchBlocksCode,
-            programDimension, scopeOfFocus, choices, correctAnswers
+            programDimension, scopeOfFocus, choices, correctAnswers, hint
         );
     }
 }

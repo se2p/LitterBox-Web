@@ -77,7 +77,8 @@ public class QlcService {
             dto.programDimension(),
             dto.scopeOfFocus(),
             dto.getChoices(translator),
-            dto.getCorrectAnswers(translator)
+            dto.getCorrectAnswers(translator),
+            dto.hint()
         );
     }
 }

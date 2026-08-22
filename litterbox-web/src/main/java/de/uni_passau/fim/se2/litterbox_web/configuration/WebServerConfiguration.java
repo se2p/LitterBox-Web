@@ -12,10 +12,13 @@ package de.uni_passau.fim.se2.litterbox_web.configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.stereotype.Component;
 import org.springframework.util.unit.DataSize;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Component
 public class WebServerConfiguration implements WebFluxConfigurer {
@@ -24,7 +27,7 @@ public class WebServerConfiguration implements WebFluxConfigurer {
 
     private final DataSize maxPostSize;
 
-    public WebServerConfiguration(final @Value("${spring.servlet.multipart.max-request-size:2MB}") String maxPostSize) {
+    public WebServerConfiguration(final @Value("${spring.codec.max-in-memory-size:2MB}") String maxPostSize) {
         DataSize size;
         try {
             size = DataSize.parse(maxPostSize);
@@ -41,5 +44,11 @@ public class WebServerConfiguration implements WebFluxConfigurer {
     @Override
     public void configureHttpMessageCodecs(final ServerCodecConfigurer configurer) {
         configurer.defaultCodecs().maxInMemorySize((int) maxPostSize.toBytes());
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    WebClient.Builder webClientBuilder() {
+        return WebClient.builder();
     }
 }

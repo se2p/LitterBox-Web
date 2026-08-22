@@ -33,7 +33,14 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
         <java.version>21</java.version>
         <maven.compiler.release>21</maven.compiler.release>
         <!-- check https://gitlab.infosun.fim.uni-passau.de/se2/scratch/litterbox/litterbox/-/packages/ for available versions -->
-        <litterbox.version>1.13-20260630.090640-20</litterbox.version>
+        <litterbox.version>1.13-SNAPSHOT</litterbox.version>
+        <!--
+          The built site, carried inside the jar so that running it is the whole of a deployment. Overridable
+          because the directory is outside this module: a Nix build hands in its own frontend derivation.
+          A build that has not built the frontend simply finds nothing here and produces an API-only jar,
+          which the service says plainly at start-up.
+        -->
+        <frontend.dist>${project.basedir}/../frontend/dist</frontend.dist>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <checkstyle.version>13.10.0</checkstyle.version>
         <!-- Spring boot version defined in parent pom.xml -->
@@ -96,6 +103,23 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-mysql</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -173,9 +197,28 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
             <version>4.3.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-testcontainers</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers-mariadb</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>${frontend.dist}</directory>
+                <targetPath>static</targetPath>
+            </resource>
+        </resources>
         <plugins>
             <!-- default plugins -->
             <plugin>

@@ -43,12 +43,20 @@ in
     tag = "${litterbox-web-jar.version}";
     extraCommands = ''
       mkdir -p -m 777 tmp
+      mkdir -p -m 770 var/lib/litterbox/source-artifacts
+    '';
+    fakeRootCommands = ''
+      chown 65532:65532 var/lib/litterbox/source-artifacts
     '';
     config = {
       ExposedPorts = {
         "8080/tcp" = {};
       };
       WorkingDir = "/app";
+      User = "65532:65532";
+      Volumes = {
+        "/var/lib/litterbox/source-artifacts" = {};
+      };
       Entrypoint = [
         "${jre}/bin/java"
         "-jar"

@@ -12,7 +12,10 @@ package de.uni_passau.fim.se2.litterbox_web.llm;
 import java.net.URI;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+
+import de.uni_passau.fim.se2.litterbox_web.shared.Profiles;
 
 /**
  * Configuration properties for the {@code /llm/raw} hint-generation proxy.
@@ -36,6 +39,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @ConfigurationProperties(prefix = "litterbox.llm.raw")
+@Profile(Profiles.LLM)
 public class RawLlmConfig {
 
     private String apiKey = "";

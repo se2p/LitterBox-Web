@@ -18,6 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import de.uni_passau.fim.se2.litterbox.analytics.Hint;
@@ -40,10 +41,12 @@ import de.uni_passau.fim.se2.litterbox.llm.prompts.LlmQuery;
 import de.uni_passau.fim.se2.litterbox.llm.prompts.PromptBuilder;
 import de.uni_passau.fim.se2.litterbox.utils.IssueTranslator;
 import de.uni_passau.fim.se2.litterbox.utils.IssueTranslatorFactory;
+import de.uni_passau.fim.se2.litterbox_web.shared.Profiles;
 import de.uni_passau.fim.se2.litterbox_web.shared.dto.IssueDTO;
 
 @Lazy
 @Service
+@Profile(Profiles.LLM)
 public class LlmService {
 
     private final LlmApi llmApi;

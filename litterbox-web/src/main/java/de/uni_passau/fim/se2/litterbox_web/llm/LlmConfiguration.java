@@ -15,16 +15,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.stereotype.Component;
 
 import de.uni_passau.fim.se2.litterbox.llm.api.LlmApi;
 import de.uni_passau.fim.se2.litterbox.llm.api.LlmApiProvider;
+import de.uni_passau.fim.se2.litterbox_web.shared.Profiles;
 import jakarta.annotation.PostConstruct;
 
 @Lazy
 @Component
+@Profile(Profiles.LLM)
 public class LlmConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(LlmConfiguration.class);

@@ -1,0 +1,67 @@
+/*
+ * Copyright (C) 2024-2026 LitterBox-Web contributors
+ *
+ * This file is part of LitterBox-Web.
+ * Licenced under the EUPL-1.2 or later.
+ *
+ * SPDX-FileCopyrightText: 2024-2026 LitterBox-Web contributors
+ * SPDX-License-Identifier: EUPL-1.2
+ */
+package de.uni_passau.fim.se2.litterbox_web.persistence;
+
+import java.util.List;
+import java.util.Objects;
+
+import org.springframework.stereotype.Repository;
+
+import de.uni_passau.fim.se2.litterbox_web.persistence.jpa.AnalysisMetrics;
+import reactor.core.publisher.Mono;
+
+/**
+ * What the measurements of an analysed project usually come to, taken from the analyses this deployment has already
+ * run. It exists so that a number on a result page can be called usual or unusual instead of being left to speak for
+ * itself, which it cannot do to a reader who has never seen another project's figures.
+ */
+@Repository
+public class MetricReferenceRepository {
+
+    private final AnalysisMetrics metrics;
+    private final DatabaseWork databaseWork;
+
+    public MetricReferenceRepository(final AnalysisMetrics metrics, final DatabaseWork databaseWork) {
+        this.metrics = Objects.requireNonNull(metrics, "metrics");
+        this.databaseWork = Objects.requireNonNull(databaseWork, "databaseWork");
+    }
+
+    /**
+     * @param minimumSampleSize how many completed analyses have to carry a measurement before it is worth comparing
+     *                          against. Below it the terciles describe the handful of projects that happen to have been
+     *                          submitted rather than anything a reader would recognise as usual.
+     * @see AnalysisMetrics#terciles
+     */
+    public Mono<List<MetricDistribution>> distributions(final int minimumSampleSize) {
+        if (minimumSampleSize < 1) {
+            throw new IllegalArgumentException("Minimum sample size must be positive");
+        }
+        return databaseWork.submit(
+            () -> metrics.terciles(minimumSampleSize).stream()
+                .map(
+                    row -> new MetricDistribution(
+                        row.getName(), row.getSampleSize(), row.getLowerBound(), row.getUpperBound()
+                    )
+                )
+                .toList()
+        );
+    }
+
+    /**
+     * @param lowerBound the value a third of the analysed projects come under
+     * @param upperBound the value two thirds of them come under
+     */
+    public record MetricDistribution(String name, long sampleSize, double lowerBound, double upperBound) {
+
+        public MetricDistribution {
+            Objects.requireNonNull(name, "name");
+        }
+    }
+}

@@ -8,14 +8,81 @@ cors:
 logging:
   level:
     de.uni_passau.fim.se2: INFO
+    de.uni_passau.fim.se2.litterbox.analytics.llm: WARN
+    de.uni_passau.fim.se2.litterbox.llm: WARN
+
+litterbox:
+  version: 1.13-SNAPSHOT
+  capabilities:
+    metrics-graphs:
+      enabled: false
+      max-input-bytes: 52428800
+      max-ast-nodes: 200000
+      max-graph-nodes: 100000
+      max-graph-edges: 250000
+      max-dot-bytes: 16777216
+      timeout: 20s
+    semantic-diff:
+      enabled: false
+      max-input-bytes: 52428800
+      max-ast-nodes-per-input: 200000
+      max-response-bytes: 5242880
+      timeout: 30s
+    program-export:
+      enabled: false
+      max-input-bytes: 52428800
+      max-ast-nodes: 200000
+      max-output-bytes: 10485760
+      timeout: 20s
+    fault-injection:
+      enabled: false
+      max-input-bytes: 52428800
+      max-ast-nodes: 200000
+      max-selected-injectors: 8
+      max-mutation-results: 200
+      max-archive-entries: 2000
+      max-archive-bytes: 104857600
+      max-uncompressed-bytes: 104857600
+      max-archive-entry-bytes: 26214400
+      timeout: 30s
+  jobs:
+    enabled: true
+  storage:
+    root: ${LITTERBOX_SOURCE_STORAGE_ROOT}
 
 spring:
   application:
     name: litterbox-web
-  servlet:
+  codec:
+    max-in-memory-size: 50MB
+  datasource:
+    url: ${LITTERBOX_DB_URL}
+    username: ${LITTERBOX_DB_USER}
+    password: ${LITTERBOX_DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 8
+  jpa:
+    # Flyway says what the schema is; Hibernate only checks that it is looking at the one it was mapped against,
+    # and refuses to start if it is not. Nothing here may create or alter a table.
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        # The dialect is not named here. Validating the mapping means reading the schema, so this cannot start
+        # without reaching the database anyway, and Hibernate reads the dialect off the same connection.
+        jdbc:
+          batch_size: 32
+        order_inserts: true
+        order_updates: true
+  webflux:
     multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
+      max-in-memory-size: 1MB
+      max-disk-usage-per-part: 50MB
+      max-parts: 128
+      max-headers-size: 16KB
+  flyway:
+    enabled: true
   threads:
     virtual:
       enabled: true
@@ -36,6 +103,7 @@ management:
         enabled: false
 
 server:
+  forward-headers-strategy: native
   error:
     include-stacktrace: never
 

@@ -14,11 +14,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import de.uni_passau.fim.se2.litterbox_web.shared.Profiles;
 import reactor.core.publisher.Flux;
 
 /**
@@ -36,6 +38,7 @@ import reactor.core.publisher.Flux;
  */
 @Lazy
 @Service
+@Profile(Profiles.LLM)
 public class RawLlmService {
 
     private static final int MAX_OUTPUT_TOKENS_RESPONSES = 2000;

@@ -16,22 +16,28 @@ import org.springframework.web.bind.annotation.RestController;
 
 import de.uni_passau.fim.se2.litterbox.analytics.ProgramScratchBlocksAnalyzer;
 import de.uni_passau.fim.se2.litterbox.ast.model.Program;
+import de.uni_passau.fim.se2.litterbox_web.execution.AnalysisWork;
 import de.uni_passau.fim.se2.litterbox_web.shared.Scratch3ParserService;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/converter")
 public class ConverterController {
 
     private final Scratch3ParserService parserService;
+    private final AnalysisWork analysisWork;
 
-    public ConverterController(final Scratch3ParserService parserService) {
+    public ConverterController(final Scratch3ParserService parserService, final AnalysisWork analysisWork) {
         this.parserService = parserService;
+        this.analysisWork = analysisWork;
     }
 
     @PostMapping("scratchblocks")
-    public String scratchBlocks(@RequestBody String projectJson) {
-        final Program program = parserService.parseFromString(projectJson);
-        ProgramScratchBlocksAnalyzer scratchBlocksAnalyzer = new ProgramScratchBlocksAnalyzer();
-        return scratchBlocksAnalyzer.analyze(program);
+    public Mono<String> scratchBlocks(@RequestBody String projectJson) {
+        return analysisWork.submit(() -> {
+            final Program program = parserService.parseFromString(projectJson);
+            ProgramScratchBlocksAnalyzer scratchBlocksAnalyzer = new ProgramScratchBlocksAnalyzer();
+            return scratchBlocksAnalyzer.analyze(program);
+        });
     }
 }

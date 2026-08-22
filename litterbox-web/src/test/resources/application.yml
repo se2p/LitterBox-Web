@@ -8,3 +8,51 @@ cors:
 logging:
   level:
     de.uni_passau.fim.se2: DEBUG
+    de.uni_passau.fim.se2.litterbox.analytics.llm: WARN
+    de.uni_passau.fim.se2.litterbox.llm: WARN
+
+litterbox:
+  version: 1.13-SNAPSHOT
+  jobs:
+    enabled: false
+  storage:
+    root: ${java.io.tmpdir}/litterbox-synthetic-test-artifacts
+
+spring:
+  datasource:
+    # Deliberately nothing. The tests that need a database make their own schema and wire their own repositories;
+    # every other context here is expected never to reach one, and pointing this at the usual port made that an
+    # expectation nobody checked — on a machine that happens to run MariaDB the connection was made, refused
+    # authentication, and the request failed with a 500 that a test asserting only headers was happy to accept.
+    # Port 1 answers immediately and answers nothing, so reaching the database is now a loud, identical failure
+    # everywhere rather than a quiet one that depends on what the developer has running.
+    url: jdbc:mariadb://127.0.0.1:1/litterbox_absent?connectTimeout=250
+    username: absent
+    password: absent
+    hikari:
+      # Nothing is listening, so a pool that insisted on a connection before handing the context over would stop
+      # every test here. A test that does reach the database should hear about it in a moment, not in half a minute.
+      initialization-fail-timeout: -1
+      connection-timeout: 1000
+  jpa:
+    # This file stands in for the main one rather than adding to it, so the mapping settings are repeated here.
+    # Most tests never reach the synthetic database above, and Hibernate must not need to in order to start.
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+    properties:
+      hibernate:
+        # Named here and nowhere else. There is deliberately no database behind the URL above, and Hibernate would
+        # otherwise refuse to start for want of one to read the dialect off.
+        dialect: org.hibernate.dialect.MariaDBDialect
+        boot:
+          # Everything Hibernate would have asked the database about at start-up is stated above instead, so a
+          # context that never queries never connects. Without this, every test that builds the application
+          # connected once merely to be told what it already knew.
+          allow_jdbc_metadata_access: false
+        jdbc:
+          batch_size: 32
+        order_inserts: true
+        order_updates: true
+  flyway:
+    enabled: false

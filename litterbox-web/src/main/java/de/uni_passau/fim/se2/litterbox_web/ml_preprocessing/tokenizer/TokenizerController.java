@@ -16,28 +16,34 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import de.uni_passau.fim.se2.litterbox_web.execution.AnalysisWork;
+import reactor.core.publisher.Mono;
+
 @RestController
 @RequestMapping("ml/masking-tokenizer/tokenize")
 public class TokenizerController {
 
     private final TokenizerService tokenizerService;
+    private final AnalysisWork analysisWork;
 
-    public TokenizerController(TokenizerService tokenizerService) {
+    public TokenizerController(TokenizerService tokenizerService, AnalysisWork analysisWork) {
         this.tokenizerService = tokenizerService;
+        this.analysisWork = analysisWork;
     }
 
     @PostMapping("complete-program/block-masking")
-    public List<String> tokenizeMaskingExpression(@RequestBody final MaskedTokenizationRequest request) {
-        return tokenizerService.tokenizeMaskingBlock(request.program(), request.blockId());
+    public Mono<List<String>> tokenizeMaskingExpression(@RequestBody final MaskedTokenizationRequest request) {
+        return analysisWork.submit(() -> tokenizerService.tokenizeMaskingBlock(request.program(), request.blockId()));
     }
 
     @PostMapping("complete-program/fixed-option-masking")
-    public List<String> tokenizeMaskingFixedOption(@RequestBody final MaskedTokenizationRequest request) {
-        return tokenizerService.tokenizeMaskingFixedOption(request.program(), request.blockId());
+    public Mono<List<String>> tokenizeMaskingFixedOption(@RequestBody final MaskedTokenizationRequest request) {
+        return analysisWork
+            .submit(() -> tokenizerService.tokenizeMaskingFixedOption(request.program(), request.blockId()));
     }
 
     @PostMapping("statement-level/block-masking")
-    public List<String> tokenize(@RequestBody final MaskedTokenizationRequest request) {
-        return tokenizerService.tokenizeStatementLevel(request.program(), request.blockId());
+    public Mono<List<String>> tokenize(@RequestBody final MaskedTokenizationRequest request) {
+        return analysisWork.submit(() -> tokenizerService.tokenizeStatementLevel(request.program(), request.blockId()));
     }
 }

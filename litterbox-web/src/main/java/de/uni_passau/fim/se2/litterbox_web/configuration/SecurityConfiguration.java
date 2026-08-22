@@ -52,10 +52,14 @@ public class SecurityConfiguration {
     private void setupRequestMatchers(
         final ServerHttpSecurity.AuthorizeExchangeSpec requests
     ) {
+        // The llm routes exist only under the llm profile, so the profile is what decides whether they answer at all.
+        // They carry no authentication of their own, and this service no longer refuses to serve them beside the
+        // public site: where they are enabled, what keeps them off the public internet is whatever stands in front.
         requests
             .pathMatchers("/management/prometheus")
             .access((auth, context) -> checkMetricsAccess(context))
-            .pathMatchers("/**").permitAll();
+            .pathMatchers("/**")
+            .permitAll();
     }
 
     private Mono<AuthorizationResult> checkMetricsAccess(final AuthorizationContext context) {

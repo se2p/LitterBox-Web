@@ -13,6 +13,7 @@ import java.util.Locale;
 import java.util.Optional;
 
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,11 +22,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import de.uni_passau.fim.se2.litterbox.ast.model.Program;
 import de.uni_passau.fim.se2.litterbox_web.shared.JsonScratchProgram;
+import de.uni_passau.fim.se2.litterbox_web.shared.Profiles;
 import de.uni_passau.fim.se2.litterbox_web.shared.dto.IssueDTO;
 import reactor.core.publisher.Flux;
 
 @Lazy
 @RestController
+@Profile(Profiles.LLM)
 @RequestMapping("llm")
 public class LlmController {
 

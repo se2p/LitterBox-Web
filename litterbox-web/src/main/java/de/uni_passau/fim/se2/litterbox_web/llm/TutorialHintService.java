@@ -12,10 +12,12 @@ package de.uni_passau.fim.se2.litterbox_web.llm;
 import java.util.Locale;
 
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import de.uni_passau.fim.se2.litterbox.analytics.ProgramScratchBlocksAnalyzer;
 import de.uni_passau.fim.se2.litterbox.ast.model.Program;
+import de.uni_passau.fim.se2.litterbox_web.shared.Profiles;
 import reactor.core.publisher.Flux;
 
 /**
@@ -25,6 +27,7 @@ import reactor.core.publisher.Flux;
  */
 @Lazy
 @Service
+@Profile(Profiles.LLM)
 public class TutorialHintService {
 
     private static final String SYSTEM_PROMPT = """

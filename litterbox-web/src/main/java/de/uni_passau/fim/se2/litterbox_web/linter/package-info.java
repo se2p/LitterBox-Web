@@ -10,4 +10,7 @@
 /**
  * Functionality related to the LitterBox bug/smell/perfume analysers.
  */
+@ApplicationModule(allowedDependencies = { "execution", "shared" })
 package de.uni_passau.fim.se2.litterbox_web.linter;
+
+import org.springframework.modulith.ApplicationModule;
