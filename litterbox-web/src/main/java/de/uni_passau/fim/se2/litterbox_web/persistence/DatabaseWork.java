@@ -13,6 +13,9 @@ import java.util.concurrent.Callable;
 
 import reactor.core.publisher.Mono;
 
+// todo: ?????????????
+// todo: Why is this needed? Why do the repositories hand off database stuff to another thread instead of just writing
+//  the data to the DB? Is this a remnant of the first iteration using plain SQL queries rather than proper JPA?
 public interface DatabaseWork {
 
     <T> Mono<T> submit(Callable<T> task);

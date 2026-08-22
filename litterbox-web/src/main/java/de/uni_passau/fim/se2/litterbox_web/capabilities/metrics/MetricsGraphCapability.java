@@ -131,6 +131,7 @@ final class MetricsGraphCapability implements GraphCapability {
         );
     }
 
+    // todo: architecture, Why is the authorization handled in here?
     private Mono<Analysis> authorize(final String token, final long analysisId) {
         if (token == null || token.isBlank() || analysisId < 1) {
             return Mono.error(CapabilityException.analysisNotFound());

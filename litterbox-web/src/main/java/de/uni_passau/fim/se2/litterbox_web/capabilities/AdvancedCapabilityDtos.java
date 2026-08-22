@@ -13,7 +13,7 @@ import java.util.List;
 
 import org.jspecify.annotations.Nullable;
 
-/** Public records for source-derived analysis and download workflows. */
+/** Records for source-derived analysis and download workflows. */
 public final class AdvancedCapabilityDtos {
 
     public static final int SCHEMA_VERSION = 1;

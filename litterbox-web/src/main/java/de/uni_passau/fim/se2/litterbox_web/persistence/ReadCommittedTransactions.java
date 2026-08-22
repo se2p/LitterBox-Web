@@ -22,6 +22,7 @@ import org.springframework.transaction.support.TransactionTemplate;
  * database's default isolation a transaction keeps the snapshot it began with, so a writer that lost a race would
  * re-read its own stale numbers however many times it tried. Read committed gives each statement a fresh view.
  */
+// todo: why needed?
 @Component
 public class ReadCommittedTransactions extends TransactionTemplate {
 

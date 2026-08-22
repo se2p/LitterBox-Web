@@ -27,6 +27,7 @@ import reactor.core.publisher.Mono;
  * writing the artifact store has its own bound in {@link BoundedStorageExecutor}; the legacy import takes its own
  * connections and does not come through here at all.
  */
+// todo: remove? see comments in package-info.java
 @Component
 public final class BoundedDatabaseExecutor implements DatabaseWork {
 

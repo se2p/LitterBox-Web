@@ -45,6 +45,7 @@ import de.uni_passau.fim.se2.litterbox.utils.ScratchBlocksLabeler;
  * {@link ScratchBlocksLabeler}, because a graph of AST class names is unreadable to a learner and Scratchblocks paints
  * every one of them in the "obsolete" red.
  */
+// todo: does this duplicate code already present in LitterBox?
 @Component
 final class CoreGraphRenderer implements GraphRenderer {
 

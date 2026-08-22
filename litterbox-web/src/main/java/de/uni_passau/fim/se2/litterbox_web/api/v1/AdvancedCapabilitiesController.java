@@ -42,7 +42,6 @@ import de.uni_passau.fim.se2.litterbox_web.capabilities.ProgramExportCapability;
 import de.uni_passau.fim.se2.litterbox_web.capabilities.SemanticDiffCapability;
 import reactor.core.publisher.Mono;
 
-/** Versioned HTTP boundary for independently gated source-derived capabilities. */
 @RestController
 @RequestMapping({ ApiV1.BASE_PATH, ApiV1.WEB_BASE_PATH })
 public final class AdvancedCapabilitiesController {

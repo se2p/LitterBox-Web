@@ -19,7 +19,6 @@ import org.jspecify.annotations.Nullable;
 
 import de.uni_passau.fim.se2.litterbox_web.catalogue.PatternCatalogueEntry;
 
-/** Frozen public records for the single-project resource model. */
 public final class SingleProjectDtos {
 
     public static final int SCHEMA_VERSION = 1;

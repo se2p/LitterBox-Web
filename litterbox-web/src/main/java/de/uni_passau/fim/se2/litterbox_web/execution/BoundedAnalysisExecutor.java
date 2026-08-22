@@ -27,6 +27,9 @@ import reactor.core.publisher.Mono;
  * machine can work through is a queue of requests nobody is waiting on any more, which is why a full one is refused
  * rather than lengthened.
  */
+// todo: the comment above is bullshit. Claude also changed all existing endpoints that are unrelated
+// the the web-UI to use this executor. A Whisker instance in the cluster does not care whether it is
+// in a queue or not and can wait a bit longer.
 @Component
 public final class BoundedAnalysisExecutor implements AnalysisWork {
 

@@ -13,7 +13,7 @@ import java.util.Objects;
 
 import org.springframework.http.HttpStatus;
 
-/** Stable, non-sensitive failures returned by advanced capability endpoints. */
+/** Failures returned by advanced capability endpoints. */
 public final class CapabilityException extends RuntimeException {
 
     private final HttpStatus status;

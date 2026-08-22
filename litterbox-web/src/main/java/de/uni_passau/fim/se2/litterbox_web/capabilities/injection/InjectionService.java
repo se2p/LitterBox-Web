@@ -27,7 +27,7 @@ import de.uni_passau.fim.se2.litterbox.injection.InjectionResult;
 import de.uni_passau.fim.se2.litterbox.injection.InjectorTool;
 
 /**
- * Applies selected bug injectors to parsed programs without crossing a file boundary.
+ * Applies selected bug injectors to programs.
  */
 public final class InjectionService {
 
@@ -45,11 +45,9 @@ public final class InjectionService {
         .thenComparing(Injection::mutatedScriptScratchBlocks);
 
     private final Supplier<Map<String, BugInjector>> injectorSupplier;
-    /* What this instance injects with: the built-in catalogue, unless synthetic injectors were supplied to it. */
     private final List<SupportedInjector> supportedInjectors;
     private final Map<String, SupportedInjector> supportedById;
 
-    /** Creates a service backed by the built-in injector catalogue. */
     public InjectionService() {
         this(InjectorTool::generateBugInjectors);
     }
@@ -61,11 +59,6 @@ public final class InjectionService {
         );
         this.supportedInjectors = createCatalogue(initialInjectors);
         this.supportedById = indexCatalogue(supportedInjectors);
-    }
-
-    /* Test and package integrations may provide synthetic injectors without changing the public catalogue. */
-    InjectionService(final Map<String, BugInjector> injectors) {
-        this(() -> new LinkedHashMap<>(Objects.requireNonNull(injectors, "injectors must not be null")));
     }
 
     /**
@@ -232,7 +225,7 @@ public final class InjectionService {
         return Map.copyOf(result);
     }
 
-    /** Public identifier pair for an injector supported by this service. */
+    /** Identifier pair for an injector supported by this service. */
     public record SupportedInjector(String injectorId, String finderId) {
 
         public SupportedInjector {
@@ -299,7 +292,7 @@ public final class InjectionService {
         }
     }
 
-    /** Explicit, bounded failure classification for a selected injector. */
+    /** Failure classification for a selected injector. */
     public record Failure(String injectorId, String finderId, FailureCode code) {
 
         public Failure {
@@ -309,7 +302,6 @@ public final class InjectionService {
         }
     }
 
-    /** Stable failure categories exposed by the service. */
     public enum FailureCode {
         INJECTOR_UNAVAILABLE,
         INJECTOR_FAILED

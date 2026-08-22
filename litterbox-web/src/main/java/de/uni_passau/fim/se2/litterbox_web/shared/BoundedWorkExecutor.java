@@ -27,13 +27,6 @@ import reactor.core.publisher.MonoSink;
 
 /**
  * A pool of threads that blocking work is handed to, bounded, measured, and shut down with the application.
- *
- * <p>
- * There are three of these, and there are three deliberately: database work holds a connection, storage work holds a
- * disk, and analysis work holds a processor, and a bound that is right for one is not right for the others. What they
- * share is only the machinery — a fixed pool behind a queue of a fixed size, a handful of meters named after the pool,
- * and an orderly shutdown. Each pool still says for itself what it is called, what it measures and what it throws when
- * full; nothing else is its own. It lives here because the three modules that want it may not depend on each other.
  */
 public final class BoundedWorkExecutor {
 
@@ -45,7 +38,7 @@ public final class BoundedWorkExecutor {
     private final Supplier<RuntimeException> whenFull;
 
     /**
-     * A pool that refuses work once its queue is full, which is what bounding it is for.
+     * A pool that refuses work once its queue is full.
      *
      * @param name          what this pool is called, in thread names and in the meters it publishes
      * @param threads       how many threads run at once

@@ -40,11 +40,6 @@ import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Loads the presentation-neutral catalogue resources.
- *
- * <p>
- * The resources ship in the same commit as this class, so their conformance to {@code catalogue.schema.json} is a
- * build-time property and is asserted by {@code CatalogueResourcesMatchTheirSchemaTest} rather than re-checked on every
- * start-up. What remains here is the parsing this loader cannot proceed without.
  */
 final class PatternCatalogueLoader {
 
@@ -110,6 +105,7 @@ final class PatternCatalogueLoader {
     private Map<String, Map<String, Overlay>> loadOverlays() throws IOException {
         final Map<String, Map<String, Overlay>> overlays = new TreeMap<>();
         for (ResourceDocument document : source.resources("i18n")) {
+            // todo: why the manual JSON parsing instead of a DTO that can be loaded directly by Jackson?
             final JsonNode node = parse(document.content(), document.name());
             // An overlay carries nothing but text: which finder it describes, and how bad an occurrence of that
             // finder is, are the analyser's to say, so the id here has to be one the analyser already knows.
@@ -147,15 +143,10 @@ final class PatternCatalogueLoader {
     }
 
     private JsonNode parse(final byte[] content, final String sourceName) {
-        try {
-            return parse(new ByteArrayInputStream(content), sourceName);
-        }
-        catch (IOException exception) {
-            throw invalid(sourceName, "invalid JSON: " + exception.getMessage());
-        }
+        return parse(new ByteArrayInputStream(content), sourceName);
     }
 
-    private JsonNode parse(final InputStream content, final String sourceName) throws IOException {
+    private JsonNode parse(final InputStream content, final String sourceName) {
         final JsonNode node = MAPPER.readTree(content);
         if (node == null) {
             throw invalid(sourceName, "empty JSON document");
@@ -235,6 +226,7 @@ final class PatternCatalogueLoader {
         List<ResourceDocument> resources(String directory) throws IOException;
     }
 
+    // todo: There has to be some Spring Boot builtin to get the resources independent of file/JAR‽
     static final class ClasspathResourceSource implements ResourceSource {
 
         private final ClassLoader classLoader;

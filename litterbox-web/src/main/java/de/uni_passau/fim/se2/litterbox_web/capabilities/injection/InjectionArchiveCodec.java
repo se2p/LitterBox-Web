@@ -32,7 +32,7 @@ import java.util.zip.ZipOutputStream;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
-/** Package-private, bounded Scratch archive validation and reconstruction. */
+/** Scratch archive validation and reconstruction. */
 final class InjectionArchiveCodec {
 
     private static final int MAX_ENTRY_NAME_LENGTH = 255;
@@ -417,7 +417,7 @@ final class InjectionArchiveCodec {
         final JsonNode metadata,
         final byte[] projectJson,
         final byte[] metadataBytes
-    ) throws IOException {
+    ) {
         validateManifestObjects(manifest, metadata);
         validateManifestIdentity(manifest);
         final String projectHash = manifest.path("projectJsonSha256").textValue();
@@ -451,7 +451,7 @@ final class InjectionArchiveCodec {
         final String metadataHash,
         final byte[] projectJson,
         final byte[] metadataBytes
-    ) throws IOException {
+    ) {
         if (!validHex(projectHash, 64) || !validHex(metadataHash, 64)) {
             throw new ArchiveMalformed();
         }

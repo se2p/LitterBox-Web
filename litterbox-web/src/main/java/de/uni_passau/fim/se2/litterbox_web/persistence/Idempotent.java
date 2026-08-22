@@ -24,6 +24,9 @@ import org.springframework.dao.DataIntegrityViolationException;
  * marked for rollback, so swallowing the exception only postpones it; a caller in that position wants the retry in a
  * fresh transaction that can see what the winner wrote.
  */
+// todo: ?????????????
+// todo: Why is this needed? Why do the repositories hand off database stuff to another thread instead of just writing
+// the data to the DB? Is this a remnant of the first iteration using plain SQL queries rather than proper JPA?
 final class Idempotent {
 
     private Idempotent() {

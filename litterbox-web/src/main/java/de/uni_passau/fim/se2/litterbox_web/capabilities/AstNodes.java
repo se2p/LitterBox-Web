@@ -19,7 +19,7 @@ import de.uni_passau.fim.se2.litterbox.ast.model.ASTNode;
 import de.uni_passau.fim.se2.litterbox.ast.model.Program;
 
 /**
- * The one bounded walk over a parsed program that every capability performs before committing to any work.
+ * Walk over a parsed program that every capability performs before committing to any work.
  *
  * <p>
  * The walk is iterative and identity-based: a node reached twice is counted once, and a program deep enough to exhaust
@@ -34,9 +34,9 @@ public final class AstNodes {
     /**
      * Counts the distinct nodes of a program, abandoning the walk as soon as the count passes the limit.
      *
-     * @param program parsed program, or {@code null} for a program that never parsed
-     * @param limit   highest count worth establishing exactly
-     * @return the node count, or a value above the limit once the walk passes it
+     * @param program parsed program
+     * @param limit   node count limit
+     * @return the node count if below the limit; some number >limit otherwise
      */
     public static int count(final Program program, final int limit) {
         if (program == null || limit < 1) {

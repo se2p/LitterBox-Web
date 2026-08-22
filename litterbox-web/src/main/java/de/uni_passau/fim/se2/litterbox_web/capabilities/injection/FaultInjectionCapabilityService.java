@@ -12,6 +12,7 @@ package de.uni_passau.fim.se2.litterbox_web.capabilities.injection;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serial;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -481,7 +482,7 @@ final class FaultInjectionCapabilityService implements FaultInjectionCapability 
         final AuthorizedSource source,
         final InjectionArchiveCodec.ValidatedArchive validated,
         final InjectionService.Response response
-    ) throws IOException {
+    ) {
         final Map<String, byte[]> members = new java.util.LinkedHashMap<>();
         for (InjectionService.InjectorOutcome outcome : response.outcomes()) {
             addBundleMembers(source, validated, outcome, members);
@@ -494,7 +495,7 @@ final class FaultInjectionCapabilityService implements FaultInjectionCapability 
         final InjectionArchiveCodec.ValidatedArchive validated,
         final InjectionService.InjectorOutcome outcome,
         final Map<String, byte[]> members
-    ) throws IOException {
+    ) {
         if (outcome.failure() != null) {
             return;
         }
@@ -513,7 +514,7 @@ final class FaultInjectionCapabilityService implements FaultInjectionCapability 
     private byte[] derivedProject(
         final InjectionArchiveCodec.ValidatedArchive validated,
         final InjectionService.Injection mutation
-    ) throws IOException {
+    ) {
         final byte[] mutatedProject = jsonBytes(mutation.mutatedProgram());
         try {
             parser.parseFromString(RETAINED_PROGRAM_NAME, new String(mutatedProject, StandardCharsets.UTF_8));
@@ -767,35 +768,35 @@ final class FaultInjectionCapabilityService implements FaultInjectionCapability 
     }
 
     private int maxSelectedInjectors() {
-        return Math.min(ABSOLUTE_MAX_SELECTED_INJECTORS, Math.max(1, limits().getMaxSelectedInjectors()));
+        return Math.clamp(limits().getMaxSelectedInjectors(), 1, ABSOLUTE_MAX_SELECTED_INJECTORS);
     }
 
     private int maxMutationResults() {
-        return Math.min(ABSOLUTE_MAX_MUTATION_RESULTS, Math.max(1, limits().getMaxMutationResults()));
+        return Math.clamp(limits().getMaxMutationResults(), 1, ABSOLUTE_MAX_MUTATION_RESULTS);
     }
 
     private long maxInputBytes() {
-        return Math.min(ABSOLUTE_MAX_INPUT_BYTES, Math.max(1L, limits().getMaxInputBytes()));
+        return Math.clamp(limits().getMaxInputBytes(), 1L, ABSOLUTE_MAX_INPUT_BYTES);
     }
 
     private int maxAstNodes() {
-        return Math.min(ABSOLUTE_MAX_AST_NODES, Math.max(1, limits().getMaxAstNodes()));
+        return Math.clamp(limits().getMaxAstNodes(), 1, ABSOLUTE_MAX_AST_NODES);
     }
 
     private int maxArchiveEntries() {
-        return Math.min(ABSOLUTE_MAX_ARCHIVE_ENTRIES, Math.max(1, limits().getMaxArchiveEntries()));
+        return Math.clamp(limits().getMaxArchiveEntries(), 1, ABSOLUTE_MAX_ARCHIVE_ENTRIES);
     }
 
     private long maxArchiveBytes() {
-        return Math.min(ABSOLUTE_MAX_ARCHIVE_BYTES, Math.max(1L, limits().getMaxArchiveBytes()));
+        return Math.clamp(limits().getMaxArchiveBytes(), 1L, ABSOLUTE_MAX_ARCHIVE_BYTES);
     }
 
     private long maxUncompressedBytes() {
-        return Math.min(ABSOLUTE_MAX_UNCOMPRESSED_BYTES, Math.max(1L, limits().getMaxUncompressedBytes()));
+        return Math.clamp(limits().getMaxUncompressedBytes(), 1L, ABSOLUTE_MAX_UNCOMPRESSED_BYTES);
     }
 
     private long maxArchiveEntryBytes() {
-        return Math.min(ABSOLUTE_MAX_ARCHIVE_ENTRY_BYTES, Math.max(1L, limits().getMaxArchiveEntryBytes()));
+        return Math.clamp(limits().getMaxArchiveEntryBytes(), 1L, ABSOLUTE_MAX_ARCHIVE_ENTRY_BYTES);
     }
 
     private Duration injectionTimeout() {
@@ -1120,6 +1121,7 @@ final class FaultInjectionCapabilityService implements FaultInjectionCapability 
 
     private static final class InvalidInjectionRequest extends IllegalArgumentException {
 
+        @Serial
         private static final long serialVersionUID = 1L;
 
         private InvalidInjectionRequest(final String message) {
@@ -1129,26 +1131,31 @@ final class FaultInjectionCapabilityService implements FaultInjectionCapability 
 
     private static final class ArtifactIntegrityFailure extends RuntimeException {
 
+        @Serial
         private static final long serialVersionUID = 1L;
     }
 
     private static final class ArchiveMalformed extends RuntimeException {
 
+        @Serial
         private static final long serialVersionUID = 1L;
     }
 
     private static final class InjectionLimitExceeded extends RuntimeException {
 
+        @Serial
         private static final long serialVersionUID = 1L;
     }
 
     private static final class NoApplicableMutation extends RuntimeException {
 
+        @Serial
         private static final long serialVersionUID = 1L;
     }
 
     private static final class CoreInjectionFailure extends RuntimeException {
 
+        @Serial
         private static final long serialVersionUID = 1L;
     }
 
