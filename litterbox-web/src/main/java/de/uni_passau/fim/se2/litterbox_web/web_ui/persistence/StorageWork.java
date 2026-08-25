@@ -38,6 +38,9 @@ public interface StorageWork {
      * <p>
      * Its queue only ever holds work that is already accounted for: one deletion per request in flight, and requests in
      * flight are bounded elsewhere.
+     *
+     * @param task A clean-up task to be submitted to the worker pool.
+     * @return The task result.
      */
     Mono<Void> submitCleanup(Runnable task);
 }

@@ -16,27 +16,27 @@ import java.util.concurrent.RejectedExecutionException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import de.uni_passau.fim.se2.litterbox_web.web_ui.support.BoundedWorkExecutor;
+import de.uni_passau.fim.se2.litterbox_web.web_ui.support.LitterboxThreadPool;
 import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.annotation.PreDestroy;
 import reactor.core.publisher.Mono;
 
 /** Isolates blocking artifact-store work from the event loop, the analysis workers and the database pool. */
 @Component
-public final class BoundedStorageExecutor implements StorageWork {
+public final class StorageExecutor implements StorageWork {
 
-    private final BoundedWorkExecutor executor;
-    private final BoundedWorkExecutor cleanup;
+    private final LitterboxThreadPool executor;
+    private final LitterboxThreadPool cleanup;
 
-    public BoundedStorageExecutor(
+    public StorageExecutor(
         @Value("${litterbox.execution.storage-threads:4}") final int threads,
         @Value("${litterbox.execution.storage-queue-capacity:64}") final int queueCapacity,
         final MeterRegistry meterRegistry
     ) {
-        executor = BoundedWorkExecutor.bounded(
+        executor = LitterboxThreadPool.bounded(
             "storage", threads, queueCapacity, meterRegistry, StorageCapacityExceededException::new
         );
-        cleanup = BoundedWorkExecutor.unbounded("storage-cleanup", 1, meterRegistry);
+        cleanup = LitterboxThreadPool.unbounded("storage-cleanup", 1, meterRegistry);
     }
 
     @Override
@@ -63,7 +63,7 @@ public final class BoundedStorageExecutor implements StorageWork {
         return cleanup.<Void>submit(() -> {
             task.run();
             return null;
-        }).onErrorResume(BoundedWorkExecutor.ShutDownException.class, goingAway -> Mono.fromRunnable(task));
+        }).onErrorResume(LitterboxThreadPool.ShutDownException.class, goingAway -> Mono.fromRunnable(task));
     }
 
     @PreDestroy

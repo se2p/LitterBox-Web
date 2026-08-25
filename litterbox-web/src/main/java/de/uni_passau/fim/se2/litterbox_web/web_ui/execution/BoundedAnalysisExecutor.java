@@ -14,7 +14,7 @@ import java.util.concurrent.Callable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import de.uni_passau.fim.se2.litterbox_web.web_ui.support.BoundedWorkExecutor;
+import de.uni_passau.fim.se2.litterbox_web.web_ui.support.LitterboxThreadPool;
 import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.annotation.PreDestroy;
 import reactor.core.publisher.Mono;
@@ -36,7 +36,7 @@ import reactor.core.publisher.Mono;
 @Component
 public final class BoundedAnalysisExecutor implements AnalysisWork {
 
-    private final BoundedWorkExecutor executor;
+    private final LitterboxThreadPool executor;
 
     public BoundedAnalysisExecutor(
         @Value(
@@ -45,7 +45,7 @@ public final class BoundedAnalysisExecutor implements AnalysisWork {
         @Value("${litterbox.execution.analysis-queue-capacity:32}") final int queueCapacity,
         final MeterRegistry meterRegistry
     ) {
-        executor = BoundedWorkExecutor.bounded(
+        executor = LitterboxThreadPool.bounded(
             "analysis", threads, queueCapacity, meterRegistry, AnalysisCapacityExceededException::new
         );
     }

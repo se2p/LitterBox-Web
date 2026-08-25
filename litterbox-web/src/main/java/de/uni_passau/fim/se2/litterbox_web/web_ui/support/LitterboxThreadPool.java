@@ -32,7 +32,7 @@ import reactor.core.publisher.MonoSink;
 /**
  * A pool of threads that blocking work is handed to, bounded, measured, and shut down with the application.
  */
-public final class BoundedWorkExecutor {
+public final class LitterboxThreadPool {
 
     private static final long SHUTDOWN_SECONDS = 5;
 
@@ -49,7 +49,7 @@ public final class BoundedWorkExecutor {
      * @param queueCapacity how much work may wait for one
      * @param whenFull      what a caller is told when neither a thread nor a place in the queue is free
      */
-    public static BoundedWorkExecutor bounded(
+    public static LitterboxThreadPool bounded(
         final String name,
         final int threads,
         final int queueCapacity,
@@ -59,7 +59,7 @@ public final class BoundedWorkExecutor {
         if (queueCapacity < 1) {
             throw new IllegalArgumentException(name + " executor sizes must be positive");
         }
-        return new BoundedWorkExecutor(
+        return new LitterboxThreadPool(
             name, threads, new ArrayBlockingQueue<>(queueCapacity), meterRegistry, whenFull
         );
     }
@@ -78,10 +78,10 @@ public final class BoundedWorkExecutor {
      * @param meterRegistry where this pool's meters are published
      * @return a pool that queues without limit until it is shut down
      */
-    public static BoundedWorkExecutor unbounded(
+    public static LitterboxThreadPool unbounded(
         final String name, final int threads, final MeterRegistry meterRegistry
     ) {
-        return new BoundedWorkExecutor(
+        return new LitterboxThreadPool(
             name, threads, new LinkedBlockingQueue<>(), meterRegistry, () -> new ShutDownException(name)
         );
     }
@@ -103,7 +103,7 @@ public final class BoundedWorkExecutor {
         }
     }
 
-    private BoundedWorkExecutor(
+    private LitterboxThreadPool(
         final String name,
         final int threads,
         final BlockingQueue<Runnable> queue,
@@ -123,7 +123,7 @@ public final class BoundedWorkExecutor {
             0L,
             TimeUnit.MILLISECONDS,
             queue,
-            Thread.ofPlatform().name("litterbox-" + name + "-", 0).factory(),
+            Thread.ofPlatform().name("lb-" + name + "-", 0).factory(),
             new ThreadPoolExecutor.AbortPolicy()
         );
         meterRegistry.gauge(metricPrefix + "queue.depth", executor.getQueue(), Queue::size);

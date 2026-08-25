@@ -35,7 +35,7 @@ import reactor.core.publisher.Mono;
  * {@link RejectedExecutionException}: the pool refuses with whatever its owner chose, and a task is free to throw one
  * of its own. Confusing the two reports a failed task as a capacity problem and counts it twice.
  */
-class BoundedWorkExecutorTest {
+class LitterboxThreadPoolTest {
 
     private static final Duration TIMEOUT = Duration.ofSeconds(5);
 
@@ -52,7 +52,7 @@ class BoundedWorkExecutorTest {
     @Test
     void keepsARejectedExecutionExceptionTheTaskItselfThrew() {
         final SimpleMeterRegistry metrics = new SimpleMeterRegistry();
-        final BoundedWorkExecutor executor = BoundedWorkExecutor.bounded("task-threw", 1, 1, metrics, PoolFull::new);
+        final LitterboxThreadPool executor = LitterboxThreadPool.bounded("task-threw", 1, 1, metrics, PoolFull::new);
         final TaskRejection thrown = new TaskRejection();
 
         try {
@@ -75,7 +75,7 @@ class BoundedWorkExecutorTest {
     @Test
     void reportsAFullPoolAsTheConfiguredCapacityFailure() throws Exception {
         final SimpleMeterRegistry metrics = new SimpleMeterRegistry();
-        final BoundedWorkExecutor executor = BoundedWorkExecutor.bounded("saturated", 1, 1, metrics, PoolFull::new);
+        final LitterboxThreadPool executor = LitterboxThreadPool.bounded("saturated", 1, 1, metrics, PoolFull::new);
         final CountDownLatch running = new CountDownLatch(1);
         final CountDownLatch release = new CountDownLatch(1);
 
@@ -105,7 +105,7 @@ class BoundedWorkExecutorTest {
     @Test
     void neverRunsATaskCancelledWhileItWasStillQueued() throws Exception {
         final SimpleMeterRegistry metrics = new SimpleMeterRegistry();
-        final BoundedWorkExecutor executor = BoundedWorkExecutor.bounded("cancelled", 1, 4, metrics, PoolFull::new);
+        final LitterboxThreadPool executor = LitterboxThreadPool.bounded("cancelled", 1, 4, metrics, PoolFull::new);
         final CountDownLatch running = new CountDownLatch(1);
         final CountDownLatch release = new CountDownLatch(1);
         final AtomicInteger queuedTaskRuns = new AtomicInteger();
@@ -142,7 +142,7 @@ class BoundedWorkExecutorTest {
     @Test
     void neverQueuesASubmissionCancelledBeforeItCouldBeHandedToThePool() throws Exception {
         final SimpleMeterRegistry metrics = new SimpleMeterRegistry();
-        final BoundedWorkExecutor executor = BoundedWorkExecutor.bounded("cancel-race", 1, 1, metrics, PoolFull::new);
+        final LitterboxThreadPool executor = LitterboxThreadPool.bounded("cancel-race", 1, 1, metrics, PoolFull::new);
         final CountDownLatch running = new CountDownLatch(1);
         final CountDownLatch release = new CountDownLatch(1);
         final CountDownLatch realTaskRan = new CountDownLatch(1);
@@ -194,7 +194,7 @@ class BoundedWorkExecutorTest {
     @Test
     void doesNotCountARefusalAgainstASubmissionThatWasAlreadyCancelled() throws Exception {
         final SimpleMeterRegistry metrics = new SimpleMeterRegistry();
-        final BoundedWorkExecutor executor = BoundedWorkExecutor.bounded("cancel-full", 1, 1, metrics, PoolFull::new);
+        final LitterboxThreadPool executor = LitterboxThreadPool.bounded("cancel-full", 1, 1, metrics, PoolFull::new);
         final CountDownLatch running = new CountDownLatch(1);
         final CountDownLatch release = new CountDownLatch(1);
         final AtomicInteger cancelledTaskRuns = new AtomicInteger();
@@ -248,7 +248,7 @@ class BoundedWorkExecutorTest {
     @Test
     void doesNotAlsoReportAnExpectedRejectionAsAnUncaughtException() throws Exception {
         final SimpleMeterRegistry metrics = new SimpleMeterRegistry();
-        final BoundedWorkExecutor executor = BoundedWorkExecutor.bounded("quiet", 1, 1, metrics, PoolFull::new);
+        final LitterboxThreadPool executor = LitterboxThreadPool.bounded("quiet", 1, 1, metrics, PoolFull::new);
         final CountDownLatch running = new CountDownLatch(1);
         final CountDownLatch release = new CountDownLatch(1);
         final List<Throwable> uncaught = new CopyOnWriteArrayList<>();
@@ -288,7 +288,7 @@ class BoundedWorkExecutorTest {
      */
     @Test
     void leavesACallableAlreadyRunningAloneWhenItsSubscriptionIsCancelled() throws Exception {
-        final BoundedWorkExecutor executor = BoundedWorkExecutor.bounded(
+        final LitterboxThreadPool executor = LitterboxThreadPool.bounded(
             "uninterrupted", 1, 1, new SimpleMeterRegistry(), PoolFull::new
         );
         final CountDownLatch running = new CountDownLatch(1);
@@ -335,18 +335,18 @@ class BoundedWorkExecutorTest {
 
     @Test
     void refusesWithShutDownExceptionOnceAnUnboundedPoolHasStopped() {
-        final BoundedWorkExecutor executor = BoundedWorkExecutor.unbounded(
+        final LitterboxThreadPool executor = LitterboxThreadPool.unbounded(
             "stopped", 1, new SimpleMeterRegistry()
         );
         executor.shutdown();
 
         assertThatThrownBy(() -> executor.submit(() -> "too late").block(TIMEOUT))
-            .isInstanceOf(BoundedWorkExecutor.ShutDownException.class);
+            .isInstanceOf(LitterboxThreadPool.ShutDownException.class);
     }
 
     @Test
     void doesNotDisguiseATaskRejectionAsAShutDown() {
-        final BoundedWorkExecutor executor = BoundedWorkExecutor.unbounded(
+        final LitterboxThreadPool executor = LitterboxThreadPool.unbounded(
             "still-running", 1, new SimpleMeterRegistry()
         );
 
@@ -356,7 +356,7 @@ class BoundedWorkExecutorTest {
             }).block(TIMEOUT))
                 .as("a running pool never refused anything, so a caller must not read this as a shutdown")
                 .isInstanceOf(TaskRejection.class)
-                .isNotInstanceOf(BoundedWorkExecutor.ShutDownException.class);
+                .isNotInstanceOf(LitterboxThreadPool.ShutDownException.class);
         }
         finally {
             executor.shutdown();
@@ -365,7 +365,7 @@ class BoundedWorkExecutorTest {
 
     @Test
     void runsTheTaskOnlyWhenTheMonoIsSubscribedTo() {
-        final BoundedWorkExecutor executor = BoundedWorkExecutor.bounded(
+        final LitterboxThreadPool executor = LitterboxThreadPool.bounded(
             "lazy", 1, 1, new SimpleMeterRegistry(), PoolFull::new
         );
         final AtomicInteger runs = new AtomicInteger();

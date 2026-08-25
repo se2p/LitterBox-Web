@@ -20,14 +20,12 @@ import reactor.core.publisher.Mono;
  * WebFlux subscribes a handler's {@code Mono} on a Netty event loop, and blocking one of those blocks every other
  * request it is carrying. Every repository in this package goes through here for that reason alone — see the package
  * documentation.
- *
- * <p>
- * An interface rather than the {@link BoundedDatabaseExecutor} class so that tests can run repositories inline instead
- * of standing up a thread pool.
  */
 public interface DatabaseWork {
 
     /**
+     * Submits a task to the database scheduler.
+     *
      * @param <T>  what the task produces
      * @param task the blocking call to run
      * @return the task's result, or an empty {@code Mono} if it returned {@code null}; an error signal if it threw or

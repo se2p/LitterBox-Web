@@ -29,12 +29,12 @@ import reactor.core.publisher.Mono;
  * that has stopped answering must exhaust its own pool and be reported as its own, rather than occupying the threads
  * that hold database connections and having unrelated queries refused for want of a database that is sitting idle.
  */
-class BoundedStorageExecutorTest {
+class StorageExecutorTest {
 
     @Test
     void runsBlockingWorkOnStorageThreadsRatherThanDatabaseOnes() {
-        final BoundedStorageExecutor storage = new BoundedStorageExecutor(1, 1, new SimpleMeterRegistry());
-        final BoundedDatabaseExecutor database = new BoundedDatabaseExecutor(1, 1, new SimpleMeterRegistry());
+        final StorageExecutor storage = new StorageExecutor(1, 1, new SimpleMeterRegistry());
+        final DatabaseExecutor database = new DatabaseExecutor(1);
 
         try {
             final String storageThread = storage.submit(() -> Thread.currentThread().getName())
@@ -42,8 +42,8 @@ class BoundedStorageExecutorTest {
             final String databaseThread = database.submit(() -> Thread.currentThread().getName())
                 .block(Duration.ofSeconds(2));
 
-            assertThat(storageThread).startsWith("litterbox-storage-");
-            assertThat(databaseThread).startsWith("litterbox-database-");
+            assertThat(storageThread).startsWith("lb-storage-");
+            assertThat(databaseThread).startsWith("lb-db-");
             assertThat(storageThread).isNotEqualTo(databaseThread);
         }
         finally {
@@ -55,8 +55,8 @@ class BoundedStorageExecutorTest {
     @Test
     void rejectsWhenBoundedStoragePoolIsFullAndLeavesTheDatabasePoolAlone() throws Exception {
         final SimpleMeterRegistry metrics = new SimpleMeterRegistry();
-        final BoundedStorageExecutor storage = new BoundedStorageExecutor(1, 1, metrics);
-        final BoundedDatabaseExecutor database = new BoundedDatabaseExecutor(1, 1, metrics);
+        final StorageExecutor storage = new StorageExecutor(1, 1, metrics);
+        final DatabaseExecutor database = new DatabaseExecutor(1);
         final CountDownLatch started = new CountDownLatch(1);
         final CountDownLatch release = new CountDownLatch(1);
         try {
@@ -97,7 +97,7 @@ class BoundedStorageExecutorTest {
     @Test
     void deletesStagedBytesOnItsOwnThreadEvenWhileTheStoragePoolIsFull() throws Exception {
         final SimpleMeterRegistry metrics = new SimpleMeterRegistry();
-        final BoundedStorageExecutor storage = new BoundedStorageExecutor(1, 1, metrics);
+        final StorageExecutor storage = new StorageExecutor(1, 1, metrics);
         final CountDownLatch started = new CountDownLatch(1);
         final CountDownLatch release = new CountDownLatch(1);
         final AtomicReference<String> deletedOn = new AtomicReference<>();
@@ -121,7 +121,7 @@ class BoundedStorageExecutorTest {
 
             assertThat(deletedOn.get())
                 .as("a deletion is neither refused nor handed back to the thread that asked for it")
-                .startsWith("litterbox-storage-cleanup-");
+                .startsWith("lb-storage-cleanup-");
             assertThat(deletedOn.get()).isNotEqualTo(Thread.currentThread().getName());
         }
         finally {
@@ -137,7 +137,7 @@ class BoundedStorageExecutorTest {
      */
     @Test
     void doesNotRepeatACleanupThatFailedByThrowingRejectedExecutionItself() {
-        final BoundedStorageExecutor storage = new BoundedStorageExecutor(1, 1, new SimpleMeterRegistry());
+        final StorageExecutor storage = new StorageExecutor(1, 1, new SimpleMeterRegistry());
         final AtomicInteger attempts = new AtomicInteger();
 
         try {
@@ -159,7 +159,7 @@ class BoundedStorageExecutorTest {
 
     @Test
     void fallsBackToTheCallingThreadOnlyOnceTheCleanupPoolHasShutDown() {
-        final BoundedStorageExecutor storage = new BoundedStorageExecutor(1, 1, new SimpleMeterRegistry());
+        final StorageExecutor storage = new StorageExecutor(1, 1, new SimpleMeterRegistry());
         final AtomicReference<String> deletedOn = new AtomicReference<>();
         storage.shutdown();
 
