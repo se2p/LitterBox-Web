@@ -24,8 +24,7 @@ import reactor.core.publisher.Mono;
  *
  * <p>
  * Bounded against what the database will hold open, and so carrying only work that occupies a connection. Reading and
- * writing the artifact store has its own bound in {@link BoundedStorageExecutor}; the legacy import takes its own
- * connections and does not come through here at all.
+ * writing the artifact store has its own bound in {@link BoundedStorageExecutor}.
  */
 // todo: remove? see comments in package-info.java
 @Component
