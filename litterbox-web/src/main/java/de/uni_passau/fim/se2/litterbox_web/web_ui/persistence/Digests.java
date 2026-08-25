@@ -16,9 +16,8 @@ import java.security.NoSuchAlgorithmException;
  * Digests for algorithms every Java platform is required to provide.
  *
  * <p>
- * {@link MessageDigest#getInstance(String)} is declared to fail for an algorithm the platform does not know, which
- * neither SHA-256 nor MD5 can be. Answering that here is what keeps the callers reading as the hashing they are, rather
- * than each carrying a catch block for something that cannot happen.
+ * {@link MessageDigest#getInstance(String)} is declared to throw for an unknown algorithm, which SHA-256 and MD5 cannot
+ * be. Handling that once here saves every caller a catch block for something that cannot happen.
  */
 final class Digests {
 

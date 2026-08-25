@@ -159,16 +159,16 @@ public class SubmissionRepository {
     }
 
     /**
-     * Cancels a submission and everything under it, and says whether this call is what stopped it.
+     * Cancels a submission and everything under it.
      *
      * <p>
-     * All of it in one transaction: the submission, its jobs, its analyses and the event either all take effect or none
-     * do, so a failure part way through cannot leave jobs queued under a submission that already says it was cancelled.
+     * The submission, its jobs, its analyses and the event are one transaction, so a failure part way through cannot
+     * leave jobs queued under a submission that already says it was cancelled.
      *
      * <p>
-     * The jobs and analyses are cancelled whatever the submission's state already was, so asking again finishes work an
-     * earlier attempt did not get to. Only the event depends on the state having changed, and it is written here, in
-     * the transaction that changed it.
+     * Jobs and analyses are cancelled whatever state the submission was already in, so calling again finishes what an
+     * earlier attempt did not get to. Only the event depends on the state having changed, and it is written in the
+     * transaction that changed it.
      *
      * @return whether this call is the one that cancelled the submission
      */

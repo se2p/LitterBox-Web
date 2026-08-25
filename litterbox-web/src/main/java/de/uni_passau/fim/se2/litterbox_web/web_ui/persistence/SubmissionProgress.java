@@ -14,12 +14,12 @@ import java.util.Objects;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.Submissions;
 
 /**
- * How far along a submission is, and what that makes of it.
+ * How far along a submission is, and what state that puts it in.
  *
  * <p>
- * Neither a lock nor a read is needed here: counting a project is one statement that adds to the row and works out from
- * the result what the submission has come to, so however many workers finish at the same moment, each of them counts
- * once and none of them waits on a decision another is making.
+ * Needs neither a lock nor a prior read: counting a project is a single statement that increments the row and derives
+ * the resulting state from it. However many workers finish at the same moment, each counts exactly once and none waits
+ * on a decision another is making.
  *
  * @see Submissions#countOutcome
  */

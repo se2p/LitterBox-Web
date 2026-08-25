@@ -51,30 +51,27 @@ public class SubmissionArtifactRepository {
     }
 
     /**
-     * The artifact a submission was built from, if the building got that far.
+     * The artifact a submission was built from, if it got that far.
      *
      * <p>
-     * The link is the durable record of which artifact a submission holds, and the only thing that answers this
-     * question after the request that made it has gone. A submission whose creation stopped between linking and its
-     * analysis is finished off by a repeat, and the repeat's own bytes are not necessarily these: a project fetched
-     * from Scratch twice is two files, and building around the second left the submission holding two artifacts, both
-     * under the role that means the one it was made from.
+     * The link is the only durable record of which artifact a submission holds once the request that made it is gone. A
+     * submission can hold two artifacts under this role: if creation stopped between linking and analysis, the repeat
+     * that finishes it fetches the project from Scratch again and stores different bytes.
      */
     public Mono<Long> findOriginalArtifactId(final long submissionId) {
         return databaseWork.submit(() -> links.findArtifactId(submissionId, "ORIGINAL").orElse(null));
     }
 
     /**
-     * Gives a batch project its analysis, making one only if it has none.
+     * Gives a batch project its analysis, creating one only if it has none.
      *
      * <p>
      * Looking first and then inserting is two decisions, and two workers can both look before either inserts. The
-     * unique key on the creation of a named project within its submission makes the insert itself the decision, and the
-     * loser is told so.
+     * unique key on a named project within its submission makes the insert itself the decision.
      *
      * <p>
-     * The loser has to look again from outside: its own transaction began before the winner committed and cannot see
-     * what the winner wrote, however plainly the error says it is there.
+     * The loser has to look again in a fresh transaction: its own began before the winner committed and so cannot see
+     * the row the error is complaining about.
      */
     public Mono<LinkedAnalysis> linkAnalysis(final BatchAnalysisLink link) {
         Objects.requireNonNull(link, "link");
@@ -104,9 +101,9 @@ public class SubmissionArtifactRepository {
         if (existing != null) {
             return new LinkedAnalysis(existing, false);
         }
-        // Two projects of one batch can be the same bytes under different names, and then the link is already there.
-        // Asked here rather than left to the insert, because a refused statement would take this transaction with it,
-        // and the analysis being created below is what the transaction is for.
+        // Two projects of one batch can be the same bytes under different names, in which case the link already
+        // exists. Checked here rather than left to the insert, because a refused statement would roll back the
+        // transaction that the analysis below is being created in.
         final SubmissionArtifactEntity.Key key = new SubmissionArtifactEntity.Key(
             link.submissionId(), link.artifactId(), link.role()
         );
@@ -117,9 +114,8 @@ public class SubmissionArtifactRepository {
             link.submissionId(), link.artifactId(), link.projectName(), "NEW", "1",
             link.litterboxArtifactVersion(), link.locale(), link.inputSha256(), link.inputFormat()
         );
-        // Unpacking the batch is what created this project, and marking it so is what the unique key that keeps two
-        // workers from both creating it is written over. An analysis run over the project afterwards is not marked,
-        // and is not refused.
+        // Marks this analysis as the one that unpacking the batch created, which is what the unique key covers. An
+        // analysis run over the same project later is not marked, and so is not refused.
         analysis.setFromCreation(true);
         return new LinkedAnalysis(analyses.saveAndFlush(analysis).getId(), true);
     }

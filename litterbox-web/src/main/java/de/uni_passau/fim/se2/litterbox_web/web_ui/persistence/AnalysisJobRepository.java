@@ -64,8 +64,8 @@ public class AnalysisJobRepository {
     }
 
     /**
-     * Reading the position and inserting the job are two statements on purpose; the reason is with the queries. Two
-     * projects landing on the same number would only mean they are equally urgent, which they are.
+     * Reading the position and inserting the job are deliberately two statements rather than one locked read-modify-
+     * write: two projects landing on the same queue position only means they are equally urgent, which they are.
      */
     private Void enqueueAnalysis(final long submissionId, final long analysisId) {
         final int queuePosition = jobs.nextQueuePosition(submissionId);
@@ -92,9 +92,9 @@ public class AnalysisJobRepository {
     }
 
     /**
-     * One statement, so there is nothing here for a transaction to hold together. What kept two requests for the same
-     * studio from each queueing an ingestion was the submission row lock; now it is a unique key, and the request that
-     * arrives second is told the job it wanted is already there.
+     * One statement, so there is nothing for a transaction to hold together. Two requests for the same studio are kept
+     * from both queueing an ingestion by a unique key rather than by locking the submission row; the second one to
+     * arrive finds the job already there.
      */
     private Void enqueueIngestionOnce(
         final long submissionId,
@@ -115,12 +115,12 @@ public class AnalysisJobRepository {
     }
 
     /**
-     * Takes the next job in one statement, which is what makes the lease safe rather than the surrounding transaction:
-     * the row is chosen and stamped together, so two workers cannot both believe they hold it.
+     * Takes the next job in a single statement. Choosing the row and stamping the lease onto it together is what makes
+     * the lease safe — not the surrounding transaction — so two workers cannot both believe they hold it.
      *
      * <p>
-     * The lease token is unique to this attempt, not to the worker, because one worker runs several jobs at once and
-     * the row it just took has to be identifiable among them.
+     * The lease token identifies the attempt rather than the worker, because one worker runs several jobs at once and
+     * has to be able to say which of them it means.
      */
     private Job claimNextJob(final String workerId, final Duration leaseDuration) {
         final String leaseToken = workerId + ":" + UUID.randomUUID();
@@ -181,7 +181,7 @@ public class AnalysisJobRepository {
             settleExhausted(current);
             return false;
         }
-        // The write re-asserts what the read saw; a lease lost in between makes it change nothing.
+        // The update repeats the conditions the read checked, so a lease lost in between changes nothing.
         return jobs.releaseForRetry(jobId, workerId) == 1;
     }
 
@@ -192,12 +192,11 @@ public class AnalysisJobRepository {
     }
 
     /**
-     * Settles the jobs claiming will never pick up again: those cancelled while nobody held them, and those whose
-     * attempts ran out. They are not work, and deciding what became of them does not belong in the path that decides
-     * what to run next.
+     * Settles the jobs that claiming will never pick up again: those cancelled while nobody held them, and those whose
+     * attempts ran out. Kept out of the claim path, which should only decide what to run next.
      *
      * <p>
-     * A page at a time, and the caller comes back soon enough for the rest.
+     * Handles one batch of {@value #REAP_BATCH_SIZE} per call; the caller comes back often enough for the rest.
      *
      * @see AnalysisJobs#findAbandoned
      */
@@ -237,8 +236,8 @@ public class AnalysisJobRepository {
         String state,
         boolean cancelRequested,
         int attempts,
-        // Identifies the claim rather than the worker, so a worker holding several jobs can still say which
-        // lease it is renewing or giving up.
+        // Identifies the claim rather than the worker, so a worker holding several jobs can say which lease it
+        // means when renewing or releasing one.
         String leaseToken
     ) {
 
@@ -276,10 +275,10 @@ public class AnalysisJobRepository {
      * Settles a job somebody asked to stop, along with its analysis and its submission.
      *
      * <p>
-     * The submission is normally cancelled already — what set {@code cancel_requested} on the job was
+     * The submission is usually cancelled already, because whatever set {@code cancel_requested} on the job was
      * {@link SubmissionRepository#cancelEverything}, which cancels the submission in the same transaction. The event is
-     * written on the strength of this call having been the one to change the state, so a submission reached only from
-     * here still says once that it was cancelled, rather than changing state with nothing recording it.
+     * only written when this call is the one that changed the state, so a submission reached only from here still
+     * records its cancellation exactly once.
      */
     private void settleCancelled(final Job job) {
         jobs.markCancelled(job.id());
@@ -292,11 +291,11 @@ public class AnalysisJobRepository {
     }
 
     /**
-     * Settles a job whose attempts ran out: the work failed, and nothing is going to pick it up again.
+     * Settles a job whose attempts ran out: the work failed and nothing will pick it up again.
      *
      * <p>
-     * A cancelled submission is left to say so. Counting a failure against it would replace somebody's decision that
-     * the work was not wanted with an account of the work having gone wrong.
+     * A submission already marked cancelled is left as it is — recording a failure against it would replace the fact
+     * that somebody stopped the work with a claim that the work went wrong.
      */
     private void settleExhausted(final Job job) {
         final boolean recorded = job.analysisId() == null

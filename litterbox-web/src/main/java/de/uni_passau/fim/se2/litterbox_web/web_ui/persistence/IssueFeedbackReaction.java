@@ -13,8 +13,8 @@ package de.uni_passau.fim.se2.litterbox_web.web_ui.persistence;
  * What a reader can say about an issue they were shown.
  *
  * <p>
- * The API spells a reaction one way and the column another. Naming the wire spelling here is what keeps a request from
- * reaching the column in the wrong one, and what makes an unsupported reaction a refusal rather than a row.
+ * The API and the database column spell these differently, so the wire spelling is named here. That keeps a request
+ * from reaching the column in the wrong spelling, and makes an unsupported reaction a refusal rather than a row.
  */
 public enum IssueFeedbackReaction {
 

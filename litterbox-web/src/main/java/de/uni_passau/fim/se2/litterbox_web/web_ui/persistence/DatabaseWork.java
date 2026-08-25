@@ -13,10 +13,25 @@ import java.util.concurrent.Callable;
 
 import reactor.core.publisher.Mono;
 
-// todo: ?????????????
-// todo: Why is this needed? Why do the repositories hand off database stuff to another thread instead of just writing
-//  the data to the DB? Is this a remnant of the first iteration using plain SQL queries rather than proper JPA?
+/**
+ * Runs a blocking JDBC call somewhere other than the thread that asked for it.
+ *
+ * <p>
+ * WebFlux subscribes a handler's {@code Mono} on a Netty event loop, and blocking one of those blocks every other
+ * request it is carrying. Every repository in this package goes through here for that reason alone — see the package
+ * documentation.
+ *
+ * <p>
+ * An interface rather than the {@link BoundedDatabaseExecutor} class so that tests can run repositories inline instead
+ * of standing up a thread pool.
+ */
 public interface DatabaseWork {
 
+    /**
+     * @param <T>  what the task produces
+     * @param task the blocking call to run
+     * @return the task's result, or an empty {@code Mono} if it returned {@code null}; an error signal if it threw or
+     *         if there was no room for it
+     */
     <T> Mono<T> submit(Callable<T> task);
 }

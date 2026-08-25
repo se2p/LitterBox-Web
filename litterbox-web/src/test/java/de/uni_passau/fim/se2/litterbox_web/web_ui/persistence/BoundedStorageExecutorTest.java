@@ -10,10 +10,14 @@
 package de.uni_passau.fim.se2.litterbox_web.web_ui.persistence;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.jupiter.api.Test;
 
@@ -96,7 +100,7 @@ class BoundedStorageExecutorTest {
         final BoundedStorageExecutor storage = new BoundedStorageExecutor(1, 1, metrics);
         final CountDownLatch started = new CountDownLatch(1);
         final CountDownLatch release = new CountDownLatch(1);
-        final java.util.concurrent.atomic.AtomicReference<String> deletedOn = new java.util.concurrent.atomic.AtomicReference<>();
+        final AtomicReference<String> deletedOn = new AtomicReference<>();
         try {
             storage.submit(() -> {
                 started.countDown();
@@ -124,5 +128,46 @@ class BoundedStorageExecutorTest {
             release.countDown();
             storage.shutdown();
         }
+    }
+
+    /**
+     * The fallback exists for a pool that has shut down, and that alone. A deletion is retried on the calling thread
+     * only when the pool never took it; one that ran and then threw has already done whatever it did, and running it
+     * again would delete twice rather than once.
+     */
+    @Test
+    void doesNotRepeatACleanupThatFailedByThrowingRejectedExecutionItself() {
+        final BoundedStorageExecutor storage = new BoundedStorageExecutor(1, 1, new SimpleMeterRegistry());
+        final AtomicInteger attempts = new AtomicInteger();
+
+        try {
+            assertThatThrownBy(
+                () -> storage.submitCleanup(() -> {
+                    attempts.incrementAndGet();
+                    throw new RejectedExecutionException("the deletion itself was refused");
+                }).block(Duration.ofSeconds(5))
+            ).isInstanceOf(RejectedExecutionException.class);
+
+            assertThat(attempts.get())
+                .as("the cleanup ran once and failed; it was not run a second time")
+                .isEqualTo(1);
+        }
+        finally {
+            storage.shutdown();
+        }
+    }
+
+    @Test
+    void fallsBackToTheCallingThreadOnlyOnceTheCleanupPoolHasShutDown() {
+        final BoundedStorageExecutor storage = new BoundedStorageExecutor(1, 1, new SimpleMeterRegistry());
+        final AtomicReference<String> deletedOn = new AtomicReference<>();
+        storage.shutdown();
+
+        storage.submitCleanup(() -> deletedOn.set(Thread.currentThread().getName()))
+            .block(Duration.ofSeconds(5));
+
+        assertThat(deletedOn.get())
+            .as("the file is deleted rather than left behind, even with nowhere left to run it")
+            .isEqualTo(Thread.currentThread().getName());
     }
 }

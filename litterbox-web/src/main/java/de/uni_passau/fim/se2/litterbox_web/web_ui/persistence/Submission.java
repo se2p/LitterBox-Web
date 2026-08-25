@@ -30,12 +30,12 @@ public record Submission(
     }
 
     /**
-     * Whether everything the submission was created to hold is under it.
+     * Whether everything the submission was created to hold is now under it.
      *
      * <p>
-     * A submission is created in one state and moved out of it by the last step of the building, so one still sitting
-     * where it started is one whose creation stopped part way — which is what a request repeated after a failure
-     * arrives at, and the only case in which such a request has anything left to do.
+     * A submission is created in one state and moved out of it by the last step of the building, so one still in the
+     * initial state had its creation stop part way. That is what a request repeated after a failure finds, and the only
+     * case in which such a request has anything left to do.
      */
     public boolean built() {
         return !"STORED".equals(state);

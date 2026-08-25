@@ -42,12 +42,12 @@ public class IdempotencyKeyRepository {
      * Binds the key to a submission, or reports which submission it is already bound to.
      *
      * <p>
-     * The returned record is the one the key stands for, which is not necessarily the one asked for here: two requests
-     * carrying the same key can both find it unused and both go on to build a submission, and only one of them can have
-     * it. Callers have to look at what comes back — the caller that loses is holding a submission nobody will ever be
-     * shown.
+     * The returned record is whichever submission the key ended up standing for, which is not necessarily
+     * {@code submissionId}: two requests carrying the same key can both find it unused and both build a submission, and
+     * only one of them can have it. Callers must check what comes back, because the loser is left holding a submission
+     * that will never be shown.
      *
-     * @param fingerprint what this request is, and the only thing two requests are compared by
+     * @param fingerprint identifies this request; the only thing two requests are compared by
      */
     public Mono<IdempotencyRecord> put(
         final String scope, final String key, final byte[] fingerprint, final long submissionId
@@ -55,9 +55,9 @@ public class IdempotencyKeyRepository {
         Objects.requireNonNull(scope, "scope");
         Objects.requireNonNull(key, "key");
         Objects.requireNonNull(fingerprint, "fingerprint");
-        // Callers are expected to have refused an oversized key before reading the request, which is the only place it
-        // can be refused for free. Saying so again here is what keeps a caller that forgets from finding out from a
-        // failed insert, with a submission already built under it.
+        // Callers should already have refused an oversized key before reading the request body, which is the only
+        // point at which refusing costs nothing. Re-checking here means a caller that forgot finds out now, rather
+        // than from a failed insert with a submission already built under it.
         RequestStrings.checkIdempotency(scope, key);
         checkDigest(fingerprint);
         return databaseWork.submit(() -> putRecord(scope, key, fingerprint, submissionId));
@@ -79,11 +79,10 @@ public class IdempotencyKeyRepository {
             keys.bind(scope, key, fingerprint, submissionId);
         }
         catch (DataIntegrityViolationException alreadyUsed) {
-            // Sending the same request twice is the point of the key. Sending a different one under it is not.
+            // Repeating the same request is what the key is for; sending a different one under it is not.
             //
-            // The look-up is a statement of its own and so begins after the failed insert has been given up on,
-            // which is what lets it see the row that caused the failure. Read inside that transaction it would not
-            // have been there.
+            // This look-up is a statement of its own, running after the failed insert has been abandoned, which is
+            // what lets it see the row that caused the failure. Inside that transaction it would not be visible.
             final IdempotencyRecord existing = keys.findByScopeAndIdempotencyKey(scope, key)
                 .map(IdempotencyKeyRepository::toRecord)
                 .orElseThrow(() -> alreadyUsed);

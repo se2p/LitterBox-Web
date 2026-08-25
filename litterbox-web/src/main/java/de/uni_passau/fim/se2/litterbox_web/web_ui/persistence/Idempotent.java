@@ -13,20 +13,21 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 
 /**
- * Writes whose only way of failing is that the same fact is already recorded.
+ * Runs an insert that is allowed to fail if the row is already there, and only then.
  *
  * <p>
- * Naming the one error that is acceptable is what leaves the rest visible: a blanket {@code INSERT IGNORE} would let a
- * missing analysis or a missing artifact go by as quietly as a duplicate, and tell the caller the row was written.
+ * Used for the writes that two concurrent requests may both attempt — queueing a job for a studio, linking an asset to
+ * an analysis — where a unique key in the schema decides the race and the loser has nothing left to do.
  *
  * <p>
- * Not for use inside a transaction the caller means to carry on with. The failed statement leaves that transaction
- * marked for rollback, so swallowing the exception only postpones it; a caller in that position wants the retry in a
- * fresh transaction that can see what the winner wrote.
+ * {@code INSERT IGNORE} would be shorter but also swallows a missing analysis or a missing artifact and reports the row
+ * as written, so the duplicate key is picked out specifically and everything else is rethrown.
+ *
+ * <p>
+ * Not safe to call inside a transaction the caller intends to continue: the failed statement marks that transaction
+ * rollback-only, so catching the exception here only defers the failure. Callers in that position retry in a fresh
+ * transaction, which can also see what the winner wrote.
  */
-// todo: ?????????????
-// todo: Why is this needed? Why do the repositories hand off database stuff to another thread instead of just writing
-// the data to the DB? Is this a remnant of the first iteration using plain SQL queries rather than proper JPA?
 final class Idempotent {
 
     private Idempotent() {
@@ -37,7 +38,6 @@ final class Idempotent {
             statement.run();
         }
         catch (DataIntegrityViolationException refused) {
-            // A repeated key is what this asked for; anything else the database refused is news.
             if (!repeatedKey(refused)) {
                 throw refused;
             }
@@ -48,8 +48,9 @@ final class Idempotent {
      * Whether the database refused the statement over a key it already holds.
      *
      * <p>
-     * Asked of Hibernate rather than of the exception's class, because a violated foreign key arrives as the same
-     * Spring exception and is the very thing worth hearing about. Hibernate keeps the distinction the database drew.
+     * Asked of Hibernate rather than of the Spring exception's type, because a violated foreign key arrives as the same
+     * {@link DataIntegrityViolationException} and must not be swallowed. Hibernate keeps the distinction the database
+     * drew.
      */
     private static boolean repeatedKey(final Throwable refusal) {
         for (Throwable cause = refusal; cause != null; cause = cause.getCause()) {

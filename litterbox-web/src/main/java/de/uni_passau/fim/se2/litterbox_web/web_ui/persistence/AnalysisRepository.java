@@ -59,25 +59,25 @@ public class AnalysisRepository {
     }
 
     /**
-     * The analysis a submission's creation makes, of the single project it holds, made if the creation has none yet.
+     * The analysis for the single project a submission holds, created if the submission has none yet.
      *
      * <p>
-     * A request repeated after the first one bound its idempotency key and then died arrives at a submission with
-     * nothing under it, and finishes the work rather than reporting a submission nothing will ever run. Two such
-     * repeats can both find it empty, so the unique key on a submission's creation is what decides between them; the
-     * loser reads back what the winner wrote, from outside its own failed statement, which cannot see it.
+     * A request that bound its idempotency key and then died leaves a submission with nothing under it; a repeat of
+     * that request finishes the work rather than reporting a submission nothing will ever run. Two repeats can both
+     * find it empty, so the unique key on a submission's creation analysis decides between them. The loser re-reads the
+     * winner's row in a fresh transaction, because its own failed statement cannot see it.
      *
      * <p>
-     * Only a creation is answered this way. The key it is guarded by covers analyses marked as belonging to one, so
-     * running the project again later — under a newer LitterBox, or a different configuration — inserts its own row
-     * rather than being handed the first attempt's result under the name of a second.
+     * That key covers only analyses marked as belonging to a submission's creation, so running the project again later
+     * — under a newer LitterBox, or a different configuration — inserts a new row instead of returning the first
+     * attempt's result.
      */
     public Mono<Analysis> createAttempt(final AnalysisAttempt attempt) {
         Objects.requireNonNull(attempt, "attempt");
         return databaseWork.submit(() -> createAttemptInDatabase(attempt));
     }
 
-    /** The analysis a submission's creation already made, if that creation got as far as making one. */
+    /** The creation analysis a submission already has, if it got as far as making one. */
     public Mono<Analysis> findCreationBySubmissionId(final long submissionId) {
         return databaseWork.submit(
             () -> withMetrics(
@@ -184,11 +184,11 @@ public class AnalysisRepository {
     }
 
     /**
-     * Records what an analysis came to, if the job it was run under is still this worker's.
+     * Records the outcome of an analysis, provided the job it ran under is still leased to this worker.
      *
      * <p>
-     * There is no way to record it without a lease. A worker whose lease has been taken over by another is writing an
-     * outcome for a run that somebody else has since redone, over whatever they wrote.
+     * Without that condition a worker whose lease was taken over would overwrite the result of the run that replaced
+     * it.
      */
     public Mono<Boolean> completeIfOwned(
         final long analysisId, final long submissionId, final boolean failed,
@@ -255,9 +255,8 @@ public class AnalysisRepository {
         analysisMetrics.deleteByAnalysisId(analysisId);
         analysisMetrics.insertAll(
             metrics.entrySet().stream()
-                // A measurement that is not a number is not one this can store: the driver writes NaN and infinity
-                // out as bare words, which the database reads as column names and rejects, and the whole analysis is
-                // then recorded as failed over one unmeasurable ratio. The rest of the report is worth more than that.
+                // The driver writes NaN and infinity out as bare words, which the database reads as column names
+                // and rejects, failing the whole analysis over a single unmeasurable ratio. Skipped instead.
                 .filter(entry -> entry.getValue() != null && Double.isFinite(entry.getValue()))
                 .sorted(Map.Entry.comparingByKey())
                 .map(entry -> metric(analysisId, entry.getKey(), entry.getValue()))

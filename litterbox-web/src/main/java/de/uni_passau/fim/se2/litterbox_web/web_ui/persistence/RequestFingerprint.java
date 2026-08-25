@@ -14,21 +14,20 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 
 /**
- * What a request is, as a digest two requests carrying one idempotency key can be compared by.
+ * A digest identifying a request, so that two requests carrying the same idempotency key can be compared.
  *
  * <p>
- * The digest of the bytes will not do on its own, in either direction. A project fetched from Scratch is packed with
- * the moment it was fetched written into it, so asking for the same project twice produces two different files, and a
- * repeat of exactly the request the key was bound to was refused as though it were a different one. And the same bytes
- * sent again in another language, or under another version of LitterBox, is a different request that was accepted and
- * answered with the first one's submission — which matters because a repeat may go on to finish a submission the first
- * attempt left unbuilt, and it would then be finishing it to its own description rather than the one the submission was
- * created under.
+ * Hashing the request's bytes alone is wrong in both directions. A project fetched from Scratch has the fetch time
+ * packed into it, so asking for the same project twice yields two different files, and an honest repeat would be
+ * refused as a different request. Conversely the same bytes sent again in another language, or under another version of
+ * LitterBox, is a different request that would be accepted and answered with the first one's submission. That matters
+ * because a repeat may go on to finish a submission the first attempt left unbuilt, and it would finish it to its own
+ * description rather than the one the submission was created under.
  *
  * <p>
- * What stands here instead is everything the request said about itself together with an identity for what it is asking
- * about: the bytes for a request that carries its project, and the name the project is fetched under for a request that
- * only points at one. Fields are fed in length-prefixed, so no run of them can be read as a different run.
+ * The digest therefore covers everything the request said about itself, plus an identity for what it is asking about:
+ * the bytes, for a request that carries its project, or the name it is fetched under, for a request that only points at
+ * one. Fields are length-prefixed so that no run of them can be read as a different run.
  */
 final class RequestFingerprint {
 
@@ -57,8 +56,8 @@ final class RequestFingerprint {
      * Feeds one field in, marked as present or absent and prefixed with its length.
      *
      * <p>
-     * Without the length, {@code ("ab", "c")} and {@code ("a", "bc")} are the same run of bytes and so the same
-     * request. Without the marker, an absent field and an empty one are.
+     * Without the length, {@code ("ab", "c")} and {@code ("a", "bc")} would hash identically. Without the marker, an
+     * absent field and an empty one would.
      */
     private static void feed(final MessageDigest digest, final String field) {
         if (field == null) {

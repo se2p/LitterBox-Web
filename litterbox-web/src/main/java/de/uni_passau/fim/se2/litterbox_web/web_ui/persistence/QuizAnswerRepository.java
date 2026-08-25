@@ -38,8 +38,8 @@ public class QuizAnswerRepository {
     }
 
     /**
-     * The entity is made, saved and left behind inside the one task that runs on a database thread. Nothing that
-     * Hibernate is still managing is handed back, so there is no session for a caller to have outlived.
+     * The entity is created, saved and discarded inside the single task that runs on a database thread. No managed
+     * entity is handed back, so no caller can outlive its Hibernate session.
      */
     private Void recordAnswer(
         final long analysisId,

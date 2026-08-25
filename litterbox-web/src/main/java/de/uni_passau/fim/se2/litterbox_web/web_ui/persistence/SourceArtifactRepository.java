@@ -45,9 +45,8 @@ public class SourceArtifactRepository {
      * Records what a stored artifact is.
      *
      * <p>
-     * A bundle fetched from Scratch carries its manifest inside itself, and reading it means opening the stored file
-     * and walking the archive. That is read on a storage thread, so a slow store cannot occupy the database's bounded
-     * capacity for as long as it takes to find the entry.
+     * Reading the manifest of a bundle fetched from Scratch means opening the stored file and walking the archive, so
+     * it happens on a storage thread: a slow store must not hold database capacity for as long as that takes.
      */
     public Mono<SourceArtifact> register(final SourceArtifactWrite artifact) {
         Objects.requireNonNull(artifact, "artifact");
@@ -57,7 +56,7 @@ public class SourceArtifactRepository {
             .flatMap(described -> databaseWork.submit(() -> registerInDatabase(described)));
     }
 
-    /** The manifest packed into the stored bundle, and nothing at all unless this artifact is one. */
+    /** The manifest packed into the stored bundle, or nothing if this artifact is not a bundle. */
     private Mono<String> bundleManifest(final SourceArtifactWrite artifact) {
         if (!"SCRATCH_URL".equals(artifact.sourceKind())) {
             return Mono.empty();
@@ -66,8 +65,8 @@ public class SourceArtifactRepository {
     }
 
     /**
-     * The same file uploaded twice is one artifact. Which of the two uploads it is said to have come from can still
-     * change: a project fetched from Scratch knows things about itself that a bare upload of the same bytes did not.
+     * The same bytes uploaded twice are one artifact, but which upload it is recorded as coming from can still change:
+     * a project fetched from Scratch knows things about itself that a bare upload of the same bytes did not.
      */
     private SourceArtifact registerInDatabase(final SourceArtifactWrite artifact) {
         final String manifestJson = artifact.manifestJson();
@@ -127,7 +126,7 @@ public class SourceArtifactRepository {
         throw new IllegalArgumentException("Scratch source bundle has no manifest");
     }
 
-    /** The artifact some earlier request kept these exact bytes as, if one has been recorded yet. */
+    /** The artifact an earlier request stored these exact bytes as, if there is one. */
     public Mono<SourceArtifact> findBySha256(final byte[] sha256) {
         Objects.requireNonNull(sha256, "sha256");
         return databaseWork.submit(
@@ -182,7 +181,7 @@ public class SourceArtifactRepository {
             sha256 = sha256.clone();
         }
 
-        /** The same artifact, described by the manifest that was read out of the bundle rather than supplied. */
+        /** The same artifact, described by the manifest read out of the bundle rather than by the caller. */
         SourceArtifactWrite withManifest(final String manifest) {
             return new SourceArtifactWrite(
                 sha256, storageKey, originalFilename, mediaType, byteSize, sourceKind, manifest

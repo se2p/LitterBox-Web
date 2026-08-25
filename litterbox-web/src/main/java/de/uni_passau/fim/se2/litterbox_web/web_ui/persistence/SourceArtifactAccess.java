@@ -42,11 +42,11 @@ public class SourceArtifactAccess {
     }
 
     /**
-     * Opens the stored bytes, on a thread bounded against the store rather than against the database.
+     * Opens the stored bytes on a thread bounded against the store rather than against the database.
      *
      * <p>
-     * Nothing here holds a connection, and a store that has stopped answering must not be able to exhaust the
-     * database's capacity and be reported as the database running out of it.
+     * Nothing here holds a connection, and a store that has stopped answering must not be able to exhaust the database
+     * pool and have the failure reported as the database running out of capacity.
      */
     public Mono<InputStream> open(final byte[] sha256) {
         Objects.requireNonNull(sha256, "sha256");

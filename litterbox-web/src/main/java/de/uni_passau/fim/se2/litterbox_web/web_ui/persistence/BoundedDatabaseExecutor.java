@@ -20,13 +20,13 @@ import jakarta.annotation.PreDestroy;
 import reactor.core.publisher.Mono;
 
 /**
- * Isolates the blocking JPA work the application does from both the event loop and the analysis workers.
+ * The pool the repositories in this package run their blocking JDBC calls on.
  *
  * <p>
- * Bounded against what the database will hold open, and so carrying only work that occupies a connection. Reading and
- * writing the artifact store has its own bound in {@link BoundedStorageExecutor}.
+ * Sized against the JDBC connection pool rather than the machine, because every task here occupies a connection for as
+ * long as it runs and queueing beyond that only waits for one. Reading and writing the artifact store blocks on a disk
+ * instead and has its own pool in {@link BoundedStorageExecutor}.
  */
-// todo: remove? see comments in package-info.java
 @Component
 public final class BoundedDatabaseExecutor implements DatabaseWork {
 

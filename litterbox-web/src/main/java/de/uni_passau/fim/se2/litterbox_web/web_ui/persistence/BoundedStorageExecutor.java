@@ -48,9 +48,14 @@ public final class BoundedStorageExecutor implements StorageWork {
      * {@inheritDoc}
      *
      * <p>
-     * One thread, and a queue that fills rather than refuses. A pool that has shut down refuses even this, and then it
-     * is done on the calling thread — the application is going away, and the alternative is leaving the file behind for
-     * good.
+     * One thread, behind a queue that grows rather than refusing work. A pool that has already shut down refuses even
+     * this, and the deletion then runs on the calling thread: the application is going away, and the alternative is
+     * leaving the file on disk for good.
+     *
+     * <p>
+     * Only that one refusal is retried, which is why it has a type of its own. A deletion that failed by throwing
+     * {@link RejectedExecutionException} itself has already run, and running it again would be doing the work twice
+     * rather than doing it at all.
      */
     @Override
     public Mono<Void> submitCleanup(final Runnable task) {
@@ -58,7 +63,7 @@ public final class BoundedStorageExecutor implements StorageWork {
         return cleanup.<Void>submit(() -> {
             task.run();
             return null;
-        }).onErrorResume(RejectedExecutionException.class, goingAway -> Mono.fromRunnable(task));
+        }).onErrorResume(BoundedWorkExecutor.ShutDownException.class, goingAway -> Mono.fromRunnable(task));
     }
 
     @PreDestroy

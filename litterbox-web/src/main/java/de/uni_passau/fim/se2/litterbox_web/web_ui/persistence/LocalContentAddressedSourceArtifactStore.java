@@ -105,7 +105,7 @@ public final class LocalContentAddressedSourceArtifactStore implements SourceArt
         public StoredSourceArtifact promote() throws IOException {
             final Path destination = pathFor(sha256);
             Files.createDirectories(destination.getParent());
-            // These bytes hash to what is already there, so the copy under this name is the one to give up.
+            // These bytes hash to a file that is already stored, so this copy is the redundant one.
             if (Files.exists(destination)) {
                 Files.deleteIfExists(temporary);
             }
@@ -131,7 +131,7 @@ public final class LocalContentAddressedSourceArtifactStore implements SourceArt
             Files.deleteIfExists(path);
         }
         catch (IOException ignored) {
-            // A staged file left behind is waste, not a wrong answer, and saying so would replace the real outcome.
+            // A staged file left behind wastes disk but does not make the answer wrong, so it is not reported.
         }
     }
 

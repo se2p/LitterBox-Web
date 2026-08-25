@@ -88,12 +88,12 @@ public class SingleProjectSubmissionService {
     }
 
     /**
-     * The submission a request to ingest a whole batch belongs to, whether this request is what created it or the key
-     * it carries already stood for one.
+     * The submission a request to ingest a whole batch belongs to, whether this request created it or the key it
+     * carries already stood for one.
      *
      * <p>
-     * A studio and a teacher archive differ only in what they are named and what is answered back about them; the order
-     * of the work is the same, and so is what has to happen when two requests carrying one key arrive together.
+     * A studio and a teacher archive differ only in naming and in what is answered back. The order of the work is the
+     * same, as is the handling of two requests that arrive together carrying one key.
      */
     private Mono<IngestedRequest> ingestion(
         final SourceArtifactStore.StagedSourceArtifact staged,
@@ -101,8 +101,8 @@ public class SingleProjectSubmissionService {
     ) {
         final byte[] sha256 = staged.sha256();
         final byte[] fingerprint = fingerprint(request, sha256);
-        // Deferred, because building the fallback reaches the repository that reserves a submission, and a key that
-        // already stands for one must not cost a row.
+        // Deferred: building the fallback reaches the repository that reserves a submission, and a key that already
+        // stands for one must not cost a row.
         return boundSubmission(request.idempotencyScope(), request.idempotencyKey(), fingerprint)
             .flatMap(owner -> adoptIngestion(owner, staged, request, sha256))
             .switchIfEmpty(Mono.defer(() -> newIngestion(staged, request, sha256, fingerprint)));
@@ -145,10 +145,10 @@ public class SingleProjectSubmissionService {
      * The batch a key already stands for, finished off if the request that bound the key did not get that far.
      *
      * <p>
-     * The same gap {@link #adopt} closes, and closed the same way: a repeat carries the archive the key was bound to,
-     * so it can keep it and link it rather than report a batch that nothing will ever unpack. And, as there, only when
-     * there is a gap — a submission that was built is answered with what was built, rather than built a second time for
-     * the sake of arriving at the same rows through a series of refused writes.
+     * Closes the same gap as {@link #adopt}, and in the same way: the repeat carries the archive the key was bound to,
+     * so it can keep and link it rather than report a batch that nothing will ever unpack. Also as there, only when
+     * there is a gap — an already-built submission is answered with what was built, rather than rebuilt so as to reach
+     * the same rows through a series of refused writes.
      */
     private Mono<IngestedRequest> adoptIngestion(
         final long submissionId,
@@ -175,15 +175,14 @@ public class SingleProjectSubmissionService {
     }
 
     /**
-     * The submission an idempotency key already stands for, and nothing at all if it stands for none.
+     * The submission an idempotency key already stands for, or nothing if it stands for none.
      *
      * <p>
-     * A key bound to a request that was not this one is refused rather than answered, here as in
-     * {@link IdempotencyKeyRepository#put}. Asking before the request's bytes have been kept is what makes that refusal
-     * free: no file has been promoted and no artifact recorded that would afterwards have to be found and taken back.
-     * The same look-up spares an identical repeat the work of building a submission it would only have to give up, and
-     * the binding itself is what decides the matter when two requests arrive too close together for either to find the
-     * other's key.
+     * A key bound to a different request is refused rather than answered, as in {@link IdempotencyKeyRepository#put}.
+     * Asking before the request's bytes have been kept makes that refusal free: no file has been promoted and no
+     * artifact recorded that would afterwards have to be found and undone. The same look-up spares an identical repeat
+     * the work of building a submission it would only have to give up. When two requests arrive too close together for
+     * either to see the other's key, the binding itself decides between them.
      */
     private Mono<Long> boundSubmission(final String scope, final String key, final byte[] fingerprint) {
         if (scope == null || key == null) {
@@ -197,8 +196,8 @@ public class SingleProjectSubmissionService {
     }
 
     /**
-     * Reads the request's bytes aside and hands them to the work that decides whether the store is to keep them,
-     * discarding them if it never got that far.
+     * Reads the request's bytes aside and hands them to the work that decides whether the store keeps them, discarding
+     * them if that decision is never reached.
      */
     private <T> Mono<T> staged(
         final InputStream source,
@@ -214,8 +213,8 @@ public class SingleProjectSubmissionService {
     }
 
     /**
-     * Deletes bytes that were read aside and then not kept, on the cleanup pool so that the thread this began on is
-     * released whatever the store is doing.
+     * Deletes bytes that were read aside and then not kept. Runs on the cleanup pool so that the calling thread is
+     * released regardless of how slow the store is.
      *
      * @see StorageWork#submitCleanup
      */
@@ -239,10 +238,10 @@ public class SingleProjectSubmissionService {
      * stands for.
      *
      * <p>
-     * When two requests carrying one key arrive together they both find it unused, and both reserve a submission before
-     * either binds it. Only one binding can succeed, and the loser is left holding one nobody will ever be shown. That
-     * happens whether the two requests were the same — in which case the loser is told whose submission the key is — or
-     * different, in which case the second is refused; either way the submission it reserved is given up here.
+     * When two requests carrying one key arrive together they both find it unused and both reserve a submission before
+     * either binds it. Only one binding can succeed, leaving the loser holding a submission nobody will ever be shown.
+     * If the two requests were identical the loser is told which submission the key stands for; if they differed the
+     * second is refused. Either way the submission it reserved is given up here.
      *
      * @return the id of the submission the key belongs to, which is {@code submissionId} unless this request lost
      */
@@ -268,13 +267,13 @@ public class SingleProjectSubmissionService {
     }
 
     /**
-     * Gives up the submission this request reserved when the key it wanted turned out to belong to another.
+     * Gives up the submission this request reserved, once the key it wanted turned out to belong to another.
      *
      * <p>
-     * Nothing else was made under it. Cancelling reaches the submission's analyses and jobs as well, which is what it
-     * would have to do had the key been claimed later, but by the time a request can lose there is nothing there for it
-     * to reach: an artifact is only promoted and recorded once the key is certainly this submission's. The cancelled
-     * row is left behind deliberately — a request that was refused is a thing that happened.
+     * Nothing else was created under it. Cancelling also reaches the submission's analyses and jobs, as it would have
+     * to if the key had been claimed later, but by the time a request can lose there is nothing there to reach: an
+     * artifact is only promoted and recorded once the key is certainly this submission's. The cancelled row is left
+     * behind on purpose, as a record that the request happened and was refused.
      */
     private Mono<Void> abandon(final long submissionId) {
         return submissions.cancelEverything(submissionId).then();
@@ -303,8 +302,8 @@ public class SingleProjectSubmissionService {
         final String locale,
         final String litterboxArtifactVersion
     ) {
-        // A project out of a batch is named by whoever packed the archive, and that name is written to two columns
-        // that will refuse it if it is too long — after the child's bytes have already been kept.
+        // A project out of a batch is named by whoever packed the archive, and that name goes into two columns that
+        // refuse it if it is too long — by which point the child's bytes have already been kept.
         RequestStrings.checkFilename(child.filename());
         final String mediaType = child.filename().toLowerCase(Locale.ROOT).endsWith(JSON_SUFFIX)
             ? "application/json"
@@ -436,13 +435,13 @@ public class SingleProjectSubmissionService {
 
     /**
      * The submission this request belongs to: the one its key already stood for, or a new one that claims the key
-     * before anything is kept on its account.
+     * before anything is stored on its account.
      *
      * <p>
-     * The key is asked about first, which refuses a request whose bytes are not the ones the key was bound to without
-     * writing anything at all. That look-up cannot settle two such requests arriving together, though: both find the
-     * key unused. What settles those is the binding, and the binding is what everything durable waits behind, so a
-     * request that loses has a submission to cancel and nothing else.
+     * The key is checked first, so a request whose bytes are not the ones the key was bound to is refused without
+     * anything being written. That look-up cannot settle two such requests arriving together, since both find the key
+     * unused; the binding settles those. Everything durable waits behind the binding, so a request that loses has a
+     * submission to cancel and nothing else.
      */
     private Mono<CreatedSubmission> existingOrCreate(
         final SourceArtifactStore.StagedSourceArtifact staged,
@@ -477,12 +476,12 @@ public class SingleProjectSubmissionService {
     }
 
     /**
-     * What this request is, as a digest the key it carries can be bound to and later compared against.
+     * A digest identifying this request, which its key is bound to and later compared against.
      *
      * <p>
-     * The version of LitterBox is deliberately left out, though it is written on the analysis: it is the version this
-     * server is running rather than anything the client asked for, so counting it would turn every key already issued
-     * into a conflict at the next deployment.
+     * The LitterBox version is deliberately excluded, even though it is recorded on the analysis: it is the version
+     * this server happens to run rather than anything the client asked for, so including it would turn every
+     * already-issued key into a conflict at the next deployment.
      *
      * @see RequestFingerprint
      */
@@ -515,13 +514,13 @@ public class SingleProjectSubmissionService {
     }
 
     /**
-     * Everything the submission is owed now that the key is certainly its own.
+     * Everything the submission is owed, now that the key is certainly its own.
      *
      * <p>
-     * Every step of it can be asked for twice. The bytes are addressed by their own digest, the artifact is recorded
-     * against that digest, the link and the statistics are written only if they are not already there, and a
-     * submission's single analysis is guarded by a unique key. That is what lets a repeat run this against a submission
-     * somebody else began and get the same submission back rather than a second copy of it.
+     * Every step is safe to run twice: the bytes are addressed by their own digest, the artifact is recorded against
+     * that digest, the link and the statistics are written only if absent, and a submission's single analysis is
+     * guarded by a unique key. That is what lets a repeat run this against a submission somebody else began and get the
+     * same submission back rather than a second copy.
      */
     private Mono<CreatedSubmission> buildSubmission(
         final SourceArtifactStore.StagedSourceArtifact staged,
@@ -533,13 +532,13 @@ public class SingleProjectSubmissionService {
     }
 
     /**
-     * Records the analysis of the artifact the submission is made from, of whatever bytes that artifact turned out to
+     * Records the analysis of the artifact the submission is made from, whatever bytes that artifact turned out to
      * hold.
      *
      * <p>
-     * The digest written on the analysis is the artifact's own, and not the request's. When a repeat finishes a
-     * submission built around an earlier fetch of the same project, the two are not the same digest, and the one worth
-     * recording is the one belonging to the file that will actually be read.
+     * The digest recorded on the analysis is the artifact's, not the request's. When a repeat finishes a submission
+     * built around an earlier fetch of the same project the two differ, and the one worth recording belongs to the file
+     * that will actually be read.
      */
     private Mono<CreatedSubmission> buildAnalysis(
         final SubmissionRequest request,
@@ -567,9 +566,9 @@ public class SingleProjectSubmissionService {
      *
      * <p>
      * The key is bound before the work it stands for is built, so that a request repeated after a failure finds the key
-     * rather than starting the work a second time. What it finds may therefore be a submission with nothing under it at
-     * all — the request that bound the key died in between. This request is the same request, which is how its key
-     * matched, so it finishes the work rather than reporting a submission nothing will ever make an analysis for.
+     * rather than starting the work again. What it finds may therefore be a submission with nothing under it, because
+     * the request that bound the key died in between. This is the same request — that is how the key matched — so it
+     * finishes the work rather than reporting a submission that will never get an analysis.
      */
     private Mono<CreatedSubmission> adopt(
         final long submissionId,
@@ -582,25 +581,24 @@ public class SingleProjectSubmissionService {
             )
             .flatMap(
                 submission -> submission.terminal()
-                    // Cancelled or already finished. Carrying on with it would undo what it came to.
+                    // Cancelled or already finished; carrying on would undo the state it reached.
                     ? concluded(submission)
                     : resume(submission, staged, request)
             );
     }
 
     /**
-     * Carries on from wherever the request that bound the key stopped, and no further back than that.
+     * Carries on from wherever the request that bound the key stopped, and no further back.
      *
      * <p>
-     * The analysis is the last thing the building writes, so a submission that has one has everything: the bytes
-     * promoted, the artifact recorded, the link made and the statistics kept. All that can be left is the state, which
-     * is set after it and is asked for again here because it costs one statement and is the only thing that would
-     * otherwise be missing.
+     * The analysis is the last thing the build writes, so a submission that has one has everything else too: bytes
+     * promoted, artifact recorded, link made, statistics kept. Only the state can still be missing, since it is set
+     * afterwards, so it is set again here — one statement.
      *
      * <p>
-     * Running the whole of {@link #buildSubmission} would answer the same, but at the price of a promotion, a bundle
-     * read out of storage and four writes refused one after another, paid by every repeat of a request rather than only
-     * the rare one that follows a failure.
+     * Running all of {@link #buildSubmission} would give the same answer, but would cost a promotion, a bundle read out
+     * of storage and four writes refused one after another, on every repeat rather than only on the rare one that
+     * follows a failure.
      */
     private Mono<CreatedSubmission> resume(
         final Submission submission,
@@ -620,14 +618,14 @@ public class SingleProjectSubmissionService {
      *
      * <p>
      * The bytes this request carries are not necessarily the bytes the submission was made from. A project fetched from
-     * Scratch is packed with the moment it was fetched, so the same project asked for again is another file with
-     * another digest — the same request, which is why its key matched, but not the same artifact. Building around it
-     * left the submission linked to two, both under the role that means the one it was made from, and nothing
-     * afterwards could say which of them the submission is of.
+     * Scratch has the fetch time packed into it, so asking for the same project again gives another file with another
+     * digest: the same request, which is why the key matched, but not the same artifact. Building around it anyway
+     * would leave the submission linked to two artifacts, both under the role meaning the one it was made from, with
+     * nothing to say which.
      *
      * <p>
-     * Only when there is no link at all are this request's bytes what the submission gets, which is the case where the
-     * first attempt stopped before there was anything to be inconsistent with.
+     * This request's bytes are used only when there is no link at all, which is the case where the first attempt
+     * stopped before there was anything to be inconsistent with.
      */
     private Mono<CreatedSubmission> finishBuilding(
         final Submission submission,
@@ -686,12 +684,11 @@ public class SingleProjectSubmissionService {
     }
 
     /**
-     * The submission a request came to, and the analysis queued under it.
+     * The submission a request produced, and the analysis queued under it.
      *
      * <p>
-     * The analysis is absent only when the submission has already come to an end — cancelled before anything was built
-     * under it. There is nothing to queue for such a submission and nothing that would make one, which is what its
-     * state says.
+     * The analysis is absent only for a submission that has already ended — cancelled before anything was built under
+     * it. There is nothing to queue for such a submission and nothing that would create one; its state says so.
      */
     public record CreatedSubmission(Submission submission, Analysis analysis) {
     }
@@ -699,7 +696,7 @@ public class SingleProjectSubmissionService {
     public record CreatedStudio(Submission submission) {
     }
 
-    /** As {@link CreatedSubmission}, with a null artifact meaning the same thing a null analysis means there. */
+    /** As {@link CreatedSubmission}, where a null artifact means what a null analysis means there. */
     public record CreatedBatchRequest(Submission submission, SourceArtifact artifact) {
     }
 

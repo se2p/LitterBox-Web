@@ -18,9 +18,9 @@ import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.AnalysisMetric
 import reactor.core.publisher.Mono;
 
 /**
- * What the measurements of an analysed project usually come to, taken from the analyses this deployment has already
- * run. It exists so that a number on a result page can be called usual or unusual instead of being left to speak for
- * itself, which it cannot do to a reader who has never seen another project's figures.
+ * Typical values for each measurement, computed from the analyses this deployment has already run. They let a number on
+ * a result page be shown as usual or unusual, which it cannot convey on its own to a reader who has never seen another
+ * project's figures.
  */
 @Repository
 public class MetricReferenceRepository {
@@ -34,9 +34,9 @@ public class MetricReferenceRepository {
     }
 
     /**
-     * @param minimumSampleSize how many completed analyses have to carry a measurement before it is worth comparing
+     * @param minimumSampleSize how many completed analyses must carry a measurement before it is worth comparing
      *                          against. Below it the terciles describe the handful of projects that happen to have been
-     *                          submitted rather than anything a reader would recognise as usual.
+     *                          submitted rather than anything recognisable as typical.
      * @see AnalysisMetrics#terciles
      */
     public Mono<List<MetricDistribution>> distributions(final int minimumSampleSize) {

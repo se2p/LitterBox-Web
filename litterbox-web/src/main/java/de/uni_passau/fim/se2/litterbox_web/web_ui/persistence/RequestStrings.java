@@ -10,15 +10,15 @@
 package de.uni_passau.fim.se2.litterbox_web.web_ui.persistence;
 
 /**
- * The lengths the schema will accept for the strings a request carries into it.
+ * The lengths the schema accepts for the strings a request carries into it.
  *
  * <p>
- * A column refuses what does not fit, but only once it is written to, and by then the request has been read, its bytes
- * kept and rows made that the failed insert leaves behind. Asking first is what makes a refusal cost nothing.
+ * A column refuses what does not fit, but only when it is written to — by which point the request has been read, its
+ * bytes kept, and other rows written that the failed insert leaves behind. Checking up front makes a refusal free.
  *
  * <p>
- * The limits are counted in code points, which is what {@code VARCHAR(n)} counts; a Java string is measured in UTF-16
- * units and would refuse a filename of emoji that the column would have taken.
+ * Limits are counted in code points, which is what {@code VARCHAR(n)} counts. Measuring a Java string in UTF-16 units
+ * instead would refuse a filename of emoji that the column would have accepted.
  */
 final class RequestStrings {
 

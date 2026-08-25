@@ -17,29 +17,27 @@ import reactor.core.publisher.Mono;
  * Blocking work against the artifact store: reading a request's bytes aside, hashing them, and moving them into place.
  *
  * <p>
- * Separate from {@link DatabaseWork} because it is a separate resource. Both are bounded, and what each bound is for
- * differs: the database pool is sized against the connections the database will hold open, and running file copying
- * through it meant a handful of large concurrent uploads could fill it and have unrelated queries refused for want of
- * database capacity while the database itself sat idle.
+ * Separate from {@link DatabaseWork} because it bounds a different resource. The database pool is sized against the
+ * connections the database will hold open; when file copying ran through it, a handful of large concurrent uploads
+ * could fill it and have unrelated queries refused for want of database capacity while the database itself sat idle.
  */
 public interface StorageWork {
 
     <T> Mono<T> submit(Callable<T> task);
 
     /**
-     * Undoes something the store has already done — deleting a file read aside and then not kept — on a thread of the
-     * store's own, and refuses nothing.
+     * Deletes a file that was read aside and then not kept, on a thread of the store's own. Never refuses work.
      *
      * <p>
-     * Cleanup cannot be shed the way work can. A request refused for want of storage capacity is a request that did not
-     * happen; a deletion refused is a file left on the disk with nothing that will ever come back for it, and the store
-     * being slow is exactly when that starts to matter. Running it on whichever thread happened to finish the request
-     * instead is what the separate pool exists to prevent: that thread is as often as not a database one, and then a
-     * store that has stopped answering occupies the database's capacity after all.
+     * Cleanup cannot be shed the way new work can. A request refused for want of storage capacity simply did not
+     * happen, but a refused deletion is a file left on disk that nothing will ever come back for — and a slow store is
+     * exactly when that starts to matter. Running it on whichever thread finished the request is what this separate
+     * pool avoids: that thread is often a database one, and then a store that has stopped answering occupies database
+     * capacity after all.
      *
      * <p>
-     * So this has capacity of its own that fills only with work already accounted for — one deletion per request in
-     * flight, and requests in flight are bounded elsewhere.
+     * Its queue only ever holds work that is already accounted for: one deletion per request in flight, and requests in
+     * flight are bounded elsewhere.
      */
     Mono<Void> submitCleanup(Runnable task);
 }
