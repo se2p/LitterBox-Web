@@ -45,6 +45,43 @@ Common functionality that is useful across the top-level functional package spli
 One example is the `TemporaryFileService` that provides a way to handle the automatic deletion of received files that are only needed while processing a request.
 
 
+[#section_web_ui]
+=== The `web_ui` package
+
+Everything that exists because this service also serves a web UI lives under the `web_ui` package: the site's own endpoints, the database its submissions are kept in, the queues those endpoints are served from, and the pattern catalogue they render.
+
+Nothing outside `web_ui` may depend on anything inside it.
+The dependency runs one way, outwards: code in `web_ui` may use the analysers, the QLC generator, and the shared services, and is free to.
+
+.Why the rule exists
+[NOTE]
+--
+The machinery in `web_ui` is shaped by what a single browser session needs, and the rest of this service answers machines that need none of it.
+`BoundedAnalysisExecutor` was written to keep one page's request queue short by refusing work once the queue is full; it was then also put in front of the converter, the linter, the tokenizer, and the question generator, where a full queue turned into a rejected request for callers that would happily have waited a little longer.
+--
+
+.Not blocking the server without bounding it
+[NOTE]
+--
+Those four endpoints hand back a plain value rather than a `Mono`, and WebFlux runs such a handler on the thread the request arrived on unless it is told where else to run it.
+`WebServerConfiguration.configureBlockingExecution` hands it an executor that gives every such call a virtual thread of its own.
+Spring Boot would configure this itself, but only for an application that lets it configure WebFlux, and `@EnableWebFlux` on `LitterboxWebApplication` backs that auto-configuration off in full.
+
+The executor is built in that class rather than taken from the context.
+Boot's application executor is a virtual thread per call only where `spring.threads.virtual.enabled` is set; without it, it is eight platform threads in front of an unbounded queue, and eight programs being analysed would leave every other blocking handler queued behind them.
+The packaged configuration does set that property, but what these handlers run on should not depend on it, and the test configuration — which stands in for the main one rather than adding to it — does not set it, so borrowing that executor would have meant testing something other than what is deployed.
+
+It is deliberately unbounded: a caller here would rather wait a little longer than be turned away, and a ceiling is what made `BoundedAnalysisExecutor` the wrong thing to put in front of these endpoints.
+--
+
+The rule is enforced by `WebUiBoundaryTest`, for production and test code alike.
+It checks dependencies, and also that nothing outside is gated on the `public-web` profile, which a dependency check would miss because a profile name is a string rather than an import.
+Spring Modulith sees `web_ui` as one module with the packages inside it as nested modules, so the dependencies between those are declared and checked in the same way as everywhere else.
+
+A new feature belongs in `web_ui` when the frontend is the only thing that asks for it.
+When something in there turns out to be useful to an endpoint outside the UI, move it out to `shared` (or its own top-level package) rather than reaching in.
+
+
 [#section_class_types]
 == Class types
 

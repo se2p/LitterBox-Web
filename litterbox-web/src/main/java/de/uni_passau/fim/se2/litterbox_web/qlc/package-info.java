@@ -10,7 +10,7 @@
 /**
  * Functionality related to generating Questions about Learners' Code (QLC) for Scratch programs.
  */
-@ApplicationModule(allowedDependencies = { "execution", "shared" })
+@ApplicationModule(allowedDependencies = { "shared" })
 package de.uni_passau.fim.se2.litterbox_web.qlc;
 
 import org.springframework.modulith.ApplicationModule;

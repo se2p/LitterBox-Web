@@ -10,7 +10,7 @@
 /**
  * Functionality related to converting Scratch programs to different formats.
  */
-@ApplicationModule(allowedDependencies = { "execution", "shared" })
+@ApplicationModule(allowedDependencies = { "shared" })
 package de.uni_passau.fim.se2.litterbox_web.converter;
 
 import org.springframework.modulith.ApplicationModule;

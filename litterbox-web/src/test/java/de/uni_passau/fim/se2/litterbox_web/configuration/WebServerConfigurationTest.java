@@ -19,5 +19,6 @@ class WebServerConfigurationTest {
     void shouldConstructWithInvalidSize() {
         final WebServerConfiguration config = new WebServerConfiguration("invalid size");
         assertThat(config).isNotNull();
+        config.shutdown();
     }
 }

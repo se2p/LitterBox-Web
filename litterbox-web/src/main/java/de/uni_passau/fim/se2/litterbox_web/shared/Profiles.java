@@ -17,7 +17,6 @@ public final class Profiles {
     public static final String CODE_COMPLETION = "code-completion";
     public static final String CODE_READABILITY = "code-readability";
     public static final String LLM = "llm";
-    public static final String PUBLIC_WEB = "public-web";
 
     private Profiles() {
         // utility class, intentionally empty

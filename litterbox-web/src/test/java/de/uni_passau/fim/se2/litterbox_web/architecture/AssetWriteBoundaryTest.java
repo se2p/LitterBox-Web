@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
-import de.uni_passau.fim.se2.litterbox_web.persistence.AssetRepository;
-import de.uni_passau.fim.se2.litterbox_web.persistence.jpa.Assets;
+import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.AssetRepository;
+import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.Assets;
 
 /**
  * Costumes are learner-supplied content that the service later serves back to a browser, and {@link AssetRepository} is

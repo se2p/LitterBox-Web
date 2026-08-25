@@ -10,7 +10,7 @@
 /**
  * Functionality related to the preprocessing of Scratch programs into the format required for machine learning models.
  */
-@ApplicationModule(allowedDependencies = { "execution", "shared" })
+@ApplicationModule(allowedDependencies = { "shared" })
 package de.uni_passau.fim.se2.litterbox_web.ml_preprocessing;
 
 import org.springframework.modulith.ApplicationModule;
