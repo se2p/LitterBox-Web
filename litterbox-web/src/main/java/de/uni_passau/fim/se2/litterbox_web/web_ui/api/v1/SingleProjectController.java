@@ -38,7 +38,7 @@ import de.uni_passau.fim.se2.litterbox_web.web_ui.single_project.ReportDownload;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.single_project.SingleProjectApplicationService;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.single_project.SingleProjectDtos;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.single_project.SingleProjectSupport;
-import de.uni_passau.fim.se2.litterbox_web.web_ui.single_project.SubmissionWriteAuthorizer;
+import de.uni_passau.fim.se2.litterbox_web.web_ui.single_project.SubmissionAnalysisAuthorizer;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -50,14 +50,14 @@ public class SingleProjectController {
     private static final List<String> UPLOAD_SUFFIXES = List.of(".sb3", ".mblock", ".zip");
 
     private final SingleProjectApplicationService service;
-    private final SubmissionWriteAuthorizer writeAuthorizer;
+    private final SubmissionAnalysisAuthorizer analysisAuthorizer;
 
     public SingleProjectController(
         final SingleProjectApplicationService service,
-        final SubmissionWriteAuthorizer writeAuthorizer
+        final SubmissionAnalysisAuthorizer analysisAuthorizer
     ) {
         this.service = service;
-        this.writeAuthorizer = writeAuthorizer;
+        this.analysisAuthorizer = analysisAuthorizer;
     }
 
     @PostMapping(
@@ -275,7 +275,7 @@ public class SingleProjectController {
         ) final String authorization,
         @RequestBody final SingleProjectDtos.FeedbackRequest request
     ) {
-        return writeAuthorizer.authorize(bearerToken(authorization), analysisId)
+        return analysisAuthorizer.authorize(bearerToken(authorization), analysisId)
             .then(service.feedback(analysisId, request))
             .thenReturn(ResponseEntity.noContent().build());
     }
@@ -289,7 +289,7 @@ public class SingleProjectController {
         ) final String authorization,
         @RequestBody final SingleProjectDtos.QuizAnswerRequest request
     ) {
-        return writeAuthorizer.authorize(bearerToken(authorization), analysisId)
+        return analysisAuthorizer.authorize(bearerToken(authorization), analysisId)
             .then(service.quizAnswer(analysisId, request))
             .map(ResponseEntity::ok);
     }

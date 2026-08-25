@@ -33,13 +33,11 @@ import de.uni_passau.fim.se2.litterbox_web.web_ui.capabilities.GraphCapability;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.execution.AnalysisCapacityExceededException;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.execution.AnalysisWork;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.Analysis;
-import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.AnalysisRepository;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.DatabaseCapacityExceededException;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.SourceArtifact;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.SourceArtifactAccess;
-import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.Submission;
-import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.SubmissionRepository;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.single_project.ProjectArchiveInspector;
+import de.uni_passau.fim.se2.litterbox_web.web_ui.single_project.SubmissionAnalysisAuthorizer;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.Timer;
@@ -53,8 +51,7 @@ final class MetricsGraphCapability implements GraphCapability {
     private static final Set<String> GRAPH_TYPES = Set.of("ast", "cfg", "cdg", "ddg", "dt", "pdt", "tdg", "pdg");
     private static final String SUCCESS = "success";
 
-    private final SubmissionRepository submissions;
-    private final AnalysisRepository analyses;
+    private final SubmissionAnalysisAuthorizer authorizer;
     private final SourceArtifactAccess sourceArtifacts;
     private final AnalysisWork analysisWork;
     private final Scratch3ParserService parser;
@@ -64,8 +61,7 @@ final class MetricsGraphCapability implements GraphCapability {
     private final MeterRegistry meterRegistry;
 
     MetricsGraphCapability(
-        final SubmissionRepository submissions,
-        final AnalysisRepository analyses,
+        final SubmissionAnalysisAuthorizer authorizer,
         final SourceArtifactAccess sourceArtifacts,
         final AnalysisWork analysisWork,
         final Scratch3ParserService parser,
@@ -74,8 +70,7 @@ final class MetricsGraphCapability implements GraphCapability {
         final GraphRenderer renderer,
         final MeterRegistry meterRegistry
     ) {
-        this.submissions = Objects.requireNonNull(submissions, "submissions");
-        this.analyses = Objects.requireNonNull(analyses, "analyses");
+        this.authorizer = Objects.requireNonNull(authorizer, "authorizer");
         this.sourceArtifacts = Objects.requireNonNull(sourceArtifacts, "sourceArtifacts");
         this.analysisWork = Objects.requireNonNull(analysisWork, "analysisWork");
         this.parser = Objects.requireNonNull(parser, "parser");
@@ -131,23 +126,22 @@ final class MetricsGraphCapability implements GraphCapability {
         );
     }
 
-    // todo: architecture, Why is the authorization handled in here?
+    /**
+     * The analysis this token may have a graph of.
+     *
+     * <p>
+     * Whether the token owns the analysis at all is {@link SubmissionAnalysisAuthorizer}'s to say, and is the same
+     * question the single-project endpoints ask. Only what this capability additionally needs — an analysis that has
+     * finished, and so has source to render — is decided here, because a caller who is told to come back later must not
+     * be told the same thing as one asking about somebody else's analysis.
+     */
     private Mono<Analysis> authorize(final String token, final long analysisId) {
-        if (token == null || token.isBlank() || analysisId < 1) {
-            return Mono.error(CapabilityException.analysisNotFound());
-        }
-        return submissions.findByToken(token)
-            .flatMap(
-                submission -> analyses.findById(analysisId)
-                    .flatMap(analysis -> authorizedAnalysis(submission, analysis))
-            )
-            .switchIfEmpty(Mono.error(CapabilityException.analysisNotFound()));
+        return authorizer.ownedAnalysis(token, analysisId)
+            .switchIfEmpty(Mono.error(CapabilityException.analysisNotFound()))
+            .flatMap(this::readyAnalysis);
     }
 
-    private Mono<Analysis> authorizedAnalysis(final Submission submission, final Analysis analysis) {
-        if (analysis.submissionId() != submission.id()) {
-            return Mono.error(CapabilityException.analysisNotFound());
-        }
+    private Mono<Analysis> readyAnalysis(final Analysis analysis) {
         if (!"DONE".equals(analysis.status()) && !"COMPLETED".equals(analysis.status())) {
             return Mono.error(CapabilityException.analysisNotReady());
         }

@@ -23,10 +23,10 @@ import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.Analysis;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.AnalysisRepository;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.Submission;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.SubmissionRepository;
-import de.uni_passau.fim.se2.litterbox_web.web_ui.single_project.SubmissionWriteAuthorizer;
+import de.uni_passau.fim.se2.litterbox_web.web_ui.single_project.SubmissionAnalysisAuthorizer;
 import reactor.core.publisher.Mono;
 
-class SubmissionWriteAuthorizerTest {
+class SubmissionAnalysisAuthorizerTest {
 
     private static final String TOKEN = "synthetic-token";
     private static final long SUBMISSION_ID = 42L;
@@ -41,7 +41,7 @@ class SubmissionWriteAuthorizerTest {
         when(submissions.findByToken(TOKEN)).thenReturn(Mono.just(submission));
         when(analyses.findById(ANALYSIS_ID)).thenReturn(Mono.just(analysis));
 
-        final SubmissionWriteAuthorizer authorizer = new SubmissionWriteAuthorizer(submissions, analyses);
+        final SubmissionAnalysisAuthorizer authorizer = new SubmissionAnalysisAuthorizer(submissions, analyses);
 
         assertDoesNotThrow(() -> authorizer.authorize(TOKEN, ANALYSIS_ID).block());
     }
@@ -55,7 +55,7 @@ class SubmissionWriteAuthorizerTest {
         when(submissions.findByToken(TOKEN)).thenReturn(Mono.just(submission));
         when(analyses.findById(ANALYSIS_ID)).thenReturn(Mono.just(analysis));
 
-        final SubmissionWriteAuthorizer authorizer = new SubmissionWriteAuthorizer(submissions, analyses);
+        final SubmissionAnalysisAuthorizer authorizer = new SubmissionAnalysisAuthorizer(submissions, analyses);
         final ResponseStatusException error = assertThrows(
             ResponseStatusException.class,
             () -> authorizer.authorize(TOKEN, ANALYSIS_ID).block()

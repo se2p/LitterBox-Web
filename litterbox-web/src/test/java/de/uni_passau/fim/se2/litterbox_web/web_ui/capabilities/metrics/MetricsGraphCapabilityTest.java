@@ -51,6 +51,7 @@ import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.SourceArtifactAcce
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.Submission;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.SubmissionRepository;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.single_project.ProjectArchiveInspector;
+import de.uni_passau.fim.se2.litterbox_web.web_ui.single_project.SubmissionAnalysisAuthorizer;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
@@ -380,8 +381,8 @@ class MetricsGraphCapabilityTest {
 
     private MetricsGraphCapability capability(final GraphRenderer renderer, final AnalysisWork work) {
         return new MetricsGraphCapability(
-            submissions, analyses, sourceArtifacts, work, new Scratch3ParserService(),
-            new ProjectArchiveInspector(), configuration, renderer, meters
+            new SubmissionAnalysisAuthorizer(submissions, analyses), sourceArtifacts, work,
+            new Scratch3ParserService(), new ProjectArchiveInspector(), configuration, renderer, meters
         );
     }
 

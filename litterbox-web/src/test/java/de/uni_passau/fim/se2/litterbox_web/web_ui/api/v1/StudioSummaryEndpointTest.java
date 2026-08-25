@@ -23,7 +23,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import de.uni_passau.fim.se2.litterbox_web.web_ui.single_project.SingleProjectApplicationService;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.single_project.SingleProjectDtos;
-import de.uni_passau.fim.se2.litterbox_web.web_ui.single_project.SubmissionWriteAuthorizer;
+import de.uni_passau.fim.se2.litterbox_web.web_ui.single_project.SubmissionAnalysisAuthorizer;
 import reactor.core.publisher.Mono;
 
 class StudioSummaryEndpointTest {
@@ -32,7 +32,7 @@ class StudioSummaryEndpointTest {
 
     private final SingleProjectApplicationService service = mock(SingleProjectApplicationService.class);
     private final SingleProjectController controller = new SingleProjectController(
-        service, mock(SubmissionWriteAuthorizer.class)
+        service, mock(SubmissionAnalysisAuthorizer.class)
     );
 
     @Test
