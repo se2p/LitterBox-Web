@@ -41,11 +41,29 @@ import de.uni_passau.fim.se2.litterbox.utils.ScratchBlocksLabeler;
  * Renders one core graph with stable DOT identifiers of our own and the same node labels the core HTML report uses.
  *
  * <p>
- * The identifiers stay ours because the core writes {@code node.toString()} into them unescaped; the labels come from
- * {@link ScratchBlocksLabeler}, because a graph of AST class names is unreadable to a learner and Scratchblocks paints
- * every one of them in the "obsolete" red.
+ * Labels come from {@link ScratchBlocksLabeler}, because a graph of AST class names is unreadable to a learner and
+ * Scratchblocks paints every one of them in the "obsolete" red.
+ *
+ * <h2>Why this does not call LitterBox's own DOT emitters</h2>
+ *
+ * <p>
+ * LitterBox has two, and neither can serve this endpoint:
+ *
+ * <ul>
+ * <li>{@code AbstractDependencyGraph.toDotString(Function)} takes a labeller and escapes what the labeller returns, but
+ * writes the node itself into the identifier position as {@code node.toString()} without escaping it. A node whose text
+ * contains a quote or a backslash then produces DOT that will not parse. It also emits no styling, fixes every edge at
+ * {@code penwidth=2}, iterates the graph's node and edge sets in whatever order they come in, and does not exist for a
+ * plain control-flow graph, which is not an {@code AbstractDependencyGraph}.
+ * <li>{@code DotVisitor.buildDotGraph(ASTNode)} numbers its identifiers safely, but likewise applies no styling and
+ * returns only a string, with no node or edge counts.
+ * </ul>
+ *
+ * <p>
+ * This endpoint needs all three: identifiers that cannot be broken by program text, the presentation the core HTML
+ * report uses, and the same bytes for the same program every time. Sorting nodes and edges by id is what gives the last
+ * of those, which {@code MetricsGraphCapabilityTest} asserts by rendering one project twice.
  */
-// todo: does this duplicate code already present in LitterBox?
 @Component
 final class CoreGraphRenderer implements GraphRenderer {
 
