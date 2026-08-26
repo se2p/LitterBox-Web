@@ -477,10 +477,13 @@ describe('injection controls', () => {
     beforeEach(async () => {
         await i18n.changeLanguage('en');
         vi.restoreAllMocks();
-        vi.stubGlobal('URL', {
-            createObjectURL: vi.fn(() => 'blob:synthetic-derived'),
-            revokeObjectURL: vi.fn(),
-        });
+        // Only the two object-URL methods, never the whole class: replacing `URL` wholesale also takes away the
+        // constructor, and the bundler resolves the locale packs' dynamic imports through it, so the German,
+        // Spanish and Dutch packs never arrived. jsdom implements neither method, so they have to exist first.
+        URL.createObjectURL ??= () => '';
+        URL.revokeObjectURL ??= () => undefined;
+        vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:synthetic-derived');
+        vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => undefined);
     });
 
     afterEach(() => {

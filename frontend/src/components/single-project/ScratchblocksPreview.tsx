@@ -44,8 +44,7 @@ interface ScratchblocksPreviewProps {
 const whenIdle = (start: () => void): (() => void) => {
     const view = typeof window === 'undefined' ? undefined : window;
     const idle = view as
-        | (Window & { requestIdleCallback?: typeof requestIdleCallback })
-        | undefined;
+        (Window & { requestIdleCallback?: typeof requestIdleCallback }) | undefined;
     if (idle?.requestIdleCallback) {
         const handle = idle.requestIdleCallback(start, { timeout: 2_000 });
         return () => idle.cancelIdleCallback?.(handle);

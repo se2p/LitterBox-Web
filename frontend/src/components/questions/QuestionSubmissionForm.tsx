@@ -3,7 +3,7 @@
 
 import { useState, type ChangeEvent, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { Alert } from '../Alert';
 import { FormField } from '../Form';
 import { submitQuestionFile, submitQuestionProjectUrl } from '../../api/submissions';
@@ -41,7 +41,7 @@ export function QuestionSubmissionForm({
     description,
 }: QuestionSubmissionFormProps) {
     const { t } = useTranslation();
-    const history = useHistory();
+    const navigate = useNavigate();
     const source = useProjectSource();
     const { file, url, preflight, preflightBusy, busy, fileInput } = source;
     const [error, setError] = useState('');
@@ -73,7 +73,7 @@ export function QuestionSubmissionForm({
             );
             if (!accepted) return;
             if (!accepted.token || !accepted.token.trim()) throw new Error('missing-token');
-            history.push(`${questionsBasePath(variant)}/${encodeURIComponent(accepted.token)}`);
+            navigate(`${questionsBasePath(variant)}/${encodeURIComponent(accepted.token)}`);
         } catch {
             setError(t('questionsSubmitError'));
         }

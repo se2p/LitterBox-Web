@@ -3,7 +3,7 @@
 
 import { useEffect, useReducer, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 import type { AnalysisReferenceDto } from '../api/generated';
 import {
     cancelSubmission,
@@ -147,15 +147,18 @@ export function ComparisonPage({
     onCapabilityRetry?: () => void;
 }) {
     const { t, i18n } = useTranslation();
-    const location = useLocation<ComparisonLocationState>();
-    const [arrival] = useState(() => analysedChoiceFrom(location.state?.before, t('diffBefore')));
+    const location = useLocation();
+    const arrivalState = location.state as ComparisonLocationState | undefined;
+    const [arrival] = useState(() => analysedChoiceFrom(arrivalState?.before, t('diffBefore')));
     const [analysedChoices] = useState(() => analysedChoicesFor(arrival));
     const [state, dispatch] = useReducer(comparisonReducer, arrival, initialComparisonState);
     const { inputs: projectInputs, progress: projectProgress, request: projectRequest } = state;
     // The reducer decides what is true; these hold what can only be done, not described. Every asynchronous
     // step reads the current identity off this ref, because a callback closes over the state it started with.
     const current = useRef(state);
-    current.current = state;
+    useEffect(() => {
+        current.current = state;
+    });
     const sideRefs = useRef<Record<ComparisonSide, ComparisonSideRefs>>({
         before: emptySideRefs(),
         after: emptySideRefs(),

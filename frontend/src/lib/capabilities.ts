@@ -72,8 +72,8 @@ const loadCapabilities = async (signal?: AbortSignal): Promise<CapabilityState> 
 
 export function useCapabilities() {
     const [state, setState] = useState<CapabilityState>({ status: 'loading' });
-    const load = useCallback((signal?: AbortSignal) => {
-        setState({ status: 'loading' });
+    /** Only the request: the state it starts from is the one the hook already holds on the first attempt. */
+    const request = useCallback((signal?: AbortSignal) => {
         void loadCapabilities(signal)
             .then(setState)
             .catch((error: unknown) => {
@@ -87,9 +87,15 @@ export function useCapabilities() {
 
     useEffect(() => {
         const controller = new AbortController();
-        load(controller.signal);
+        request(controller.signal);
         return () => controller.abort();
-    }, [load]);
+    }, [request]);
 
-    return { state, retry: () => load() };
+    return {
+        state,
+        retry: () => {
+            setState({ status: 'loading' });
+            request();
+        },
+    };
 }

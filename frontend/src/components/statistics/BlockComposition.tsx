@@ -27,17 +27,14 @@ export function BlockComposition({
             );
         });
     if (visible.length === 0) return null;
-    let cumulative = 0;
-    const segments = visible.map((category) => {
-        const start = cumulative;
-        cumulative += category.blockShare;
-        return {
-            category,
-            className: `statistics-composition-${blockCategoryClass(category.metric)}`,
-            start,
-            name: blockCategoryLabel(category.metric, t),
-        };
-    });
+    // Each segment begins where the ones before it end. Read from those rather than carried in a running total,
+    // which would mean reassigning a variable of the render's own after the render had finished with it.
+    const segments = visible.map((category, index) => ({
+        category,
+        className: `statistics-composition-${blockCategoryClass(category.metric)}`,
+        start: visible.slice(0, index).reduce((total, earlier) => total + earlier.blockShare, 0),
+        name: blockCategoryLabel(category.metric, t),
+    }));
     return (
         <section className="statistics-section" aria-labelledby="statistics-composition-heading">
             <h2 id="statistics-composition-heading" tabIndex={-1}>

@@ -3,7 +3,7 @@
 
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { SubmissionPage } from '../src/pages/SubmissionPage';
 import { AdvancedAnalysisPage } from '../src/pages/AdvancedAnalysisPage';
@@ -360,10 +360,13 @@ describe('export controls', () => {
         await i18n.changeLanguage('en');
         vi.restoreAllMocks();
         vi.stubGlobal('EventSource', undefined);
-        vi.stubGlobal('URL', {
-            createObjectURL: vi.fn(() => 'blob:synthetic-export'),
-            revokeObjectURL: vi.fn(),
-        });
+        // Only the two object-URL methods, never the whole class: replacing `URL` wholesale also takes away the
+        // constructor, and the bundler resolves the locale packs' dynamic imports through it, so the German,
+        // Spanish and Dutch packs never arrived. jsdom implements neither method, so they have to exist first.
+        URL.createObjectURL ??= () => '';
+        URL.revokeObjectURL ??= () => undefined;
+        vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:synthetic-export');
+        vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => undefined);
     });
 
     afterEach(() => {

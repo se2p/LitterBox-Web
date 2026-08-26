@@ -3,7 +3,7 @@
 
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import type { CapabilityState } from '../lib/capabilities';
 import { featureEnabled, teacherWorkflowEnabled } from '../lib/features';
 import { submitFile, submitStudio, type SubmissionRequestOptions } from '../api/submissions';
@@ -60,7 +60,7 @@ export function SubmitPage({
     const { t, i18n } = useTranslation();
     // Drawn ahead of time, one per language; English stands in for anything else the browser reports.
     const picture = homeVisual[i18n.language as keyof typeof homeVisual] ?? homeVisual.en;
-    const history = useHistory();
+    const navigate = useNavigate();
     const [teacherFile, setTeacherFile] = useState<File>();
     const [studio, setStudio] = useState('');
     const [teacherPreflight, setTeacherPreflight] = useState<ArchivePreflightResult>();
@@ -207,7 +207,7 @@ export function SubmitPage({
         !preflightBusy &&
         Boolean(
             (teacherArchiveEnabled && teacherFile && teacherUsableProjects > 0) ||
-                (studioEnabled && studioId && studioSubmittable(studioPreflight)),
+            (studioEnabled && studioId && studioSubmittable(studioPreflight)),
         );
     const submittingStudio = !teacherFile && Boolean(studioId);
     const studioProjects = studioProjectCount(studioPreflight);
@@ -222,8 +222,7 @@ export function SubmitPage({
           studioProjects >= LARGE_CLASS_SET
         : teacherUsableProjects >= LARGE_CLASS_SET;
 
-    const openSubmission = (token: string) =>
-        history.push(`/submissions/${encodeURIComponent(token)}`);
+    const openSubmission = (token: string) => navigate(`/submissions/${encodeURIComponent(token)}`);
 
     const onSubmitBatch = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -530,8 +529,8 @@ export function SubmitPage({
                     description={t('teacherModificationChoiceDescription')}
                     submitLabel={t('modificationAction')}
                     onAccepted={(token) =>
-                        history.push(`/submissions/${encodeURIComponent(token)}`, {
-                            continueTo: MODIFICATION_PATH,
+                        navigate(`/submissions/${encodeURIComponent(token)}`, {
+                            state: { continueTo: MODIFICATION_PATH },
                         })
                     }
                 />

@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: 2026 LitterBox-Web contributors
 
 import { useTranslation } from 'react-i18next';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router';
 import { formatNumber } from '../../i18n';
 import type { SupportedLocale } from '../../api/capabilities';
 import {
@@ -180,14 +180,12 @@ export function ToolsForProject({
                         {tool === 'compare' ? (
                             <Link
                                 className="action-button"
-                                to={{
-                                    pathname: '/compare',
-                                    state: {
-                                        before: {
-                                            submissionToken: token,
-                                            analysisId: analysis.id,
-                                            name: analysis.name ?? undefined,
-                                        },
+                                to="/compare"
+                                state={{
+                                    before: {
+                                        submissionToken: token,
+                                        analysisId: analysis.id,
+                                        name: analysis.name ?? undefined,
                                     },
                                 }}
                             >
@@ -235,7 +233,7 @@ export function AskQuestionsAction({
     enabled: boolean;
 }) {
     const { t } = useTranslation();
-    const history = useHistory();
+    const navigate = useNavigate();
     if (!enabled || token.trim().length === 0 || !positiveAnalysisId(analysis.id)) return null;
     if (String(analysis.status ?? '').toLowerCase() !== 'completed') return null;
 
@@ -253,7 +251,7 @@ export function AskQuestionsAction({
                 analysis="questions"
                 locale={locale}
                 label={t('reuseQuestionsAction')}
-                onReused={(next) => history.push(`/questions/${encodeURIComponent(next)}`)}
+                onReused={(next) => navigate(`/questions/${encodeURIComponent(next)}`)}
             />
         </section>
     );
@@ -322,6 +320,12 @@ export function AdvancedAnalysisAction({
 
     if (!advancedAvailable) return null;
 
+    // The analysis travels in navigation state, which is its own prop now rather than part of the address.
+    const destination = retainedAnalysisDestination(ADVANCED_ANALYSIS_PATH, {
+        submissionToken: token,
+        analysisId: analysis.id,
+    });
+
     return (
         <section
             className="result-card card result-advanced-analysis"
@@ -329,13 +333,7 @@ export function AdvancedAnalysisAction({
         >
             <h2 id="result-advanced-analysis-heading">{t('advancedAnalysisTitle')}</h2>
             <p className="hint">{t('advancedAnalysisResultLead')}</p>
-            <Link
-                className="action-button"
-                to={retainedAnalysisDestination(ADVANCED_ANALYSIS_PATH, {
-                    submissionToken: token,
-                    analysisId: analysis.id,
-                })}
-            >
+            <Link className="action-button" to={destination.pathname} state={destination.state}>
                 {t('advancedAnalysisAction')}
             </Link>
         </section>

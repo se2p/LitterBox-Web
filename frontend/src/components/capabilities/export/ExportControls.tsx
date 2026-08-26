@@ -125,6 +125,15 @@ function EligibleExportControls({
         statusHeading.current?.focus();
     }, [state.status]);
 
+    /**
+     * Announces the wait for a catalogue. The fetch itself does not do it: the first fetch for a kind of target is
+     * started from an effect, and the wait it announces belongs to the render that chose the kind.
+     */
+    const awaitTargetCatalogue = () => {
+        setTargets(null);
+        setCatalogueState({ status: 'loading' });
+    };
+
     const loadTargetCatalogue = useCallback(
         async (
             kind: ExportTargetSelectionKind,
@@ -135,8 +144,6 @@ function EligibleExportControls({
             const sequence = ++catalogueSequence.current;
             const controller = new AbortController();
             catalogueController.current = controller;
-            setTargets(null);
-            setCatalogueState({ status: 'loading' });
             try {
                 const result = await fetchExportTargets(token, analysisId, controller.signal);
                 if (controller.signal.aborted || sequence !== catalogueSequence.current)
@@ -186,15 +193,27 @@ function EligibleExportControls({
         [analysisId, token],
     );
 
+    // A catalogue belongs to one analysis and one kind of target; once it belongs to none of those on screen it is
+    // dropped while the new pairing is being rendered, so no selector is ever painted against a catalogue that is not
+    // its own. The values it returns to are the ones it started at, so the first render adjusts nothing.
+    const [catalogueFor, setCatalogueFor] = useState({ token, analysisId, targetKind });
+    if (
+        catalogueFor.token !== token ||
+        catalogueFor.analysisId !== analysisId ||
+        catalogueFor.targetKind !== targetKind
+    ) {
+        setCatalogueFor({ token, analysisId, targetKind });
+        setTargets(null);
+        setCatalogueState(targetKind === 'program' ? { status: 'idle' } : { status: 'loading' });
+        setSpriteName('');
+        setScriptId('');
+        setSourceTargetsChanged(false);
+    }
+
     useEffect(() => {
         catalogueSequence.current += 1;
         catalogueController.current?.abort();
         catalogueController.current = undefined;
-        setTargets(null);
-        setCatalogueState({ status: 'idle' });
-        setSpriteName('');
-        setScriptId('');
-        setSourceTargetsChanged(false);
 
         if (targetKind === 'program') {
             return () => {
@@ -204,7 +223,11 @@ function EligibleExportControls({
             };
         }
 
-        void loadTargetCatalogue(targetKind, '', 'initial');
+        // Every update the fetch makes lands after it has been awaited, never while the effect is still running; the
+        // wait is spelled out here so that is plain to read.
+        void (async () => {
+            await loadTargetCatalogue(targetKind, '', 'initial');
+        })();
         return () => {
             catalogueSequence.current += 1;
             catalogueController.current?.abort();
@@ -267,6 +290,7 @@ function EligibleExportControls({
             const category =
                 error instanceof ExportApiError ? error.category : 'malformed_response';
             if (category === 'target_not_found' && targetKind !== 'program') {
+                awaitTargetCatalogue();
                 await loadTargetCatalogue(
                     targetKind,
                     targetKind === 'sprite' ? spriteName : scriptId,
@@ -327,6 +351,7 @@ function EligibleExportControls({
 
     const retryTargetCatalogue = () => {
         if (targetKind === 'program') return;
+        awaitTargetCatalogue();
         void loadTargetCatalogue(
             targetKind,
             targetKind === 'sprite' ? spriteName : scriptId,

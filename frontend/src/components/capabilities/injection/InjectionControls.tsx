@@ -43,17 +43,32 @@ function EligibleInjectionControls({
     const searchId = useId();
 
     // The requests know nothing of the chooser; the chooser watches them and empties itself for a new catalogue.
-    const requests = useInjectionRequests({ token, analysisId, inputFormat, locale });
+    // Taken apart here rather than kept whole: the hook hands back two refs alongside ordinary values, and reading
+    // any property of that object during render reads it through something that has to be treated as a ref.
+    const {
+        catalogue,
+        injectors,
+        state,
+        preview,
+        lastDownload,
+        busy,
+        statusHeading,
+        previewHeading,
+        beginSelectionChange,
+        requestPreview,
+        downloadResult,
+        downloadAll,
+        cancel,
+        retry,
+    } = useInjectionRequests({ token, analysisId, inputFormat, locale });
     const selection = useInjectorSelection({
-        catalogue: requests.catalogue,
-        injectors: requests.injectors,
+        catalogue,
+        injectors,
         locale,
-        busy: requests.busy,
-        loading: requests.state.status === 'loadingInjectors',
-        onSelectionChange: requests.beginSelectionChange,
+        busy,
+        loading: state.status === 'loadingInjectors',
+        onSelectionChange: beginSelectionChange,
     });
-
-    const { state, preview, injectors, catalogue } = requests;
     const injectorPositions = useMemo(
         () => new Map(injectors.map((injector, index) => [injector.injectorId, index])),
         [injectors],
@@ -71,7 +86,7 @@ function EligibleInjectionControls({
                 index={index}
                 checked={checked}
                 expanded={selection.expandedInjectorIds.has(injector.injectorId)}
-                busy={requests.busy}
+                busy={busy}
                 bulkMode={selectionMode === 'all'}
                 hasFinderContext={(selection.duplicateNames.get(injector.name) ?? 0) > 1}
                 searchId={searchId}
@@ -96,7 +111,7 @@ function EligibleInjectionControls({
 
             {state.status === 'loadingInjectors' && (
                 <div className="injection-status" role="status" aria-live="polite" aria-busy="true">
-                    <h3 ref={requests.statusHeading} tabIndex={-1}>
+                    <h3 ref={statusHeading} tabIndex={-1}>
                         {t('injectionLoading')}
                     </h3>
                     <p>{t('injectionLoadingBody')}</p>
@@ -105,16 +120,13 @@ function EligibleInjectionControls({
 
             {state.status === 'error' && state.operation === 'injectors' && (
                 <div className="injection-status injection-status-error" role="alert">
-                    <h3 ref={requests.statusHeading} tabIndex={-1}>
+                    <h3 ref={statusHeading} tabIndex={-1}>
                         {t('injectionRequestFailed')}
                     </h3>
                     <Alert tone="error">
                         <p>{t(errorKeys[state.category])}</p>
                     </Alert>
-                    <button
-                        type="button"
-                        onClick={() => requests.retry(selectedInjectorIds, selectionMode)}
-                    >
+                    <button type="button" onClick={() => retry(selectedInjectorIds, selectionMode)}>
                         {t('injectionRetryInjectors')}
                     </button>
                 </div>
@@ -168,7 +180,7 @@ function EligibleInjectionControls({
                                             <button
                                                 type="button"
                                                 onClick={selection.chooseCustomSubset}
-                                                disabled={requests.busy}
+                                                disabled={busy}
                                             >
                                                 {t('injectionLeaveBulkMode')}
                                             </button>
@@ -178,7 +190,7 @@ function EligibleInjectionControls({
                                                     <button
                                                         type="button"
                                                         onClick={selection.selectAll}
-                                                        disabled={requests.busy}
+                                                        disabled={busy}
                                                     >
                                                         {/* The jump from a hand-picked eight to the whole
                                                             catalogue is worth saying out loud on the button. */}
@@ -192,7 +204,7 @@ function EligibleInjectionControls({
                                                         type="button"
                                                         onClick={selection.selectAllVisible}
                                                         disabled={
-                                                            requests.busy ||
+                                                            busy ||
                                                             selection.selectAllVisibleTooLarge
                                                         }
                                                         aria-describedby={
@@ -207,7 +219,7 @@ function EligibleInjectionControls({
                                                 <button
                                                     type="button"
                                                     onClick={selection.clearSelection}
-                                                    disabled={selectedCount === 0 || requests.busy}
+                                                    disabled={selectedCount === 0 || busy}
                                                 >
                                                     {t('injectionClearSelection')}
                                                 </button>
@@ -267,9 +279,7 @@ function EligibleInjectionControls({
                             <button
                                 type="button"
                                 className="primary-action"
-                                onClick={() =>
-                                    requests.requestPreview(selectedInjectorIds, selectionMode)
-                                }
+                                onClick={() => requestPreview(selectedInjectorIds, selectionMode)}
                                 disabled={
                                     (selectionMode === 'explicit' &&
                                         (selectedCount < 1 || selectedCount > explicitLimit)) ||
@@ -283,7 +293,7 @@ function EligibleInjectionControls({
                                     : t('injectionRequestPreview')}
                             </button>
                             {state.status === 'previewing' && (
-                                <button type="button" onClick={requests.cancel}>
+                                <button type="button" onClick={cancel}>
                                     {t('injectionCancel')}
                                 </button>
                             )}
@@ -293,7 +303,7 @@ function EligibleInjectionControls({
                         </p>
                         {state.status === 'previewing' && !preview && (
                             <div className="injection-status" role="status" aria-live="polite">
-                                <h3 ref={requests.statusHeading} tabIndex={-1}>
+                                <h3 ref={statusHeading} tabIndex={-1}>
                                     {t('injectionPreviewing')}
                                 </h3>
                                 <p>{t('injectionPreviewingBody')}</p>
@@ -301,7 +311,7 @@ function EligibleInjectionControls({
                         )}
                         {state.status === 'error' && state.operation === 'preview' && (
                             <div className="injection-status injection-status-error" role="alert">
-                                <h3 ref={requests.statusHeading} tabIndex={-1}>
+                                <h3 ref={statusHeading} tabIndex={-1}>
                                     {t('injectionRequestFailed')}
                                 </h3>
                                 <Alert tone="error">
@@ -309,9 +319,7 @@ function EligibleInjectionControls({
                                 </Alert>
                                 <button
                                     type="button"
-                                    onClick={() =>
-                                        requests.retry(selectedInjectorIds, selectionMode)
-                                    }
+                                    onClick={() => retry(selectedInjectorIds, selectionMode)}
                                 >
                                     {t('injectionRetryPreview')}
                                 </button>
@@ -324,11 +332,11 @@ function EligibleInjectionControls({
                                 downloading={
                                     state.status === 'downloading' ? state.target : undefined
                                 }
-                                onDownloadResult={requests.downloadResult}
+                                onDownloadResult={downloadResult}
                                 onDownloadAll={() =>
-                                    requests.downloadAll(selectedInjectorIds, selectionMode)
+                                    downloadAll(selectedInjectorIds, selectionMode)
                                 }
-                                headingRef={requests.previewHeading}
+                                headingRef={previewHeading}
                             />
                         )}
                     </div>
@@ -336,12 +344,12 @@ function EligibleInjectionControls({
 
             {state.status === 'downloading' && (
                 <div className="injection-status" role="status" aria-live="polite" aria-busy="true">
-                    <h3 ref={requests.statusHeading} tabIndex={-1}>
+                    <h3 ref={statusHeading} tabIndex={-1}>
                         {t('injectionPreparing')}
                     </h3>
                     <p>{t('injectionPreparingBody')}</p>
                     <div className="injection-actions">
-                        <button type="button" onClick={requests.cancel}>
+                        <button type="button" onClick={cancel}>
                             {t('injectionCancel')}
                         </button>
                     </div>
@@ -356,7 +364,7 @@ function EligibleInjectionControls({
                     role="status"
                     aria-live="polite"
                 >
-                    <h3 ref={requests.statusHeading} tabIndex={-1}>
+                    <h3 ref={statusHeading} tabIndex={-1}>
                         {t('injectionDownloaded')}
                     </h3>
                     <dl className="injection-metadata">
@@ -378,17 +386,14 @@ function EligibleInjectionControls({
 
             {state.status === 'error' && state.operation === 'download' && (
                 <div className="injection-status injection-status-error" role="alert">
-                    <h3 ref={requests.statusHeading} tabIndex={-1}>
+                    <h3 ref={statusHeading} tabIndex={-1}>
                         {t('injectionRequestFailed')}
                     </h3>
                     <Alert tone="error">
                         <p>{t(errorKeys[state.category])}</p>
                     </Alert>
-                    <button
-                        type="button"
-                        onClick={() => requests.retry(selectedInjectorIds, selectionMode)}
-                    >
-                        {requests.lastDownload === 'all'
+                    <button type="button" onClick={() => retry(selectedInjectorIds, selectionMode)}>
+                        {lastDownload === 'all'
                             ? t('injectionDownloadAll', { count: preview?.results.length ?? 0 })
                             : t('injectionDownloadOne')}
                     </button>

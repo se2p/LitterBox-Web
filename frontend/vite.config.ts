@@ -10,6 +10,9 @@ export default defineConfig({
         environment: 'jsdom',
         setupFiles: './tests/setup.ts',
         globals: true,
+        // Vitest no longer derives import.meta.env.BASE_URL from `base` above, so the code under test would build
+        // its URLs against `/` while the application builds them against `/litterbox/`.
+        env: { BASE_URL: '/litterbox/' },
         include: ['tests/**/*.test.ts', 'tests/**/*.test.tsx'],
         // These render whole pages and drive them as a reader would, which takes a second of the slowest of them
         // here and several times that on a runner sharing its cores. The default budget of five seconds left a

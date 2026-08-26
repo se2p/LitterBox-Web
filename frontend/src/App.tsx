@@ -3,7 +3,7 @@
 
 import { lazy, Suspense, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router';
 import { SUPPORTED_LOCALES, type SupportedLocale } from './api/capabilities';
 import { Alert } from './components/Alert';
 import { ApplicationShell } from './components/ApplicationShell';
@@ -77,6 +77,9 @@ function LocaleCompatibilityNotice({
 export function App() {
     const { t, i18n } = useTranslation();
     const location = useLocation();
+    // Read here rather than inside the compatibility route below, which now takes an element rather than a
+    // render callback. Same read either way: what the reader arrived carrying.
+    const retainedAnalysisArrival = readRetainedAnalysis(location.state);
     const { state, retry } = useCapabilities();
     // Set by whichever page is on screen, and only by the ones whose address does not say which menu entry they
     // belong to. Held here because the menu is drawn above the page that claims it.
@@ -136,157 +139,136 @@ export function App() {
                 every other slow moment on this site says, rather than blanking the page. */}
             <Suspense fallback={<LoadingState heading={t('appName')} message={t('pageLoading')} />}>
                 <DeclaredNavigationProvider value={setDeclaredNavigationPath}>
-                    <Switch>
+                    <Routes>
                         <Route
-                            exact
                             path="/"
-                            render={() => (
+                            element={
                                 <SubmitPage
                                     capabilityState={state}
                                     onCapabilityRetry={retry}
                                     page="home"
                                 />
-                            )}
+                            }
                         />
                         {/* Kept so links and bookmarks to the old submission page still resolve. */}
-                        <Route exact path="/submit" render={() => <Redirect to="/" />} />
+                        <Route path="/submit" element={<Navigate to="/" replace />} />
                         {/* The same page as the home one, in the mode that offers a whole class at once. It is
                             already loaded, so this asks the browser for nothing. */}
                         <Route
-                            exact
                             path="/teacher"
-                            render={() => (
+                            element={
                                 <SubmitPage
                                     capabilityState={state}
                                     onCapabilityRetry={retry}
                                     mode="teacher"
                                     page="teacher"
                                 />
-                            )}
+                            }
                         />
                         {/* The teacher's own question view: everything the project yields, against the block model. */}
                         <Route
-                            exact
                             path="/teacher/questions"
-                            render={() => (
+                            element={
                                 <QuestionsPage
                                     capabilityState={state}
                                     onCapabilityRetry={retry}
                                     variant="teacher"
                                 />
-                            )}
+                            }
                         />
                         <Route
-                            exact
                             path="/teacher/questions/:token"
-                            render={() => (
+                            element={
                                 <QuestionsPage
                                     capabilityState={state}
                                     onCapabilityRetry={retry}
                                     variant="teacher"
                                 />
-                            )}
+                            }
                         />
                         {/* The teacher's modification tool: one project, and the faults that can be put into it. */}
                         <Route
-                            exact
                             path={MODIFICATION_PATH}
-                            render={() => (
+                            element={
                                 <ModificationPage
                                     capabilityState={state}
                                     onCapabilityRetry={retry}
                                 />
-                            )}
+                            }
                         />
                         <Route
-                            exact
                             path="/compare"
-                            render={() => (
+                            element={
                                 <ComparisonPage capabilityState={state} onCapabilityRetry={retry} />
-                            )}
+                            }
                         />
                         <Route
-                            exact
                             path={ADVANCED_ANALYSIS_PATH}
-                            render={() => (
+                            element={
                                 <AdvancedAnalysisPage
                                     capabilityState={state}
                                     onCapabilityRetry={retry}
                                 />
-                            )}
+                            }
                         />
                         <Route
-                            exact
                             path={ADVANCED_ANALYSIS_COMPATIBILITY_PATH}
-                            render={() => {
-                                const selection = readRetainedAnalysis(location.state);
-                                return (
-                                    <Redirect
-                                        to={
-                                            selection
-                                                ? retainedAnalysisDestination(
-                                                      ADVANCED_ANALYSIS_PATH,
-                                                      selection,
-                                                  )
-                                                : ADVANCED_ANALYSIS_PATH
-                                        }
-                                    />
-                                );
-                            }}
+                            element={
+                                <Navigate
+                                    to={
+                                        retainedAnalysisArrival
+                                            ? retainedAnalysisDestination(
+                                                  ADVANCED_ANALYSIS_PATH,
+                                                  retainedAnalysisArrival,
+                                              )
+                                            : ADVANCED_ANALYSIS_PATH
+                                    }
+                                    replace
+                                />
+                            }
                         />
                         <Route
-                            exact
                             path="/questions"
-                            render={() => (
+                            element={
                                 <QuestionsPage capabilityState={state} onCapabilityRetry={retry} />
-                            )}
+                            }
                         />
                         <Route
-                            exact
                             path="/questions/:token"
-                            render={() => (
+                            element={
                                 <QuestionsPage capabilityState={state} onCapabilityRetry={retry} />
-                            )}
+                            }
                         />
                         <Route
-                            exact
                             path="/submissions/:token"
-                            render={() => <SubmissionPage capabilityState={state} />}
+                            element={<SubmissionPage capabilityState={state} />}
                         />
                         <Route
-                            exact
                             path="/catalogue"
-                            render={() => (
+                            element={
                                 <CataloguePage
                                     applicationLocale={applicationLocale}
                                     serverLocales={serverLocales}
                                     capabilitiesLoading={state.status === 'loading'}
                                     capabilityMismatch={state.status === 'incompatible'}
                                 />
-                            )}
+                            }
                         />
-                        <Route exact path="/statistics">
-                            <StatisticsPage
-                                applicationLocale={applicationLocale as SupportedLocale}
-                            />
-                        </Route>
-                        <Route exact path="/about">
-                            <InformationalPage kind="about" />
-                        </Route>
-                        <Route exact path="/contact">
-                            <InformationalPage kind="contact" />
-                        </Route>
-                        <Route exact path="/faq">
-                            <InformationalPage kind="faq" />
-                        </Route>
-                        <Route exact path="/imprint">
-                            <InformationalPage kind="imprint" />
-                        </Route>
-                        <Route exact path="/privacy">
-                            <InformationalPage kind="privacy" />
-                        </Route>
-                        <Route render={() => <Redirect to="/" />} />
-                    </Switch>
+                        <Route
+                            path="/statistics"
+                            element={
+                                <StatisticsPage
+                                    applicationLocale={applicationLocale as SupportedLocale}
+                                />
+                            }
+                        />
+                        <Route path="/about" element={<InformationalPage kind="about" />} />
+                        <Route path="/contact" element={<InformationalPage kind="contact" />} />
+                        <Route path="/faq" element={<InformationalPage kind="faq" />} />
+                        <Route path="/imprint" element={<InformationalPage kind="imprint" />} />
+                        <Route path="/privacy" element={<InformationalPage kind="privacy" />} />
+                        <Route path="*" element={<Navigate to="/" replace />} />
+                    </Routes>
                 </DeclaredNavigationProvider>
             </Suspense>
         </ApplicationShell>

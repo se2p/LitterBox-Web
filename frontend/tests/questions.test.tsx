@@ -293,7 +293,7 @@ describe('Questions workflow', () => {
 
     it('keeps the answer and shows saving, recorded, and error feedback', async () => {
         const user = userEvent.setup();
-        let fetchMock = vi.spyOn(globalThis, 'fetch');
+        const fetchMock = vi.spyOn(globalThis, 'fetch');
         let resolveAnswer: ((value: Response) => void) | undefined;
         const answerPending = new Promise<Response>((resolve) => {
             resolveAnswer = resolve;
@@ -329,7 +329,7 @@ describe('Questions workflow', () => {
 
         firstRender.unmount();
         vi.restoreAllMocks();
-        fetchMock = vi.spyOn(globalThis, 'fetch').mockImplementation((input) => {
+        vi.spyOn(globalThis, 'fetch').mockImplementation((input) => {
             const url = String(input);
             if (url.includes('/quiz-answers')) return Promise.resolve(response({}, 500));
             return Promise.resolve(

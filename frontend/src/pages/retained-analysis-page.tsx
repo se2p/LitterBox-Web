@@ -70,8 +70,7 @@ export function useRetainedAnalysis(selection: RetainedAnalysisSelection | undef
 }
 
 export type RetainedAnalysisGate =
-    | { ready: false; fallback: ReactNode }
-    | { ready: true; value: RetainedAnalysis };
+    { ready: false; fallback: ReactNode } | { ready: true; value: RetainedAnalysis };
 
 interface RetainedAnalysisGateOptions extends Omit<RetainedAnalysisEntryProps, 'recovering'> {
     selection: RetainedAnalysisSelection | undefined;

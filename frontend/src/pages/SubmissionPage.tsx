@@ -3,14 +3,18 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory, useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import { formatNumber } from '../i18n';
 import type { CapabilityState } from '../lib/capabilities';
 import { ErrorState, LoadingState } from '../components/States';
 import { Alert } from '../components/Alert';
 import { Card } from '../components/Card';
 import { PageMain } from '../components/Page';
-import { cancelSubmission, type SubmissionStatusResponse } from '../api/submissions';
+import {
+    cancelSubmission,
+    type BatchAnalysis,
+    type SubmissionStatusResponse,
+} from '../api/submissions';
 import { FindingGroup } from '../components/single-project/FindingGroup';
 import { groupFindings } from '../components/single-project/finding-groups';
 import {
@@ -65,6 +69,25 @@ import {
     type IssueSort,
 } from './submission-utils';
 
+/**
+ * The findings of one analysis and the catalogue that describes them. Kept out of the component so the analysis they
+ * belong to arrives as an argument: everything below is then held against that one analysis, and moving to another in
+ * a class set is the only thing that rebuilds it.
+ */
+function useAnalysisContent(analysis: BatchAnalysis | undefined, value: SubmissionStatusResponse) {
+    const issues = useMemo(
+        () => analysis?.issues ?? value.issues ?? [],
+        [analysis?.issues, value.issues],
+    );
+    // The analysis ships the catalogue for the patterns it reported, so the result page has it on hand rather
+    // than fetching it again.
+    const catalogue = useMemo(
+        () => buildCatalogueLookup(analysis?.catalogue ?? value.catalogueEntries ?? []),
+        [analysis?.catalogue, value.catalogueEntries],
+    );
+    return { issues, catalogue };
+}
+
 function SubmissionResult({
     value,
     token,
@@ -93,20 +116,15 @@ function SubmissionResult({
     const firstCompletedId = completedEntries[0]
         ? String(completedEntries[0].item.id ?? completedEntries[0].index)
         : undefined;
-    const [selectedId, setSelectedId] = useState<string>();
-    useEffect(() => {
-        if (!isBatch) return;
-        if (!firstCompletedId || !completedIds.split('|').includes(selectedId ?? '')) {
-            setSelectedId(firstCompletedId);
-        }
-    }, [completedIds, firstCompletedId, isBatch, selectedId]);
+    const [chosenId, setChosenId] = useState<string>();
+    // Which analysis of a class set is on screen. Whatever the reader last opened, unless it is not among the
+    // completed ones — nothing opened yet, or a set that has moved on — in which case the first that is.
+    const selectedId =
+        isBatch && !completedIds.split('|').includes(chosenId ?? '') ? firstCompletedId : chosenId;
     const analysis = isBatch
         ? completedEntries.find(({ item, index }) => String(item.id ?? index) === selectedId)?.item
         : baseAnalysis;
-    const issues = useMemo(
-        () => analysis?.issues ?? value.issues ?? [],
-        [analysis?.issues, value.issues],
-    );
+    const { issues, catalogue } = useAnalysisContent(analysis, value);
     const analysisKey = analysis
         ? `${token}:${isBatch ? (selectedId ?? 'batch') : 'single'}:${String(analysis.id ?? 'unknown')}`
         : 'none';
@@ -117,12 +135,6 @@ function SubmissionResult({
         [issues],
     );
     const findingName = (id: number) => findingNames.get(id)?.trim() || undefined;
-    // The analysis ships the catalogue for the patterns it reported, so the result page has it on hand rather
-    // than fetching it again.
-    const catalogue = useMemo(
-        () => buildCatalogueLookup(analysis?.catalogue ?? value.catalogueEntries ?? []),
-        [analysis?.catalogue, value.catalogueEntries],
-    );
     const failedAnalysis = analyses.find((item) => String(item.status).toLowerCase() === 'failed');
     const running = !TERMINAL_STATUSES.has(value.status.toLowerCase());
     const issueLabels: IssueCardLabels = {
@@ -180,7 +192,7 @@ function SubmissionResult({
                 </Alert>
             )}
             {isBatch && (
-                <BatchDashboard value={value} selectedId={selectedId} onSelect={setSelectedId} />
+                <BatchDashboard value={value} selectedId={selectedId} onSelect={setChosenId} />
             )}
             {isBatch && !running && completedAnalyses.length === 0 && (
                 <BatchEmptyState
@@ -403,9 +415,9 @@ export function SubmissionPage({
 }: {
     capabilityState?: CapabilityState;
 }) {
-    const { token = '' } = useParams<{ token: string }>();
+    const { token = '' } = useParams();
     const location = useLocation();
-    const history = useHistory();
+    const navigate = useNavigate();
     const { t } = useTranslation();
     const { state, sseState, load } = useSubmission(token);
     const [cancelOpen, setCancelOpen] = useState(false);
@@ -424,11 +436,15 @@ export function SubmissionPage({
         focusToolFromHash(location.hash);
     }, [location.hash, state.status]);
 
-    useEffect(() => {
-        if (!terminal) return;
-        setCancelOpen(false);
-        setCancelError(false);
-    }, [terminal]);
+    // Nothing left to cancel once the analysis has finished, so the dialogue and its failure go with it.
+    const [wasTerminal, setWasTerminal] = useState(terminal);
+    if (wasTerminal !== terminal) {
+        setWasTerminal(terminal);
+        if (terminal) {
+            setCancelOpen(false);
+            setCancelError(false);
+        }
+    }
 
     // The device remembers where this result is, so the reader can come back to it, or put the same project
     // through another analysis, without keeping the link themselves.
@@ -464,13 +480,12 @@ export function SubmissionPage({
         const analysis = primaryAnalysis(state.value);
         if (!analysis || !analysisIsCompleted(analysis, state.value.status)) return;
         if (!positiveAnalysisId(analysis.id)) return;
-        history.replace(
-            retainedAnalysisDestination(continuation, {
-                submissionToken: token,
-                analysisId: analysis.id,
-            }),
-        );
-    }, [history, location.state, state, terminal, token]);
+        const destination = retainedAnalysisDestination(continuation, {
+            submissionToken: token,
+            analysisId: analysis.id,
+        });
+        navigate(destination.pathname, { replace: true, state: destination.state });
+    }, [navigate, location.state, state, terminal, token]);
 
     const requestCancellation = async () => {
         setCancelling(true);

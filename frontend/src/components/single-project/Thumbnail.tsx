@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 // SPDX-FileCopyrightText: 2025 LitterBox-Web contributors
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { safeAssetUrl } from './asset-url';
 
 interface ThumbnailProps {
@@ -14,10 +14,14 @@ interface ThumbnailProps {
 export function Thumbnail({ sprite, thumbnailRef, label, fallbackLabel }: ThumbnailProps) {
     const assetUrl = thumbnailRef ? safeAssetUrl(thumbnailRef) : undefined;
     const [failedUrl, setFailedUrl] = useState<string>();
+    const [shownUrl, setShownUrl] = useState(assetUrl);
 
-    useEffect(() => {
+    // Another address deserves another attempt, including one that failed earlier and is returned to, so the recorded
+    // failure is dropped while the new address is being rendered rather than afterwards.
+    if (shownUrl !== assetUrl) {
+        setShownUrl(assetUrl);
         setFailedUrl(undefined);
-    }, [assetUrl]);
+    }
 
     const imageAvailable = Boolean(assetUrl && failedUrl !== assetUrl);
 

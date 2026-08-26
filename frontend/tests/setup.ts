@@ -19,7 +19,7 @@ Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
         }) as unknown as CanvasRenderingContext2D,
 });
 
-let hasLocalStorage = false;
+let hasLocalStorage: boolean;
 try {
     hasLocalStorage = Boolean(window.localStorage);
 } catch {

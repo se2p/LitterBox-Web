@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 // SPDX-FileCopyrightText: 2026 LitterBox-Web contributors
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { SupportedLocale } from '../../../api/capabilities';
 import type { InjectorCatalogueViewDto, InjectorViewDto } from '../../../api/generated';
@@ -65,17 +65,21 @@ export function useInjectorSelection({
     const [selectionAnnouncement, setSelectionAnnouncement] = useState('');
 
     /**
-     * Back to the blank slate a fresh catalogue starts from. The collections are replaced only when they hold
-     * something, so a reset of an already-empty chooser — which is every first load — costs no render.
+     * Back to the blank slate a fresh catalogue starts from, adjusted in the render that first sees the catalogue
+     * on its way in rather than after it. The collections are replaced only when they hold something, so a reset
+     * of an already-empty chooser — which is every first load — costs no render.
      */
-    useEffect(() => {
-        if (!loading) return;
-        setSelectedInjectorIds((previous) => (previous.length === 0 ? previous : []));
-        setExpandedInjectorIds((previous) => (previous.size === 0 ? previous : new Set()));
-        setSelectionMode('explicit');
-        setSearchTerm('');
-        setSelectionAnnouncement('');
-    }, [loading]);
+    const [wasLoading, setWasLoading] = useState(loading);
+    if (wasLoading !== loading) {
+        setWasLoading(loading);
+        if (loading) {
+            setSelectedInjectorIds((previous) => (previous.length === 0 ? previous : []));
+            setExpandedInjectorIds((previous) => (previous.size === 0 ? previous : new Set()));
+            setSelectionMode('explicit');
+            setSearchTerm('');
+            setSelectionAnnouncement('');
+        }
+    }
 
     const normalizedSearchTerm = normalizeSearchText(searchTerm, locale);
     const injectorSearchText = useMemo(

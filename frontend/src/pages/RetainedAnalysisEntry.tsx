@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router';
 import { Alert } from '../components/Alert';
 import { ProjectSubmissionForm } from '../components/single-project/ProjectSubmissionForm';
 import { ReuseProjectButton } from '../components/single-project/ReuseProjectButton';
@@ -39,10 +39,16 @@ export function RetainedAnalysisEntry({
     copy,
 }: RetainedAnalysisEntryProps) {
     const { i18n } = useTranslation();
-    const history = useHistory();
+    const navigate = useNavigate();
     // The last project this device analysed. A completed single-project result already has an analysis behind it,
     // so that one is a link; anything else has to be analysed once before there is something to work from.
     const [recent] = useState(latestProject);
+    // The analysis rides along as the link's own navigation state, which is a prop of its own rather than part
+    // of the address it points at.
+    const recentDestination =
+        recent?.kind === 'issues' && recent.analysisId
+            ? destination({ submissionToken: recent.token, analysisId: recent.analysisId })
+            : undefined;
     return (
         <>
             <section className={heroClassName} aria-labelledby={titleId}>
@@ -55,14 +61,12 @@ export function RetainedAnalysisEntry({
                 </Alert>
             )}
             {recent &&
-                (recent.kind === 'issues' && recent.analysisId ? (
+                (recentDestination ? (
                     <p className="recent-project-offer">
                         <Link
                             className="action-button"
-                            to={destination({
-                                submissionToken: recent.token,
-                                analysisId: recent.analysisId,
-                            })}
+                            to={recentDestination.pathname}
+                            state={recentDestination.state}
                         >
                             {copy.reuseNamed(recent.name)}
                         </Link>
@@ -77,8 +81,8 @@ export function RetainedAnalysisEntry({
                         locale={localeFrom(i18n.language)}
                         label={copy.reuseNamed(recent.name)}
                         onReused={(next) =>
-                            history.push(`/submissions/${encodeURIComponent(next)}`, {
-                                continueTo,
+                            navigate(`/submissions/${encodeURIComponent(next)}`, {
+                                state: { continueTo },
                             })
                         }
                     />
@@ -89,7 +93,9 @@ export function RetainedAnalysisEntry({
                 description={copy.entryLead}
                 submitLabel={copy.entryAction}
                 onAccepted={(token) =>
-                    history.push(`/submissions/${encodeURIComponent(token)}`, { continueTo })
+                    navigate(`/submissions/${encodeURIComponent(token)}`, {
+                        state: { continueTo },
+                    })
                 }
             />
         </>

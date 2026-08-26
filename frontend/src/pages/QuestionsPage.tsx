@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useHistory, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router';
 import type { CapabilityState } from '../lib/capabilities';
 import { Alert } from '../components/Alert';
 import { Card } from '../components/Card';
@@ -87,7 +87,7 @@ function InvalidQuestionToken({ onRetry }: { onRetry: () => void }) {
 
 function QuestionsEntryPage({ variant }: { variant: QuestionsVariant }) {
     const { t, i18n } = useTranslation();
-    const history = useHistory();
+    const navigate = useNavigate();
     // Only what this device did last, and only as one press: the page a child arrives at gains a shortcut, not a
     // second way of doing things.
     const [recent] = useState(latestProject);
@@ -121,7 +121,7 @@ function QuestionsEntryPage({ variant }: { variant: QuestionsVariant }) {
                         locale={localeFrom(i18n.language)}
                         label={t('reuseQuestionsNamed', { project: recent.name })}
                         onReused={(next) =>
-                            history.push(
+                            navigate(
                                 `${variant === 'teacher' ? '/teacher/questions' : '/questions'}/${encodeURIComponent(next)}`,
                             )
                         }
@@ -308,12 +308,15 @@ function QuestionResultPage({
     const terminal =
         state.status === 'ready' && TERMINAL_STATUSES.has(state.value.status.toLowerCase());
 
-    useEffect(() => {
+    // Nothing left to cancel once the analysis has finished, so the dialogue and its failure go with it.
+    const [wasTerminal, setWasTerminal] = useState(terminal);
+    if (wasTerminal !== terminal) {
+        setWasTerminal(terminal);
         if (terminal) {
             setCancelOpen(false);
             setCancelError(false);
         }
-    }, [terminal]);
+    }
 
     // Remembered on this device, so the reader can come back to these questions without keeping the link.
     useEffect(() => {
@@ -456,7 +459,7 @@ export function QuestionsPage({
     variant?: QuestionsVariant;
 }) {
     const { t } = useTranslation();
-    const { token } = useParams<{ token?: string }>();
+    const { token } = useParams();
     const questionsEnabled =
         capabilityState.status === 'ready' && capabilityState.value.enabledFeatures.includes('qlc');
     const exportEnabled =

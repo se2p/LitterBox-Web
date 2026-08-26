@@ -29,13 +29,7 @@ export const QUESTION_SUBMISSIONS_URL = `${BASE_URL}api/v1/question-submissions`
 export const STUDIOS_URL = `${BASE_URL}api/v1/studios`;
 
 export type SubmissionStatus =
-    | 'queued'
-    | 'processing'
-    | 'completed'
-    | 'partial'
-    | 'failed'
-    | 'cancelled'
-    | string;
+    'queued' | 'processing' | 'completed' | 'partial' | 'failed' | 'cancelled' | string;
 
 export type AnalysisIssue = IssueViewDto;
 export type AnalysisRelationship = RelationshipViewDto;

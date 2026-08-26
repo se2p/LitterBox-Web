@@ -3,7 +3,7 @@
 
 import { useMemo, useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router';
 import type { CapabilityState } from '../lib/capabilities';
 import { Card } from '../components/Card';
 import { PageMain } from '../components/Page';
@@ -24,11 +24,11 @@ import { validToolFormat } from './submission-utils';
 const hasUsableMetrics = (metrics: unknown): boolean =>
     Boolean(
         metrics &&
-            typeof metrics === 'object' &&
-            !Array.isArray(metrics) &&
-            Object.values(metrics as Record<string, unknown>).some(
-                (value) => typeof value === 'number' && Number.isFinite(value),
-            ),
+        typeof metrics === 'object' &&
+        !Array.isArray(metrics) &&
+        Object.values(metrics as Record<string, unknown>).some(
+            (value) => typeof value === 'number' && Number.isFinite(value),
+        ),
     );
 
 /**
@@ -160,13 +160,11 @@ export function AdvancedAnalysisPage({
                     <p>{t('advancedComparisonLead')}</p>
                     <Link
                         className="action-button action-button-primary"
-                        to={{
-                            pathname: '/compare',
-                            // Named, so the comparison can offer this project as one of its sources instead of
-                            // asking for the identifier of an analysis the reader is already looking at.
-                            state: {
-                                before: { ...retainedSelection, name: analysis.name ?? undefined },
-                            },
+                        to="/compare"
+                        // Named, so the comparison can offer this project as one of its sources instead of
+                        // asking for the identifier of an analysis the reader is already looking at.
+                        state={{
+                            before: { ...retainedSelection, name: analysis.name ?? undefined },
                         }}
                     >
                         {t('advancedComparisonAction')}

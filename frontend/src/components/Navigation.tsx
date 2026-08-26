@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: 2025 LitterBox-Web contributors
 import { useEffect, useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { SUPPORTED_LOCALES } from '../api/capabilities';
 import { localeLabels, setLocale, type Locale } from '../i18n';
 
@@ -29,9 +29,15 @@ export function SiteNavigation({
 }: SiteNavigationProps) {
     const { t } = useTranslation();
     const [open, setOpen] = useState(false);
+    const [shownPath, setShownPath] = useState(currentPath);
     const listId = useId();
 
-    useEffect(() => setOpen(false), [currentPath]);
+    // Moving to another page closes the menu. Adjusted while the new address is being rendered rather than afterwards,
+    // so the menu is never painted open over the page it no longer belongs to.
+    if (shownPath !== currentPath) {
+        setShownPath(currentPath);
+        setOpen(false);
+    }
 
     return (
         <nav className="site-nav" aria-label={label} aria-busy={loading || undefined}>

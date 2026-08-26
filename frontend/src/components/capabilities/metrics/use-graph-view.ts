@@ -100,6 +100,14 @@ export function useGraphView(svg: SVGSVGElement | undefined): GraphView {
 
     const actualSize = useCallback(() => setTransform(centred(1)), [centred]);
 
+    // A graph that goes away takes the view it was seen through with it, so whatever comes next starts from the
+    // identity transform. Adjusted while the graph-less render is happening rather than afterwards.
+    const [shownSvg, setShownSvg] = useState(svg);
+    if (shownSvg !== svg) {
+        setShownSvg(svg);
+        if (!svg) setTransform(IDENTITY);
+    }
+
     // A graph the reader has not seen before starts fitted, the way the report presents it. The first fit waits for
     // the graph to have a size: it is mounted into the surface by an effect of its own, and the fold it sits in has no
     // layout at all until it is open.
@@ -107,7 +115,6 @@ export function useGraphView(svg: SVGSVGElement | undefined): GraphView {
     useEffect(() => {
         if (!svg) {
             fittedFor.current = undefined;
-            setTransform(IDENTITY);
             return;
         }
         const surface = surfaceRef.current;

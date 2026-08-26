@@ -140,12 +140,15 @@ export function useInjectionRequests({
         [],
     );
 
-    const loadCatalogue = useCallback(() => {
-        cancelPending();
+    /** Back to what a page that has asked for nothing yet holds, so no answer to an older question is left over. */
+    const clearCatalogue = useCallback(() => {
         setCatalogue(undefined);
         setInjectors([]);
         setPreview(undefined);
         setState({ status: 'loadingInjectors' });
+    }, []);
+
+    const requestCatalogue = useCallback(() => {
         runRequest(
             'injectors',
             (signal) => fetchInjectorCatalogue(token, analysisId, locale, signal),
@@ -155,15 +158,33 @@ export function useInjectionRequests({
                 setState({ status: 'injectorsReady' });
             },
         );
-    }, [analysisId, cancelPending, locale, runRequest, token]);
+    }, [analysisId, locale, runRequest, token]);
+
+    const loadCatalogue = useCallback(() => {
+        cancelPending();
+        clearCatalogue();
+        requestCatalogue();
+    }, [cancelPending, clearCatalogue, requestCatalogue]);
+
+    /**
+     * Which analysis, in which language, the state below belongs to. When that changes the clearing belongs to the
+     * render that first knows of it, not to the effect that starts the new request: adjusted here, an injector list
+     * fetched for the analysis being left behind is never drawn under the one arriving.
+     */
+    const catalogueKey = `${token}|${String(analysisId)}|${locale}`;
+    const [loadedCatalogueKey, setLoadedCatalogueKey] = useState(catalogueKey);
+    if (loadedCatalogueKey !== catalogueKey) {
+        setLoadedCatalogueKey(catalogueKey);
+        clearCatalogue();
+    }
 
     useEffect(() => {
-        loadCatalogue();
+        requestCatalogue();
         return () => {
             abortActiveRequest();
             revokeObjectUrl();
         };
-    }, [abortActiveRequest, loadCatalogue, revokeObjectUrl]);
+    }, [abortActiveRequest, requestCatalogue, revokeObjectUrl]);
 
     useEffect(() => {
         if (state.status === 'loadingInjectors') return;

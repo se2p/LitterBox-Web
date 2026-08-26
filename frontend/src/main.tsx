@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: 2025 LitterBox-Web contributors
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import { App } from './App';
 import { localeReady } from './i18n';
 import './styles.css';

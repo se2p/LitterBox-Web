@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: 2025 LitterBox-Web contributors
 import { act, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter, useHistory } from 'react-router-dom';
+import { MemoryRouter, useNavigate } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { App } from '../src/App';
 import i18n from '../src/i18n';
@@ -518,15 +518,17 @@ describe('advanced analysis discovery', () => {
         });
 
         function ChangeRetainedState() {
-            const history = useHistory();
+            const navigate = useNavigate();
             return (
                 <button
                     type="button"
                     onClick={() =>
-                        history.push('/advanced', {
-                            retainedAnalysis: {
-                                submissionToken: 'new-retained-token',
-                                analysisId: 18,
+                        navigate('/advanced', {
+                            state: {
+                                retainedAnalysis: {
+                                    submissionToken: 'new-retained-token',
+                                    analysisId: 18,
+                                },
                             },
                         })
                     }

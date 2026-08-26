@@ -14,8 +14,12 @@ interface DialogProps {
 export function Dialog({ open, title, closeLabel, onClose, children }: DialogProps) {
     const titleId = useId();
     const dialogRef = useRef<HTMLDivElement>(null);
+    // Held in a ref so the key handler below always calls the newest one without being torn down and rebound on
+    // every render. Written after the render rather than during it, which is what a ref is for.
     const onCloseRef = useRef(onClose);
-    onCloseRef.current = onClose;
+    useEffect(() => {
+        onCloseRef.current = onClose;
+    });
 
     useEffect(() => {
         if (!open) return;

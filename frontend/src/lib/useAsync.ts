@@ -13,6 +13,9 @@ export type AsyncState<T, E = string> =
 const defaultToError = (reason: unknown): string =>
     reason instanceof Error ? reason.message : String(reason);
 
+const sameDependencies = (left: DependencyList, right: DependencyList): boolean =>
+    left.length === right.length && left.every((value, index) => Object.is(value, right[index]));
+
 interface UseAsyncOptions<E> {
     /** When false, no request is made and the state stays 'idle'. Defaults to true. */
     enabled?: boolean;
@@ -35,14 +38,21 @@ export function useAsync<T, E = string>(
         status: enabled ? 'loading' : 'idle',
     });
     const [reloadToken, setReloadToken] = useState(0);
+    const loadKey: DependencyList = [enabled, reloadToken, ...deps];
+    const [lastLoadKey, setLastLoadKey] = useState(loadKey);
+
+    /**
+     * The reset belongs to the render that asks for a new load, not to the effect that starts it: adjusted here,
+     * the value of the previous load never reaches the screen alongside the dependencies that superseded it.
+     */
+    if (!sameDependencies(lastLoadKey, loadKey)) {
+        setLastLoadKey(loadKey);
+        setState({ status: enabled ? 'loading' : 'idle' });
+    }
 
     useEffect(() => {
-        if (!enabled) {
-            setState({ status: 'idle' });
-            return;
-        }
+        if (!enabled) return;
         const controller = new AbortController();
-        setState({ status: 'loading' });
         void load(controller.signal)
             .then((value) => {
                 if (controller.signal.aborted) return;

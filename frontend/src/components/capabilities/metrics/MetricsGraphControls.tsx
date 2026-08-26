@@ -320,7 +320,21 @@ function GraphViewport({
     label: string;
 }) {
     const { t } = useTranslation();
-    const view = useGraphView(svg);
+    // Destructured rather than kept whole: the hook hands back refs alongside ordinary values, and reading any
+    // property of that object during render reads it through something the linter must treat as a ref.
+    const {
+        canvasRef,
+        surfaceRef,
+        transform,
+        zoomPercent,
+        grabbing,
+        zoomIn,
+        zoomOut,
+        fit,
+        actualSize,
+        onPointerDown,
+        onKeyDown,
+    } = useGraphView(svg);
     const [expanded, setExpanded] = useState(false);
     const expandRef = useRef<HTMLButtonElement>(null);
     const closeRef = useRef<HTMLButtonElement>(null);
@@ -360,20 +374,20 @@ function GraphViewport({
                 role="group"
                 aria-label={t('metricsGraphViewControls')}
             >
-                <button type="button" onClick={view.zoomOut} aria-label={t('metricsGraphZoomOut')}>
+                <button type="button" onClick={zoomOut} aria-label={t('metricsGraphZoomOut')}>
                     <span aria-hidden="true">−</span>
                 </button>
                 {/* Not announced on every wheel notch: the reader asked to move, not to be told they moved. */}
                 <span className="metrics-graph-zoom-level" aria-live="off">
-                    {t('metricsGraphZoomLevel', { percent: view.zoomPercent })}
+                    {t('metricsGraphZoomLevel', { percent: zoomPercent })}
                 </span>
-                <button type="button" onClick={view.zoomIn} aria-label={t('metricsGraphZoomIn')}>
+                <button type="button" onClick={zoomIn} aria-label={t('metricsGraphZoomIn')}>
                     <span aria-hidden="true">+</span>
                 </button>
-                <button type="button" onClick={view.fit}>
+                <button type="button" onClick={fit}>
                     {t('metricsGraphFit')}
                 </button>
-                <button type="button" onClick={view.actualSize}>
+                <button type="button" onClick={actualSize}>
                     {t('metricsGraphActualSize')}
                 </button>
                 {expanded ? (
@@ -392,20 +406,20 @@ function GraphViewport({
                 )}
             </div>
             <div
-                ref={view.canvasRef}
-                className={`metrics-graph-canvas${view.grabbing ? ' metrics-graph-canvas-grabbing' : ''}`}
+                ref={canvasRef}
+                className={`metrics-graph-canvas${grabbing ? ' metrics-graph-canvas-grabbing' : ''}`}
                 tabIndex={0}
                 role="group"
                 aria-label={t('metricsGraphCanvas')}
                 aria-describedby="metrics-graph-canvas-hint"
-                onPointerDown={view.onPointerDown}
-                onKeyDown={view.onKeyDown}
+                onPointerDown={onPointerDown}
+                onKeyDown={onKeyDown}
             >
                 <div
-                    ref={view.surfaceRef}
+                    ref={surfaceRef}
                     className="metrics-graph-surface"
                     style={{
-                        transform: `translate(${view.transform.x}px, ${view.transform.y}px) scale(${view.transform.scale})`,
+                        transform: `translate(${transform.x}px, ${transform.y}px) scale(${transform.scale})`,
                     }}
                 >
                     <div

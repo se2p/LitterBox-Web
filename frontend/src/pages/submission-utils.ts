@@ -58,11 +58,7 @@ export const primaryAnalysis = (value: SubmissionStatusResponse): BatchAnalysis 
 };
 
 export type IssueSort =
-    | 'result'
-    | 'sprite-finder'
-    | 'finder-sprite'
-    | 'severity-desc'
-    | 'severity-asc';
+    'result' | 'sprite-finder' | 'finder-sprite' | 'severity-desc' | 'severity-asc';
 
 export interface IssueFilterState {
     family: string;

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 // SPDX-FileCopyrightText: 2026 LitterBox-Web contributors
 
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { TranslationKey } from '../../i18n/locales';
 import { QuizCard } from '../single-project/QuizCard';
@@ -91,17 +91,14 @@ export function TeacherQuestionOverview({
         [questions, typeFilter],
     );
 
-    const countFor = useMemo(() => {
-        const cache = new Map<string, number>();
-        return (filter: BlockModelFilter): number => {
-            const key = JSON.stringify(filter);
-            const known = cache.get(key);
-            if (known !== undefined) return known;
-            const count = ofChosenType.filter((question) => matchesFilter(question, filter)).length;
-            cache.set(key, count);
-            return count;
-        };
-    }, [ofChosenType]);
+    // Counted on each call rather than through a memoising map: the map was written to while the rows were being
+    // drawn, which is a render mutating a value it will still be holding on the next one. The count is a pass over
+    // the questions of the chosen type, and there are a few dozen of those.
+    const countFor = useCallback(
+        (filter: BlockModelFilter): number =>
+            ofChosenType.filter((question) => matchesFilter(question, filter)).length,
+        [ofChosenType],
+    );
 
     const typeOptions = useMemo(
         () =>

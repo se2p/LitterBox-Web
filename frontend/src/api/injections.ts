@@ -90,9 +90,7 @@ export interface InjectionArchiveResult {
 export const INJECTION_BUNDLE_FILENAME = 'litterbox-derived-all.zip';
 
 export type InjectionArchiveFilename =
-    | 'litterbox-derived.sb3'
-    | 'litterbox-derived.mblock'
-    | typeof INJECTION_BUNDLE_FILENAME;
+    'litterbox-derived.sb3' | 'litterbox-derived.mblock' | typeof INJECTION_BUNDLE_FILENAME;
 
 /** The local spelling of the shared pair, kept because "nonblank" reads better as an argument at these sites. */
 const isBoundedString = (value: unknown, maximum: number, nonblank = false): value is string =>
