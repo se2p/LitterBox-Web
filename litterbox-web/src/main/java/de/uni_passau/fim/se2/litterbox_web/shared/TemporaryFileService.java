@@ -23,6 +23,9 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
+
 /**
  * Manages temporary files that will be automatically deleted after some time.
  * <p>
@@ -49,9 +52,8 @@ public class TemporaryFileService {
      * @param file     Some received file content.
      * @param lifetime The duration after which the file will be deleted.
      * @return The path to the temporary file.
-     * @throws IOException In case creating the file fails.
      */
-    public Path createTemporaryFile(final MultipartFile file, final Duration lifetime) throws IOException {
+    public Mono<Path> createTemporaryFile(final MultipartFile file, final Duration lifetime) {
         return createTemporaryFile(file, file.getName(), lifetime);
     }
 
@@ -63,17 +65,22 @@ public class TemporaryFileService {
      *                 prefix.
      * @param lifetime The duration after which the file will be deleted.
      * @return The path to the temporary file.
-     * @throws IOException In case creating the file fails.
      */
-    public Path createTemporaryFile(
+    public Mono<Path> createTemporaryFile(
         final MultipartFile file, final String filename, final Duration lifetime
-    ) throws IOException {
+    ) {
         final Path targetFile = applicationTemp.getDir().toPath().resolve(generateUniqueFilename(filename));
-        file.transferTo(targetFile);
-
-        scheduleDeletion(targetFile, lifetime);
-
-        return targetFile;
+        return Mono.defer(() -> {
+            try {
+                file.transferTo(targetFile);
+            }
+            catch (IOException e) {
+                return Mono.error(e);
+            }
+            return Mono.just(targetFile);
+        })
+            .subscribeOn(Schedulers.boundedElastic())
+            .doOnNext(p -> scheduleDeletion(p, lifetime));
     }
 
     private Path generateUniqueFilename(final String baseFilename) {

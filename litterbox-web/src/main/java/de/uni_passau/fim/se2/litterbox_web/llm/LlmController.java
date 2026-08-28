@@ -25,6 +25,7 @@ import de.uni_passau.fim.se2.litterbox_web.shared.JsonScratchProgram;
 import de.uni_passau.fim.se2.litterbox_web.shared.Profiles;
 import de.uni_passau.fim.se2.litterbox_web.shared.dto.IssueDTO;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Lazy
 @RestController
@@ -47,21 +48,29 @@ public class LlmController {
     }
 
     @PostMapping("issue/explain")
-    public IssueDTO getIssueExplanation(@RequestBody final LlmIssueRequest request) {
-        return llmService.getIssueExplanation(request.locale, request.program, request.issue);
+    public Mono<IssueDTO> getIssueExplanation(@RequestBody final LlmIssueRequest request) {
+        return Mono.fromSupplier(() -> llmService.getIssueExplanation(request.locale, request.program, request.issue));
     }
 
     @PostMapping("issue/fix")
-    public LlmIssueFixResponse getIssueFix(@RequestBody final LlmIssueRequest request) {
-        final Program fixedProgram = llmService.fixIssue(request.locale, request.program, request.issue);
-
-        return new LlmIssueFixResponse(fixedProgram);
+    public Mono<LlmIssueFixResponse> getIssueFix(@RequestBody final LlmIssueRequest request) {
+        return Mono
+            .fromSupplier(() -> llmService.fixIssue(request.locale, request.program, request.issue))
+            .map(LlmIssueFixResponse::new);
     }
 
+    /**
+     * Asks the LLM the given question either with the context of the program or just the sprite.
+     *
+     * @param request A question request.
+     * @return The LLM response.
+     */
     @PostMapping("question")
-    public String respondToQuestion(@RequestBody final QuestionRequest request) {
-        return llmService.respondToQuestion(
-            request.locale, request.program, request.spriteName().orElse(null), request.question
+    public Mono<String> respondToQuestion(@RequestBody final QuestionRequest request) {
+        return Mono.fromSupplier(
+            () -> llmService.respondToQuestion(
+                request.locale, request.program, request.spriteName().orElse(null), request.question
+            )
         );
     }
 

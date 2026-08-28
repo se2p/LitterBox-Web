@@ -26,6 +26,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.web.server.ResponseStatusException;
@@ -105,7 +106,7 @@ class SingleProjectFeedbackQuizTest {
         when(inspector.inspect(any())).thenReturn(new ProjectArchiveInspector.Inspection(new byte[0], List.of()));
         // Regenerating a report that predates stored answer keys has to ask for the same set the report was built from.
         when(qlc.getQuestions(any(), any(), any(), any(), any(), eq(300), eq(false), eq(0), eq(false), eq(0L)))
-            .thenReturn(List.of(question));
+            .thenReturn(Stream.of(question));
         when(sourceArtifacts.findById(9)).thenReturn(Mono.just(artifact));
         when(sourceArtifacts.open(any())).thenReturn(Mono.just(new ByteArrayInputStream(new byte[] { 1 })));
         when(answers.record(eq(41L), eq(QUESTION_ID), eq(CHOICE_B), eq(true))).thenReturn(Mono.empty());

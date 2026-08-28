@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import reactor.core.publisher.Mono;
+
 @RestController
 @RequestMapping("ml/masking-tokenizer/tokenize")
 public class TokenizerController {
@@ -27,17 +29,18 @@ public class TokenizerController {
     }
 
     @PostMapping("complete-program/block-masking")
-    public List<String> tokenizeMaskingExpression(@RequestBody final MaskedTokenizationRequest request) {
-        return tokenizerService.tokenizeMaskingBlock(request.program(), request.blockId());
+    public Mono<List<String>> tokenizeMaskingExpression(@RequestBody final MaskedTokenizationRequest request) {
+        return Mono.fromSupplier(() -> tokenizerService.tokenizeMaskingBlock(request.program(), request.blockId()));
     }
 
     @PostMapping("complete-program/fixed-option-masking")
-    public List<String> tokenizeMaskingFixedOption(@RequestBody final MaskedTokenizationRequest request) {
-        return tokenizerService.tokenizeMaskingFixedOption(request.program(), request.blockId());
+    public Mono<List<String>> tokenizeMaskingFixedOption(@RequestBody final MaskedTokenizationRequest request) {
+        return Mono
+            .fromSupplier(() -> tokenizerService.tokenizeMaskingFixedOption(request.program(), request.blockId()));
     }
 
     @PostMapping("statement-level/block-masking")
-    public List<String> tokenize(@RequestBody final MaskedTokenizationRequest request) {
-        return tokenizerService.tokenizeStatementLevel(request.program(), request.blockId());
+    public Mono<List<String>> tokenize(@RequestBody final MaskedTokenizationRequest request) {
+        return Mono.fromSupplier(() -> tokenizerService.tokenizeStatementLevel(request.program(), request.blockId()));
     }
 }

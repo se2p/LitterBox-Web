@@ -32,7 +32,7 @@ class TemporaryFileServiceTest extends LitterboxWebIntegrationTest {
     @Test
     void createTemporaryFile() throws IOException {
         final MultipartFile fileContent = createTestFile("test.sb3");
-        final Path file = temporaryFileService.createTemporaryFile(fileContent, Duration.ofSeconds(1));
+        final Path file = temporaryFileService.createTemporaryFile(fileContent, Duration.ofSeconds(1)).block();
         assertThat(file).exists().hasSize(4);
         assertThat(file.getFileName().toString()).endsWith("test.sb3");
     }
@@ -40,7 +40,8 @@ class TemporaryFileServiceTest extends LitterboxWebIntegrationTest {
     @Test
     void createTemporaryFileCustomSuffix() throws IOException {
         final MultipartFile fileContent = createTestFile("ignored.sb3");
-        final Path file = temporaryFileService.createTemporaryFile(fileContent, "custom.txt", Duration.ofSeconds(1));
+        final Path file = temporaryFileService.createTemporaryFile(fileContent, "custom.txt", Duration.ofSeconds(1))
+            .block();
         assertThat(file).exists().hasSize(4);
         assertThat(file.getFileName().toString()).endsWith("custom.txt");
     }
@@ -48,7 +49,7 @@ class TemporaryFileServiceTest extends LitterboxWebIntegrationTest {
     @Test
     void cleanUpTemporaryFile() throws IOException {
         final MultipartFile fileContent = createTestFile("test_shortlived.sb3");
-        final Path file = temporaryFileService.createTemporaryFile(fileContent, Duration.ofMillis(500));
+        final Path file = temporaryFileService.createTemporaryFile(fileContent, Duration.ofMillis(500)).block();
 
         await().atMost(Duration.ofSeconds(5)).until(() -> !Files.exists(file));
 

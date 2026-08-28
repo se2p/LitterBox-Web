@@ -9,12 +9,12 @@
  */
 package de.uni_passau.fim.se2.litterbox_web.qlc;
 
-import java.util.List;
-
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import reactor.core.publisher.Flux;
 
 @RestController
 @RequestMapping("/qlc")
@@ -33,18 +33,20 @@ public class QlcController {
      * @return the generated questions.
      */
     @PostMapping("generate")
-    public List<QuestionDTO> generateQuestions(@RequestBody final QlcRequest request) {
-        return qlcService.getQuestions(
-            request.program(),
-            request.languageAsLocale(),
-            request.finderNames(),
-            request.dimensions(),
-            request.scopes(),
-            request.maxQuestions(),
-            request.balanced(),
-            request.perCell(),
-            request.shuffle(),
-            request.seed()
+    public Flux<QuestionDTO> generateQuestions(@RequestBody final QlcRequest request) {
+        return Flux.fromStream(
+            qlcService.getQuestions(
+                request.program(),
+                request.languageAsLocale(),
+                request.finderNames(),
+                request.dimensions(),
+                request.scopes(),
+                request.maxQuestions(),
+                request.balanced(),
+                request.perCell(),
+                request.shuffle(),
+                request.seed()
+            )
         );
     }
 }

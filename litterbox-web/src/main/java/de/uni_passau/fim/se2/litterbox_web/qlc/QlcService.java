@@ -12,6 +12,7 @@ package de.uni_passau.fim.se2.litterbox_web.qlc;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 
@@ -40,7 +41,7 @@ public class QlcService {
      * @param seed         optional random seed for reproducibility.
      * @return the generated questions as DTOs.
      */
-    public List<QuestionDTO> getQuestions(
+    public Stream<QuestionDTO> getQuestions(
         final Program program,
         final Locale locale,
         final List<String> finderNames,
@@ -57,9 +58,9 @@ public class QlcService {
             finderNames, translator, dimensions, scopes, maxQuestions, balanced, perCell, shuffle, seed
         );
 
-        return analyzer.analyze(program).stream()
-            .map(dto -> convertQuestion(dto, translator))
-            .toList();
+        return analyzer.analyze(program)
+            .stream()
+            .map(dto -> convertQuestion(dto, translator));
     }
 
     private QuestionDTO convertQuestion(

@@ -58,7 +58,7 @@ class QlcControllerIntegrationTest extends LitterboxWebIntegrationTest {
             GENERATE_URL, request, QuestionDTO.class, HttpStatus.OK
         );
 
-        assertThat(questions).allSatisfy(q -> {
+        assertThat(questions).isNotEmpty().allSatisfy(q -> {
             assertThat(q.name()).isNotBlank();
             assertThat(q.translatedFinderName()).isNotBlank();
             assertThat(q.questionText()).isNotBlank();
@@ -80,6 +80,7 @@ class QlcControllerIntegrationTest extends LitterboxWebIntegrationTest {
 
         assertThat(questions)
             .filteredOn(q -> QuestionType.MULTIPLE_CHOICE.equals(q.type()))
+            .isNotEmpty()
             .allSatisfy(q -> assertThat(q.choices()).isNotEmpty());
     }
 
@@ -111,8 +112,10 @@ class QlcControllerIntegrationTest extends LitterboxWebIntegrationTest {
             GENERATE_URL, filteredRequest, QuestionDTO.class, HttpStatus.OK
         );
 
-        assertThat(filtered).allMatch(q -> "ScriptsInProgram".equals(q.name()));
-        assertThat(filtered.size()).isLessThanOrEqualTo(allQuestions.size());
+        assertThat(filtered).isEmpty();
+        assertThat(filtered)
+            .hasSizeLessThanOrEqualTo(allQuestions.size())
+            .allMatch(q -> "ScriptsInProgram".equals(q.name()));
     }
 
     @Test
@@ -126,7 +129,9 @@ class QlcControllerIntegrationTest extends LitterboxWebIntegrationTest {
             GENERATE_URL, request, QuestionDTO.class, HttpStatus.OK
         );
 
-        assertThat(questions).allMatch(q -> ProgramDimension.TEXT.equals(q.programDimension()));
+        assertThat(questions)
+            .isNotEmpty()
+            .allMatch(q -> ProgramDimension.TEXT.equals(q.programDimension()));
     }
 
     @Test
@@ -140,6 +145,7 @@ class QlcControllerIntegrationTest extends LitterboxWebIntegrationTest {
             GENERATE_URL, request, QuestionDTO.class, HttpStatus.OK
         );
 
+        assertThat(questions).isEmpty();
         assertThat(questions).allMatch(q -> ScopeOfFocus.ATOM.equals(q.scopeOfFocus()));
     }
 

@@ -30,6 +30,7 @@ import de.uni_passau.fim.se2.litterbox_web.shared.Scratch3ParserService;
  * The few things every part of the single-project workflow needs: what to call a state, what a file's extension is, how
  * much of a stream may be read, and what may safely be said about a failure.
  *
+ * <p>
  * These sit together because taking a submission in, running its analysis and reading the result back all need them,
  * and none of the three owns them.
  */
@@ -69,7 +70,12 @@ public final class SingleProjectSupport {
 
     /** Only two formats are analysed, so anything that is not an mBlock project is treated as a Scratch one. */
     static String extension(final String filename) {
-        return filename.toLowerCase(Locale.ROOT).endsWith(".mblock") ? ".mblock" : ".sb3";
+        if (filename.toLowerCase(Locale.ROOT).endsWith(".mblock")) {
+            return ".mblock";
+        }
+        else {
+            return ".sb3";
+        }
     }
 
     /**
@@ -79,7 +85,12 @@ public final class SingleProjectSupport {
      */
     static String safeMessage(final Throwable error, final String fallback) {
         final String message = error.getMessage();
-        return message == null ? fallback : message.substring(0, Math.min(message.length(), 1000));
+        if (message == null) {
+            return fallback;
+        }
+        else {
+            return message.substring(0, Math.min(message.length(), 1000));
+        }
     }
 
     /** A digest of some content, by name. Absent algorithms are a broken runtime rather than a bad project. */
@@ -159,15 +170,17 @@ public final class SingleProjectSupport {
         return qlc.getQuestions(
             program, Locale.of(locale), null, Set.of(), Set.of(), MAX_GENERATED_QUESTIONS,
             false, 0, false, 0L
-        ).stream().filter(SingleProjectSupport::markable).toList();
+        ).filter(SingleProjectSupport::markable).toList();
     }
 
     /**
      * Whether an answer to this question could be marked at all.
      *
+     * <p>
      * Two kinds cannot. One carries no type, so there is no rule to mark it by. The other carries no expected answer,
      * so every answer to it is wrong: a reader is asked something and then told they got it wrong whatever they said.
      *
+     * <p>
      * Neither is a question this service can honour, so neither is exported. Doing it here rather than where the set is
      * displayed means the same set is used to ask and to mark, which is what lets an answer be checked against the
      * question the reader actually saw.

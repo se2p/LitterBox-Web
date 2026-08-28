@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import de.uni_passau.fim.se2.litterbox.analytics.ProgramScratchBlocksAnalyzer;
-import de.uni_passau.fim.se2.litterbox.ast.model.Program;
 import de.uni_passau.fim.se2.litterbox_web.shared.Scratch3ParserService;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/converter")
@@ -28,10 +28,19 @@ public class ConverterController {
         this.parserService = parserService;
     }
 
+    /**
+     * Converts a project into ScratchBlocks format.
+     *
+     * @param projectJson A Scratch project JSON.
+     * @return The same project, but in ScratchBlocks format.
+     */
     @PostMapping("scratchblocks")
-    public String scratchBlocks(@RequestBody String projectJson) {
-        final Program program = parserService.parseFromString(projectJson);
-        ProgramScratchBlocksAnalyzer scratchBlocksAnalyzer = new ProgramScratchBlocksAnalyzer();
-        return scratchBlocksAnalyzer.analyze(program);
+    public Mono<String> scratchBlocks(@RequestBody String projectJson) {
+        return Mono
+            .fromSupplier(() -> parserService.parseFromString(projectJson))
+            .map(program -> {
+                final ProgramScratchBlocksAnalyzer scratchBlocksAnalyzer = new ProgramScratchBlocksAnalyzer();
+                return scratchBlocksAnalyzer.analyze(program);
+            });
     }
 }

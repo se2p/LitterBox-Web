@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import de.uni_passau.fim.se2.litterbox_web.shared.LitterBoxAnalysisService;
 import de.uni_passau.fim.se2.litterbox_web.shared.dto.IssueDTO;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/linter")
@@ -37,8 +38,10 @@ public class LinterController {
      * @return feedback for the submitted program as string.
      */
     @PostMapping("analyze")
-    public Set<IssueDTO> generateFeedback(@RequestBody final LinterRequest request) {
-        final Locale language = request.languageAsLocale();
-        return litterBoxAnalysisService.getIssues(request.program(), language, request.detectors());
+    public Mono<Set<IssueDTO>> generateFeedback(@RequestBody final LinterRequest request) {
+        return Mono.fromSupplier(() -> {
+            final Locale language = request.languageAsLocale();
+            return litterBoxAnalysisService.getIssues(request.program(), language, request.detectors());
+        });
     }
 }
