@@ -4,6 +4,7 @@
 import { describe, expect, it } from 'vitest';
 import {
     parseRichHint,
+    richHintLead,
     richHintTerms,
     scratchblocksSourceForInline,
     type RichHintNode,
@@ -128,5 +129,36 @@ describe('Scratchblocks source normalization', () => {
         [undefined, ''],
     ])('normalizes %j', (source, expected) => {
         expect(normalizeScratchblocksSource(source)).toBe(expected);
+    });
+});
+
+describe('the lead paragraph of a hint', () => {
+    it('cuts a LitterBox hint at the blank line before its suggestion', () => {
+        const hint =
+            '[b]Problem:[/b] [newLine] The message is never sent. [newLine] [newLine] ' +
+            '[b]Suggestion for code improvement:[/b] [newLine] Use a [sbi]broadcast (go v)[/sbi] block.';
+
+        expect(richHintLead(hint)).toBe('[b]Problem:[/b] [newLine] The message is never sent.');
+    });
+
+    it('cuts between paragraphs, so what it returns is still balanced markup', () => {
+        const hint = '[b]Problem:[/b] [newLine] A loop never ends. [newLine] [newLine] [b]Fix:[/b]';
+        const nodes = parseRichHint(richHintLead(hint));
+
+        expect(nodes.filter((node) => node.kind === 'format')).toHaveLength(1);
+        expect(JSON.stringify(nodes)).not.toContain('Fix');
+    });
+
+    it.each([
+        ['A pattern that could be tidied.', 'A pattern that could be tidied.'],
+        [
+            'One paragraph [newLine] with a single break.',
+            'One paragraph [newLine] with a single break.',
+        ],
+        ['', ''],
+        [null, ''],
+        [undefined, ''],
+    ])('leaves %j whole when it has no blank line', (hint, expected) => {
+        expect(richHintLead(hint)).toBe(expected);
     });
 });

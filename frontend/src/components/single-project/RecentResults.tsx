@@ -30,14 +30,27 @@ const DETAIL_LABEL_KEYS: Record<RecentAnalysisKind, TranslationKey> = {
 export function RecentResults({
     kinds,
     headingId = 'recent-results-heading',
+    heading = 'recentResultsTitle',
+    linkTo,
 }: {
     kinds: readonly RecentAnalysisKind[];
     headingId?: string;
+    heading?: TranslationKey;
+    linkTo?: (project: RecentProject) => string;
 }) {
     const { t } = useTranslation();
     const [forgotten, setForgotten] = useState(false);
     const [remembered] = useState(recentProjects);
-    const projects = forgotten ? [] : remembered.filter((project) => kinds.includes(project.kind));
+    const projects = forgotten
+        ? []
+        : remembered
+              .filter((project) => kinds.includes(project.kind))
+              .map((project) => ({
+                  project,
+                  href: linkTo
+                      ? linkTo(project)
+                      : `${project.kind === 'questions' ? '/questions' : '/submissions'}/${encodeURIComponent(project.token)}`,
+              }));
     if (projects.length === 0) return null;
 
     const detail = (project: RecentProject): string => {
@@ -58,13 +71,11 @@ export function RecentResults({
 
     return (
         <section className="recent-results" aria-labelledby={headingId}>
-            <h2 id={headingId}>{t('recentResultsTitle')}</h2>
+            <h2 id={headingId}>{t(heading)}</h2>
             <ul className="recent-results-list">
-                {projects.map((project) => (
+                {projects.map(({ project, href }) => (
                     <li key={project.token}>
-                        <Link
-                            to={`${project.kind === 'questions' ? '/questions' : '/submissions'}/${encodeURIComponent(project.token)}`}
-                        >
+                        <Link to={href}>
                             {/* A class set opened from a shared link arrives with no name on it. What it is is
                                 still worth offering; what it was called is simply not known here. */}
                             {project.name.trim() || t('recentResultUnnamed')}

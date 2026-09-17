@@ -33,6 +33,7 @@ export function FindingGroup({
     token,
     locale,
     labels,
+    askAiAvailable = false,
 }: {
     group: Group;
     /** What the catalogue says about this finder, when the analysis carries an entry it can be matched to. */
@@ -46,6 +47,7 @@ export function FindingGroup({
     token: string;
     locale: string;
     labels: IssueCardLabels;
+    askAiAvailable?: boolean;
 }) {
     const { t } = useTranslation();
     const [open, setOpen] = useState(true);
@@ -179,6 +181,7 @@ export function FindingGroup({
                     token={token}
                     locale={locale}
                     labels={labels}
+                    askAiAvailable={askAiAvailable}
                 />
             ))}
         </div>

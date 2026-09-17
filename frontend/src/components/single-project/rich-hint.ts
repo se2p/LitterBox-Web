@@ -337,6 +337,19 @@ export const richHintTerms = (locale: string): RichHintTerms => {
     }
 };
 
+/**
+ * A hint up to its first blank line, for somewhere with room for one paragraph rather than all of them.
+ *
+ * A LitterBox hint states the pattern it matched, then leaves a blank line, then says what could be done about it.
+ * The cut is at that blank line, which is between paragraphs and so never inside a tag pair: what comes back is
+ * still markup this module can parse. A hint written as a single paragraph comes back whole.
+ */
+export const richHintLead = (value: string | null | undefined): string => {
+    if (typeof value !== 'string') return '';
+    const blankLine = value.search(/\[newLine\]\s*\[newLine\]/);
+    return (blankLine < 0 ? value : value.slice(0, blankLine)).trim();
+};
+
 /** The readable text behind the markup, for search and for accessible names. */
 export const richHintPlainText = (value: string | null | undefined, locale: string): string => {
     const terms = richHintTerms(locale);

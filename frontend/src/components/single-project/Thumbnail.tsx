@@ -37,11 +37,11 @@ export function Thumbnail({ sprite, thumbnailRef, label, fallbackLabel }: Thumbn
         );
 
     return (
-        <div className="costume-fallback" role="img" aria-label={label}>
+        <span className="costume-fallback" role="img" aria-label={label}>
             <span aria-hidden="true" className="costume-fallback-mark">
                 {sprite?.slice(0, 1).toUpperCase() || 'S'}
             </span>
             <span>{fallbackLabel}</span>
-        </div>
+        </span>
     );
 }

@@ -249,6 +249,133 @@ export const pack: Partial<TranslationPack> = {
     questionsNoneCheckableBody:
         'LitterBox generó preguntas para este proyecto, pero ninguna cuyas respuestas se puedan comprobar automáticamente. El conjunto completo está en la vista de clase de este resultado.',
     questionsWrongSource: 'Este enlace no lleva a un conjunto de preguntas.',
+    navAskAi: 'Ayúdame a entender',
+    askAiTitle: 'Ayúdame a entender un proyecto de Scratch',
+    askAiLead:
+        'Sube un proyecto o pega su enlace. LitterBox lo lee primero, para que una pregunta pueda tratar sobre los bloques que realmente están ahí.',
+    askAiResultTitle: 'Ayúdame a entender',
+    askAiPreparingTitle: 'Preparando las respuestas a las preguntas',
+    askAiProcessing:
+        'Esto tarda un momento; podrás hacer preguntas en cuanto se haya leído el proyecto.',
+    askAiAnalysisFailed:
+        'El análisis ha fallado, así que todavía no hay nada sobre lo que preguntar.',
+    askAiAnalysisCancelled:
+        'El análisis se canceló antes de terminar, así que todavía no hay nada sobre lo que preguntar.',
+    askAiNoAnalysisBody: 'Este enlace no lleva a un análisis de proyecto completado.',
+    askAiChooserTitle: 'Preguntas sobre {{project}}',
+    askAiChooserLead:
+        'El ayudante de IA responde a partir de lo que LitterBox leyó en {{project}}. Elige algo para preguntar.',
+    askAiQuestionsUnavailable: 'No se pudieron cargar las preguntas de este proyecto.',
+    // Aparece al pie de cada pantalla del espacio de trabajo, porque vale para todas sus respuestas y hay más
+    // de una forma de llegar a él: un enlace desde un hallazgo abre una conversación sin pasar por la página
+    // de inicio ni por la lista de preguntas.
+    askAiAnswerNote: 'Las respuestas las escribe un ayudante de IA y pueden ser incorrectas.',
+    askAiConversationLanguageFixed:
+        'Esta conversación se inició en otro idioma, así que sus respuestas siguen en ese idioma. Elige otra pregunta para preguntar en este.',
+    askAiThisProject: 'tu proyecto',
+    askAiSubmitLabel: 'Continuar a las preguntas',
+    askAiRecentTitle: 'Preguntas sobre un proyecto que ya analizaste',
+    askAiScriptWithoutTrigger: 'Un programa de este objeto',
+    askAiTrailLabel: 'Dónde estás',
+    askAiAllQuestions: 'Todas las preguntas',
+    askAiTargetQuestionCount_one: '{{count}} pregunta',
+    askAiTargetQuestionCount_other: '{{count}} preguntas',
+    askAiQuestionNumber: '{{number}} de {{count}}',
+    askAiShowMoreQuestions: 'Mostrar más preguntas',
+    askAiShowFewerQuestions: 'Mostrar menos preguntas',
+    askAiHelpWithTitle: '¿Con qué te gustaría que te ayudara?',
+    askAiGoalUnderstand: 'Entender cómo funciona',
+    askAiGoalUnderstandLead: 'Qué hace tu proyecto y cómo funciona cada una de sus partes.',
+    askAiGoalProblems: 'Buscar problemas',
+    askAiGoalProblemsLead: 'Errores y problemas que LitterBox detectó en tu código.',
+    askAiGoalAdd: 'Añadir algo nuevo',
+    askAiGoalAddLead: 'Ideas para algo que este proyecto todavía no hace.',
+    askAiGoalImprove: 'Ver qué está bien o se puede mejorar',
+    askAiGoalImproveLead: 'Patrones logrados y partes que puedes ordenar.',
+    askAiGoalUnsure: '¿No lo tienes claro? Muéstrame una idea',
+    askAiWhichPartLead: '¿Sobre qué parte del proyecto?',
+    askAiPickQuestionLead: 'Elige una pregunta.',
+    askAiPartWholeProject: 'Todo el proyecto',
+    askAiPartWholeSprite: 'Todo sobre {{sprite}}',
+    askAiPlaceChipScript: '{{sprite}}: {{trigger}}',
+    askAiPartsAvailable_one: '{{count}} parte para elegir.',
+    askAiPartsAvailable_other: '{{count}} partes para elegir.',
+    askAiQuestionsAvailable_one: '{{count}} pregunta para elegir.',
+    askAiQuestionsAvailable_other: '{{count}} preguntas para elegir.',
+    askAiQuestionsShownOf: 'Se muestran {{shown}} de {{total}} preguntas.',
+    askAiGeneralSummarise: '¿Qué hace este proyecto?',
+    askAiGeneralExplain: '¿Cómo funciona este proyecto?',
+    askAiGeneralSuggestExtension: '¿Qué cosas nuevas podría añadir a este proyecto?',
+    askAiGeneralProvideFeedback: '¿Qué funciona bien en este proyecto y qué se podría mejorar?',
+    askAiSpriteSummarise: '¿Qué hace {{sprite}}?',
+    askAiSpriteExplain: '¿Cómo funciona {{sprite}}?',
+    askAiSpriteSuggestExtension: '¿Qué cosas nuevas podría añadir a {{sprite}}?',
+    askAiSpriteProvideFeedback: '¿Qué funciona bien en {{sprite}} y qué se podría mejorar?',
+    askAiQuestionsTruncated:
+        'Este proyecto es grande, así que esto es una selección de lo que puedes preguntar, no todo.',
+    askAiPreviewsTruncated:
+        'Este proyecto es grande, así que algunos scripts se muestran por su nombre en vez de sus bloques. Aun así puedes preguntar sobre ellos.',
+    askAiScriptExplain: '¿Cómo funciona este script?',
+    askAiScriptProvideFeedback: '¿Qué funciona bien en este script y qué se podría mejorar?',
+    askAiNoProblemsFound: 'LitterBox no encontró ningún problema en este proyecto.',
+    askAiNoProblemsFoundLead:
+        'Aún puedes preguntar cómo funciona, qué añadir o qué se podría mejorar.',
+    askAiFindingsHereTitle: 'Lo que LitterBox observó aquí',
+    askAiFindingsHereLead: 'Estos son patrones que LitterBox notó aquí por su cuenta.',
+    askAiFollowUpExplainSimply: '¿Puedes explicármelo más fácil?',
+    askAiFollowUpShowRelevantBlocks: '¿Qué bloques hacen esto?',
+    askAiFollowUpGiveHint: '¿Me das una pista para intentarlo yo?',
+    askAiFollowUpObserveBehaviour: '¿En qué me fijo cuando lo pruebe?',
+    askAiFollowUpExplainConcept: '¿Por qué funciona de esta manera?',
+    askAiFollowUpShowTheFix: '¿Me muestras cómo arreglarlo?',
+    askAiFollowUpShowTheChange: '¿Me muestras cómo hacerlo?',
+    askAiFollowUpsLabel: 'Pregunta más sobre esto',
+    askAiMoreFollowUps: 'Mostrar más',
+    askAiBlockRoleExisting: 'De tu proyecto',
+    askAiBlockRoleSuggested: 'Una sugerencia',
+    askAiBlockRoleExample: 'Un ejemplo',
+    askAiStatusOutOfScope:
+        'El ayudante de IA no puede responder eso a partir de lo que LitterBox leyó en este proyecto.',
+    askAiStatusUnsafe: 'El ayudante de IA no dio una respuesta que se pudiera mostrar aquí.',
+    askAiStatusCannotAnswer: 'El ayudante de IA no pudo encontrar una respuesta esta vez.',
+    askAiErrorNetworkDenied: 'Esta red no puede usar esta función.',
+    askAiErrorContextNotFound: 'No se pudo encontrar este proyecto. Puede que haya caducado.',
+    askAiErrorCapacityExhausted:
+        'El servicio está ocupado respondiendo a otras preguntas. Espera un momento y vuelve a intentarlo.',
+    askAiErrorProviderUnavailable: 'El ayudante de IA no está disponible en este momento.',
+    askAiErrorTimeout: 'La respuesta tardó demasiado tiempo. Inténtalo de nuevo.',
+    askAiErrorInvalidModelResponse:
+        'No he podido dar una respuesta clara a esta pregunta. Elige otra pregunta.',
+    askAiErrorIdempotencyConflict:
+        'Eso no se pudo enviar de nuevo de la misma manera. Inténtalo de nuevo.',
+    askAiErrorTurnInProgress:
+        'Esa pregunta todavía se está respondiendo. Espera un momento y vuelve a intentarlo.',
+    askAiErrorUnavailable:
+        'Esta función no está disponible en este momento. Inténtalo de nuevo más tarde.',
+    askAiErrorFailed: 'Algo salió mal al obtener la respuesta. Inténtalo de nuevo.',
+    askAiOpeningConversation: 'Abriendo la conversación…',
+    askAiThinking: 'El ayudante de IA está pensando…',
+    askAiQuotaExhausted:
+        'Esta conversación ha agotado las respuestas que tenía. Al elegir otra pregunta empieza una nueva.',
+    askAiAttemptsExhausted:
+        'En esta conversación han fallado demasiados intentos de dar una respuesta, así que termina aquí. Al elegir otra pregunta empieza una nueva.',
+    askAiConversationLimitReached:
+        'Hay demasiadas conversaciones sobre este proyecto abiertas a la vez, probablemente en otra pestaña. Sal de una de ellas y vuelve a hacer esta pregunta.',
+    askAiChooseAnotherQuestion: 'Elegir otra pregunta',
+    askAiRepliesLeftOfBudget: 'Quedan {{remaining}} de {{budget}} respuestas',
+    askAiFewerFollowUps: 'Mostrar menos',
+    askAiTranscriptLabel: 'Lo que preguntaste y lo que llegó',
+    askAboutFinding: 'Ayúdame a entender lo que LitterBox observó aquí',
+    askAiFindingQuestion: '¿Qué observó LitterBox aquí?',
+    askAiFindingContextLabel: 'Lo que LitterBox observó, y el código',
+    askAiScriptSpoken: '{{sprite}}, programa {{number}}: {{trigger}}',
+    askAiScriptSpokenWithoutTrigger: '{{sprite}}, programa {{number}}',
+    askAiUnavailableTitle: 'Las preguntas no están disponibles ahora mismo',
+    askAiUnavailableBody:
+        'No se pudo comprobar si el ayudante de IA puede responder preguntas aquí. Suele ser algo temporal.',
+    askAiNetworkDeniedTitle: 'No disponible en esta red',
+    askAiNetworkDeniedBody:
+        'En esta red no se pueden responder preguntas sobre un proyecto. Revisar un proyecto sigue funcionando. Si ya te has conectado a otra red, inténtalo de nuevo.',
     statusTitle: 'Análisis del proyecto',
     statusTitleFor: 'Análisis del proyecto {{project}}',
     statusLoading: 'Cargando el estado actual…',
@@ -708,6 +835,11 @@ export const pack: Partial<TranslationPack> = {
     privacyDataHeading: 'Datos enviados para el análisis',
     privacyDataBody:
         'Solo se envían al servicio de análisis configurado los datos del proyecto necesarios para el análisis. El resultado se conserva bajo el enlace devuelto al enviarlo. De los resultados de análisis completados pueden derivarse estadísticas acumuladas anónimas y con retraso; no se publica ni se incluye en listas ningún proyecto individual. Tu navegador guarda además en este dispositivo los enlaces a tus últimos resultados para que puedas volver a encontrarlos; el botón «Olvidarlos» de la página de inicio los elimina.',
+    privacyAskAiHeading: 'El ayudante de IA',
+    privacyAskAiBody:
+        'Cuando esta instalación ofrece el ayudante de IA («Ayúdame a entender»), la pregunta que se hace allí la responde un modelo de IA. Se envía la parte del proyecto sobre la que trata la pregunta — sus bloques y lo que el análisis encontró en ellos — junto con la pregunta misma. No se envían datos de cuenta ni de identidad, porque no se piden. Aun así, el contenido del proyecto puede contener datos personales, incluidos nombres, y por eso pedimos que no se suban (véase «Tu responsabilidad» más abajo). Las respuestas se generan automáticamente, no las revisa ninguna persona y pueden ser incorrectas.',
+    privacyAskAiStorageBody:
+        'Las preguntas hechas y las respuestas dadas se conservan junto al análisis al que se referían durante treinta días como máximo y después se borran. Se guardan para mantener y mejorar el servicio; no se publican.',
     privacyUploadHeading: 'Tu responsabilidad',
     privacyUploadBody:
         'No subas datos personales. Un proyecto de Scratch puede contener nombres, fotografías o grabaciones; elimínalos antes de enviarlo.',

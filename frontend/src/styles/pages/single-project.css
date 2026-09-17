@@ -700,6 +700,35 @@
     gap: var(--space-2) var(--space-3);
 }
 
+.issue-ask-ai-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-friendly);
+    background: var(--color-surface);
+    color: var(--color-ink);
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition:
+        background 0.15s ease,
+        border-color 0.15s ease;
+}
+
+.issue-ask-ai-link:hover,
+.issue-ask-ai-link:focus-visible {
+    background: var(--color-surface-muted);
+    border-color: var(--color-border-strong);
+    color: var(--color-ink);
+}
+
+.issue-ask-ai-link .ask-ai-question-icon {
+    width: 1rem;
+    height: 1rem;
+}
+
 .issue-type {
     width: fit-content;
     margin: 0;

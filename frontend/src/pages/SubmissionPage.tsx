@@ -65,6 +65,7 @@ import {
     isBatchSubmission,
     positiveAnalysisId,
     primaryAnalysis,
+    rememberAnalysedProject,
     validToolFormat,
     type IssueSort,
 } from './submission-utils';
@@ -92,10 +93,12 @@ function SubmissionResult({
     value,
     token,
     capabilityState,
+    askAiAvailable,
 }: {
     value: SubmissionStatusResponse;
     token: string;
     capabilityState: CapabilityState;
+    askAiAvailable: boolean;
 }) {
     const { t, i18n } = useTranslation();
     const graphCapabilityEnabled = capabilityEnabled(capabilityState, 'metrics-graphs');
@@ -299,6 +302,7 @@ function SubmissionResult({
                                                             token={token}
                                                             locale={locale}
                                                             labels={issueLabels}
+                                                            askAiAvailable={askAiAvailable}
                                                         />
                                                     ))}
                                                 </div>
@@ -412,8 +416,10 @@ const continuationDestination = (
 
 export function SubmissionPage({
     capabilityState = { status: 'idle' },
+    askAiAvailable = false,
 }: {
     capabilityState?: CapabilityState;
+    askAiAvailable?: boolean;
 }) {
     const { token = '' } = useParams();
     const location = useLocation();
@@ -463,14 +469,7 @@ export function SubmissionPage({
             });
             return;
         }
-        const analysis = primaryAnalysis(state.value);
-        if (!analysis || !analysisIsCompleted(analysis, state.value.status)) return;
-        rememberProject({
-            token,
-            name: analysis.name?.trim() || token,
-            kind: 'issues',
-            ...(positiveAnalysisId(analysis.id) ? { analysisId: analysis.id } : {}),
-        });
+        rememberAnalysedProject(token, state.value);
     }, [state, terminal, token]);
 
     useEffect(() => {
@@ -559,6 +558,7 @@ export function SubmissionPage({
                     value={state.value}
                     token={token}
                     capabilityState={capabilityState}
+                    askAiAvailable={askAiAvailable}
                 />
             )}
             <Dialog

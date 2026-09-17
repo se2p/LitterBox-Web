@@ -241,4 +241,30 @@ describe('reusing a project that is already here', () => {
         ).not.toBeInTheDocument();
         expect(recentProjects()).toEqual([]);
     });
+
+    it('opens remembered issue results in Ask AI', async () => {
+        rememberProject({
+            token: 'askable-token',
+            name: 'Cat project',
+            kind: 'issues',
+            analysisId: 12,
+        });
+        rememberProject({ token: 'missing-analysis', name: 'Old project', kind: 'issues' });
+        vi.spyOn(globalThis, 'fetch').mockImplementation((input) =>
+            String(input).includes('/capabilities')
+                ? Promise.resolve(capabilitiesResponse(['ask-ai']))
+                : Promise.resolve(response({ schemaVersion: 1, available: true })),
+        );
+
+        renderAt('/ask-ai');
+
+        expect(await screen.findByRole('link', { name: 'Cat project' })).toHaveAttribute(
+            'href',
+            '/ask-ai/submissions/askable-token',
+        );
+        expect(screen.getByRole('link', { name: 'Old project' })).toHaveAttribute(
+            'href',
+            '/ask-ai/submissions/missing-analysis',
+        );
+    });
 });

@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: 2026 LitterBox-Web contributors
 
 import type { AnalysisIssue, BatchAnalysis, SubmissionStatusResponse } from '../api/submissions';
+import { rememberProject } from '../lib/recent-projects';
 
 export const analysisStatus = (analysis: BatchAnalysis): string =>
     String(analysis.status ?? '').toLowerCase();
@@ -122,3 +123,15 @@ export function focusToolFromHash(hash: string): void {
         window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     target.scrollIntoView?.({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
 }
+
+/** Puts a finished single-project analysis on the recent list, under the name its result carries. */
+export const rememberAnalysedProject = (token: string, value: SubmissionStatusResponse): void => {
+    const analysis = primaryAnalysis(value);
+    if (!analysis || !analysisIsCompleted(analysis, value.status)) return;
+    rememberProject({
+        token,
+        name: analysis.name?.trim() || token,
+        kind: 'issues',
+        ...(positiveAnalysisId(analysis.id) ? { analysisId: analysis.id } : {}),
+    });
+};

@@ -7,14 +7,11 @@ import { Navigate, Route, Routes, useLocation } from 'react-router';
 import { SUPPORTED_LOCALES, type SupportedLocale } from './api/capabilities';
 import { Alert } from './components/Alert';
 import { ApplicationShell } from './components/ApplicationShell';
-import { LoadingState } from './components/States';
+import { PageMain } from './components/Page';
+import { ErrorState, LoadingState } from './components/States';
 import { InformationalPage } from './pages/InformationalPage';
-// The child's journey — the page they land on and the result they came back for — is loaded with the shell.
 import { SubmitPage } from './pages/SubmitPage';
 import { SubmissionPage } from './pages/SubmissionPage';
-// Everything else is fetched when it is first asked for. Most visits are one child checking one project, and
-// there is no reason for them to download the teacher's workflows, the researcher's workspace and the whole
-// pattern catalogue before they can see the upload button.
 const CataloguePage = lazy(() =>
     import('./pages/CataloguePage').then((module) => ({ default: module.CataloguePage })),
 );
@@ -32,6 +29,9 @@ const AdvancedAnalysisPage = lazy(() =>
 const QuestionsPage = lazy(() =>
     import('./pages/QuestionsPage').then((module) => ({ default: module.QuestionsPage })),
 );
+const AskAiPage = lazy(() =>
+    import('./pages/AskAiPage').then((module) => ({ default: module.AskAiPage })),
+);
 const ModificationPage = lazy(() =>
     import('./pages/ModificationPage').then((module) => ({ default: module.ModificationPage })),
 );
@@ -43,11 +43,10 @@ import {
     retainedAnalysisDestination,
 } from './lib/retained-analysis';
 import { DeclaredNavigationProvider } from './lib/active-navigation';
+import { useAskAiEligibility } from './lib/ask-ai-eligibility';
 import { useCapabilities, type CapabilityState } from './lib/capabilities';
-import { featureEnabled, teacherWorkflowEnabled } from './lib/features';
+import { capabilityEnabled, featureEnabled, teacherWorkflowEnabled } from './lib/features';
 
-// Fault injection is not among them: it makes a new project rather than reading the one in hand, which is a thing a
-// teacher prepares a lesson with. It is advertised on the teacher's pages instead.
 const ADVANCED_CAPABILITIES = ['metrics-graphs', 'semantic-diff', 'program-export'] as const;
 
 function LocaleCompatibilityNotice({
@@ -77,15 +76,10 @@ function LocaleCompatibilityNotice({
 export function App() {
     const { t, i18n } = useTranslation();
     const location = useLocation();
-    // Read here rather than inside the compatibility route below, which now takes an element rather than a
-    // render callback. Same read either way: what the reader arrived carrying.
     const retainedAnalysisArrival = readRetainedAnalysis(location.state);
     const { state, retry } = useCapabilities();
-    // Set by whichever page is on screen, and only by the ones whose address does not say which menu entry they
-    // belong to. Held here because the menu is drawn above the page that claims it.
     const [declaredNavigationPath, setDeclaredNavigationPath] = useState<string>();
     const applicationLocale = i18n.language;
-    // Named in the menu exactly when the page has something on it, by the predicate the page itself uses.
     const teacherAdvertised =
         state.status === 'ready' && teacherWorkflowEnabled(state.value.enabledFeatures);
     const toolsAdvertised =
@@ -95,11 +89,15 @@ export function App() {
         );
     const questionsAdvertised =
         state.status === 'ready' && featureEnabled(state.value.enabledFeatures, 'qlc');
+    // Eligibility is checked separately because deployment capability does not imply this network is allowed.
+    const askAiAdvertised = capabilityEnabled(state, 'ask-ai');
+    const { state: askAiEligibility, retry: retryAskAiEligibility } =
+        useAskAiEligibility(askAiAdvertised);
+    const askAiAvailable = askAiAdvertised && askAiEligibility === 'eligible';
     const navLinks = useMemo(() => {
-        // The home page is the submission form; a second entry for the same page only made the menu longer.
-        // The two things a child came here to do lead, and what a teacher came for follows them.
         const links = [{ path: '/', label: t('navHome') }];
         if (questionsAdvertised) links.push({ path: '/questions', label: t('navQuestions') });
+        if (askAiAvailable) links.push({ path: '/ask-ai', label: t('navAskAi') });
         if (teacherAdvertised) links.push({ path: '/teacher', label: t('navTeacher') });
         if (toolsAdvertised) links.push({ path: ADVANCED_ANALYSIS_PATH, label: t('navTools') });
         links.push(
@@ -107,8 +105,26 @@ export function App() {
             { path: '/about', label: t('navAbout') },
         );
         return links;
-    }, [questionsAdvertised, t, teacherAdvertised, toolsAdvertised]);
+    }, [askAiAvailable, questionsAdvertised, t, teacherAdvertised, toolsAdvertised]);
     const serverLocales = state.status === 'ready' ? state.value.supportedLocales : undefined;
+    const askAiElement = (() => {
+        if (askAiAvailable) return <AskAiPage />;
+        if (state.status === 'loading' || (askAiAdvertised && askAiEligibility === 'unknown'))
+            return <LoadingState heading={t('appName')} message={t('pageLoading')} />;
+        if (!askAiAdvertised) return <Navigate to="/" replace />;
+        const denied = askAiEligibility === 'denied';
+        return (
+            <PageMain>
+                <ErrorState
+                    heading={t(denied ? 'askAiNetworkDeniedTitle' : 'askAiUnavailableTitle')}
+                    message={t(denied ? 'askAiNetworkDeniedBody' : 'askAiUnavailableBody')}
+                    retryLabel={t('retry')}
+                    onRetry={retryAskAiEligibility}
+                    level={1}
+                />
+            </PageMain>
+        );
+    })();
     return (
         <ApplicationShell
             brandLabel={t('appName')}
@@ -126,8 +142,6 @@ export function App() {
                 { path: '/privacy', label: t('navPrivacy') },
             ]}
             versionLabel={
-                // The one thing the readiness page carried that a reader could act on: which analysis produced
-                // their findings. It belongs beside the site's own credits, not behind a link of its own.
                 state.status === 'ready'
                     ? t('footerVersion', { version: state.value.litterboxVersion })
                     : undefined
@@ -135,8 +149,6 @@ export function App() {
             skipLinkLabel={t('skipToContent')}
         >
             <LocaleCompatibilityNotice state={state} applicationLocale={applicationLocale} />
-            {/* One boundary for the whole switch: a route that has not been fetched yet says the same thing
-                every other slow moment on this site says, rather than blanking the page. */}
             <Suspense fallback={<LoadingState heading={t('appName')} message={t('pageLoading')} />}>
                 <DeclaredNavigationProvider value={setDeclaredNavigationPath}>
                     <Routes>
@@ -152,8 +164,6 @@ export function App() {
                         />
                         {/* Kept so links and bookmarks to the old submission page still resolve. */}
                         <Route path="/submit" element={<Navigate to="/" replace />} />
-                        {/* The same page as the home one, in the mode that offers a whole class at once. It is
-                            already loaded, so this asks the browser for nothing. */}
                         <Route
                             path="/teacher"
                             element={
@@ -165,7 +175,6 @@ export function App() {
                                 />
                             }
                         />
-                        {/* The teacher's own question view: everything the project yields, against the block model. */}
                         <Route
                             path="/teacher/questions"
                             element={
@@ -186,7 +195,6 @@ export function App() {
                                 />
                             }
                         />
-                        {/* The teacher's modification tool: one project, and the faults that can be put into it. */}
                         <Route
                             path={MODIFICATION_PATH}
                             element={
@@ -239,9 +247,16 @@ export function App() {
                                 <QuestionsPage capabilityState={state} onCapabilityRetry={retry} />
                             }
                         />
+                        <Route path="/ask-ai" element={askAiElement} />
+                        <Route path="/ask-ai/submissions/:token" element={askAiElement} />
                         <Route
                             path="/submissions/:token"
-                            element={<SubmissionPage capabilityState={state} />}
+                            element={
+                                <SubmissionPage
+                                    capabilityState={state}
+                                    askAiAvailable={askAiAvailable}
+                                />
+                            }
                         />
                         <Route
                             path="/catalogue"

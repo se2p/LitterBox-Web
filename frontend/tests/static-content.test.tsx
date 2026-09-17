@@ -111,8 +111,12 @@ describe('static content', () => {
         const headings = (await screen.findAllByRole('heading', { level: 2 })).map(
             (heading) => heading.textContent,
         );
-        expect(headings.slice(0, 2)).toEqual([
+        // What this service itself does with a project comes before the institutional text, and what the AI helper
+        // does with one is part of that: its section sits with them rather than below the legal boilerplate a
+        // reader deciding whether to upload will not read that far to find.
+        expect(headings.slice(0, 3)).toEqual([
             i18n.t('privacyDataHeading'),
+            i18n.t('privacyAskAiHeading'),
             i18n.t('privacyUploadHeading'),
         ]);
         expect(headings).toContain(i18n.t('privacyRightsHeading'));

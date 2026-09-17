@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 // SPDX-FileCopyrightText: 2025 LitterBox-Web contributors
 
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import JSZip from 'jszip';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -835,5 +835,95 @@ describe('single-project UI', () => {
             valid: false,
             reason: 'too-deep',
         });
+    });
+
+    const askAiFindingBody = () => ({
+        schemaVersion: 1,
+        submissionId: 1,
+        token: 'ask-ai-finding-token',
+        status: 'completed',
+        locale: 'en',
+        analysis: {
+            id: 1,
+            status: 'completed',
+            name: 'synthetic.sb3',
+            issues: [
+                finding({
+                    id: 101,
+                    finderId: 'empty-loop',
+                    finderName: 'Empty loop',
+                    hint: 'This loop has nothing inside.',
+                    sprite: 'Cat',
+                    scratchblocks: 'repeat (10) {\n}',
+                }),
+                // A perfume is a pattern already worth keeping. Ask AI reads a project with the bug and smell
+                // finders only, so there is no conversation behind this one and no link is offered for it.
+                finding({
+                    id: 102,
+                    finderId: 'coordination',
+                    finderName: 'Coordination',
+                    type: 'perfume',
+                    hint: 'These sprites take turns properly.',
+                    sprite: 'Cat',
+                }),
+            ],
+            relationships: [],
+            catalogue: [],
+        },
+    });
+
+    /**
+     * The result page, on a deployment that names Ask AI and a network the service answers over or does not.
+     *
+     * Returns once the eligibility answer has been given and taken effect. The finding cards are drawn before that
+     * answer arrives, so a test that waited only for them would find no link on either network and pass for the
+     * wrong reason.
+     */
+    const renderFindingsWithAskAi = async (eligible: boolean) => {
+        let eligibilityAnswered = false;
+        vi.spyOn(globalThis, 'fetch').mockImplementation((input: RequestInfo | URL) => {
+            const url = String(input);
+            if (url.includes('/ask-ai/eligibility')) {
+                eligibilityAnswered = true;
+                return Promise.resolve(response({ schemaVersion: 1, available: eligible }));
+            }
+            if (url.includes('/capabilities')) {
+                return Promise.resolve(capabilitiesResponse(['single-project', 'ask-ai']));
+            }
+            if (url.includes('/submissions/ask-ai-finding-token')) {
+                return Promise.resolve(response(askAiFindingBody()));
+            }
+            return Promise.resolve(response(undefined, 204));
+        });
+
+        renderAt('/submissions/ask-ai-finding-token');
+
+        await waitFor(() =>
+            expect(screen.getByRole('heading', { name: 'Empty loop' })).toBeInTheDocument(),
+        );
+        await waitFor(() => expect(eligibilityAnswered).toBe(true));
+        // The answer is in; this lets the render it causes happen before anything is asserted about it.
+        await act(async () => {});
+    };
+
+    const askAiLinks = () =>
+        screen.queryAllByRole('link', { name: 'Help me understand what LitterBox noticed here' });
+
+    it('offers a way in to Ask AI from a finding it can actually talk about', async () => {
+        await renderFindingsWithAskAi(true);
+
+        // Exactly one: the bug has a conversation behind it, the perfume beside it has none.
+        expect(askAiLinks()).toHaveLength(1);
+        expect(askAiLinks()[0].getAttribute('href')).toContain('finder=empty-loop');
+        expect(askAiLinks()[0].getAttribute('href')).toContain('sprite=Cat');
+        expect(askAiLinks()[0].getAttribute('href')).toContain('finding=');
+    });
+
+    it('offers none of them on a network the service will not answer over', async () => {
+        // The capability is advertised, so the flag alone would have drawn the link. The menu hides Ask AI on
+        // this network and a finding card must not be the one door left standing open onto a refusal.
+        await renderFindingsWithAskAi(false);
+
+        expect(askAiLinks()).toHaveLength(0);
     });
 });

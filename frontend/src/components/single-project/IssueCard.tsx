@@ -2,9 +2,12 @@
 // SPDX-FileCopyrightText: 2025 LitterBox-Web contributors
 
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router';
 import { sendFeedback, type AnalysisIssue } from '../../api/submissions';
 import { formatNumber } from '../../i18n';
 import { FeedbackControls } from '../FeedbackControls';
+import { findingLinkTo } from '../ask-ai/finding-link';
+import { QuestionIcon } from '../ask-ai/QuestionIcon';
 import { RichHint } from './RichHint';
 import { ScratchblocksPreview } from './ScratchblocksPreview';
 import { Thumbnail } from './Thumbnail';
@@ -42,6 +45,7 @@ interface IssueCardProps {
     token: string;
     locale: string;
     labels: IssueCardLabels;
+    askAiAvailable?: boolean;
 }
 
 /** A relationship target, named when the analysis still holds the finding it points at. */
@@ -64,9 +68,18 @@ export function IssueCard({
     token,
     locale,
     labels,
+    askAiAvailable = false,
 }: IssueCardProps) {
     const { t } = useTranslation();
     const family = issueFamily(issue.type);
+    /**
+     * Whether Ask AI has anything to say about this one.
+     *
+     * It reads a project with the bug and smell finders only, deliberately: a perfume is a pattern already worth
+     * keeping, and there is no problem in it to talk over. So a perfume has no conversation to open, and offering
+     * the link on one would be a way in to a screen that could only put the reader back where they started.
+     */
+    const askable = family !== 'perfume';
     const sprite = spriteDisplayName(issue.sprite, t('stageName'));
     const currentCode = normalizeScratchblocksSource(issue.scratchblocks);
     const refactoringCode = normalizeScratchblocksSource(issue.refactoringScratchblocks);
@@ -126,6 +139,20 @@ export function IssueCard({
                 </h5>
                 {/* The one question we ask back about the finding, in the corner rather than across the card. */}
                 <div className="issue-heading-meta">
+                    {askAiAvailable && askable && (
+                        <Link
+                            to={findingLinkTo(token, {
+                                finderId: issue.finderId,
+                                sprite: issue.sprite,
+                                hint: issue.hint,
+                            })}
+                            className="issue-ask-ai-link"
+                            title={t('askAboutFinding')}
+                        >
+                            <QuestionIcon name="magnifier" />
+                            <span>{t('askAboutFinding')}</span>
+                        </Link>
+                    )}
                     {analysisId !== undefined && (
                         <FeedbackControls
                             label={t('feedbackLabel')}

@@ -1,0 +1,861 @@
+/* SPDX-License-Identifier: EUPL-1.2 */
+/* SPDX-FileCopyrightText: 2026 LitterBox-Web contributors */
+
+/* The intake reuses the single-project form as-is; the only page-specific rule is the width the other
+   single-project entries already agree on, so the two ways in do not stretch across a wide screen. */
+.ask-ai-page .submit-form {
+    max-width: 64rem;
+}
+
+.ask-ai-result-page {
+    max-width: 64rem;
+}
+
+/* ---- Chooser ---- */
+
+/* Large touch targets, several to a row on a wide screen and one to a row on a phone; every button already carries
+   the site's 44px minimum height (see base.css), this only asks for more room than that baseline gives it. */
+.ask-ai-question-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: var(--space-3);
+    margin-block-start: var(--space-3);
+}
+
+.ask-ai-question-button {
+    display: flex;
+    box-sizing: border-box;
+    /* The mark and the words sit side by side; blocks drawn beneath them take a line of their own, which is what
+       the wrap is for — a script is not something to read along a row of text. */
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: var(--space-3);
+    width: 100%;
+    /* A grid item sizes itself to its widest content unless it is told not to, and a question's own text can quote
+       a block wider than the column it landed in. Without this the track grows to fit it and the row of boxes
+       stops lining up. */
+    min-width: 0;
+    min-height: 3.5rem;
+    padding: var(--space-3) var(--space-4);
+    /* The site's press-anything shape is a chip, drawn for a label of one line. A question runs to four or five,
+       and at that height the chip's ends curve through the words themselves. Same family, corners a paragraph
+       fits inside. */
+    border-radius: var(--radius-friendly);
+    text-align: left;
+    white-space: normal;
+    line-height: 1.4;
+}
+
+/* Grown from nothing rather than from its own width: the box wraps so that blocks can be drawn on a line of their
+   own, and a label sized by its text would take that line for itself the moment the text was long. */
+.ask-ai-question-label {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+/* Where a question is from, on the one screen that mixes questions from all over the project. Set below the words
+   rather than inside them: it is not part of what is being asked, it is what "this script" refers to. */
+.ask-ai-place-chip {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    width: fit-content;
+    max-width: 100%;
+    margin-block-start: var(--space-2);
+    padding: 0.1rem 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-friendly);
+    color: var(--color-ink-muted);
+    font-size: 0.8rem;
+}
+
+.ask-ai-place-chip .costume-thumbnail {
+    width: 1.1rem;
+    height: 1.1rem;
+    object-fit: contain;
+}
+
+/* Set apart from the question rather than run into it: it says which of several identical buttons this is, which
+   is not part of what is being asked. */
+.ask-ai-question-number {
+    display: block;
+    margin-block-start: var(--space-1);
+    color: var(--color-ink-muted);
+    font-size: 0.85rem;
+}
+
+/* A quoted block belongs to the sentence around it here, so it is scaled to the box rather than given a scrollbar
+   of its own — a scroll region inside a button is one a reader cannot reach without pressing the button. */
+.ask-ai-question-button .scratchblocks-inline-preview {
+    overflow: hidden;
+}
+
+/* The blocks a finding was reported in, under the words rather than beside them: it is a script, not a phrase, and
+   it takes the width of the box. Indented past the mark above it, so it reads as belonging to what was said. */
+.ask-ai-question-code {
+    display: block;
+    flex: 1 0 100%;
+    min-width: 0;
+    margin-block-start: var(--space-2);
+    padding-inline-start: calc(1.4rem + var(--space-3));
+    overflow: hidden;
+}
+
+.ask-ai-question-code .scratchblocks-preview {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+}
+
+/* A press target must not carry its own scroll region: the reader cannot reach it without pressing the button. */
+.ask-ai-question-code .scratchblocks-rendered {
+    overflow: hidden;
+}
+
+.ask-ai-question-code svg {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Drawn in the same ink as the words beside them: a reader who is here for the picture rather than the sentence
+   needs to be able to see it, which a lighter, secondary mark would have argued against. */
+.ask-ai-question-icon {
+    display: block;
+    width: 1.4rem;
+    height: 1.4rem;
+    flex: 0 0 auto;
+}
+
+/* The two kinds of mark a box can carry are drawn at one size, so a grid holding both keeps its labels aligned. */
+.ask-ai-question-button .family-icon {
+    width: 1.4rem;
+    height: 1.4rem;
+}
+
+.ask-ai-show-more {
+    margin-block-start: var(--space-4);
+}
+
+/* Said at the end of a list the reader has already read to the bottom of, so it sits apart from the questions
+   rather than competing with them. */
+.ask-ai-questions-truncated {
+    margin-block-start: var(--space-4);
+    margin-block-end: 0;
+}
+
+/* ---- What the reader came for, asked first ---- */
+
+.ask-ai-step-heading {
+    margin-block-end: var(--space-1);
+}
+
+/* The site-wide reduced-motion rule in components.css neutralises this for readers who asked for less motion. */
+.ask-ai-step {
+    animation: ask-ai-step-in 140ms ease-out both;
+}
+
+@keyframes ask-ai-step-in {
+    from {
+        transform: translateY(0.4rem);
+        opacity: 0;
+    }
+}
+
+/* The way out for a reader who does not know what they want, kept small and directly under the heading: it is not
+   a fifth wish, and on a phone it would otherwise sit below four cards taller than the screen. */
+.ask-ai-goal-unsure {
+    margin-block-start: var(--space-2);
+    border-style: dashed;
+    background: none;
+    font-weight: 600;
+}
+
+/* Big, read in one glance, and two to a row: four cards across three columns left one of them alone on a second
+   row, which reads as an afterthought rather than as the fourth of four. */
+.ask-ai-goal-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+    margin-block-start: var(--space-3);
+}
+
+@media (min-width: 34rem) {
+    .ask-ai-goal-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.ask-ai-goal-button {
+    display: flex;
+    box-sizing: border-box;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+    width: 100%;
+    min-width: 0;
+    min-height: 7rem;
+    padding: var(--space-4);
+    border-radius: var(--radius-friendly);
+    text-align: left;
+    white-space: normal;
+    line-height: 1.3;
+    /* Each card is tinted its own way, but never only tinted: the mark and the words say which it is as well, so a
+       reader who cannot tell the four apart by colour has lost nothing. Defaults here, overridden per goal below. */
+    border-color: var(--goal-edge, var(--color-border));
+    background: var(--goal-tint, var(--color-surface));
+}
+
+/* The mark, set in a disc of the card's own colour rather than floating on the tint. */
+.ask-ai-goal-medallion {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    background: var(--color-surface);
+    color: var(--goal-ink, var(--color-ink));
+    box-shadow: inset 0 0 0 2px var(--goal-edge, var(--color-border));
+}
+
+.ask-ai-goal-button .ask-ai-question-icon {
+    width: 1.6rem;
+    height: 1.6rem;
+}
+
+.ask-ai-goal-label {
+    font-weight: 700;
+    font-size: 1.05rem;
+    overflow-wrap: anywhere;
+}
+
+.ask-ai-goal-lead {
+    color: var(--color-ink-muted);
+    font-size: 0.9rem;
+    overflow-wrap: anywhere;
+}
+
+.ask-ai-goal-understand,
+.ask-ai-trail-goal-understand {
+    --goal-tint: var(--color-info-surface);
+    --goal-edge: var(--color-info-border);
+    --goal-ink: var(--color-info-text);
+}
+
+.ask-ai-goal-problems,
+.ask-ai-trail-goal-problems {
+    --goal-tint: var(--color-danger-surface);
+    --goal-edge: var(--color-danger-border);
+    --goal-ink: var(--color-danger-text);
+}
+
+.ask-ai-goal-add,
+.ask-ai-trail-goal-add {
+    --goal-tint: var(--color-warning-surface);
+    --goal-edge: var(--color-warning-border);
+    --goal-ink: var(--color-warning-text);
+}
+
+.ask-ai-goal-improve,
+.ask-ai-trail-goal-improve {
+    --goal-tint: var(--color-success-surface);
+    --goal-edge: var(--color-success-border);
+    --goal-ink: var(--color-success-text);
+}
+
+/* ---- Picking a place before picking a question ---- */
+
+/* Sprites want to be small and several to a row, because the picture is what is being read; scripts want the room
+   their blocks take. Each grid says its own minimum below. */
+.ask-ai-target-grid {
+    display: grid;
+    gap: var(--space-3);
+    margin-block-start: var(--space-3);
+}
+
+/* A sprite and its own scripts stand side by side on one screen, so one grid holds both: wide enough for the
+   blocks of a script, which is the widest thing either kind of card carries.
+
+   Each card keeps its own height rather than the row's. A sprite card stretched to the height of the tall script
+   card beside it is mostly empty box below a picture, which reads as something that failed to load. */
+.ask-ai-part-grid {
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    align-items: start;
+}
+
+.ask-ai-part-group {
+    margin-block-start: var(--space-5);
+}
+
+.ask-ai-part-group-heading {
+    margin-block-end: var(--space-1);
+    font-size: 1.1rem;
+}
+
+.ask-ai-target-button {
+    display: flex;
+    box-sizing: border-box;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    width: 100%;
+    min-width: 0;
+    padding: var(--space-3);
+    border-radius: var(--radius-friendly);
+    text-align: center;
+    line-height: 1.3;
+}
+
+.ask-ai-sprite-button .costume-thumbnail,
+.ask-ai-whole-project-thumbnail,
+.ask-ai-open-target .costume-thumbnail {
+    width: 4.5rem;
+    height: 4.5rem;
+    object-fit: contain;
+}
+
+.ask-ai-whole-project-thumbnail {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-friendly);
+    background: var(--color-surface-sunken);
+    color: var(--color-ink);
+}
+
+.ask-ai-project-icon {
+    width: 3.25rem;
+    height: 3.25rem;
+}
+
+.ask-ai-target-name {
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+/* The blocks are the label of a script button, so they are left-aligned like code and never stretched to fit. */
+.ask-ai-script-button {
+    align-items: stretch;
+    text-align: left;
+}
+
+.ask-ai-script-preview {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.ask-ai-script-preview .scratchblocks-preview {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+}
+
+/* A press target must not carry its own scroll region: the reader cannot reach it without pressing the button. */
+.ask-ai-script-preview .scratchblocks-rendered {
+    overflow: hidden;
+}
+
+.ask-ai-script-preview svg {
+    max-width: 100%;
+    height: auto;
+}
+
+.ask-ai-target-badges {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    color: var(--color-ink-muted);
+    font-size: 0.85rem;
+}
+
+.ask-ai-script-button .ask-ai-target-badges {
+    justify-content: flex-start;
+}
+
+.ask-ai-target-badge .family-icon {
+    width: 1.1rem;
+    height: 1.1rem;
+}
+
+/* Same three colours the findings on the result page already use for these families, so a button can be placed in
+   its family at a glance. Carried on the button itself now that findings are no longer read under one heading per
+   family: what they are is said once, above them all. */
+.ask-ai-target-badge-bug .family-icon,
+.ask-ai-question-family-bug .family-icon {
+    color: var(--color-danger);
+}
+
+.ask-ai-target-badge-smell .family-icon,
+.ask-ai-question-family-smell .family-icon {
+    color: var(--color-warning);
+}
+
+.ask-ai-target-badge-perfume .family-icon,
+.ask-ai-question-family-perfume .family-icon {
+    color: var(--color-success);
+}
+
+.ask-ai-target-badge-other .family-icon,
+.ask-ai-question-family-other .family-icon {
+    color: var(--color-brand-cyan-dark);
+}
+
+.ask-ai-trail {
+    margin-block-end: var(--space-3);
+}
+
+.ask-ai-trail ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-1) var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* The separator belongs to the step it follows, and is drawn rather than written: it is punctuation between the
+   steps, not a word anyone should have read out to them. */
+.ask-ai-trail-step + .ask-ai-trail-step::before {
+    content: '›';
+    margin-inline-end: var(--space-2);
+    color: var(--color-ink-muted);
+}
+
+.ask-ai-trail-step {
+    /* Laid out as a row so the separator sits on the same line as a step that is taller than its words: the last
+       one carries a costume, or the blocks a question is written with. */
+    display: inline-flex;
+    align-items: center;
+    color: var(--color-ink-muted);
+    font-size: 0.9rem;
+}
+
+.ask-ai-trail-step [aria-current='page'] {
+    color: var(--color-ink);
+    font-weight: 600;
+}
+
+/* The last step is the screen's own heading, so it is an h2 or an h3 — sized and spaced like the trail it sits in
+   rather than like a heading standing on a line of its own, which is what it replaced. */
+.ask-ai-trail-current {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    margin: 0;
+    font-size: 1rem;
+}
+
+/* The last step's own words, as opposed to whatever else it carries beside them: a costume, a place chip, the
+   blocks a question quotes. Only the words are cut short below, and only they can be. */
+.ask-ai-trail-words {
+    min-width: 0;
+}
+
+/* Wide enough for the trail to be a row: the last step takes what the steps behind it left of the line and its
+   words are cut off there, rather than wrapping onto a line of their own. A whole question is the last step here
+   — "What works well in Banana, and what could be improved?" — and set alone on the line under the trail it read
+   as a second title rather than as where the reader is standing. Nothing is lost to the cut: the transcript
+   underneath opens with the same question in full. Below this width the trail is already one step and a heading
+   on separate lines (see the narrow-screen rules further down), which is a different shape and needs none of it. */
+@media (min-width: 40.0625rem) {
+    .ask-ai-trail-step:last-child {
+        /* Basis zero rather than the words' own width: an item sized by its content wraps the moment the line runs
+           out, which is the thing being prevented. */
+        flex: 1 1 0;
+        min-width: 0;
+    }
+
+    .ask-ai-trail-current {
+        flex-wrap: nowrap;
+        min-width: 0;
+    }
+
+    .ask-ai-trail-current .ask-ai-trail-words {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+}
+
+/* Beside the question rather than under it, and in the ordinary weight: what a question is about is not part of
+   the question, and the heading is already the answer to "which one". */
+.ask-ai-trail-current .ask-ai-place-chip {
+    min-width: 0;
+    margin-block-start: 0;
+    font-weight: 400;
+}
+
+/* Inline block quotes inside a question's own words, drawn to the height of the line they sit on. */
+.ask-ai-trail-current .scratchblocks-inline-preview {
+    overflow: hidden;
+}
+
+.ask-ai-trail-link {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--color-link);
+    font: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.ask-ai-trail-link:hover {
+    text-decoration: none;
+}
+
+/* Subtle goal-themed chip in the breadcrumb navigation */
+.ask-ai-trail-goal-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: 0.15rem 0.55rem;
+    border-radius: var(--radius-friendly);
+    border: 1px solid var(--goal-edge, var(--color-border));
+    background: var(--goal-tint, var(--color-surface));
+    color: var(--goal-ink, var(--color-ink));
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1.3;
+    text-decoration: none;
+}
+
+.ask-ai-trail-goal-chip .ask-ai-question-icon {
+    width: 1.1rem;
+    height: 1.1rem;
+}
+
+.ask-ai-trail-link.ask-ai-trail-goal-chip {
+    text-decoration: none;
+}
+
+.ask-ai-trail-link.ask-ai-trail-goal-chip:hover {
+    filter: brightness(0.96);
+    text-decoration: none;
+}
+
+.ask-ai-trail-goal-unsure {
+    --goal-tint: var(--color-surface-muted);
+    --goal-edge: var(--color-border);
+    --goal-ink: var(--color-ink-muted);
+}
+
+.ask-ai-open-target {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+/* A costume standing in a line of text, not heading a screen of its own any more. */
+.ask-ai-trail .ask-ai-open-target .costume-thumbnail {
+    width: 1.75rem;
+    height: 1.75rem;
+}
+
+/* One way back per width, rather than one drawn and another tabbed to.
+   A narrow screen has no room for four steps and their chevrons, which wrapped into three lines of trail above the
+   heading they introduce: it keeps the step behind the reader, as the same real button it is at every other width,
+   and drops the ones before it. Dropped with display, so that what has gone from the screen has gone from the
+   accessibility tree with it — clipping them out of sight instead left a keyboard through invisible buttons. */
+@media (max-width: 40rem) {
+    .ask-ai-trail ol {
+        display: block;
+    }
+
+    .ask-ai-trail-step:not(.ask-ai-trail-previous):not(:last-child) {
+        display: none;
+    }
+
+    /* On its own line above the heading it leads back from. */
+    .ask-ai-trail-previous {
+        display: block;
+        margin-block-end: var(--space-2);
+    }
+
+    /* Which way it goes, drawn rather than written: the words on it are the step's own name, and a step named
+       twice over is what the trail above it was already saying. */
+    .ask-ai-trail-previous .ask-ai-trail-link::before {
+        content: '← ';
+    }
+
+    .ask-ai-trail-step + .ask-ai-trail-step::before {
+        content: none;
+    }
+
+    .ask-ai-trail-current {
+        font-size: 1.1rem;
+    }
+}
+
+/* The blocks a reader picked, beside the questions about them rather than above: a script is a handful of blocks
+   wide, and a panel stretched to the width of the page to hold it is mostly the empty part of it. */
+.ask-ai-question-screen {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: var(--space-4);
+}
+
+.ask-ai-question-lists {
+    flex: 1 1 22rem;
+    min-width: 0;
+}
+
+/* Sized by what it is rather than by what is left over: a column wide enough for a script and no wider. Given a
+   width rather than left to fit its content, because the blocks are drawn after layout — an SVG that is not there
+   yet measures as nothing, and the panel collapsed to a sliver waiting for it. */
+.ask-ai-open-script {
+    flex: 0 1 24rem;
+    min-width: 0;
+    margin-block: var(--space-3);
+}
+
+/* Set off from the questions above it, because what it heads is not a question the reader thought of. */
+/* A result rather than an empty list, so it is given the room a result deserves instead of trailing off the
+   top of a screen that otherwise holds buttons. */
+.ask-ai-nothing-found {
+    margin-block: var(--space-4);
+    padding: var(--space-4);
+    border: 1px solid var(--color-success-border);
+    border-radius: var(--radius-friendly);
+    background: var(--color-success-surface);
+    color: var(--color-success-text);
+    font-weight: 600;
+}
+
+/* Quieter than the result it follows, on the same terms as every other lead here: the good news is the sentence
+   in the box above, and this only says where else there is something to ask. */
+.ask-ai-nothing-found-lead {
+    color: var(--color-ink-muted);
+    font-size: 0.9rem;
+}
+
+.ask-ai-findings-here {
+    margin-block-start: var(--space-4);
+}
+
+.ask-ai-findings-here h3 {
+    margin-block: 0 var(--space-1);
+    color: var(--color-ink-muted);
+    font-size: 0.95rem;
+}
+
+/* ---- Conversation ---- */
+
+.ask-ai-finding-context {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-block: var(--space-3);
+    padding: var(--space-4);
+    background: var(--color-surface-muted);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-friendly);
+}
+
+.ask-ai-finding-context-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+}
+
+.ask-ai-finding-sprite {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-weight: 600;
+    color: var(--color-ink);
+}
+
+.ask-ai-finding-sprite .costume-thumbnail,
+.ask-ai-finding-sprite .costume-fallback {
+    width: 2rem;
+    height: 2rem;
+    object-fit: contain;
+}
+
+.ask-ai-finding-sprite .costume-fallback span:not(.costume-fallback-mark) {
+    display: none;
+}
+
+.ask-ai-finding-sprite .costume-fallback-mark {
+    width: 1.4rem;
+    height: 1.4rem;
+    font-size: 0.8rem;
+}
+
+.ask-ai-finding-context-hint {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--color-ink);
+}
+
+.ask-ai-finding-context-code {
+    margin-block-start: var(--space-1);
+}
+
+.ask-ai-finding-context-code .scratchblocks-preview {
+    margin: 0;
+    max-width: 100%;
+}
+
+/* The reply budget: a row of marks with the count printed beside it, because the marks tell a reader who cannot
+   see the colours nothing at all. Quiet and small, so the count reads as a note on the conversation. */
+.ask-ai-replies-remaining {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-block: var(--space-3);
+}
+
+.ask-ai-reply-dots {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+}
+
+.ask-ai-replies-remaining-text {
+    color: var(--color-ink-muted);
+    font-size: 0.85rem;
+}
+
+.ask-ai-reply-dot {
+    width: 0.65rem;
+    height: 0.65rem;
+    border-radius: 50%;
+    background: var(--color-border-strong);
+}
+
+.ask-ai-reply-dot-left {
+    background: var(--color-brand-yellow);
+}
+
+.ask-ai-transcript {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    margin-block: var(--space-4);
+}
+
+/* The rows sit in their own element so that only they are the live region, the waiting messages staying outside
+   it; the element is spaced like the transcript it replaced so nothing about the column moved. */
+.ask-ai-transcript-rows {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.ask-ai-transcript-row {
+    max-width: 85%;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-lg);
+}
+
+.ask-ai-transcript-user {
+    align-self: flex-end;
+    background: var(--color-cyan-wash);
+}
+
+.ask-ai-transcript-question {
+    margin: 0;
+    font-weight: 700;
+}
+
+.ask-ai-transcript-assistant {
+    align-self: flex-start;
+    background: var(--color-surface-muted);
+}
+
+.ask-ai-transcript-status {
+    margin: 0;
+    color: var(--color-ink-muted);
+}
+
+.ask-ai-message-blocks p {
+    margin-block: 0 var(--space-2);
+}
+
+.ask-ai-message-blocks p:last-child {
+    margin-block-end: 0;
+}
+
+.ask-ai-scratchblocks-block {
+    margin-block: var(--space-2);
+}
+
+.ask-ai-block-role {
+    margin: 0 0 var(--space-1);
+    color: var(--color-ink-muted);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.ask-ai-thinking {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    align-self: flex-start;
+    color: var(--color-ink-muted);
+}
+
+.ask-ai-thinking-indicator {
+    width: 0.9rem;
+    height: 0.9rem;
+    border: 2px solid var(--color-border-strong);
+    border-top-color: var(--color-brand-yellow);
+    border-radius: 50%;
+    animation: ask-ai-thinking-spin 1s linear infinite;
+}
+
+@keyframes ask-ai-thinking-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.ask-ai-follow-ups {
+    margin-block-start: var(--space-4);
+}
+
+/* Reads as a line of its own above the row, not as a label attached to the first button. */
+.ask-ai-follow-ups-lead {
+    margin-block: 0 var(--space-2);
+    color: var(--color-ink-muted);
+}
+
+.ask-ai-follow-up-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+/* Who wrote the answers, kept as a footnote under the workspace: small, muted, and behind a hairline, so that it
+   is there to be found by a reader who wonders, without standing between a child and the question they came to
+   ask. */
+.ask-ai-answer-note {
+    /* The rule runs the width of what it sits under rather than the width of the sentence, which would end it
+       part-way across the screen and read as something torn off. */
+    margin: var(--space-5) 0 0;
+    padding-block-start: var(--space-2);
+    border-block-start: 1px solid var(--color-border);
+    color: var(--color-ink-muted);
+    font-size: 0.85rem;
+}
+
+/* Said once, above a conversation whose language no longer matches the page's. Muted and set in from the
+   transcript, because it is a note about the conversation rather than a part of it. */
+.ask-ai-language-note {
+    margin: 0 0 var(--space-3);
+    color: var(--color-ink-muted);
+    font-size: 0.9rem;
+    max-width: 60ch;
+}

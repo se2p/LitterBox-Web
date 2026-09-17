@@ -162,6 +162,12 @@ export const staticPageContent: Record<StaticPageKind, StaticPageContent> = {
             // What this service does with an uploaded project comes first: it is the only part specific to LitterBox,
             // and the only part a person about to upload something needs before they decide.
             { heading: 'privacyDataHeading', paragraphs: ['privacyDataBody'] },
+            // Straight after it, because it is the same question — where does what I upload go — answered for the
+            // one part of this service that sends it somewhere else again.
+            {
+                heading: 'privacyAskAiHeading',
+                paragraphs: ['privacyAskAiBody', 'privacyAskAiStorageBody'],
+            },
             { heading: 'privacyUploadHeading', paragraphs: ['privacyUploadBody'] },
             {
                 heading: 'privacyControllerHeading',

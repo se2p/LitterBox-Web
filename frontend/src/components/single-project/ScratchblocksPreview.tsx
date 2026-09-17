@@ -155,9 +155,12 @@ export function ScratchblocksPreview({
                 aria-hidden="true"
                 data-render-state={state}
             />
-            {/* Suppressing the alternative is a statement about an illustration nobody needs to read, not about a
-                block that failed to draw: if the picture never arrived, the source is all there is left to show. */}
-            {(showTextAlternative || state === 'error') && (
+            {/* Where the alternative is wanted at all, a drawing that never arrived is shown as its source: the
+                source is then all there is left to show. Where a caller has suppressed it, it stays suppressed
+                even then — those callers draw this inside a button, and a disclosure widget in a press target is
+                interactive content nobody can reach: it takes the press meant for the button, and it is focusable
+                inside the very region its caller marked as decoration. The words on the button say what it is. */}
+            {showTextAlternative && (
                 <details className="code-alternative" open={state === 'error'}>
                     <summary>{textAlternativeLabel}</summary>
                     <pre>{readableCode}</pre>

@@ -5,6 +5,8 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter, useNavigate } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { App } from '../src/App';
+import { response } from './helpers';
+import { renderAt } from './render';
 import i18n from '../src/i18n';
 
 describe('app shell', () => {
@@ -757,5 +759,162 @@ describe('advanced analysis discovery', () => {
         expect(
             screen.queryByRole('link', { name: 'Open advanced analysis' }),
         ).not.toBeInTheDocument();
+    });
+});
+
+const eligibilityResponse = (available: boolean) => response({ schemaVersion: 1, available });
+
+const eligibilityDeniedResponse = () => new Response(null, { status: 403 });
+
+describe('ask-ai discovery', () => {
+    beforeEach(async () => {
+        await i18n.changeLanguage('en');
+        vi.restoreAllMocks();
+    });
+
+    afterEach(() => {
+        vi.unstubAllGlobals();
+    });
+
+    it('names the entry in the menu, between Ask me and For teachers, once both the capability and the eligibility check say yes', async () => {
+        vi.spyOn(globalThis, 'fetch').mockImplementation((input) => {
+            const url = String(input);
+            if (url.includes('/ask-ai/eligibility'))
+                return Promise.resolve(eligibilityResponse(true));
+            return Promise.resolve(capabilityResponse(['qlc', 'teacher-archive', 'ask-ai']));
+        });
+        renderAt('/');
+
+        const link = await screen.findByRole('link', { name: 'Help me understand' });
+        const navigation = screen.getByRole('navigation', { name: 'Main navigation' });
+        expect(
+            within(navigation)
+                .getAllByRole('link')
+                .map((entry) => entry.textContent),
+        ).toStrictEqual([
+            'Check my project',
+            'Ask me',
+            'Help me understand',
+            'For teachers',
+            'Catalogue',
+            'About',
+        ]);
+        expect(link).toHaveAttribute('href', '/ask-ai');
+
+        await userEvent.setup().click(link);
+        expect(
+            await screen.findByRole('heading', {
+                name: 'Help me understand a Scratch project',
+                level: 1,
+            }),
+        ).toBeInTheDocument();
+    });
+
+    it('offers neither the entry nor the route when the capability is not advertised', async () => {
+        const fetchMock = vi
+            .spyOn(globalThis, 'fetch')
+            .mockResolvedValue(capabilityResponse(['single-project']));
+        renderAt('/ask-ai');
+
+        // A stale bookmark to the page bounces to the start page rather than showing nothing were offered.
+        // This is the one answer worth sending a reader away over: the build has no such page at all.
+        await waitFor(() => expect(screen.getByLabelText('Your project file')).toBeInTheDocument());
+        expect(screen.queryByRole('link', { name: 'Help me understand' })).not.toBeInTheDocument();
+        expect(
+            screen.queryByRole('heading', { name: 'Questions are unavailable right now' }),
+        ).not.toBeInTheDocument();
+        expect(
+            screen.queryByRole('heading', { name: 'Not available on this network' }),
+        ).not.toBeInTheDocument();
+        // Never asked: the eligibility endpoint costs the network something, and there is no capability to check
+        // it on behalf of.
+        expect(
+            fetchMock.mock.calls.some(([input]) => String(input).includes('/ask-ai/eligibility')),
+        ).toBe(false);
+    });
+
+    it('withholds the entry when the capability is advertised but the eligibility check is refused', async () => {
+        vi.spyOn(globalThis, 'fetch').mockImplementation((input) => {
+            const url = String(input);
+            if (url.includes('/ask-ai/eligibility'))
+                return Promise.resolve(eligibilityDeniedResponse());
+            return Promise.resolve(capabilityResponse(['single-project', 'ask-ai']));
+        });
+        renderAt('/');
+
+        await waitFor(() => expect(screen.getByLabelText('Your project file')).toBeInTheDocument());
+        expect(screen.queryByRole('link', { name: 'Help me understand' })).not.toBeInTheDocument();
+    });
+
+    it('keeps a reader whose network is refused on the page and lets them try from another one', async () => {
+        let eligibilityChecks = 0;
+        vi.spyOn(globalThis, 'fetch').mockImplementation((input) => {
+            const url = String(input);
+            if (url.includes('/ask-ai/eligibility')) {
+                eligibilityChecks += 1;
+                return eligibilityChecks === 1
+                    ? Promise.resolve(eligibilityDeniedResponse())
+                    : Promise.resolve(eligibilityResponse(true));
+            }
+            return Promise.resolve(capabilityResponse(['single-project', 'ask-ai']));
+        });
+        renderAt('/ask-ai');
+
+        expect(
+            await screen.findByRole('heading', {
+                name: 'Not available on this network',
+                level: 1,
+            }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByText(
+                'Questions about a project cannot be answered on this network. Checking a project still works. If you have since joined another network, try again.',
+            ),
+        ).toBeInTheDocument();
+        // Not sent to the start page: this address is one this build has, and the reader is one this deployment
+        // will answer as soon as they ask from somewhere it answers. Which is the whole reason a refusal offers to
+        // look again — being told it is the network is what sends somebody to join another one.
+        expect(screen.queryByLabelText('Your project file')).not.toBeInTheDocument();
+
+        await userEvent.click(screen.getByRole('button', { name: 'Retry' }));
+
+        await waitFor(() => expect(screen.getByLabelText('Your project file')).toBeInTheDocument());
+    });
+
+    it('keeps a reader whose check failed on the page and opens it when a retry succeeds', async () => {
+        let eligibilityChecks = 0;
+        vi.spyOn(globalThis, 'fetch').mockImplementation((input) => {
+            const url = String(input);
+            if (url.includes('/ask-ai/eligibility')) {
+                eligibilityChecks += 1;
+                return eligibilityChecks === 1
+                    ? Promise.reject(new Error('the check never got through'))
+                    : Promise.resolve(eligibilityResponse(true));
+            }
+            return Promise.resolve(capabilityResponse(['single-project', 'ask-ai']));
+        });
+        renderAt('/ask-ai');
+
+        expect(
+            await screen.findByRole('heading', {
+                name: 'Questions are unavailable right now',
+                level: 1,
+            }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByText(
+                'Whether the AI helper can answer questions here could not be checked. This is usually temporary.',
+            ),
+        ).toBeInTheDocument();
+        expect(screen.queryByLabelText('Your project file')).not.toBeInTheDocument();
+
+        await userEvent.setup().click(screen.getByRole('button', { name: 'Retry' }));
+        expect(
+            await screen.findByRole('heading', {
+                name: 'Help me understand a Scratch project',
+                level: 1,
+            }),
+        ).toBeInTheDocument();
+        expect(eligibilityChecks).toBe(2);
     });
 });
