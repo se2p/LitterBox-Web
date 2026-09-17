@@ -34,11 +34,14 @@ import de.uni_passau.fim.se2.litterbox_web.web_ui.util.TestRepositories;
 
 class MariaDbMigrationIntegrationTest {
 
+    private static final String INSERT_ANALYSIS = "INSERT INTO analysis ";
+    private static final String WORKER = "worker";
     private static final Set<String> EXPECTED_TABLES = Set.of(
         "submission", "submission_event", "source_artifact", "submission_artifact", "analysis",
         "analysis_metric", "scratch_project_stats", "asset", "analysis_asset", "issue_feedback",
         "quiz_answer", "legacy_id_map", "external_id", "contact_message", "idempotency_key",
-        "analysis_job", "statistics_processed_analysis", "statistics_total", "statistics_distribution",
+        "analysis_job", "ask_ai_conversation", "ask_ai_message",
+        "statistics_processed_analysis", "statistics_total", "statistics_distribution",
         "statistics_finding", "statistics_block_category"
     );
 
@@ -97,9 +100,9 @@ class MariaDbMigrationIntegrationTest {
                 .dataSource(database.dataSource())
                 .locations("classpath:db/migration")
                 .load();
-            assertThat(latest.migrate().migrationsExecuted).isEqualTo(1);
+            assertThat(latest.migrate().migrationsExecuted).isEqualTo(2);
 
-            assertThat(latest.info().current().getVersion().getVersion()).isEqualTo("5");
+            assertThat(latest.info().current().getVersion().getVersion()).isEqualTo("6");
             assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM statistics_processed_analysis", Long.class)).isZero();
             assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM statistics_total", Long.class)).isZero();
             assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM statistics_distribution", Long.class)).isZero();
@@ -115,7 +118,7 @@ class MariaDbMigrationIntegrationTest {
             .locations("classpath:db/migration")
             .load();
         assertThat(flyway.migrate().migrationsExecuted).isGreaterThanOrEqualTo(2);
-        assertThat(flyway.info().current().getVersion().getVersion()).isEqualTo("5");
+        assertThat(flyway.info().current().getVersion().getVersion()).isEqualTo("6");
 
         try (Connection connection = database.dataSource().getConnection()) {
             final Set<String> tables;
@@ -158,7 +161,7 @@ class MariaDbMigrationIntegrationTest {
                         + "VALUES (UNHEX(REPEAT('aa', 32)), 'synthetic/key', 0, 'UPLOAD', 'ACTIVE')"
                 );
                 statement.executeUpdate(
-                    "INSERT INTO analysis "
+                    INSERT_ANALYSIS
                         + "(submission_id, source_artifact_id, provenance, report_schema_version, "
                         + "litterbox_artifact_version, locale, status, from_creation) "
                         + "VALUES (1, 1, 'NEW', '1', 'synthetic', 'en', 'QUEUED', TRUE)"
@@ -167,7 +170,7 @@ class MariaDbMigrationIntegrationTest {
                 // creation rather than start a second under the same key.
                 assertThatThrownBy(
                     () -> statement.executeUpdate(
-                        "INSERT INTO analysis "
+                        INSERT_ANALYSIS
                             + "(submission_id, source_artifact_id, provenance, report_schema_version, "
                             + "litterbox_artifact_version, locale, status, from_creation) "
                             + "VALUES (1, 1, 'NEW', '1', 'synthetic', 'en', 'QUEUED', TRUE)"
@@ -176,7 +179,7 @@ class MariaDbMigrationIntegrationTest {
                 // Running the project again is not that, and is not forbidden: a newer LitterBox over the project the
                 // submission already holds is a second analysis, with its own version and its own result.
                 statement.executeUpdate(
-                    "INSERT INTO analysis "
+                    INSERT_ANALYSIS
                         + "(submission_id, source_artifact_id, provenance, report_schema_version, "
                         + "litterbox_artifact_version, locale, status) "
                         + "VALUES (1, 1, 'NEW', '1', 'synthetic-2', 'en', 'QUEUED')"
@@ -193,14 +196,14 @@ class MariaDbMigrationIntegrationTest {
                 // The same holds for a project named out of a batch. Two workers unpacking one archive must not both
                 // create the analysis of a project...
                 statement.executeUpdate(
-                    "INSERT INTO analysis "
+                    INSERT_ANALYSIS
                         + "(submission_id, source_artifact_id, project_name, provenance, report_schema_version, "
                         + "litterbox_artifact_version, locale, status, from_creation) "
                         + "VALUES (1, 1, 'child.sb3', 'NEW', '1', 'synthetic', 'en', 'QUEUED', TRUE)"
                 );
                 assertThatThrownBy(
                     () -> statement.executeUpdate(
-                        "INSERT INTO analysis "
+                        INSERT_ANALYSIS
                             + "(submission_id, source_artifact_id, project_name, provenance, "
                             + "report_schema_version, litterbox_artifact_version, locale, status, from_creation) "
                             + "VALUES (1, 1, 'child.sb3', 'NEW', '1', 'synthetic', 'en', 'QUEUED', TRUE)"
@@ -209,7 +212,7 @@ class MariaDbMigrationIntegrationTest {
                 // ...and analysing that retained project again afterwards is not that, and is allowed, which the
                 // single global key on a submission's project names had forbidden.
                 statement.executeUpdate(
-                    "INSERT INTO analysis "
+                    INSERT_ANALYSIS
                         + "(submission_id, source_artifact_id, project_name, provenance, report_schema_version, "
                         + "litterbox_artifact_version, locale, status) "
                         + "VALUES (1, 1, 'child.sb3', 'NEW', '1', 'synthetic-3', 'en', 'QUEUED')"
@@ -259,6 +262,49 @@ class MariaDbMigrationIntegrationTest {
                             + "VALUES ('block_count', -1, 1)"
                     )
                 ).isInstanceOf(SQLException.class);
+                // An Ask AI conversation is addressed by its public id alone, so two conversations may never share
+                // one.
+                statement.executeUpdate(
+                    "INSERT INTO ask_ai_conversation (public_id, submission_id, analysis_id, locale, scope_kind, "
+                        + "scope_selector, scope_label, user_visible_until, analysis_retain_until) "
+                        + "VALUES ('synthetic-conversation', 1, 1, 'en', 'common', 'common:SUMMARISE', 'SUMMARISE', "
+                        + "NOW(6) + INTERVAL 7 DAY, NOW(6) + INTERVAL 30 DAY)"
+                );
+                assertThatThrownBy(
+                    () -> statement.executeUpdate(
+                        "INSERT INTO ask_ai_conversation (public_id, submission_id, analysis_id, locale, scope_kind, "
+                            + "scope_selector, scope_label, user_visible_until, analysis_retain_until) "
+                            + "VALUES ('synthetic-conversation', 1, 1, 'en', 'common', 'common:SUMMARISE', "
+                            + "'SUMMARISE', NOW(6) + INTERVAL 7 DAY, NOW(6) + INTERVAL 30 DAY)"
+                    )
+                ).isInstanceOf(SQLException.class);
+                // A client message id is an idempotency key within its conversation: a retried send must land on the
+                // row the first attempt created, never beside it. The paired assistant row carries no client id, so
+                // it sits under the same key without colliding.
+                statement.executeUpdate(
+                    "INSERT INTO ask_ai_message (conversation_id, ordinal, sender, action, outcome, "
+                        + "client_message_id) VALUES (1, 1, 'user', 'ASK', 'ANSWERED', 'synthetic-message')"
+                );
+                assertThatThrownBy(
+                    () -> statement.executeUpdate(
+                        "INSERT INTO ask_ai_message (conversation_id, ordinal, sender, action, outcome, "
+                            + "client_message_id) VALUES (1, 2, 'user', 'ASK', 'ANSWERED', 'synthetic-message')"
+                    )
+                ).isInstanceOf(SQLException.class);
+                statement.executeUpdate(
+                    "INSERT INTO ask_ai_message (conversation_id, ordinal, sender, action, outcome) "
+                        + "VALUES (1, 2, 'assistant', 'ASK', 'ANSWERED')"
+                );
+                // Ordinals order one conversation's transcript, so a turn may never write two rows onto the same
+                // position.
+                assertThatThrownBy(
+                    () -> statement.executeUpdate(
+                        "INSERT INTO ask_ai_message (conversation_id, ordinal, sender, action, outcome) "
+                            + "VALUES (1, 2, 'assistant', 'ASK', 'ANSWERED')"
+                    )
+                ).isInstanceOf(SQLException.class);
+                statement.executeUpdate("DELETE FROM ask_ai_message WHERE conversation_id = 1");
+                statement.executeUpdate("DELETE FROM ask_ai_conversation WHERE public_id = 'synthetic-conversation'");
                 // The old site's SQL is not going to be run again, so the schema carries the tables and nothing
                 // shaped like the database they replaced. A view here would be a contract nobody has agreed to keep.
                 try (
@@ -375,14 +421,14 @@ class MariaDbMigrationIntegrationTest {
             assertThat(
                 analyses.completeIfOwned(
                     analysisIds.get(0), batchId, true, null, "SyntheticFailure", "synthetic",
-                    "{\"status\":\"failed\"}", null, null, null, jobIds.get(0), "worker"
+                    "{\"status\":\"failed\"}", null, null, null, jobIds.get(0), WORKER
                 ).block()
             ).isTrue();
             // The same worker handing in the same answer twice changes nothing the second time.
             assertThat(
                 analyses.completeIfOwned(
                     analysisIds.get(0), batchId, true, null, "SyntheticFailure", "synthetic",
-                    "{\"status\":\"failed\"}", null, null, null, jobIds.get(0), "worker"
+                    "{\"status\":\"failed\"}", null, null, null, jobIds.get(0), WORKER
                 ).block()
             ).isFalse();
             assertThat(jdbc.queryForObject("SELECT state FROM submission WHERE id = ?", String.class, batchId))
@@ -400,7 +446,7 @@ class MariaDbMigrationIntegrationTest {
             assertThat(
                 analyses.completeIfOwned(
                     analysisIds.get(1), batchId, false, "{}", null, null, "{\"status\":\"completed\"}",
-                    null, null, null, jobIds.get(1), "worker"
+                    null, null, null, jobIds.get(1), WORKER
                 ).block()
             ).isTrue();
             assertThat(jdbc.queryForObject("SELECT state FROM submission WHERE id = ?", String.class, batchId))
@@ -453,10 +499,10 @@ class MariaDbMigrationIntegrationTest {
             assertThat(
                 analyses.completeIfOwned(
                     cancelledAnalysisId, cancelledSubmissionId, false, "{}", null, null,
-                    "{\"status\":\"completed\"}", null, null, null, cancelledJobId, "worker"
+                    "{\"status\":\"completed\"}", null, null, null, cancelledJobId, WORKER
                 ).block()
             ).isFalse();
-            jobs.finish(cancelledJobId, "worker", false).block();
+            jobs.finish(cancelledJobId, WORKER, false).block();
             assertThat(
                 jdbc.queryForObject(
                     "SELECT state FROM submission WHERE id = ?", String.class, cancelledSubmissionId

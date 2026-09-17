@@ -15,11 +15,31 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 
+import de.uni_passau.fim.se2.litterbox_web.web_ui.ask_ai.AskAiProblemException;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.capabilities.CapabilityException;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.execution.AnalysisCapacityExceededException;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.DatabaseCapacityExceededException;
 
 class WebUiExceptionTranslatorTest {
+
+    @Test
+    void translatesAskAiProblemsAsPrivateAndNonCacheable() {
+        final WebUiExceptionTranslator translator = new WebUiExceptionTranslator();
+
+        final var response = translator.handleAskAiProblem(AskAiProblemException.contextNotFound());
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response.getHeaders().getCacheControl()).isEqualTo("no-store, private");
+    }
+
+    @Test
+    void keepsRetryAfterOnAskAiCapacityProblems() {
+        final WebUiExceptionTranslator translator = new WebUiExceptionTranslator();
+
+        final var response = translator.handleAskAiProblem(AskAiProblemException.capacityExhausted());
+
+        assertThat(response.getHeaders().getFirst(HttpHeaders.RETRY_AFTER)).isEqualTo("1");
+    }
 
     @Test
     void translatesAnalysisRejectionToStableProblemDetail() {

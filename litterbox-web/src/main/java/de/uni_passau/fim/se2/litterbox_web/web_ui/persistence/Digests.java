@@ -19,17 +19,25 @@ import java.security.NoSuchAlgorithmException;
  * {@link MessageDigest#getInstance(String)} is declared to throw for an unknown algorithm, which SHA-256 and MD5 cannot
  * be. Handling that once here saves every caller a catch block for something that cannot happen.
  */
-final class Digests {
+public final class Digests {
 
     private Digests() {
     }
 
-    /** A fresh SHA-256 digest. */
-    static MessageDigest sha256() {
+    /**
+     * Creates a fresh SHA-256 digest.
+     *
+     * @return a fresh SHA-256 digest
+     */
+    public static MessageDigest sha256() {
         return of("SHA-256");
     }
 
-    /** A fresh digest for {@code algorithm}. */
+    /**
+     * Creates a fresh digest for {@code algorithm}.
+     *
+     * @return a fresh digest for the requested algorithm
+     */
     static MessageDigest of(final String algorithm) {
         try {
             return MessageDigest.getInstance(algorithm);

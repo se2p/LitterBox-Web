@@ -36,7 +36,9 @@ import org.junit.jupiter.api.Test;
  */
 class NoPessimisticLockingTest {
 
-    private static final List<String> LOCKING_CLAUSES = List.of("for update", "lock in share mode");
+    private static final List<String> LOCKING_CLAUSES = List.of(
+        "for update", "lock in share mode", "lockmodetype.pessimistic"
+    );
 
     @Test
     void noMainSourceTakesARowLock() throws IOException {

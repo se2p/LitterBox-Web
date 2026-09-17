@@ -11,6 +11,7 @@ package de.uni_passau.fim.se2.litterbox_web.web_ui.util;
 
 import java.util.concurrent.Callable;
 
+import de.uni_passau.fim.se2.litterbox_web.web_ui.execution.AnalysisWork;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.DatabaseWork;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.StorageWork;
 import reactor.core.publisher.Mono;
@@ -28,7 +29,26 @@ public final class ImmediateWork {
     private ImmediateWork() {
     }
 
-    /** Database work, run where it was submitted. */
+    /**
+     * Analysis work, run where it was submitted.
+     *
+     * @return an immediate analysis-work executor
+     */
+    public static AnalysisWork analysis() {
+        return new AnalysisWork() {
+
+            @Override
+            public <T> Mono<T> submit(final Callable<T> task) {
+                return Mono.fromCallable(task);
+            }
+        };
+    }
+
+    /**
+     * Database work, run where it was submitted.
+     *
+     * @return an immediate database-work executor
+     */
     public static DatabaseWork database() {
         return new DatabaseWork() {
 
@@ -39,7 +59,11 @@ public final class ImmediateWork {
         };
     }
 
-    /** Storage work, run where it was submitted, cleanup included. */
+    /**
+     * Storage work, run where it was submitted, cleanup included.
+     *
+     * @return an immediate storage-work executor
+     */
     public static StorageWork storage() {
         return new StorageWork() {
 

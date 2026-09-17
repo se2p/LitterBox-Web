@@ -11,6 +11,7 @@ package de.uni_passau.fim.se2.litterbox_web.web_ui.configuration;
 
 import java.net.URI;
 
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -18,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import de.uni_passau.fim.se2.litterbox_web.web_ui.ask_ai.AskAiProblemException;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.capabilities.CapabilityException;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.execution.AnalysisCapacityExceededException;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.DatabaseCapacityExceededException;
@@ -42,6 +44,32 @@ public class WebUiExceptionTranslator {
     private static final URI STORAGE_CAPACITY_TYPE = URI.create("urn:litterbox:problem:storage-capacity-exhausted");
     private static final URI IDEMPOTENCY_CONFLICT_TYPE = URI.create("urn:litterbox:problem:idempotency-conflict");
 
+    /**
+     * Every Ask AI exception already carries its own status, type, title and code; this just reads them off.
+     *
+     * @param exception The Ask AI failure to translate.
+     * @return The corresponding problem response.
+     */
+    @ExceptionHandler
+    public ResponseEntity<ProblemDetail> handleAskAiProblem(final AskAiProblemException exception) {
+        final ProblemDetail problem = ProblemDetail.forStatusAndDetail(exception.status(), exception.getMessage());
+        problem.setType(exception.type());
+        problem.setTitle(exception.title());
+        problem.setProperty("code", exception.code());
+        final ResponseEntity.BodyBuilder response = ResponseEntity.status(exception.status())
+            .cacheControl(CacheControl.noStore().cachePrivate());
+        if (exception.retryAfter()) {
+            response.header(HttpHeaders.RETRY_AFTER, "1");
+        }
+        return response.body(problem);
+    }
+
+    /**
+     * Translates a capability failure into a problem response.
+     *
+     * @param exception The capability failure.
+     * @return The corresponding problem response.
+     */
     @ExceptionHandler
     public ResponseEntity<ProblemDetail> handleCapabilityException(final CapabilityException exception) {
         final ProblemDetail problem = ProblemDetail.forStatusAndDetail(exception.status(), exception.getMessage());
@@ -55,7 +83,12 @@ public class WebUiExceptionTranslator {
         return response.body(problem);
     }
 
-    /** Returns the stable overload response for rejected CPU analysis work. */
+    /**
+     * Returns the stable overload response for rejected CPU analysis work.
+     *
+     * @param exception The capacity failure.
+     * @return The corresponding problem response.
+     */
     @ExceptionHandler
     public ResponseEntity<ProblemDetail> handleAnalysisCapacityExceeded(
         final AnalysisCapacityExceededException exception
@@ -68,7 +101,12 @@ public class WebUiExceptionTranslator {
         );
     }
 
-    /** Returns the stable overload response for rejected database work. */
+    /**
+     * Returns the stable overload response for rejected database work.
+     *
+     * @param exception The capacity failure.
+     * @return The corresponding problem response.
+     */
     @ExceptionHandler
     public ResponseEntity<ProblemDetail> handleDatabaseCapacityExceeded(
         final DatabaseCapacityExceededException exception
@@ -87,6 +125,9 @@ public class WebUiExceptionTranslator {
      * <p>
      * Told apart from the database's because they are separate resources: this one says the store is busy reading and
      * moving files, which says nothing about whether the database can take a query.
+     *
+     * @param exception The capacity failure.
+     * @return The corresponding problem response.
      */
     @ExceptionHandler
     public ResponseEntity<ProblemDetail> handleStorageCapacityExceeded(
@@ -116,6 +157,12 @@ public class WebUiExceptionTranslator {
             .body(problem);
     }
 
+    /**
+     * Translates an idempotency-key conflict into a problem response.
+     *
+     * @param exception The idempotency conflict.
+     * @return The corresponding problem response.
+     */
     @ExceptionHandler
     public ResponseEntity<ProblemDetail> handleIdempotencyConflict(final IdempotencyConflictException exception) {
         final ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, exception.getMessage());

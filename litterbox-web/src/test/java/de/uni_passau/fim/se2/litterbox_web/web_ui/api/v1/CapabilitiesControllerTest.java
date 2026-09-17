@@ -19,9 +19,13 @@ import org.springframework.http.HttpStatus;
 
 import de.uni_passau.fim.se2.litterbox_web.LitterboxWebIntegrationTest;
 import de.uni_passau.fim.se2.litterbox_web.util.RequestUtilService;
+import de.uni_passau.fim.se2.litterbox_web.web_ui.ask_ai.AskAiConfigurationProperties;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.capabilities.AdvancedCapabilitiesConfiguration;
 
 class CapabilitiesControllerTest extends LitterboxWebIntegrationTest {
+
+    private static final String LITTERBOX_VERSION = "1.13-SNAPSHOT";
+    private static final AskAiConfigurationProperties NOT_READY = new AskAiConfigurationProperties();
 
     @Autowired
     private RequestUtilService requestUtilService;
@@ -35,7 +39,7 @@ class CapabilitiesControllerTest extends LitterboxWebIntegrationTest {
         );
 
         assertThat(response.schemaVersion()).isEqualTo(1);
-        assertThat(response.litterboxVersion()).isEqualTo("1.13-SNAPSHOT");
+        assertThat(response.litterboxVersion()).isEqualTo(LITTERBOX_VERSION);
         assertThat(response.supportedLocales()).containsExactlyElementsOf(List.of("de", "en", "es", "nl"));
         assertThat(response.enabledFeatures()).containsExactlyInAnyOrder(
             "single-project", "teacher-archive", "studio", "feedback", "qlc", "catalogue"
@@ -69,7 +73,7 @@ class CapabilitiesControllerTest extends LitterboxWebIntegrationTest {
         for (String feature : advanced) {
             final AdvancedCapabilitiesConfiguration configuration = new AdvancedCapabilitiesConfiguration();
             enable(configuration, feature);
-            final CapabilitiesDto response = new CapabilitiesController("1.13-SNAPSHOT", configuration)
+            final CapabilitiesDto response = new CapabilitiesController(LITTERBOX_VERSION, configuration, NOT_READY)
                 .getCapabilities();
 
             assertThat(response.enabledFeatures()).containsExactlyInAnyOrderElementsOf(
@@ -79,10 +83,29 @@ class CapabilitiesControllerTest extends LitterboxWebIntegrationTest {
 
         final AdvancedCapabilitiesConfiguration allEnabled = new AdvancedCapabilitiesConfiguration();
         advanced.forEach(feature -> enable(allEnabled, feature));
-        assertThat(new CapabilitiesController("1.13-SNAPSHOT", allEnabled).getCapabilities().enabledFeatures())
+        assertThat(
+            new CapabilitiesController(LITTERBOX_VERSION, allEnabled, NOT_READY).getCapabilities().enabledFeatures()
+        )
             .containsExactlyInAnyOrderElementsOf(
                 java.util.stream.Stream.concat(foundation.stream(), advanced.stream()).toList()
             );
+    }
+
+    @Test
+    void advertisesAskAiOnlyWhenTheDeploymentIsReady() {
+        final AdvancedCapabilitiesConfiguration noAdvancedCapabilities = new AdvancedCapabilitiesConfiguration();
+
+        final CapabilitiesDto notReady = new CapabilitiesController(
+            LITTERBOX_VERSION, noAdvancedCapabilities, NOT_READY
+        ).getCapabilities();
+        assertThat(notReady.enabledFeatures()).doesNotContain("ask-ai");
+
+        final AskAiConfigurationProperties readyProperties = new AskAiConfigurationProperties();
+        readyProperties.setEnabled(true);
+        final CapabilitiesDto ready = new CapabilitiesController(
+            LITTERBOX_VERSION, noAdvancedCapabilities, readyProperties
+        ).getCapabilities();
+        assertThat(ready.enabledFeatures()).contains("ask-ai");
     }
 
     private void enable(final AdvancedCapabilitiesConfiguration configuration, final String feature) {

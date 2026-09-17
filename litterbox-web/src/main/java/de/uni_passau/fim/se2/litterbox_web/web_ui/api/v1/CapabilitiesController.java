@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import de.uni_passau.fim.se2.litterbox.analytics.IssueTool;
+import de.uni_passau.fim.se2.litterbox_web.web_ui.ask_ai.AskAiConfigurationProperties;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.capabilities.AdvancedCapabilitiesConfiguration;
 
 @RestController
@@ -32,6 +33,7 @@ public class CapabilitiesController {
     private static final List<String> FOUNDATION_FEATURES = List.of(
         "single-project", "teacher-archive", "studio", "feedback", "qlc", "catalogue"
     );
+    private static final String ASK_AI = "ask-ai";
     private static final String CORE_POM_PROPERTIES = "META-INF/maven/de.uni_passau.fim.se2/Litterbox/pom.properties";
 
     private final String litterboxVersion;
@@ -39,7 +41,8 @@ public class CapabilitiesController {
 
     public CapabilitiesController(
         @Value("${litterbox.version:unknown}") final String configuredVersion,
-        final AdvancedCapabilitiesConfiguration advancedCapabilities
+        final AdvancedCapabilitiesConfiguration advancedCapabilities,
+        final AskAiConfigurationProperties askAiConfiguration
     ) {
         litterboxVersion = coreArtifactVersion();
         if (!litterboxVersion.equals(configuredVersion)) {
@@ -50,6 +53,9 @@ public class CapabilitiesController {
         }
         final Set<String> features = new LinkedHashSet<>(FOUNDATION_FEATURES);
         features.addAll(advancedCapabilities.enabledFeatures());
+        if (askAiConfiguration.isReady()) {
+            features.add(ASK_AI);
+        }
         enabledFeatures = Collections.unmodifiableSet(features);
     }
 

@@ -14,8 +14,8 @@
 @ApplicationModule(
     displayName = "Web UI configuration",
     allowedDependencies = {
-        "shared", "web_ui.capabilities", "web_ui.execution", "web_ui.persistence", "web_ui.statistics",
-        "web_ui.support"
+        "shared", "web_ui.ask_ai", "web_ui.capabilities", "web_ui.execution", "web_ui.persistence",
+        "web_ui.statistics", "web_ui.support"
     },
     type = ApplicationModule.Type.CLOSED
 )

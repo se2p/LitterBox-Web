@@ -30,12 +30,23 @@ public class SpaController {
                 + SpaResourceConfiguration.DEFAULT_STATIC_LOCATION + "}"
         ) final String staticLocation
     ) {
-        final String location = staticLocation.endsWith("/") ? staticLocation : staticLocation + "/";
+        final String location;
+        if (staticLocation.endsWith("/")) {
+            location = staticLocation;
+        }
+        else {
+            location = staticLocation + "/";
+        }
         this.index = resourceLoader.getResource(location + "index.html");
     }
 
     // "/status" no longer names a page. It stays on the list so a bookmark of it still reaches the application,
     // which sends the reader on to the analyser rather than leaving them at a 404.
+    /**
+     * Serves the single-page application entry point for known client-side routes.
+     *
+     * @return The application entry point, or a not-found response when it is unavailable.
+     */
     @GetMapping(
         value = {
             "/litterbox", "/litterbox/", "/litterbox/status", "/litterbox/submit",
@@ -43,7 +54,8 @@ public class SpaController {
             "/litterbox/compare", "/litterbox/questions",
             "/litterbox/teacher/questions", "/litterbox/teacher/questions/{token}",
             "/litterbox/questions/{token}", "/litterbox/submissions/{token}", "/litterbox/catalogue",
-            "/litterbox/statistics", "/litterbox/about", "/litterbox/contact", "/litterbox/faq", "/litterbox/imprint",
+            "/litterbox/statistics", "/litterbox/ask-ai", "/litterbox/ask-ai/submissions/{token}",
+            "/litterbox/about", "/litterbox/contact", "/litterbox/faq", "/litterbox/imprint",
             "/litterbox/privacy"
         },
         produces = MediaType.TEXT_HTML_VALUE

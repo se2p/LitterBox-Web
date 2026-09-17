@@ -48,7 +48,7 @@ class SchemaMappingTest {
                 assertThat(built).isNotNull();
                 assertThat(built.getMetamodel().getEntities())
                     .as("every mapped table should have been checked")
-                    .hasSize(13);
+                    .hasSize(15);
             }
             finally {
                 factory.destroy();

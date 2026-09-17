@@ -9,7 +9,7 @@
  */
 @ApplicationModule(
     allowedDependencies = {
-        "web_ui.capabilities", "web_ui.catalogue", "web_ui.single_project", "web_ui.statistics"
+        "web_ui.ask_ai", "web_ui.capabilities", "web_ui.catalogue", "web_ui.single_project", "web_ui.statistics"
     },
     type = ApplicationModule.Type.CLOSED
 )

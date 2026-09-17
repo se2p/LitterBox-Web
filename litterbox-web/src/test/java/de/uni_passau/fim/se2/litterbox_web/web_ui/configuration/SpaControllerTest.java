@@ -75,7 +75,11 @@ class SpaControllerTest {
                 "/litterbox/questions",
                 "/litterbox/questions/synthetic-token",
                 "/litterbox/teacher/questions",
-                "/litterbox/teacher/questions/synthetic-token"
+                "/litterbox/teacher/questions/synthetic-token",
+                // The page a conversation is held on is the one a reader stays on longest, so it is the one most
+                // likely to be reloaded or bookmarked.
+                "/litterbox/ask-ai",
+                "/litterbox/ask-ai/submissions/synthetic-token"
             }
         ) {
             client.get().uri(path).exchange().expectStatus().isOk()
