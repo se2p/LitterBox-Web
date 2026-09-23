@@ -47,7 +47,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
         -->
         <frontend.build.skip>false</frontend.build.skip>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <checkstyle.version>14.0.0</checkstyle.version>
+        <checkstyle.version>14.1.0</checkstyle.version>
         <!-- Spring boot version defined in parent pom.xml -->
     </properties>
 
@@ -67,7 +67,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
             <dependency>
                 <groupId>org.springframework.modulith</groupId>
                 <artifactId>spring-modulith-bom</artifactId>
-                <version>2.1.0</version>
+                <version>2.1.1</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -143,7 +143,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
-            <version>3.1.0</version>
+            <version>3.1.1</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.modulith</groupId>
@@ -229,7 +229,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.15.0</version>
+                <version>3.16.0</version>
                 <configuration>
                     <release>${maven.compiler.release}</release>
                 </configuration>
@@ -270,7 +270,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
             <plugin>
                 <groupId>org.graalvm.buildtools</groupId>
                 <artifactId>native-maven-plugin</artifactId>
-                <version>1.1.10</version>
+                <version>1.1.14</version>
                 <configuration>
                     <mainClass>de.uni_passau.fim.se2.litterbox_web.LitterboxWebApplication</mainClass>
                 </configuration>
@@ -317,7 +317,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.5.6</version>
+                <version>3.6.0</version>
                 <configuration>
                     <argLine>@{argLine} -javaagent:${org.mockito:mockito-core:jar}</argLine>
                 </configuration>
@@ -325,7 +325,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>3.5.6</version>
+                <version>3.6.0</version>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
@@ -352,7 +352,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
-                <version>3.10.0</version>
+                <version>3.10.2</version>
                 <configuration>
                     <java>
                         <eclipse>
@@ -419,7 +419,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
-                <version>2.21.0</version>
+                <version>2.22.0</version>
                 <configuration>
                     <onlyProjectDependencies>true</onlyProjectDependencies>
                     <onlyProjectPlugins>true</onlyProjectPlugins>
@@ -462,7 +462,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
-                        <version>3.6.3</version>
+                        <version>3.6.4</version>
                         <configuration>
                             <workingDirectory>${basedir}/../frontend</workingDirectory>
                             <executable>npm</executable>
