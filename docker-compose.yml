@@ -26,8 +26,8 @@ services:
     #   - 127.0.0.1:3001:3001
   litterbox-web:
     build:
-      context: ./litterbox-web
-      dockerfile: ./Containerfile
+      context: .
+      dockerfile: ./litterbox-web/Containerfile
     networks:
       - litterbox-web
     ports:

@@ -2,15 +2,30 @@
 #
 # SPDX-License-Identifier: EUPL-1.2
 
-from docker.io/library/maven:3-eclipse-temurin-21-alpine as builder
+from docker.io/library/node:24-alpine as frontend-builder
 
-workdir /app
+workdir /app/frontend
 
 # faster rebuilds: cache dependencies
-copy pom.xml .
+copy frontend/package.json frontend/package-lock.json ./
+run npm ci
+
+copy frontend/ ./
+run npm run build
+
+################################################################################
+
+from docker.io/library/maven:3-eclipse-temurin-21-alpine as builder
+
+workdir /app/litterbox-web
+
+# faster rebuilds: cache dependencies
+copy litterbox-web/pom.xml .
 run mvn -B dependency:go-offline
 
-copy src ./src
+# The site goes inside the jar, so it has to be built first.
+copy --from=frontend-builder /app/frontend/dist/ /app/frontend/dist/
+copy litterbox-web/src ./src
 run mvn package -DskipTests
 
 ################################################################################
@@ -26,7 +41,7 @@ user spring:spring
 
 workdir /app
 
-copy --from=builder /app/target/litterbox-web*.jar /app/litterbox-web.jar
+copy --from=builder /app/litterbox-web/target/litterbox-web*.jar /app/litterbox-web.jar
 
 expose 8080
 

@@ -1,0 +1,20 @@
+# SPDX-License-Identifier: CC0-1.0
+# SPDX-FileCopyrightText: 2026 LitterBox-Web contributors
+
+.git
+.devenv
+.direnv
+.idea
+.m2
+result
+**/.DS_Store
+**/dist
+**/node_modules
+**/target
+frontend/playwright-report
+frontend/test-results
+/litterbox-web-container.tar.gz
+**/.env*
+**/.venv
+data
+*.bin

@@ -83,10 +83,10 @@ mvn spring-boot:build-image
 # or for an image that precompiles using GraalVM
 mvn spring-boot:build-image -Pnative
 ----
-or
+or, from the repository root (the image also builds the frontend):
 [source,bash]
 ----
-docker build -t litterbox-web -f Containerfile .
+docker build -t litterbox-web -f litterbox-web/Containerfile .
 ----
 
 
