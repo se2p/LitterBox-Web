@@ -23,6 +23,11 @@ public record SourceArtifact(long id, byte[] sha256, long byteSize, String media
         return sha256.clone();
     }
 
+    /** The same artifact, under the name one particular submission gave it. */
+    public SourceArtifact named(final String filename) {
+        return new SourceArtifact(id, sha256, byteSize, mediaType, filename);
+    }
+
     @Override
     public boolean equals(final Object other) {
         if (!(other instanceof SourceArtifact artifact)) {

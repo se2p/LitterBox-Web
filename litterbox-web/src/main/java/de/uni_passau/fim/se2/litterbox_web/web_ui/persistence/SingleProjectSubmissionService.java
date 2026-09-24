@@ -135,7 +135,7 @@ public class SingleProjectSubmissionService {
     ) {
         return keep(staged, request.filename(), request.sourceKind(), request.manifestJson())
             .flatMap(
-                artifact -> submissionArtifacts.link(submission.id(), artifact.id(), "ORIGINAL")
+                artifact -> submissionArtifacts.link(submission.id(), artifact.id(), "ORIGINAL", request.filename())
                     .then(submissions.markRunnable(submission.id()))
                     .thenReturn(new IngestedRequest(submission, artifact))
             );
@@ -545,7 +545,7 @@ public class SingleProjectSubmissionService {
         final Submission submission,
         final SourceArtifact artifact
     ) {
-        return submissionArtifacts.link(submission.id(), artifact.id(), "ORIGINAL")
+        return submissionArtifacts.link(submission.id(), artifact.id(), "ORIGINAL", request.originalFilename())
             .then(
                 analyses.createAttempt(
                     new AnalysisRepository.AnalysisAttempt(

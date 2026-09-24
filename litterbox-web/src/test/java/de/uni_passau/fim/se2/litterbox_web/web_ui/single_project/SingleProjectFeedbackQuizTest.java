@@ -12,6 +12,7 @@ package de.uni_passau.fim.se2.litterbox_web.web_ui.single_project;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -107,7 +108,8 @@ class SingleProjectFeedbackQuizTest {
         // Regenerating a report that predates stored answer keys has to ask for the same set the report was built from.
         when(qlc.getQuestions(any(), any(), any(), any(), any(), eq(300), eq(false), eq(0), eq(false), eq(0L)))
             .thenReturn(Stream.of(question));
-        when(sourceArtifacts.findById(9)).thenReturn(Mono.just(artifact));
+        when(sourceArtifacts.findForAnalysis(argThat(read -> read != null && read.sourceArtifactId() == 9)))
+            .thenReturn(Mono.just(artifact));
         when(sourceArtifacts.open(any())).thenReturn(Mono.just(new ByteArrayInputStream(new byte[] { 1 })));
         when(answers.record(eq(41L), eq(QUESTION_ID), eq(CHOICE_B), eq(true))).thenReturn(Mono.empty());
         doAnswer(invocation -> runCallable(invocation.getArgument(0))).when(analysisWork).submit(any());

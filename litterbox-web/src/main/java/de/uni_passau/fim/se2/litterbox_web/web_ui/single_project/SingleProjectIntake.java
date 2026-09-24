@@ -164,7 +164,7 @@ class SingleProjectIntake {
             return Mono.error(new ResponseStatusException(HttpStatus.CONFLICT, "No single retained project"));
         }
         final Analysis analysis = withSource.getFirst();
-        return sourceArtifacts.findById(analysis.sourceArtifactId())
+        return sourceArtifacts.findForAnalysis(analysis)
             .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.GONE, "Project is no longer retained")))
             .flatMap(artifact -> reuseArtifact(artifact, analysis));
     }
@@ -189,12 +189,7 @@ class SingleProjectIntake {
     }
 
     private static String reusedFilename(final SourceArtifact artifact, final Analysis analysis) {
-        final String stored = artifact.originalFilename();
-        if (stored != null && !stored.isBlank()) {
-            return stored;
-        }
-        final String format = analysis.inputFormat();
-        return "project" + (format != null && format.startsWith(".") ? format : ".sb3");
+        return SingleProjectSupport.usableFilename(artifact.originalFilename(), analysis.inputFormat());
     }
 
     private record ReusedSource(byte[] bytes, String filename) {

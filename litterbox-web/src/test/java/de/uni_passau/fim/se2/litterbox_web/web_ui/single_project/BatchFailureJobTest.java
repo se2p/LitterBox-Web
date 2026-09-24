@@ -10,6 +10,7 @@
 package de.uni_passau.fim.se2.litterbox_web.web_ui.single_project;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -55,7 +56,7 @@ class BatchFailureJobTest {
         );
         when(jobs.leaseOwned(31, WORKER)).thenReturn(Mono.just(true));
         when(analyses.findById(9)).thenReturn(Mono.just(analysis));
-        when(artifacts.findById(7)).thenReturn(
+        when(artifacts.findForAnalysis(argThat(read -> read != null && read.sourceArtifactId() == 7))).thenReturn(
             Mono.just(new SourceArtifact(7, digest, 12, "application/zip", "broken.sb3"))
         );
         when(artifacts.findMetadataById(7)).thenReturn(
@@ -98,7 +99,7 @@ class BatchFailureJobTest {
             31, 11, 9L, "ANALYSIS", null, "RUNNING", false, 0, null
         );
         when(analyses.findById(9)).thenReturn(Mono.just(analysis));
-        when(artifacts.findById(7)).thenReturn(
+        when(artifacts.findForAnalysis(argThat(read -> read != null && read.sourceArtifactId() == 7))).thenReturn(
             Mono.just(new SourceArtifact(7, digest, 12, "application/zip", "project.sb3"))
         );
         when(artifacts.findMetadataById(7)).thenReturn(

@@ -11,12 +11,14 @@ package de.uni_passau.fim.se2.litterbox_web.web_ui.persistence;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.flywaydb.core.Flyway;
@@ -27,6 +29,8 @@ import de.uni_passau.fim.se2.litterbox_web.util.TestDatabase;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.Analyses;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.AnalysisJobs;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.AnalysisMetrics;
+import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.SourceArtifacts;
+import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.SubmissionArtifacts;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.SubmissionEvents;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.Submissions;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.util.ImmediateWork;
@@ -36,6 +40,7 @@ class MariaDbMigrationIntegrationTest {
 
     private static final String INSERT_ANALYSIS = "INSERT INTO analysis ";
     private static final String WORKER = "worker";
+    private static final String MIGRATIONS = "classpath:db/migration";
     private static final Set<String> EXPECTED_TABLES = Set.of(
         "submission", "submission_event", "source_artifact", "submission_artifact", "analysis",
         "analysis_metric", "scratch_project_stats", "asset", "analysis_asset", "issue_feedback",
@@ -60,7 +65,7 @@ class MariaDbMigrationIntegrationTest {
         try (TestDatabase database = TestDatabase.freshSchema("statistics_rebuild")) {
             final Flyway throughV4 = Flyway.configure()
                 .dataSource(database.dataSource())
-                .locations("classpath:db/migration")
+                .locations(MIGRATIONS)
                 .target("4")
                 .load();
             throughV4.migrate();
@@ -98,11 +103,11 @@ class MariaDbMigrationIntegrationTest {
 
             final Flyway latest = Flyway.configure()
                 .dataSource(database.dataSource())
-                .locations("classpath:db/migration")
+                .locations(MIGRATIONS)
                 .load();
-            assertThat(latest.migrate().migrationsExecuted).isEqualTo(2);
+            assertThat(latest.migrate().migrationsExecuted).isEqualTo(3);
 
-            assertThat(latest.info().current().getVersion().getVersion()).isEqualTo("6");
+            assertThat(latest.info().current().getVersion().getVersion()).isEqualTo("7");
             assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM statistics_processed_analysis", Long.class)).isZero();
             assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM statistics_total", Long.class)).isZero();
             assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM statistics_distribution", Long.class)).isZero();
@@ -111,14 +116,67 @@ class MariaDbMigrationIntegrationTest {
         }
     }
 
+    @Test
+    void namesNoProjectForASubmissionLinkedBeforeNamesWereKept() throws Exception {
+        try (TestDatabase database = TestDatabase.freshSchema("link_name_upgrade")) {
+            Flyway.configure()
+                .dataSource(database.dataSource())
+                .locations(MIGRATIONS)
+                .target("6")
+                .load()
+                .migrate();
+            final JdbcTemplate jdbc = database.jdbcTemplate();
+            jdbc.update(
+                "INSERT INTO submission (share_token, source_type, locale, state) "
+                    + "VALUES ('link-name-upgrade', 'UPLOAD', 'en', 'DONE')"
+            );
+            jdbc.update(
+                "INSERT INTO source_artifact (sha256, storage_key, original_filename, byte_size, source_kind, "
+                    + "retention_state) VALUES (UNHEX(SHA2('link-name-upgrade', 256)), 'upgrade/shared.sb3', "
+                    + "'someone-else.sb3', 1, 'UPLOAD', 'ACTIVE')"
+            );
+            jdbc.update(
+                "INSERT INTO submission_artifact (submission_id, artifact_id, role) VALUES (1, 1, 'ORIGINAL')"
+            );
+
+            Flyway.configure()
+                .dataSource(database.dataSource())
+                .locations(MIGRATIONS)
+                .load()
+                .migrate();
+
+            try (TestRepositories repositories = new TestRepositories(database)) {
+                final DatabaseWork work = ImmediateWork.database();
+                final SourceArtifactAccess access = new SourceArtifactAccess(
+                    new SourceArtifactRepository(
+                        repositories.of(SourceArtifacts.class), work, ImmediateWork.storage(),
+                        mock(SourceArtifactStore.class)
+                    ),
+                    new SubmissionArtifactRepository(
+                        repositories.of(SubmissionArtifacts.class), repositories.of(Analyses.class), work,
+                        repositories.transactions()
+                    ),
+                    mock(SourceArtifactStore.class), ImmediateWork.storage()
+                );
+                final Analysis analysis = new Analysis(
+                    1, 1, 1, null, "NEW", "1", "test", "en", "DONE", ".sb3", null, null, null, null, null, null,
+                    Map.of()
+                );
+
+                assertThat(access.findForAnalysis(analysis).block().originalFilename()).isNull();
+                assertThat(access.submittedName(analysis).block()).isNull();
+            }
+        }
+    }
+
     @SuppressWarnings("checkstyle:MethodLength")
     private void migrateAndAssert(final TestDatabase database) throws Exception {
         final Flyway flyway = Flyway.configure()
             .dataSource(database.dataSource())
-            .locations("classpath:db/migration")
+            .locations(MIGRATIONS)
             .load();
         assertThat(flyway.migrate().migrationsExecuted).isGreaterThanOrEqualTo(2);
-        assertThat(flyway.info().current().getVersion().getVersion()).isEqualTo("6");
+        assertThat(flyway.info().current().getVersion().getVersion()).isEqualTo("7");
 
         try (Connection connection = database.dataSource().getConnection()) {
             final Set<String> tables;

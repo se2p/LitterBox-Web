@@ -174,7 +174,7 @@ class SingleProjectFeedback {
             QuizAnswerMarking.validateQuizAnswer(answerKey, request.answer());
             return Mono.just(QuizAnswerMarking.evaluation(answerKey, request.answer()));
         }
-        return sourceArtifacts.findById(analysis.sourceArtifactId())
+        return sourceArtifacts.findForAnalysis(analysis)
             .switchIfEmpty(
                 Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Source artifact not found"))
             )

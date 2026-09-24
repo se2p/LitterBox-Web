@@ -12,6 +12,7 @@ package de.uni_passau.fim.se2.litterbox_web.web_ui.capabilities.diff;
 import static de.uni_passau.fim.se2.litterbox_web.web_ui.capabilities.CapabilityAssertions.assertCode;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -199,14 +200,17 @@ class SemanticDiffCapabilityServiceTest {
             Mono.just(analysis(BEFORE_ANALYSIS, BEFORE_SUBMISSION, beforeArchive, ".sb3", "DONE", "Cat chase"))
         );
         // An artifact that no longer remembers what it was called leaves nothing but the position.
-        when(sourceArtifacts.findById(AFTER_ARTIFACT)).thenReturn(
-            Mono.just(
-                new SourceArtifact(
-                    AFTER_ARTIFACT, digest(afterArchive), afterArchive.length,
-                    "application/zip", null
+        when(
+            sourceArtifacts.findForAnalysis(argThat(read -> read != null && read.sourceArtifactId() == AFTER_ARTIFACT))
+        )
+            .thenReturn(
+                Mono.just(
+                    new SourceArtifact(
+                        AFTER_ARTIFACT, digest(afterArchive), afterArchive.length,
+                        "application/zip", null
+                    )
                 )
-            )
-        );
+            );
 
         final AdvancedCapabilityDtos.DiffView result = capability(immediateWork()).compare(request()).block();
 
@@ -217,14 +221,17 @@ class SemanticDiffCapabilityServiceTest {
     @Test
     void stripsSeparatorsAndControlCharactersFromASubmittedFileName() throws Exception {
         installSources(".sb3", ".sb3");
-        when(sourceArtifacts.findById(BEFORE_ARTIFACT)).thenReturn(
-            Mono.just(
-                new SourceArtifact(
-                    BEFORE_ARTIFACT, digest(beforeArchive), beforeArchive.length,
-                    "application/zip", "../etc/pass\nwd.sb3"
+        when(
+            sourceArtifacts.findForAnalysis(argThat(read -> read != null && read.sourceArtifactId() == BEFORE_ARTIFACT))
+        )
+            .thenReturn(
+                Mono.just(
+                    new SourceArtifact(
+                        BEFORE_ARTIFACT, digest(beforeArchive), beforeArchive.length,
+                        "application/zip", "../etc/pass\nwd.sb3"
+                    )
                 )
-            )
-        );
+            );
 
         final AdvancedCapabilityDtos.DiffView result = capability(immediateWork()).compare(request()).block();
 
@@ -287,16 +294,22 @@ class SemanticDiffCapabilityServiceTest {
 
     @Test
     void mapsMissingArtifactsMetadataAndDigestMismatchesWithoutDisclosure() {
-        when(sourceArtifacts.findById(BEFORE_ARTIFACT)).thenReturn(Mono.empty());
+        when(
+            sourceArtifacts.findForAnalysis(argThat(read -> read != null && read.sourceArtifactId() == BEFORE_ARTIFACT))
+        )
+            .thenReturn(Mono.empty());
         assertCode("analysis_not_found", () -> capability(immediateWork()).compare(request()).block());
 
-        when(sourceArtifacts.findById(BEFORE_ARTIFACT)).thenReturn(
-            Mono.just(
-                artifact(
-                    BEFORE_ARTIFACT, beforeArchive, ".sb3"
+        when(
+            sourceArtifacts.findForAnalysis(argThat(read -> read != null && read.sourceArtifactId() == BEFORE_ARTIFACT))
+        )
+            .thenReturn(
+                Mono.just(
+                    artifact(
+                        BEFORE_ARTIFACT, beforeArchive, ".sb3"
+                    )
                 )
-            )
-        );
+            );
         when(sourceArtifacts.findMetadataById(BEFORE_ARTIFACT)).thenReturn(
             Mono.just(
                 new SourceArtifactMetadata(AFTER_ARTIFACT, "UPLOAD", "{}")
@@ -455,16 +468,22 @@ class SemanticDiffCapabilityServiceTest {
                 analysis(AFTER_ANALYSIS, AFTER_SUBMISSION, afterArchive, afterFormat, "DONE", null)
             )
         );
-        when(sourceArtifacts.findById(BEFORE_ARTIFACT)).thenReturn(
-            Mono.just(
-                artifact(BEFORE_ARTIFACT, beforeArchive, beforeFormat)
-            )
-        );
-        when(sourceArtifacts.findById(AFTER_ARTIFACT)).thenReturn(
-            Mono.just(
-                artifact(AFTER_ARTIFACT, afterArchive, afterFormat)
-            )
-        );
+        when(
+            sourceArtifacts.findForAnalysis(argThat(read -> read != null && read.sourceArtifactId() == BEFORE_ARTIFACT))
+        )
+            .thenReturn(
+                Mono.just(
+                    artifact(BEFORE_ARTIFACT, beforeArchive, beforeFormat)
+                )
+            );
+        when(
+            sourceArtifacts.findForAnalysis(argThat(read -> read != null && read.sourceArtifactId() == AFTER_ARTIFACT))
+        )
+            .thenReturn(
+                Mono.just(
+                    artifact(AFTER_ARTIFACT, afterArchive, afterFormat)
+                )
+            );
         when(sourceArtifacts.findMetadataById(BEFORE_ARTIFACT)).thenReturn(Mono.just(metadata(BEFORE_ARTIFACT)));
         when(sourceArtifacts.findMetadataById(AFTER_ARTIFACT)).thenReturn(Mono.just(metadata(AFTER_ARTIFACT)));
         when(sourceArtifacts.open(any(byte[].class))).thenAnswer(invocation -> {

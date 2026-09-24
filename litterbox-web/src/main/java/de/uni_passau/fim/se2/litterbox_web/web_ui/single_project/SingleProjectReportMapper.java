@@ -131,7 +131,7 @@ class SingleProjectReportMapper {
     }
 
     SingleProjectDtos.SubmissionView view(
-        final Submission submission, final List<Analysis> analysesForSubmission
+        final Submission submission, final List<Analysis> analysesForSubmission, final Map<Long, String> names
     ) {
         if (analysesForSubmission.isEmpty()) {
             return new SingleProjectDtos.SubmissionView(
@@ -144,7 +144,7 @@ class SingleProjectReportMapper {
             );
         }
         final List<SingleProjectDtos.AnalysisView> analysisViews = analysesForSubmission.stream()
-            .map(analysis -> analysisView(submission, analysis)).toList();
+            .map(analysis -> analysisView(submission, analysis, names.get(analysis.id()))).toList();
         final SingleProjectDtos.AnalysisView singular = analysisViews.getLast();
         return new SingleProjectDtos.SubmissionView(
             SingleProjectDtos.SCHEMA_VERSION, submission.id(), submission.shareToken(),
@@ -158,7 +158,9 @@ class SingleProjectReportMapper {
         );
     }
 
-    SingleProjectDtos.AnalysisView analysisView(final Submission submission, final Analysis analysis) {
+    SingleProjectDtos.AnalysisView analysisView(
+        final Submission submission, final Analysis analysis, final String name
+    ) {
         final StoredAnalysis report = storedAnalysis(analysis);
         final Set<String> authorizedAssetHashes = Set.copyOf(report.assetHashes());
         final List<SingleProjectDtos.IssueView> issues = report.issues().stream()
@@ -169,7 +171,7 @@ class SingleProjectReportMapper {
         final Map<String, Double> metrics = analysis.metrics().isEmpty() ? report.metrics() : analysis.metrics();
         return new SingleProjectDtos.AnalysisView(
             analysis.id(), SingleProjectSupport.status(analysis.status()),
-            analysis.projectName() == null ? report.name() : analysis.projectName(),
+            name,
             analysis.failureType(), analysis.failureMessage(), analysis.reportSchemaVersion(),
             analysis.litterboxArtifactVersion(), analysis.locale(), analysis.provenance(), detectors,
             configuration(analysis.configurationJson()), analysis.inputSha256() == null

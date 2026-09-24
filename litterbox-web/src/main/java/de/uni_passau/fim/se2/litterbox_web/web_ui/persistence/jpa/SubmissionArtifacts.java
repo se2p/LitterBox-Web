@@ -31,16 +31,38 @@ public interface SubmissionArtifacts
      * and reports the link as made. Nor a condition asking whether the row is already there: reading the table it
      * inserts into makes the statement take shared locks across the index it read, and sixteen submissions of one
      * shared artifact deadlock on the gap they all have to insert into.
+     *
+     * @param submissionId     the submission
+     * @param artifactId       the artifact it was made from
+     * @param role             what the artifact is to the submission
+     * @param originalFilename the name the submission gave the artifact, or {@code null} where it gave none
      */
     @Modifying
     @Transactional
     @Query(
-        value = "INSERT INTO submission_artifact (submission_id, artifact_id, role) "
-            + "VALUES (:submissionId, :artifactId, :role)",
+        value = "INSERT INTO submission_artifact (submission_id, artifact_id, role, original_filename) "
+            + "VALUES (:submissionId, :artifactId, :role, :originalFilename)",
         nativeQuery = true
     )
     void link(
-        @Param("submissionId") long submissionId, @Param("artifactId") long artifactId, @Param("role") String role
+        @Param("submissionId") long submissionId, @Param("artifactId") long artifactId, @Param("role") String role,
+        @Param("originalFilename") String originalFilename
+    );
+
+    /**
+     * The name the submission gave the artifact it was made from, if it was linked after names were kept.
+     *
+     * @param submissionId the submission
+     * @param artifactId   the artifact it was made from
+     * @return the name, if the link kept one
+     */
+    @Query(
+        value = "SELECT original_filename FROM submission_artifact WHERE submission_id = :submissionId "
+            + "AND artifact_id = :artifactId AND role = 'ORIGINAL' AND original_filename <> ''",
+        nativeQuery = true
+    )
+    Optional<String> findOriginalFilename(
+        @Param("submissionId") long submissionId, @Param("artifactId") long artifactId
     );
 
     /** The artifact a submission was made from under the given role, if one has been recorded for it yet. */

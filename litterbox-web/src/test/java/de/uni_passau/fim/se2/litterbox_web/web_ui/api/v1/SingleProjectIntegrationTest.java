@@ -308,6 +308,31 @@ class SingleProjectIntegrationTest {
     }
 
     @Test
+    void namesAProjectAfterThisUploadEvenWhenTheSameBytesWereUploadedUnderAnotherName() throws IOException {
+        final byte[] input = archive(
+            thumbnail(), project -> project.replace("\"name\": \"boat\"", "\"name\": \"shared-boat\"")
+        );
+        final SingleProjectDtos.CreatedSubmission first = submit(input, "shared-first", "en", "first-upload.sb3");
+        final SingleProjectDtos.CreatedSubmission second = submit(input, "shared-second", "en", "second-upload.sb3");
+
+        Awaitility.await().atMost(java.time.Duration.ofSeconds(15)).untilAsserted(() -> {
+            assertThat(submission(first.token()).status()).isEqualTo(COMPLETED);
+            assertThat(submission(second.token()).status()).isEqualTo(COMPLETED);
+        });
+
+        assertThat(submission(first.token()).analysis().name()).isEqualTo("first-upload.sb3");
+        assertThat(submission(second.token()).analysis().name()).isEqualTo("second-upload.sb3");
+
+        DATABASE.jdbcTemplate().update(
+            "UPDATE submission_artifact SET original_filename = NULL WHERE submission_id = ?",
+            submission(second.token()).submissionId()
+        );
+        assertThat(submission(second.token()).analysis().name())
+            .as("a link made before names were kept shows no name, not the one stored in its report")
+            .isNull();
+    }
+
+    @Test
     @SuppressWarnings("checkstyle:MethodLength")
     void analyzesCanonicalScratchUrlThroughTheConfiguredFixedHostMock() throws Exception {
         final byte[] metadata = ("{\"project_token\":\"synthetic-url-token\","

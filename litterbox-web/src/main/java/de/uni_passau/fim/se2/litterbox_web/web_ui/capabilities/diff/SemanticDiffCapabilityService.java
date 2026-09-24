@@ -185,7 +185,7 @@ final class SemanticDiffCapabilityService implements SemanticDiffCapability {
         if (analysis.sourceArtifactId() < 1) {
             return Mono.empty();
         }
-        return nonNull(sourceArtifacts.findById(analysis.sourceArtifactId()))
+        return nonNull(sourceArtifacts.findForAnalysis(analysis))
             .flatMap(
                 artifact -> nonNull(sourceArtifacts.findMetadataById(artifact.id()))
                     .filter(metadata -> metadataMatches(artifact, metadata))

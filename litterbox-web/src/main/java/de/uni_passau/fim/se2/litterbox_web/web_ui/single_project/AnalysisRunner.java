@@ -156,7 +156,7 @@ class AnalysisRunner {
         final Analysis analysis
     ) {
         return terminalResult(analysis).switchIfEmpty(
-            sourceArtifacts.findById(analysis.sourceArtifactId())
+            sourceArtifacts.findForAnalysis(analysis)
                 .switchIfEmpty(Mono.error(new IllegalStateException("Source artifact does not exist")))
                 .flatMap(
                     artifact -> sourceArtifacts.findMetadataById(artifact.id())
@@ -483,9 +483,13 @@ class AnalysisRunner {
                 analysisWork.submit(
                     () -> execution.questions()
                         ? generateQuestionsBlocking(
-                            stream.readAllBytes(), artifact.originalFilename(), analysis.locale()
+                            stream.readAllBytes(), artifact.originalFilename(), analysis.inputFormat(),
+                            analysis.locale()
                         )
-                        : analyzeBlocking(stream.readAllBytes(), artifact.originalFilename(), analysis.locale())
+                        : analyzeBlocking(
+                            stream.readAllBytes(), artifact.originalFilename(), analysis.inputFormat(),
+                            analysis.locale()
+                        )
                 )
             )
             .flatMap(
@@ -604,13 +608,17 @@ class AnalysisRunner {
     private AnalysisOutcome analyzeBlocking(
         final byte[] bytes,
         final String filename,
+        final String inputFormat,
         final String locale
     ) throws IOException {
         final Program program;
         final ProjectArchiveInspector.Inspection inspection = archiveInspector.inspect(bytes);
         final List<ProjectArchiveInspector.ArchiveAsset> archiveAssets = inspection.assets();
         final Map<String, String> thumbnailHashes = inspection.thumbnailHashes();
-        final Path temporary = Files.createTempFile("litterbox-single-", SingleProjectSupport.extension(filename));
+        final Path temporary = Files.createTempFile(
+            "litterbox-single-",
+            SingleProjectSupport.extension(SingleProjectSupport.usableFilename(filename, inputFormat))
+        );
         try {
             Files.write(temporary, bytes);
             program = parser.parseFromFile(temporary);
@@ -643,11 +651,15 @@ class AnalysisRunner {
     private AnalysisOutcome generateQuestionsBlocking(
         final byte[] bytes,
         final String filename,
+        final String inputFormat,
         final String locale
     ) throws IOException {
         final Program program;
         archiveInspector.inspect(bytes);
-        final Path temporary = Files.createTempFile("litterbox-questions-", SingleProjectSupport.extension(filename));
+        final Path temporary = Files.createTempFile(
+            "litterbox-questions-",
+            SingleProjectSupport.extension(SingleProjectSupport.usableFilename(filename, inputFormat))
+        );
         try {
             Files.write(temporary, bytes);
             program = parser.parseFromFile(temporary);

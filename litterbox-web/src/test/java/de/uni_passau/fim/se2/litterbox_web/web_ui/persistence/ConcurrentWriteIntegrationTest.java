@@ -50,6 +50,7 @@ import de.uni_passau.fim.se2.litterbox_web.web_ui.util.TestRepositories;
 class ConcurrentWriteIntegrationTest {
 
     private static final int WRITERS = 16;
+    private static final String ORIGINAL = "ORIGINAL";
 
     @TempDir
     private java.nio.file.Path storage;
@@ -317,23 +318,48 @@ class ConcurrentWriteIntegrationTest {
             final JdbcTemplate jdbc = database.jdbcTemplate();
             final long submissionId = submission(jdbc, "integrity-token", 1);
             final long artifactId = artifact(jdbc, "integrity-artifact", (byte) 0x44);
-            final SubmissionArtifactRepository links = new SubmissionArtifactRepository(
-                repositories.of(SubmissionArtifacts.class), repositories.of(Analyses.class),
-                ImmediateWork.database(), repositories.transactions()
-            );
+            final SubmissionArtifactRepository links = linkRepository(repositories);
 
-            links.link(submissionId, artifactId, "ORIGINAL").block();
-            links.link(submissionId, artifactId, "ORIGINAL").block();
+            links.link(submissionId, artifactId, ORIGINAL, "project.sb3").block();
+            links.link(submissionId, artifactId, ORIGINAL, "project.sb3").block();
 
             assertThat(
                 jdbc.queryForObject(
                     "SELECT COUNT(*) FROM submission_artifact WHERE submission_id = ?", Integer.class, submissionId
                 )
             ).as("the same fact stated twice is still one fact").isEqualTo(1);
-            assertThatThrownBy(() -> links.link(submissionId, artifactId + 10_000, "ORIGINAL").block())
+            assertThatThrownBy(() -> links.link(submissionId, artifactId + 10_000, ORIGINAL, "project.sb3").block())
                 .as("an artifact that was never stored is not the same as one linked twice")
                 .isInstanceOf(DataIntegrityViolationException.class)
                 .hasMessageContaining("fk_submission_artifact_artifact");
+        }
+    }
+
+    @Test
+    void eachSubmissionKeepsTheNameItGaveSharedBytes() throws Exception {
+        try (
+            TestDatabase database = TestDatabase.freshSchema("link_names");
+            TestRepositories repositories = new TestRepositories(database.migrated())
+        ) {
+            final JdbcTemplate jdbc = database.jdbcTemplate();
+            final long first = submission(jdbc, "first-name-token", 1);
+            final long second = submission(jdbc, "second-name-token", 1);
+            final long unnamed = submission(jdbc, "unnamed-token", 1);
+            final long artifactId = artifact(jdbc, "shared-artifact", (byte) 0x45);
+            final SubmissionArtifactRepository links = linkRepository(repositories);
+
+            links.link(first, artifactId, ORIGINAL, "first.sb3").block();
+            links.link(second, artifactId, ORIGINAL, "second.sb3").block();
+            jdbc.update(
+                "INSERT INTO submission_artifact (submission_id, artifact_id, role) VALUES (?, ?, 'ORIGINAL')",
+                unnamed, artifactId
+            );
+
+            assertThat(links.findOriginalFilename(first, artifactId).block()).isEqualTo("first.sb3");
+            assertThat(links.findOriginalFilename(second, artifactId).block()).isEqualTo("second.sb3");
+            assertThat(links.findOriginalFilename(unnamed, artifactId).block())
+                .as("a link made before names were kept has none to give")
+                .isNull();
         }
     }
 
@@ -714,6 +740,13 @@ class ConcurrentWriteIntegrationTest {
             repositories.of(AnalysisJobs.class), repositories.of(Analyses.class),
             repositories.of(Submissions.class), repositories.of(SubmissionEvents.class),
             ImmediateWork.database(), repositories.transactions()
+        );
+    }
+
+    private SubmissionArtifactRepository linkRepository(final TestRepositories repositories) {
+        return new SubmissionArtifactRepository(
+            repositories.of(SubmissionArtifacts.class), repositories.of(Analyses.class), ImmediateWork.database(),
+            repositories.transactions()
         );
     }
 

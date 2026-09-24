@@ -68,6 +68,20 @@ public final class SingleProjectSupport {
         };
     }
 
+    /**
+     * A name to hand a stored project to the parser under. A project whose name is not known still has the format it
+     * was recorded in, and that is all the parser reads from the name.
+     */
+    static String usableFilename(final String filename, final String inputFormat) {
+        if (filename != null && !filename.isBlank()) {
+            return filename;
+        }
+        if (inputFormat != null && inputFormat.startsWith(".")) {
+            return "project" + inputFormat;
+        }
+        return "project.sb3";
+    }
+
     /** Only two formats are analysed, so anything that is not an mBlock project is treated as a Scratch one. */
     static String extension(final String filename) {
         if (filename.toLowerCase(Locale.ROOT).endsWith(".mblock")) {
@@ -143,10 +157,14 @@ public final class SingleProjectSupport {
         final String inputFormat
     ) throws IOException {
         if ("json".equalsIgnoreCase(inputFormat)) {
-            return parser.parseFromString(filename, new String(bytes, StandardCharsets.UTF_8));
+            return parser.parseFromString(
+                usableFilename(filename, inputFormat), new String(bytes, StandardCharsets.UTF_8)
+            );
         }
         archiveInspector.inspect(bytes);
-        final Path temporary = Files.createTempFile("litterbox-single-report-", extension(filename));
+        final Path temporary = Files.createTempFile(
+            "litterbox-single-report-", extension(usableFilename(filename, inputFormat))
+        );
         try {
             Files.write(temporary, bytes);
             return parser.parseFromFile(temporary);

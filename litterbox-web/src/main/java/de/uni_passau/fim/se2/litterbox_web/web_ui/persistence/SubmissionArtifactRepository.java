@@ -42,12 +42,35 @@ public class SubmissionArtifactRepository {
         this.transactions = Objects.requireNonNull(transactions, "transactions");
     }
 
-    public Mono<Void> link(final long submissionId, final long artifactId, final String role) {
+    /**
+     * Records that a submission was made from an artifact, and under what name. The artifact keeps the name of
+     * whichever submission stored its bytes first, so the name this submission knows it by has to be kept here.
+     *
+     * @param submissionId     the submission
+     * @param artifactId       the artifact it was made from
+     * @param role             what the artifact is to the submission
+     * @param originalFilename the name the submission gave the artifact, or {@code null} where it gave none
+     * @return completes once the link is recorded, or was already
+     */
+    public Mono<Void> link(
+        final long submissionId, final long artifactId, final String role, final String originalFilename
+    ) {
         Objects.requireNonNull(role, "role");
         return databaseWork.submit(() -> {
-            Idempotent.write(() -> links.link(submissionId, artifactId, role));
+            Idempotent.write(() -> links.link(submissionId, artifactId, role, originalFilename));
             return null;
         });
+    }
+
+    /**
+     * The name a submission gave the artifact it was made from, if the link between them kept one.
+     *
+     * @param submissionId the submission
+     * @param artifactId   the artifact it was made from
+     * @return the name, or nothing where the link kept none
+     */
+    public Mono<String> findOriginalFilename(final long submissionId, final long artifactId) {
+        return databaseWork.submit(() -> links.findOriginalFilename(submissionId, artifactId).orElse(null));
     }
 
     /**
@@ -103,12 +126,13 @@ public class SubmissionArtifactRepository {
         }
         // Two projects of one batch can be the same bytes under different names, in which case the link already
         // exists. Checked here rather than left to the insert, because a refused statement would roll back the
-        // transaction that the analysis below is being created in.
+        // transaction that the analysis below is being created in. The link keeps no name: one link can stand for
+        // several differently named projects, and each analysis carries its own.
         final SubmissionArtifactEntity.Key key = new SubmissionArtifactEntity.Key(
             link.submissionId(), link.artifactId(), link.role()
         );
         if (!links.existsById(key)) {
-            links.link(link.submissionId(), link.artifactId(), link.role());
+            links.link(link.submissionId(), link.artifactId(), link.role(), null);
         }
         final AnalysisEntity analysis = AnalysisEntity.queued(
             link.submissionId(), link.artifactId(), link.projectName(), "NEW", "1",

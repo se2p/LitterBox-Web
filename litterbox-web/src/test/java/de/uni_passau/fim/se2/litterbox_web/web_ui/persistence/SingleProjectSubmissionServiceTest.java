@@ -123,7 +123,7 @@ class SingleProjectSubmissionServiceTest {
         when(sourceArtifacts.register(any())).thenReturn(Mono.just(artifact));
         when(idempotency.find(anyString(), anyString())).thenReturn(Mono.empty());
         when(submissions.create(any())).thenReturn(Mono.just(ours));
-        when(submissionArtifacts.link(anyLong(), anyLong(), anyString())).thenReturn(Mono.empty());
+        when(submissionArtifacts.link(anyLong(), anyLong(), anyString(), any())).thenReturn(Mono.empty());
         // The winner is still building, so the loser runs the same repeatable steps against the winner's
         // submission; the unique key on its single analysis answers both with the one analysis.
         when(analyses.createAttempt(any())).thenReturn(Mono.just(winning));
@@ -273,7 +273,7 @@ class SingleProjectSubmissionServiceTest {
         // Nor has it linked an artifact, so the bytes this request carries are the ones the submission gets.
         when(submissionArtifacts.findOriginalArtifactId(20)).thenReturn(Mono.empty());
         when(sourceArtifacts.register(any())).thenReturn(Mono.just(artifact));
-        when(submissionArtifacts.link(anyLong(), anyLong(), anyString())).thenReturn(Mono.empty());
+        when(submissionArtifacts.link(anyLong(), anyLong(), anyString(), any())).thenReturn(Mono.empty());
         when(analyses.createAttempt(any())).thenReturn(
             Mono.just(new Analysis(31, 20, 7, "NEW", "1", "synthetic", "en", "QUEUED", ".sb3"))
         );
@@ -397,7 +397,7 @@ class SingleProjectSubmissionServiceTest {
         when(analyses.findCreationBySubmissionId(20)).thenReturn(Mono.empty());
         when(submissionArtifacts.findOriginalArtifactId(20)).thenReturn(Mono.just(7L));
         when(sourceArtifacts.findById(7)).thenReturn(Mono.just(first));
-        when(submissionArtifacts.link(anyLong(), anyLong(), anyString())).thenReturn(Mono.empty());
+        when(submissionArtifacts.link(anyLong(), anyLong(), anyString(), any())).thenReturn(Mono.empty());
         when(analyses.createAttempt(any())).thenReturn(Mono.just(analysis));
         when(scratchStats.upsertFromManifest(anyLong(), any())).thenReturn(Mono.empty());
         when(sourceArtifacts.findMetadataById(7)).thenReturn(

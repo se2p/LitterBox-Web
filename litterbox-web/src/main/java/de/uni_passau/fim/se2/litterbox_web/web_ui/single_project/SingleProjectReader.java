@@ -14,6 +14,7 @@ import java.time.Duration;
 import java.util.HexFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
@@ -87,8 +88,20 @@ class SingleProjectReader {
         return submissionRepository.findByToken(token)
             .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Submission not found")))
             .flatMap(
-                submission -> analyses.findBySubmissionId(submission.id()).map(list -> reports.view(submission, list))
+                submission -> analyses.findBySubmissionId(submission.id()).flatMap(
+                    list -> submittedNames(list).map(names -> reports.view(submission, list, names))
+                )
             );
+    }
+
+    /**
+     * Each analysis's project under the name its submission gave it. A report stored before those names were kept
+     * carries the name of whoever first uploaded the same bytes, so that name is not used for display.
+     */
+    private Mono<Map<Long, String>> submittedNames(final List<Analysis> list) {
+        return Flux.fromIterable(list)
+            .concatMap(analysis -> sourceArtifacts.submittedName(analysis).map(name -> Map.entry(analysis.id(), name)))
+            .collectMap(Map.Entry::getKey, Map.Entry::getValue);
     }
 
     Mono<SingleProjectDtos.AssetContent> asset(final String token, final String sha256) {
@@ -209,7 +222,7 @@ class SingleProjectReader {
                 new ResponseStatusException(HttpStatus.CONFLICT, "Submission analysis is not available yet")
             );
         }
-        return sourceArtifacts.findById(analysis.sourceArtifactId())
+        return sourceArtifacts.findForAnalysis(analysis)
             .switchIfEmpty(
                 Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Source artifact not found"))
             )
