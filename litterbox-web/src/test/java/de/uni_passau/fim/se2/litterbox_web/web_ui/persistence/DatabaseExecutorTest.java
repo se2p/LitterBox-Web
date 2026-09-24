@@ -12,17 +12,21 @@ package de.uni_passau.fim.se2.litterbox_web.web_ui.persistence;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Duration;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 
 import de.uni_passau.fim.se2.litterbox_web.web_ui.execution.BoundedAnalysisExecutor;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+import reactor.core.publisher.Flux;
 
 class DatabaseExecutorTest {
 
     @Test
     void runsBlockingWorkOnDatabaseThreads() {
-        final DatabaseExecutor work = new DatabaseExecutor(1);
+        final DatabaseExecutor work = new DatabaseExecutor(1, 1, new SimpleMeterRegistry());
         final BoundedAnalysisExecutor analysis = new BoundedAnalysisExecutor(1, 1, new SimpleMeterRegistry());
 
         try {
@@ -40,4 +44,31 @@ class DatabaseExecutorTest {
         }
     }
 
+    @Test
+    void queuesWorkBeyondThreadCountInsteadOfRefusingIt() throws Exception {
+        final DatabaseExecutor work = new DatabaseExecutor(1, 16, new SimpleMeterRegistry());
+        final CountDownLatch started = new CountDownLatch(1);
+        final CountDownLatch release = new CountDownLatch(1);
+        try {
+            work.submit(() -> {
+                started.countDown();
+                release.await();
+                return -1;
+            }).subscribe();
+            assertThat(started.await(2, TimeUnit.SECONDS)).isTrue();
+
+            final var waiting = Flux.range(0, 8)
+                .flatMap(i -> work.submit(() -> i))
+                .collectList()
+                .toFuture();
+            release.countDown();
+
+            final List<Integer> results = waiting.get(2, TimeUnit.SECONDS);
+            assertThat(results).containsExactlyInAnyOrder(0, 1, 2, 3, 4, 5, 6, 7);
+        }
+        finally {
+            release.countDown();
+            work.shutdown();
+        }
+    }
 }

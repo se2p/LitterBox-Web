@@ -34,7 +34,7 @@ class StorageExecutorTest {
     @Test
     void runsBlockingWorkOnStorageThreadsRatherThanDatabaseOnes() {
         final StorageExecutor storage = new StorageExecutor(1, 1, new SimpleMeterRegistry());
-        final DatabaseExecutor database = new DatabaseExecutor(1);
+        final DatabaseExecutor database = new DatabaseExecutor(1, 1, new SimpleMeterRegistry());
 
         try {
             final String storageThread = storage.submit(() -> Thread.currentThread().getName())
@@ -56,7 +56,7 @@ class StorageExecutorTest {
     void rejectsWhenBoundedStoragePoolIsFullAndLeavesTheDatabasePoolAlone() throws Exception {
         final SimpleMeterRegistry metrics = new SimpleMeterRegistry();
         final StorageExecutor storage = new StorageExecutor(1, 1, metrics);
-        final DatabaseExecutor database = new DatabaseExecutor(1);
+        final DatabaseExecutor database = new DatabaseExecutor(1, 1, new SimpleMeterRegistry());
         final CountDownLatch started = new CountDownLatch(1);
         final CountDownLatch release = new CountDownLatch(1);
         try {
