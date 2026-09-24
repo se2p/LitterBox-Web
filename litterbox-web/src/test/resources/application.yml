@@ -10,11 +10,17 @@ logging:
     de.uni_passau.fim.se2: DEBUG
     de.uni_passau.fim.se2.litterbox.analytics.llm: WARN
     de.uni_passau.fim.se2.litterbox.llm: WARN
+    # Races that tests provoke on purpose roll back with the losing insert's full trace at DEBUG.
+    de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.ReadCommittedTransactions: INFO
 
 litterbox:
   version: 1.13-SNAPSHOT
   jobs:
     enabled: false
+  statistics:
+    # Tests that want a roll-up run one themselves. A scheduled one outlives the schema a test drops before Spring
+    # closes its context, and then fails against a database that is no longer there.
+    rollup-enabled: false
   storage:
     root: ${java.io.tmpdir}/litterbox-synthetic-test-artifacts
 

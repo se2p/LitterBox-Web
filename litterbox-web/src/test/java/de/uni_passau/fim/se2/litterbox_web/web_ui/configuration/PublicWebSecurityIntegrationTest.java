@@ -22,6 +22,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -39,6 +40,7 @@ import de.uni_passau.fim.se2.litterbox_web.web_ui.support.WebUiProfiles;
  * error that the test — which looked only at a header — accepted. A header on a 500 is not the guarantee this is about,
  * so the schema is real and the status is part of what is asserted.
  */
+@DirtiesContext
 @SpringBootTest
 @ActiveProfiles({ "test", WebUiProfiles.PUBLIC_WEB })
 class PublicWebSecurityIntegrationTest {
