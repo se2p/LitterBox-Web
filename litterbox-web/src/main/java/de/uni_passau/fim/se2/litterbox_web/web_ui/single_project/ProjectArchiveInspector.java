@@ -65,7 +65,7 @@ public class ProjectArchiveInspector {
         final Map<String, String> thumbnailHashes = new LinkedHashMap<>();
         for (JsonNode target : targets) {
             final ArchiveAsset asset = addCurrentCostume(target, entries, assets);
-            final String targetName = target.path("name").textValue();
+            final String targetName = target.path("name").stringValue(null);
             if (asset != null && targetName != null && !targetName.isBlank()) {
                 thumbnailHashes.putIfAbsent(targetName, HexFormat.of().formatHex(asset.sha256()));
             }
@@ -213,8 +213,8 @@ public class ProjectArchiveInspector {
             throw new IllegalArgumentException("Scratch source metadata is missing");
         }
         for (JsonNode asset : root.path("assets")) {
-            final String name = asset.path("name").textValue();
-            final String sha256 = asset.path("sha256").textValue();
+            final String name = asset.path("name").stringValue(null);
+            final String sha256 = asset.path("sha256").stringValue(null);
             final byte[] content = name == null ? null : entries.get(name);
             if (!validManifestAsset(content, sha256)) {
                 throw new IllegalArgumentException("Scratch source manifest does not match its assets");
@@ -226,13 +226,16 @@ public class ProjectArchiveInspector {
         if (root == null || !root.isObject()) {
             return false;
         }
-        if (!"scratch-project-bundle".equals(root.path("format").textValue()) || root.path("version").asInt(-1) < 2) {
+        if (
+            !"scratch-project-bundle".equals(root.path("format").stringValue(null))
+                || root.path("version").asInt(-1) < 2
+        ) {
             return false;
         }
-        if (root.path("projectId").textValue() == null || root.path("fetchedAt").textValue() == null) {
+        if (root.path("projectId").stringValue(null) == null || root.path("fetchedAt").stringValue(null) == null) {
             return false;
         }
-        final String expected = root.path("projectJsonSha256").textValue();
+        final String expected = root.path("projectJsonSha256").stringValue(null);
         if (expected == null) {
             return false;
         }
@@ -246,7 +249,7 @@ public class ProjectArchiveInspector {
         if (metadata == null || !mapper.readTree(metadata).isObject()) {
             return false;
         }
-        final String expected = root.path("metadataSha256").textValue();
+        final String expected = root.path("metadataSha256").stringValue(null);
         return expected != null
             && HexFormat.of().formatHex(SingleProjectSupport.digest("SHA-256", metadata)).equalsIgnoreCase(expected);
     }

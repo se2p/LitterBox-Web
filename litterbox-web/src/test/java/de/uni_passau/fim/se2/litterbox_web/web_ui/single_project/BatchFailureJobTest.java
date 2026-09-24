@@ -38,6 +38,8 @@ import reactor.core.publisher.Mono;
 
 class BatchFailureJobTest {
 
+    private static final String WORKER = "worker";
+
     @Test
     void persistsAStoredChildFailureOnlyThroughTheChildJobsLease() {
         final AnalysisRepository analyses = mock(AnalysisRepository.class);
@@ -51,7 +53,7 @@ class BatchFailureJobTest {
         final AnalysisJobRepository.Job job = new AnalysisJobRepository.Job(
             31, 11, 9L, "ANALYSIS", null, "RUNNING", false, 0, null
         );
-        when(jobs.leaseOwned(31, "worker")).thenReturn(Mono.just(true));
+        when(jobs.leaseOwned(31, WORKER)).thenReturn(Mono.just(true));
         when(analyses.findById(9)).thenReturn(Mono.just(analysis));
         when(artifacts.findById(7)).thenReturn(
             Mono.just(new SourceArtifact(7, digest, 12, "application/zip", "broken.sb3"))
@@ -68,18 +70,49 @@ class BatchFailureJobTest {
         when(
             analyses.completeIfOwned(
                 9, 11, true, null, "MalformedArchive", "Synthetic malformed archive",
-                "{\"status\":\"failed\"}", null, null, null, 31, "worker"
+                "{\"status\":\"failed\"}", null, null, null, 31, WORKER
             )
         ).thenReturn(Mono.just(true));
 
-        final Boolean failed = service(analyses, jobs, artifacts).runJob(job, "worker").block();
+        final Boolean failed = service(analyses, jobs, artifacts).runJob(job, WORKER).block();
 
         assertThat(failed).isTrue();
         verify(analyses).completeIfOwned(
             9, 11, true, null, "MalformedArchive", "Synthetic malformed archive",
-            "{\"status\":\"failed\"}", null, null, null, 31, "worker"
+            "{\"status\":\"failed\"}", null, null, null, 31, WORKER
         );
         verify(artifacts, never()).open(digest);
+    }
+
+    @Test
+    void analysesAStoredArtifactWhoseManifestHasNoFormat() {
+        final AnalysisRepository analyses = mock(AnalysisRepository.class);
+        final AnalysisJobRepository jobs = mock(AnalysisJobRepository.class);
+        final SourceArtifactAccess artifacts = mock(SourceArtifactAccess.class);
+        final byte[] digest = new byte[32];
+        final Analysis analysis = new Analysis(
+            9, 11, 7, "project.sb3", "NEW", "1", "synthetic", "en", "QUEUED", ".sb3",
+            null, null, null, null, null, digest, Map.of()
+        );
+        final AnalysisJobRepository.Job job = new AnalysisJobRepository.Job(
+            31, 11, 9L, "ANALYSIS", null, "RUNNING", false, 0, null
+        );
+        when(analyses.findById(9)).thenReturn(Mono.just(analysis));
+        when(artifacts.findById(7)).thenReturn(
+            Mono.just(new SourceArtifact(7, digest, 12, "application/zip", "project.sb3"))
+        );
+        when(artifacts.findMetadataById(7)).thenReturn(
+            Mono.just(
+                new SourceArtifactMetadata(
+                    7, "UPLOAD", "{\"legacyFilename\":\"project.sb3\",\"sourceAvailability\":\"AVAILABLE\"}"
+                )
+            )
+        );
+        when(artifacts.open(digest)).thenReturn(Mono.empty());
+
+        service(analyses, jobs, artifacts).runJob(job, WORKER).block();
+
+        verify(artifacts).open(digest);
     }
 
     private SingleProjectApplicationService service(

@@ -537,7 +537,7 @@ class AnalysisRunner {
             return null;
         }
         final tools.jackson.databind.JsonNode manifest = mapper.readTree(metadata.manifestJson());
-        if (!"batch-failure".equals(manifest.path("format").textValue())) {
+        if (!"batch-failure".equals(manifest.path("format").stringValue(null))) {
             return null;
         }
         final String type = boundedManifestText(

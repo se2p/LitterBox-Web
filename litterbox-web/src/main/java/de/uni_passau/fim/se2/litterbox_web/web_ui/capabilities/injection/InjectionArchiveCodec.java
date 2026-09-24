@@ -420,8 +420,8 @@ final class InjectionArchiveCodec {
     ) {
         validateManifestObjects(manifest, metadata);
         validateManifestIdentity(manifest);
-        final String projectHash = manifest.path("projectJsonSha256").textValue();
-        final String metadataHash = manifest.path("metadataSha256").textValue();
+        final String projectHash = manifest.path("projectJsonSha256").stringValue(null);
+        final String metadataHash = manifest.path("metadataSha256").stringValue(null);
         validateManifestHashes(projectHash, metadataHash, projectJson, metadataBytes);
         if (!manifest.path("assets").isArray()) {
             throw new ArchiveMalformed();
@@ -436,12 +436,14 @@ final class InjectionArchiveCodec {
 
     private static void validateManifestIdentity(final JsonNode manifest) {
         if (
-            !"scratch-project-bundle".equals(manifest.path("format").textValue())
+            !"scratch-project-bundle".equals(manifest.path("format").stringValue(null))
                 || manifest.path("version").asInt(-1) < 2
         ) {
             throw new ArchiveMalformed();
         }
-        if (blank(manifest.path("projectId").textValue()) || blank(manifest.path("fetchedAt").textValue())) {
+        if (
+            blank(manifest.path("projectId").stringValue(null)) || blank(manifest.path("fetchedAt").stringValue(null))
+        ) {
             throw new ArchiveMalformed();
         }
     }
@@ -481,8 +483,8 @@ final class InjectionArchiveCodec {
         if (asset == null || !asset.isObject()) {
             throw new ArchiveMalformed();
         }
-        final String name = asset.path("name").textValue();
-        final String hash = asset.path("sha256").textValue();
+        final String name = asset.path("name").stringValue(null);
+        final String hash = asset.path("sha256").stringValue(null);
         if (name == null || !manifestAssets.add(name) || !validHex(hash, 64)) {
             throw new ArchiveMalformed();
         }

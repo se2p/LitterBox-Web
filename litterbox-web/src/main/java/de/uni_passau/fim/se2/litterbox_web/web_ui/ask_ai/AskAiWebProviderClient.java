@@ -137,7 +137,7 @@ public final class AskAiWebProviderClient implements AskAiProviderClient {
                 continue;
             }
             for (final JsonNode part : content) {
-                final String partText = part.path("text").textValue();
+                final String partText = part.path("text").stringValue(null);
                 if (partText != null) {
                     text.append(partText);
                 }
@@ -162,7 +162,7 @@ public final class AskAiWebProviderClient implements AskAiProviderClient {
         if (!finishReason.isMissingNode() && !finishReason.isNull() && !isText(finishReason, "stop")) {
             throw new IllegalStateException("Provider did not finish the reply: " + finishReason.asText());
         }
-        final String content = choices.get(0).path("message").path("content").textValue();
+        final String content = choices.get(0).path("message").path("content").stringValue(null);
         if (content == null || content.isBlank()) {
             throw new IllegalStateException("Provider response contained no message content");
         }

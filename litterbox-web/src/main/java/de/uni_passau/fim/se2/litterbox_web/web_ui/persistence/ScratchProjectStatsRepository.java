@@ -55,7 +55,7 @@ public class ScratchProjectStatsRepository {
         final JsonNode manifest = mapper.readTree(manifestJson);
         if (
             manifest == null || !manifest.isObject()
-                || !"scratch-project-bundle".equals(manifest.path("format").textValue())
+                || !"scratch-project-bundle".equals(manifest.path("format").stringValue(null))
                 || manifest.path("version").asInt(-1) < 2
         ) {
             throw new IllegalArgumentException("Scratch source manifest is invalid");
