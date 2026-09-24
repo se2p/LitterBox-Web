@@ -14,6 +14,8 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
@@ -36,6 +38,7 @@ import reactor.core.publisher.Mono;
 )
 public class AnalysisJobCoordinator {
 
+    private static final Logger log = LoggerFactory.getLogger(AnalysisJobCoordinator.class);
     private static final String KIND_TAG = "kind";
 
     private final AnalysisJobRepository jobs;
@@ -75,6 +78,7 @@ public class AnalysisJobCoordinator {
         }
         claimAndRun().doFinally(ignored -> inFlight.decrementAndGet()).subscribe(ignored -> {
         }, error -> {
+            log.warn("Could not claim or run an analysis job", error);
             metrics.counter("litterbox.jobs.coordinator.errors").increment();
         });
     }
@@ -90,15 +94,22 @@ public class AnalysisJobCoordinator {
         }
         jobs.reapAbandonedJobs().doFinally(ignored -> reaping.set(false)).subscribe(
             settled -> metrics.counter("litterbox.jobs.reaped").increment(settled),
-            error -> metrics.counter("litterbox.jobs.reap.errors").increment()
+            error -> {
+                log.warn("Could not settle abandoned analysis jobs", error);
+                metrics.counter("litterbox.jobs.reap.errors").increment();
+            }
         );
     }
 
+    /** Removes jobs that finished longer ago than they are kept for. */
     @Scheduled(fixedDelayString = "${litterbox.jobs.cleanup-millis:3600000}")
     public void cleanup() {
         jobs.deleteTerminalJobsOlderThan(retention).subscribe(
             removed -> metrics.counter("litterbox.jobs.removed").increment(removed),
-            error -> metrics.counter("litterbox.jobs.cleanup.errors").increment()
+            error -> {
+                log.warn("Could not remove old analysis jobs", error);
+                metrics.counter("litterbox.jobs.cleanup.errors").increment();
+            }
         );
     }
 
@@ -140,12 +151,14 @@ public class AnalysisJobCoordinator {
             .onErrorResume(
                 AnalysisJobRepository.LeaseLostException.class,
                 error -> {
+                    log.info("{} job {} lost its lease", job.kind(), job.id());
                     metrics.counter("litterbox.jobs.lease.loss", KIND_TAG, job.kind()).increment();
                     return Mono.empty();
                 }
             )
             .onErrorResume(
                 error -> {
+                    log.warn("{} job {} failed and is retried if attempts remain", job.kind(), job.id(), error);
                     metrics.counter("litterbox.jobs.execution.errors", KIND_TAG, job.kind()).increment();
                     return jobs.retryAfterError(job.id(), job.leaseToken()).doOnNext(
                         retried -> metrics.counter(

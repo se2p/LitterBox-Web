@@ -22,6 +22,9 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CancellationException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.uni_passau.fim.se2.litterbox.analytics.Issue;
 import de.uni_passau.fim.se2.litterbox.analytics.ProgramBugAnalyzer;
 import de.uni_passau.fim.se2.litterbox.ast.model.Program;
@@ -56,6 +59,7 @@ import tools.jackson.databind.json.JsonMapper;
  */
 class AnalysisRunner {
 
+    private static final Logger log = LoggerFactory.getLogger(AnalysisRunner.class);
     private static final String DETECTOR_SET = "all";
     private static final String REPORT_CONFIGURATION = "{\"detectors\":\"all\","
         + "\"reportOptions\":\"include-coupling,include-duplicates,include-similarity,include-subsumption\"}";
@@ -423,14 +427,16 @@ class AnalysisRunner {
         return jobs.cancellationRequested(job.id()).flatMap(
             cancelled -> cancelled || error instanceof CancellationException
                 ? Mono.just(false)
-                : recordBatchFailure(job, workerId)
+                : recordBatchFailure(job, workerId, error)
         );
     }
 
     private Mono<Boolean> recordBatchFailure(
         final AnalysisJobRepository.Job job,
-        final String workerId
+        final String workerId,
+        final Throwable error
     ) {
+        log.warn("{} job {} failed for submission {}", job.kind(), job.id(), job.submissionId(), error);
         return submissionRepository.failBatchIngestionIfOwned(job.submissionId(), job.id(), workerId)
             .flatMap(
                 outcome -> outcome.leaseOwned()
@@ -506,6 +512,7 @@ class AnalysisRunner {
         final String workerId,
         final Throwable error
     ) {
+        log.warn("Analysis job {} failed for analysis {}", job.id(), job.analysisId(), error);
         return analyses.completeIfOwned(
             job.analysisId(), job.submissionId(), true, null, error.getClass().getSimpleName(),
             SingleProjectSupport.safeMessage(error, "Analysis failed"), FAILED_STATUS_EVENT, null, null, null,
