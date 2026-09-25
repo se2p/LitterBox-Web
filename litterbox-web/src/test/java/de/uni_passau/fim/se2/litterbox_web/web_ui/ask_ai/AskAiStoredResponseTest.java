@@ -12,6 +12,8 @@ package de.uni_passau.fim.se2.litterbox_web.web_ui.ask_ai;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -31,6 +33,28 @@ class AskAiStoredResponseTest {
         assertThat(stored.asQuotedAnswer()).isEqualTo("Hello");
         assertThat(stored.encode())
             .isEqualTo("{\"blocks\":[{\"kind\":\"text\",\"text\":\"Hello\"}],\"references\":[],\"followUps\":[]}");
+    }
+
+    @Test
+    void showsTheBlocksATextNamesAsPartsBesideTheText() {
+        final AskAiStoredResponse stored = AskAiStoredResponse.decode(
+            """
+                {"blocks":[{"kind":"text","text":"Der Block 'hide' und 'Game Over!'"}],"references":[],"followUps":[]}
+                """
+        );
+
+        assertThat(stored.blockViews()).containsExactly(
+            new AskAiBlockView.Text(
+                "text",
+                "Der Block 'hide' und 'Game Over!'",
+                List.of(
+                    new AskAiBlockView.Part("text", "Der Block ", null),
+                    new AskAiBlockView.Part("scratchblocks", null, "hide"),
+                    new AskAiBlockView.Part("text", " und 'Game Over!'", null)
+                )
+            )
+        );
+        assertThat(stored.asQuotedAnswer()).isEqualTo("Der Block 'hide' und 'Game Over!'");
     }
 
     @ParameterizedTest

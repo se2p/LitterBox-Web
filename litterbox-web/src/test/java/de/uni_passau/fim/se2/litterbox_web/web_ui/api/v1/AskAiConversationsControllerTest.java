@@ -30,6 +30,7 @@ import org.springframework.http.CacheControl;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import de.uni_passau.fim.se2.litterbox_web.configuration.ExceptionTranslator;
+import de.uni_passau.fim.se2.litterbox_web.web_ui.ask_ai.AskAiBlockView;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.ask_ai.AskAiConfigurationProperties;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.ask_ai.AskAiConversationCreatedView;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.ask_ai.AskAiConversationService;
@@ -48,6 +49,7 @@ class AskAiConversationsControllerTest {
     private static final String CONVERSATIONS_PATH = "/ask-ai/conversations/";
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String SCOPE = "scope";
+    private static final String KIND = "kind";
     private static final String COMMON = "common";
     private static final String TOKEN = "synthetic-share-token";
     private static final String AUTHORIZATION = "Bearer " + TOKEN;
@@ -70,7 +72,7 @@ class AskAiConversationsControllerTest {
             client(true).post()
                 .uri(ApiV1.BASE_PATH + SUBMISSIONS_PATH + TOKEN + ANALYSES_PATH + ANALYSIS_ID + "/ask-ai/conversations")
                 .header(AUTHORIZATION_HEADER, AUTHORIZATION)
-                .bodyValue(Map.of("locale", "en", SCOPE, Map.of("kind", COMMON, "selector", "common:SUMMARISE")))
+                .bodyValue(Map.of("locale", "en", SCOPE, Map.of(KIND, COMMON, "selector", "common:SUMMARISE")))
                 .exchange()
         );
     }
@@ -88,7 +90,7 @@ class AskAiConversationsControllerTest {
     void disabledFeatureIsUnavailableBeforeTouchingTheToken() {
         client(false).post()
             .uri(ApiV1.BASE_PATH + SUBMISSIONS_PATH + TOKEN + ANALYSES_PATH + ANALYSIS_ID + "/ask-ai/conversations")
-            .bodyValue(Map.of("locale", "en", SCOPE, Map.of("kind", COMMON, "selector", "common:SUMMARISE")))
+            .bodyValue(Map.of("locale", "en", SCOPE, Map.of(KIND, COMMON, "selector", "common:SUMMARISE")))
             .exchange()
             .expectStatus().isEqualTo(503)
             .expectBody()
@@ -99,7 +101,7 @@ class AskAiConversationsControllerTest {
     void requiresAnAuthorizationHeaderToCreateAConversation() {
         client(true).post()
             .uri(ApiV1.BASE_PATH + SUBMISSIONS_PATH + TOKEN + ANALYSES_PATH + ANALYSIS_ID + "/ask-ai/conversations")
-            .bodyValue(Map.of("locale", "en", SCOPE, Map.of("kind", COMMON, "selector", "common:SUMMARISE")))
+            .bodyValue(Map.of("locale", "en", SCOPE, Map.of(KIND, COMMON, "selector", "common:SUMMARISE")))
             .exchange()
             .expectStatus().isUnauthorized()
             .expectBody()
@@ -112,7 +114,11 @@ class AskAiConversationsControllerTest {
             service.postMessage(eq(TOKEN), eq(ANALYSIS_ID), eq(CONVERSATION_ID), anyString(), anyString(), any())
         ).thenReturn(
             Mono.just(
-                new AskAiMessageResponseView(1, "2", "answer", List.of(), List.of(), List.of("EXPLAIN_SIMPLY"), 7)
+                new AskAiMessageResponseView(
+                    1, "2", "answer",
+                    List.of(new AskAiBlockView.Text("It moves."), new AskAiBlockView.Text("Then 'hide' runs.")),
+                    List.of(), List.of("EXPLAIN_SIMPLY"), 7
+                )
             )
         );
 
@@ -133,6 +139,10 @@ class AskAiConversationsControllerTest {
         assertThat(propertyNameSet(root)).isEqualTo(MESSAGE_KEYS);
         assertThat(root.path("status").textValue()).isEqualTo("answer");
         assertThat(root.path("repliesRemaining").intValue()).isEqualTo(7);
+        assertThat(propertyNameSet(root.path("blocks").path(0))).isEqualTo(Set.of(KIND, "text"));
+        assertThat(propertyNameSet(root.path("blocks").path(1))).isEqualTo(Set.of(KIND, "text", "parts"));
+        assertThat(propertyNameSet(root.path("blocks").path(1).path("parts").path(1)))
+            .isEqualTo(Set.of(KIND, "code"));
     }
 
     @Test
@@ -223,7 +233,7 @@ class AskAiConversationsControllerTest {
         assertThat(propertyNameSet(root)).isEqualTo(CREATED_KEYS);
         assertThat(root.path("schemaVersion").intValue()).isEqualTo(1);
         assertThat(root.path("conversationId").textValue()).isEqualTo(CONVERSATION_ID);
-        assertThat(root.path(SCOPE).path("kind").textValue()).isEqualTo(COMMON);
+        assertThat(root.path(SCOPE).path(KIND).textValue()).isEqualTo(COMMON);
         assertThat(root.path("repliesRemaining").intValue()).isEqualTo(8);
     }
 

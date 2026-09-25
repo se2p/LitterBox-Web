@@ -87,6 +87,43 @@ describe('the Ask AI conversation view', () => {
         expect(screen.queryByText('Cat')).toBeNull();
     });
 
+    it('draws the blocks a text names inside the sentence', () => {
+        const { container } = render(
+            <Conversation
+                conversation={activeConversation({
+                    messages: [
+                        { sender: 'user', action: 'ASK', followUp: null },
+                        {
+                            sender: 'assistant',
+                            status: 'answer',
+                            blocks: [
+                                {
+                                    kind: 'text',
+                                    text: "The block 'hide' hides it.",
+                                    parts: [
+                                        { kind: 'text', text: 'The block ' },
+                                        { kind: 'scratchblocks', code: 'hide' },
+                                        { kind: 'text', text: ' hides it.' },
+                                    ],
+                                },
+                            ],
+                            followUps: [],
+                        },
+                    ],
+                })}
+                locale="en"
+                onFollowUp={noop}
+                onRetry={noop}
+                onChangeScope={noop}
+            />,
+        );
+        const sentence = container.querySelector('.ask-ai-message-blocks p');
+        expect(sentence?.querySelector('.scratchblocks-inline-preview')).not.toBeNull();
+        expect(sentence?.textContent).toContain('The block ');
+        expect(sentence?.textContent).toContain(' hides it.');
+        expect(sentence?.textContent).not.toContain("'hide'");
+    });
+
     it('shows the script once, however many times it is answered about', () => {
         const simpler: TranscriptAssistantEntry = {
             sender: 'assistant',

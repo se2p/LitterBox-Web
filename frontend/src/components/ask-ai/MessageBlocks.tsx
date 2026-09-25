@@ -18,7 +18,27 @@ export function MessageBlocks({ blocks, locale }: { blocks: AskAiBlock[]; locale
     return (
         <div className="ask-ai-message-blocks">
             {blocks.map((block, index) => {
-                if (block.kind === 'text') return <p key={index}>{block.text}</p>;
+                if (block.kind === 'text')
+                    return (
+                        <p key={index}>
+                            {block.parts
+                                ? block.parts.map((part, partIndex) =>
+                                      part.kind === 'text' ? (
+                                          part.text
+                                      ) : (
+                                          <ScratchblocksPreview
+                                              key={partIndex}
+                                              source={part.code}
+                                              locale={locale}
+                                              label={t('scratchblocks')}
+                                              textAlternativeLabel={textAlternativeLabel}
+                                              inline
+                                          />
+                                      ),
+                                  )
+                                : block.text}
+                        </p>
+                    );
                 const roleLabel = t(BLOCK_ROLE_LABEL_KEYS[block.role]);
                 return (
                     <div

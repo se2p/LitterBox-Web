@@ -242,6 +242,40 @@ describe('sendAskAiMessage', () => {
         });
     });
 
+    it('reads the blocks a text names, and rejects a text part that is neither words nor a block', async () => {
+        const answer = (parts: unknown) =>
+            response({
+                schemaVersion: 1,
+                messageId: 'm-3',
+                status: 'answer',
+                blocks: [{ kind: 'text', text: "Use 'hide' now.", parts }],
+                references: [],
+                followUps: [],
+                repliesRemaining: 5,
+            });
+        const parts = [
+            { kind: 'text', text: 'Use ' },
+            { kind: 'scratchblocks', code: 'hide' },
+            { kind: 'text', text: ' now.' },
+        ];
+        vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(answer(parts));
+        const result = await sendAskAiMessage('a-token', 4, 'conv-1', {
+            clientMessageId: 'client-3',
+            action: 'ASK',
+        });
+        expect(result.blocks).toEqual([{ kind: 'text', text: "Use 'hide' now.", parts }]);
+
+        vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+            answer([{ kind: 'scratchblocks', code: 'hide', role: 'existing' }]),
+        );
+        await expect(
+            sendAskAiMessage('a-token', 4, 'conv-1', {
+                clientMessageId: 'client-4',
+                action: 'ASK',
+            }),
+        ).rejects.toMatchObject({ category: 'malformed_response' });
+    });
+
     it('sends a FOLLOW_UP action with the follow-up id', async () => {
         const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
             response({

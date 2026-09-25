@@ -139,8 +139,14 @@ export type AskAiBlockRole = (typeof ASK_AI_BLOCK_ROLES)[number];
 const ASK_AI_FINDING_FAMILIES = ['bug', 'smell', 'perfume', 'other'] as const;
 export type AskAiFindingFamily = (typeof ASK_AI_FINDING_FAMILIES)[number];
 
+/** A piece of a text block: words, or one block the words name, drawn inline. */
+export type AskAiTextPart =
+    { kind: 'text'; text: string } | { kind: 'scratchblocks'; code: string };
+
+/** A text block carries `parts` only where its text names a block that can be drawn. */
 export type AskAiBlock =
-    { kind: 'text'; text: string } | { kind: 'scratchblocks'; role: AskAiBlockRole; code: string };
+    | { kind: 'text'; text: string; parts?: AskAiTextPart[] }
+    | { kind: 'scratchblocks'; role: AskAiBlockRole; code: string };
 
 export interface AskAiReference {
     kind: string;
@@ -400,13 +406,35 @@ const validateConversationCreated = (value: unknown): AskAiConversationCreated =
     return value as unknown as AskAiConversationCreated;
 };
 
-const isAskAiBlock = (value: unknown): value is AskAiBlock => {
+const isAskAiTextPart = (value: unknown): value is AskAiTextPart => {
     if (!isObject(value)) return false;
     if (value.kind === 'text')
         return (
             hasExactKeys(value, ['kind', 'text']) &&
             boundedString(value.text, MAX_BLOCK_TEXT_LENGTH)
         );
+    if (value.kind === 'scratchblocks')
+        return (
+            hasExactKeys(value, ['kind', 'code']) &&
+            boundedNonblankString(value.code, MAX_BLOCK_CODE_LENGTH)
+        );
+    return false;
+};
+
+const isAskAiBlock = (value: unknown): value is AskAiBlock => {
+    if (!isObject(value)) return false;
+    if (value.kind === 'text') {
+        const { parts } = value;
+        return (
+            (parts === undefined
+                ? hasExactKeys(value, ['kind', 'text'])
+                : hasExactKeys(value, ['kind', 'text', 'parts']) &&
+                  Array.isArray(parts) &&
+                  // each part is at least one character of the text
+                  parts.length <= MAX_BLOCK_TEXT_LENGTH &&
+                  parts.every(isAskAiTextPart)) && boundedString(value.text, MAX_BLOCK_TEXT_LENGTH)
+        );
+    }
     if (value.kind === 'scratchblocks')
         return (
             hasExactKeys(value, ['kind', 'role', 'code']) &&
