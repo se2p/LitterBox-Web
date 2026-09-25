@@ -12,7 +12,6 @@ package de.uni_passau.fim.se2.litterbox_web.web_ui.ask_ai;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.EnumSet;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
@@ -57,7 +56,6 @@ public final class AskAiConversationService {
     private static final Set<String> ALLOWED_COMMON_SELECTORS = AskAiQuestionCatalogue.OFFERED_COMMON_QUERIES
         .stream().map(query -> "common:" + query.name()).collect(Collectors.toUnmodifiableSet());
 
-    private static final Set<AskAiFollowUp> ALL_FOLLOW_UPS = EnumSet.allOf(AskAiFollowUp.class);
     private static final String TURN_TIMER = "litterbox.ask.ai.turns";
 
     private static final String REFUSED_COUNTER = "litterbox.ask.ai.refused";
@@ -406,9 +404,7 @@ public final class AskAiConversationService {
     ) {
         if (allowRetry) {
             log.warn("Ask AI reply was cut short at the output token cap; retrying completion once for a shorter one");
-            final PreparedRequest shorter = new PreparedRequest(
-                prepared.context(), AskAiResponseRecovery.shorterPrompt(prepared.prompt())
-            );
+            final PreparedRequest shorter = prepared.withPrompt(AskAiResponseRecovery.shorterPrompt(prepared.prompt()));
             return complete(conversation, started, shorter, startNanos, false);
         }
         log.warn("Ask AI reply was cut short at the output token cap");
@@ -421,13 +417,20 @@ public final class AskAiConversationService {
     ) {
         final AskAiResponse response;
         try {
-            response = RESPONSE_PARSER.parse(json, prepared.context().allowedReferenceKinds(), ALL_FOLLOW_UPS);
+            response = RESPONSE_PARSER
+                .parse(
+                    json, prepared.context().allowedReferenceKinds(),
+                    AskAiFollowUp.offeredFor(prepared.request(), prepared.context())
+                )
+                .checkingCodeAgainst(prepared.program())
+                .simplifiedFor(prepared.request(), prepared.answerAlreadyGiven())
+                .offeringFollowUpsFor(prepared.request());
         }
         catch (IllegalArgumentException invalid) {
             if (allowRetry) {
                 log.warn("Ask AI response failed validation ({}); retrying completion once", invalid.getMessage());
-                final PreparedRequest corrected = new PreparedRequest(
-                    prepared.context(), AskAiResponseRecovery.correctivePrompt(prepared.prompt())
+                final PreparedRequest corrected = prepared.withPrompt(
+                    AskAiResponseRecovery.correctivePrompt(prepared.prompt())
                 );
                 return complete(conversation, started, corrected, startNanos, false);
             }
@@ -529,7 +532,10 @@ public final class AskAiConversationService {
         }
         final AskAiPrompt prompt = new AskAiPromptBuilder(request.locale())
             .build(request, context, answerAlreadyGiven);
-        return new PreparedRequest(context, prompt);
+        if (answerAlreadyGiven.isEmpty()) {
+            return new PreparedRequest(context, prompt, program, request, null);
+        }
+        return new PreparedRequest(context, prompt, program, request, answerAlreadyGiven);
     }
 
     /** Logs the internal preparation failure and returns the generic context-not-found problem. */
@@ -656,6 +662,16 @@ public final class AskAiConversationService {
     private record ConversationContext(AskAiProgramLoader.Authorized authorized, AskAiConversation conversation) {
     }
 
-    private record PreparedRequest(AskAiContext context, AskAiPrompt prompt) {
+    /**
+     * What a reply is checked against once it arrives: the code it may quote, the follow-ups the question allows, and
+     * the answer a simplification must not repeat. Kept with the prompt so a retry with another prompt keeps them.
+     */
+    private record PreparedRequest(
+        AskAiContext context, AskAiPrompt prompt, Program program, AskAiRequest request, String answerAlreadyGiven
+    ) {
+
+        PreparedRequest withPrompt(final AskAiPrompt other) {
+            return new PreparedRequest(context, other, program, request, answerAlreadyGiven);
+        }
     }
 }

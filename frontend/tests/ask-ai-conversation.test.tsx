@@ -230,14 +230,12 @@ describe('the Ask AI conversation view', () => {
         expect(
             screen.getByRole('button', { name: 'Which blocks are used for this?' }),
         ).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'How can I try it out?' })).toBeInTheDocument();
         expect(
-            screen.getByRole('button', { name: 'What should I look out for when testing it?' }),
-        ).toBeInTheDocument();
-        expect(
-            screen.queryByRole('button', { name: 'Why does it work that way?' }),
+            screen.queryByRole('button', { name: 'Why is it built like this?' }),
         ).not.toBeInTheDocument();
         await user.click(screen.getByRole('button', { name: 'Show more' }));
-        const concept = screen.getByRole('button', { name: 'Why does it work that way?' });
+        const concept = screen.getByRole('button', { name: 'Why is it built like this?' });
         await user.click(concept);
         expect(onFollowUp).toHaveBeenCalledWith('EXPLAIN_CONCEPT');
     });
@@ -264,7 +262,7 @@ describe('the Ask AI conversation view', () => {
             />,
         );
         await user.click(screen.getByRole('button', { name: 'Show more' }));
-        expect(screen.getByRole('button', { name: 'Why does it work that way?' })).toHaveFocus();
+        expect(screen.getByRole('button', { name: 'Why is it built like this?' })).toHaveFocus();
     });
 
     it('turns the way of revealing the rest into a toggle that stays where it was pressed', async () => {

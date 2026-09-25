@@ -33,7 +33,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
         <java.version>21</java.version>
         <maven.compiler.release>21</maven.compiler.release>
         <!-- check https://gitlab.infosun.fim.uni-passau.de/se2/scratch/litterbox/litterbox/-/packages/ for available versions -->
-        <litterbox.version>1.13-20260918.093449-29</litterbox.version>
+        <litterbox.version>1.13-20260929.192553-31</litterbox.version>
         <!--
           The built site, carried inside the jar so that running it is the whole of a deployment. Overridable
           because the directory is outside this module: a Nix build hands in its own frontend derivation.

@@ -283,9 +283,10 @@ export const aboutAFault = (scope: ConversationScope): boolean =>
 const worthShowingTheChange = (scope: ConversationScope): boolean =>
     aboutAFault(scope) || proposesAChange(scope) || isIdeaShapedInquiry(scope);
 
+// A hint before the fix, so that a reader sees the way to work it out first and being told beside it.
 const FOLLOW_UP_ORDER: AskAiFollowUpId[] = [
-    'SHOW_THE_FIX',
     'GIVE_HINT',
+    'SHOW_THE_FIX',
     'EXPLAIN_SIMPLY',
     'SHOW_RELEVANT_BLOCKS',
     'OBSERVE_BEHAVIOUR',
@@ -310,7 +311,8 @@ export const offeredFollowUps = (conversation: ConversationState): AskAiFollowUp
     const simplyAskedAfterBlocks =
         indexOfBlocks >= 0 && userFollowUps.slice(indexOfBlocks + 1).includes('EXPLAIN_SIMPLY');
 
-    // Offer the fix only where it replaces a hint, and only for an answer.
+    // Where something is wrong the server decides whether the fix is offered, since it knows whether the answer
+    // already is the fix; the change a suggestion proposes is offered here, and only for an answer.
     const suggested = new Set(last.followUps);
     if (
         last.status === 'answer' &&
@@ -322,14 +324,16 @@ export const offeredFollowUps = (conversation: ConversationState): AskAiFollowUp
 
     return [...suggested]
         .filter((followUp) => {
-            if (followUp === 'GIVE_HINT' && !aboutAFault(conversation.scope)) {
-                return false;
+            if (followUp === 'GIVE_HINT') {
+                return (
+                    aboutAFault(conversation.scope) &&
+                    !alreadyAsked.has('GIVE_HINT') &&
+                    !alreadyAsked.has('SHOW_THE_FIX')
+                );
             }
             if (followUp === 'SHOW_THE_FIX') {
                 return (
-                    worthShowingTheChange(conversation.scope) &&
-                    (!aboutAFault(conversation.scope) || alreadyAsked.has('GIVE_HINT')) &&
-                    !alreadyAsked.has('SHOW_THE_FIX')
+                    worthShowingTheChange(conversation.scope) && !alreadyAsked.has('SHOW_THE_FIX')
                 );
             }
             if (followUp === 'SHOW_RELEVANT_BLOCKS') {

@@ -332,7 +332,7 @@ export const pack: Partial<TranslationPack> = {
     askAiFollowUpExplainSimply: 'Kannst du das einfacher erklären?',
     askAiFollowUpShowRelevantBlocks: 'Welche Blöcke gehören dazu?',
     askAiFollowUpGiveHint: 'Kannst du mir einen Tipp geben, damit ich es selbst versuchen kann?',
-    askAiFollowUpObserveBehaviour: 'Worauf soll ich beim Ausprobieren achten?',
+    askAiFollowUpObserveBehaviour: 'Wie kann ich das ausprobieren?',
     askAiFollowUpExplainConcept: 'Warum ist das so aufgebaut?',
     askAiFollowUpShowTheFix: 'Kannst du mir zeigen, wie ich es behebe?',
     askAiFollowUpShowTheChange: 'Kannst du mir zeigen, wie ich das mache?',

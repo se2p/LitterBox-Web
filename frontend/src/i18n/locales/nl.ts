@@ -324,7 +324,7 @@ export const pack: Partial<TranslationPack> = {
     askAiFollowUpExplainSimply: 'Kun je dat simpeler uitleggen?',
     askAiFollowUpShowRelevantBlocks: 'Welke blokken horen hierbij?',
     askAiFollowUpGiveHint: 'Geef me een hint, dan probeer ik het zelf!',
-    askAiFollowUpObserveBehaviour: 'Waar moet ik op letten als ik het uitprobeer?',
+    askAiFollowUpObserveBehaviour: 'Hoe kan ik het uitproberen?',
     askAiFollowUpExplainConcept: 'Waarom zit dit zo in elkaar?',
     askAiFollowUpShowTheFix: 'Laat zien hoe ik het oplos!',
     askAiFollowUpShowTheChange: 'Laat zien hoe ik dat doe!',

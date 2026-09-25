@@ -63,6 +63,7 @@ import reactor.core.publisher.Sinks;
 class AskAiConversationServiceTest {
 
     private static final String ENGLISH_LOCALE = "en";
+    private static final String VALIDATED = "validated";
     private static final String COMMON_SCOPE_KIND = "common";
     private static final String COMMON_SUMMARISE_SELECTOR = "common:SUMMARISE";
     private static final String ASK_ACTION = "ASK";
@@ -75,7 +76,7 @@ class AskAiConversationServiceTest {
     private static final String CONVERSATION_PUBLIC_ID = "conversation-public-id";
     private static final Program PROGRAM = parseFixture();
     private static final String VALID_ANSWER_JSON = "{\"status\":\"answer\",\"blocks\":[{\"kind\":\"text\",\"text\":\"Answer.\"},"
-        + "{\"kind\":\"scratchblocks\",\"role\":\"existing\",\"code\":\"when green flag clicked\"}],"
+        + "{\"kind\":\"scratchblocks\",\"role\":\"example\",\"code\":\"when green flag clicked\\nsay [Hello!]\"}],"
         + "\"references\":[],\"followUps\":[\"EXPLAIN_SIMPLY\"]}";
     private static final String INVALID_JSON = "{\"status\":\"answer\"}";
 
@@ -266,7 +267,8 @@ class AskAiConversationServiceTest {
         assertThat(view).isNotNull();
         assertThat(view.status()).isEqualTo(ANSWER_STATUS);
         assertThat(view.blocks()).hasSize(2);
-        assertThat(view.followUps()).containsExactly("EXPLAIN_SIMPLY");
+        // A summary is already as simple as it gets, and the answer shows its code, so nothing is left to offer.
+        assertThat(view.followUps()).isEmpty();
         assertThat(view.repliesRemaining()).isEqualTo(maxReplies() - 1);
         assertThat(provider.callCount()).isEqualTo(1);
 
@@ -299,7 +301,17 @@ class AskAiConversationServiceTest {
     void answersAFollowUpAndNormalizesItsNameBeforePersistingIt() {
         stubLoader();
         stubOpenConversation(openConversation(1));
-        when(repository.findLatestAnswer(CONVERSATION_ID)).thenReturn(Mono.empty());
+        // there is only something to say more simply once something has been said
+        when(repository.findLatestAnswer(CONVERSATION_ID)).thenReturn(
+            Mono.just(
+                assistantMessage(
+                    1, ASK_ACTION, null, ANSWER_STATUS,
+                    "{\"blocks\":[{\"kind\":\"text\",\"text\":\"The boat sails off.\"}],"
+                        + "\"references\":[],\"followUps\":[]}",
+                    VALIDATED
+                )
+            )
+        );
 
         final AskAiMessageResponseView view = service().postMessage(
             TOKEN, ANALYSIS_ID, CONVERSATION_PUBLIC_ID, "cmid-padded", FOLLOW_UP_ACTION,
@@ -326,7 +338,7 @@ class AskAiConversationServiceTest {
                     "{\"blocks\":[{\"kind\":\"text\",\"text\":\"The boat sails off "
                         + "(ref:v1-abc123).\"},{\"kind\":\"scratchblocks\",\"role\":\"existing\",\"code\":\"when "
                         + "green flag clicked\"}],\"references\":[],\"followUps\":[]}",
-                    "validated"
+                    VALIDATED
                 )
             )
         );
@@ -492,8 +504,9 @@ class AskAiConversationServiceTest {
         final var result = service()
             .postMessage(TOKEN, ANALYSIS_ID, CONVERSATION_PUBLIC_ID, "cmid-local-repair", ASK_ACTION, null).block();
 
+        // A summary offers only the follow-ups that fit it; the rest are dropped here rather than asked for again.
         assertThat(result).isNotNull();
-        assertThat(result.followUps()).hasSize(5);
+        assertThat(result.followUps()).containsExactly("SHOW_RELEVANT_BLOCKS");
         assertThat(provider.callCount()).isEqualTo(1);
     }
 
@@ -707,7 +720,7 @@ class AskAiConversationServiceTest {
             Mono.just(userMessage(0, ASK_ACTION, null, "cmid-9"))
         );
         when(repository.findPairedAssistant(CONVERSATION_ID, 0)).thenReturn(
-            Mono.just(assistantMessage(1, ASK_ACTION, null, ANSWER_STATUS, storedJson, "validated"))
+            Mono.just(assistantMessage(1, ASK_ACTION, null, ANSWER_STATUS, storedJson, VALIDATED))
         );
 
         final AskAiMessageResponseView view = service().postMessage(
@@ -770,7 +783,7 @@ class AskAiConversationServiceTest {
             .thenReturn(Mono.empty())
             .thenReturn(Mono.just(userMessage(0, ASK_ACTION, null, "cmid-again")));
         when(repository.findPairedAssistant(CONVERSATION_ID, 0)).thenReturn(
-            Mono.just(assistantMessage(1, ASK_ACTION, null, ANSWER_STATUS, storedJson, "validated"))
+            Mono.just(assistantMessage(1, ASK_ACTION, null, ANSWER_STATUS, storedJson, VALIDATED))
         );
 
         assertThat(
@@ -838,7 +851,7 @@ class AskAiConversationServiceTest {
         final int ordinal, final String action, final String followUp, final String clientMessageId
     ) {
         return new AskAiMessage(
-            ordinal + 1L, CONVERSATION_ID, ordinal, "user", action, followUp, null, null, "validated", null,
+            ordinal + 1L, CONVERSATION_ID, ordinal, "user", action, followUp, null, null, VALIDATED, null,
             clientMessageId
         );
     }

@@ -703,7 +703,7 @@ describe('the follow-ups a reply is worth offering', () => {
         expect(offeredFollowUps(summary)).toEqual(['EXPLAIN_SIMPLY']);
     });
 
-    it('treats the startup inquiry exactly like a finding: a hint first, and the fix only once it was asked for', () => {
+    it('treats the startup inquiry exactly like a finding: the hint and the fix side by side, the hint first', () => {
         const startupScope = {
             kind: 'inquiry' as const,
             selector: 'inquiry:v1-c',
@@ -713,8 +713,8 @@ describe('the follow-ups a reply is worth offering', () => {
         const opening = answered(['GIVE_HINT'], { scope: startupScope });
         expect(offeredFollowUps(opening)).toEqual(['GIVE_HINT']);
 
-        const beforeHint = answered(['GIVE_HINT', 'SHOW_THE_FIX'], { scope: startupScope });
-        expect(offeredFollowUps(beforeHint)).toEqual(['GIVE_HINT']);
+        const beforeHint = answered(['SHOW_THE_FIX', 'GIVE_HINT'], { scope: startupScope });
+        expect(offeredFollowUps(beforeHint)).toEqual(['GIVE_HINT', 'SHOW_THE_FIX']);
 
         const afterHint = answered(['SHOW_THE_FIX'], {
             scope: startupScope,
@@ -749,6 +749,29 @@ describe('the follow-ups a reply is worth offering', () => {
                 'EXPLAIN_SIMPLY',
             ]);
         }
+    });
+
+    it('offers a smell the fix beside the hint, and neither once the fix was asked for', () => {
+        const scope = { kind: 'finding' as const, selector: 'finding:v1-s', label: 'Long script' };
+        expect(offeredFollowUps(answered(['SHOW_THE_FIX', 'EXPLAIN_SIMPLY'], { scope }))).toEqual([
+            'SHOW_THE_FIX',
+            'EXPLAIN_SIMPLY',
+        ]);
+        const afterFix = answered(['GIVE_HINT', 'EXPLAIN_SIMPLY'], {
+            scope,
+            messages: [
+                askEntry,
+                { sender: 'assistant', status: 'answer', blocks: [], followUps: ['SHOW_THE_FIX'] },
+                { sender: 'user', action: 'FOLLOW_UP', followUp: 'SHOW_THE_FIX' },
+                {
+                    sender: 'assistant',
+                    status: 'answer',
+                    blocks: [],
+                    followUps: ['GIVE_HINT', 'EXPLAIN_SIMPLY'],
+                },
+            ],
+        });
+        expect(offeredFollowUps(afterFix)).toEqual(['EXPLAIN_SIMPLY']);
     });
 
     it('leaves a plain generated question with neither', () => {
