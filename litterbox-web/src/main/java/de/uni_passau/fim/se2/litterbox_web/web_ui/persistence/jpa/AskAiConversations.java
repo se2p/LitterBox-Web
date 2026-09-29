@@ -47,6 +47,18 @@ public interface AskAiConversations extends JpaRepository<AskAiConversationEntit
     boolean existsByAnalysisIdAndActiveSlot(long analysisId, Integer activeSlot);
 
     /**
+     * Lists the slots the analysis's conversations hold now.
+     *
+     * @param analysisId analysis whose slots are listed
+     * @return the occupied slots, in no particular order
+     */
+    @Query(
+        "SELECT c.activeSlot FROM AskAiConversationEntity c "
+            + "WHERE c.analysisId = :analysisId AND c.activeSlot IS NOT NULL"
+    )
+    List<Integer> findActiveSlots(@Param("analysisId") long analysisId);
+
+    /**
      * Claims one reply, one attempt and the next two ordinals in a single conditional update, so concurrent turns on
      * the same conversation are serialized by the row write rather than by a lock held across the read. A failed turn
      * gives its reply back but not its attempt, so the attempt budget is what keeps a run of failures from going on for

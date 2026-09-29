@@ -11,6 +11,9 @@ package de.uni_passau.fim.se2.litterbox_web.web_ui.persistence;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
@@ -28,6 +31,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -83,6 +87,34 @@ class AskAiConversationRepositoryIntegrationTest {
             )
                 .as("a lapsed place is given back where it is wanted, not on the sweep's timetable")
                 .isNotNull();
+        }
+    }
+
+    @Test
+    void aNewConversationTakesTheFirstFreePlaceWithoutTryingTheTakenOnes() {
+        try (
+            TestDatabase database = TestDatabase.freshSchema("ask_ai_free_slot");
+            TestRepositories repositories = new TestRepositories(database.migrated())
+        ) {
+            final JdbcTemplate jdbc = database.jdbcTemplate();
+            final long analysisId = analysis(jdbc, "free-slot");
+            final AtomicInteger inserts = new AtomicInteger();
+            final AskAiConversationRepository conversations = new AskAiConversationRepository(
+                countingInserts(repositories.of(AskAiConversations.class), inserts),
+                repositories.of(AskAiMessages.class), ImmediateWork.database(), repositories.transactions()
+            );
+            final Instant now = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+
+            final AskAiConversation first = conversations.createWithinCap(opening(analysisId, now), MAX_ACTIVE, now)
+                .block();
+            final AskAiConversation second = conversations.createWithinCap(opening(analysisId, now), MAX_ACTIVE, now)
+                .block();
+
+            assertThat(activeSlot(jdbc, first.id())).isZero();
+            assertThat(activeSlot(jdbc, second.id())).isEqualTo(1);
+            assertThat(inserts)
+                .as("each conversation is inserted once; a place already taken is not tried, and so not logged")
+                .hasValue(2);
         }
     }
 
@@ -559,6 +591,29 @@ class AskAiConversationRepositoryIntegrationTest {
             repositories.of(AskAiConversations.class), repositories.of(AskAiMessages.class),
             ImmediateWork.database(), repositories.transactions()
         );
+    }
+
+    /** The conversations as given, counting the rows written to them, including one the slot key refuses. */
+    private static AskAiConversations countingInserts(final AskAiConversations delegate, final AtomicInteger inserts) {
+        return (AskAiConversations) Proxy.newProxyInstance(
+            AskAiConversations.class.getClassLoader(), new Class<?>[] { AskAiConversations.class },
+            (proxy, method, arguments) -> {
+                if ("saveAndFlush".equals(method.getName())) {
+                    inserts.incrementAndGet();
+                }
+                return forwarded(delegate, method, arguments);
+            }
+        );
+    }
+
+    private static Object forwarded(final Object delegate, final Method method, final Object[] arguments)
+        throws Throwable {
+        try {
+            return method.invoke(delegate, arguments);
+        }
+        catch (InvocationTargetException thrown) {
+            throw thrown.getCause();
+        }
     }
 
     private AskAiConversationRepository.NewConversation opening(final long analysisId, final Instant now) {

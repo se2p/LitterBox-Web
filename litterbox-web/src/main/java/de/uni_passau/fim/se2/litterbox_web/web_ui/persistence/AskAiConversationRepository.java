@@ -10,8 +10,10 @@
 package de.uni_passau.fim.se2.litterbox_web.web_ui.persistence;
 
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -65,7 +67,13 @@ public class AskAiConversationRepository {
 
     private AskAiConversation claimSlot(final NewConversation request, final int maxActive, final Instant now) {
         conversations.releaseLapsedSlots(request.analysisId(), now);
+        // Only a slot taken since this read still collides: the driver logs every collision as a warning, so trying
+        // the taken slots one by one filled the log with errors that were none.
+        final Set<Integer> taken = new HashSet<>(conversations.findActiveSlots(request.analysisId()));
         for (int slot = 0; slot < maxActive; slot++) {
+            if (taken.contains(slot)) {
+                continue;
+            }
             final AskAiConversation opened = createInSlot(request, slot);
             if (opened != null) {
                 return opened;
