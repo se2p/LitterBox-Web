@@ -67,6 +67,24 @@ describe('ScratchblocksPreview', () => {
         expect(screen.getByRole('region')).toHaveAttribute('aria-label', 'Scratchblocks');
     });
 
+    it('draws the blocks in the language of the page, not the English they are written in', async () => {
+        const translate = vi.fn();
+        const german = { commands: {} };
+        scratchblocksMocks.parse.mockImplementation((source: string) => ({ source, translate }));
+        scratchblocksMocks.createScratchblocksRenderer.mockImplementation(() => ({
+            parse: scratchblocksMocks.parse,
+            render: scratchblocksMocks.render,
+            allLanguages: { de: german },
+        }));
+        preview('when green flag clicked');
+
+        await waitFor(() => expect(scratchblocksMocks.render).toHaveBeenCalled());
+        expect(translate).toHaveBeenCalledWith(german);
+        expect(translate.mock.invocationCallOrder[0]).toBeLessThan(
+            scratchblocksMocks.render.mock.invocationCallOrder.at(-1) ?? 0,
+        );
+    });
+
     it('moves renderer transforms to CSP-compatible SVG attributes', async () => {
         preview('move (10) steps');
 

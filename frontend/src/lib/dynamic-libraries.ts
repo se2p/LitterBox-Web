@@ -15,6 +15,7 @@ export interface LocalScratchblocks {
     parse: (source: string, options?: Record<string, unknown>) => unknown;
     render: (document: unknown, options?: Record<string, unknown>) => unknown;
     loadLanguages?: (languages: Record<string, unknown>) => void;
+    allLanguages?: Record<string, unknown>;
 }
 
 /** Load the bundled renderer; no network request or CDN fallback is permitted. */

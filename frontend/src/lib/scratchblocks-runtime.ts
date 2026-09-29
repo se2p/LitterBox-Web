@@ -52,6 +52,22 @@ export function normalizeScratchblocksTransforms(rendered: Node): void {
     }
 }
 
+/**
+ * Rewrites parsed blocks in place into the reader's language. Parsing only decides which languages the source may
+ * be written in; LitterBox and Ask AI write it in English, so without this every block is drawn in English whatever
+ * language the page is in. Names, values and dropdown entries stay as the project wrote them.
+ */
+export function translateScratchblocks(
+    renderer: LocalScratchblocks,
+    documentModel: unknown,
+    language: string,
+): void {
+    const vocabulary = renderer.allLanguages?.[language];
+    const translatable = documentModel as { translate?: (vocabulary: unknown) => void } | null;
+    if (language === 'en' || !vocabulary || typeof translatable?.translate !== 'function') return;
+    translatable.translate(vocabulary);
+}
+
 /** Load the renderer and install its stylesheet into the document that will host the rendered blocks. */
 export async function prepareScratchblocks(documentObject: Document): Promise<LocalScratchblocks> {
     const view = documentObject.defaultView;

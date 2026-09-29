@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import {
     normalizeScratchblocksTransforms,
     prepareScratchblocks,
+    translateScratchblocks,
 } from '../../lib/scratchblocks-runtime';
 import { normalizeScratchblocksSource, scratchblocksLanguages } from './scratchblocks-source';
 
@@ -94,6 +95,7 @@ export function ScratchblocksPreview({
                         inline,
                         languages,
                     });
+                    translateScratchblocks(renderer, documentModel, languages[0]);
                     const rendered = renderer.render(documentModel, {
                         inline,
                         languages,
