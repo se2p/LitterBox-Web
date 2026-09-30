@@ -53,6 +53,11 @@ public class SpaController {
             "/litterbox/teacher", "/litterbox/teacher/modify", "/litterbox/tools", "/litterbox/advanced",
             "/litterbox/compare", "/litterbox/questions",
             "/litterbox/teacher/questions", "/litterbox/teacher/questions/{token}",
+            "/litterbox/teacher/task",
+            // A published quiz is reached by a link a teacher hands out, so these two are the only addresses on
+            // this list that a reader arrives at cold, with no history and nothing cached. They have to answer on
+            // a first visit or the quiz simply does not exist for the class it was made for.
+            "/litterbox/quiz/{token}", "/litterbox/quiz/{token}/results",
             "/litterbox/questions/{token}", "/litterbox/submissions/{token}", "/litterbox/catalogue",
             "/litterbox/statistics", "/litterbox/ask-ai", "/litterbox/ask-ai/submissions/{token}",
             "/litterbox/about", "/litterbox/contact", "/litterbox/faq", "/litterbox/imprint",

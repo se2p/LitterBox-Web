@@ -48,7 +48,7 @@ import reactor.core.publisher.Mono;
 public class SingleProjectController {
 
     private static final List<String> PROJECT_SUFFIXES = List.of(".sb3", ".mblock");
-    private static final List<String> UPLOAD_SUFFIXES = List.of(".sb3", ".mblock", ".zip");
+    private static final List<String> UPLOAD_SUFFIXES = List.of(".sb3", ".mblock", ".zip", ".txt");
 
     private final SingleProjectApplicationService service;
     private final SubmissionAnalysisAuthorizer analysisAuthorizer;
@@ -99,9 +99,14 @@ public class SingleProjectController {
         if (questions) {
             return service.submitQuestionUpload(bytes, file.filename(), ApiV1.publicLocale(locale), idempotencyKey);
         }
-        return file.filename().toLowerCase(Locale.ROOT).endsWith(".zip")
-            ? service.submitTeacherZip(bytes, file.filename(), ApiV1.publicLocale(locale), idempotencyKey)
-            : service.submitUpload(bytes, file.filename(), ApiV1.publicLocale(locale), idempotencyKey);
+        final String filename = file.filename().toLowerCase(Locale.ROOT);
+        if (filename.endsWith(".zip")) {
+            return service.submitTeacherZip(bytes, file.filename(), ApiV1.publicLocale(locale), idempotencyKey);
+        }
+        if (filename.endsWith(".txt")) {
+            return service.submitProjectList(bytes, file.filename(), ApiV1.publicLocale(locale), idempotencyKey);
+        }
+        return service.submitUpload(bytes, file.filename(), ApiV1.publicLocale(locale), idempotencyKey);
     }
 
     @PostMapping(
@@ -293,6 +298,30 @@ public class SingleProjectController {
         return analysisAuthorizer.authorize(bearerToken(authorization), analysisId)
             .then(service.quizAnswer(analysisId, request))
             .map(ResponseEntity::ok);
+    }
+
+    /**
+     * Returns generated questions and their answers for the owning teacher.
+     *
+     * @param analysisId    the analysis whose quiz answer key is requested
+     * @param authorization the {@code Authorization} header carrying the submission's share token as a bearer token
+     * @return the answer key, marked as not to be cached; fails with {@code 401} without a token and {@code 404} when
+     *         the analysis is missing or not owned by the token
+     */
+    @GetMapping("/analyses/{analysisId}/quiz-answer-key")
+    public Mono<ResponseEntity<SingleProjectDtos.QuizAnswerKeyView>> quizAnswerKey(
+        @PathVariable final long analysisId,
+        @RequestHeader(
+            name = HttpHeaders.AUTHORIZATION,
+            required = false
+        ) final String authorization
+    ) {
+        return service.quizAnswerKey(analysisId, bearerToken(authorization)).map(
+            view -> ResponseEntity.ok()
+                .cacheControl(CacheControl.noStore())
+                .header("X-Content-Type-Options", "nosniff")
+                .body(view)
+        );
     }
 
     private ResponseEntity<SingleProjectDtos.CreatedSubmission> accepted(

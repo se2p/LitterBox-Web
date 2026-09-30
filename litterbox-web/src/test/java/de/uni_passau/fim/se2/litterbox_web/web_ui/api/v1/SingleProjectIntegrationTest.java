@@ -267,25 +267,49 @@ class SingleProjectIntegrationTest {
 
         final SingleProjectDtos.QuizView question = view.analysis().quiz().getFirst();
         final String answer = question.options().isEmpty() ? "answer" : question.options().getFirst();
-        client.post()
+        final SingleProjectDtos.QuizAnswerResult verdict = client.post()
             .uri("/api/v1/analyses/{id}/quiz-answers", view.analysis().id())
             .header(HttpHeaders.AUTHORIZATION, BEARER_PREFIX + created.token())
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(new SingleProjectDtos.QuizAnswerRequest(question.questionId(), answer))
             .exchange()
-            // The verdict comes back with the answer; a learner who is only told "saved" has learnt nothing.
             .expectStatus().isOk()
             .expectBody(SingleProjectDtos.QuizAnswerResult.class)
-            .value(result -> {
-                assertThat(result.questionId()).isEqualTo(question.questionId());
-                assertThat(result.correctAnswers()).isNotEmpty();
-            });
+            .returnResult().getResponseBody();
+        assertThat(verdict).isNotNull();
+        assertThat(verdict.questionId()).isEqualTo(question.questionId());
+        assertThat(verdict.correctAnswers()).isNotEmpty();
 
         assertThat(question.questionType()).isNotBlank();
         assertThat(question.programDimension()).isNotBlank();
         assertThat(question.scopeOfFocus()).isNotBlank();
-        // The script the question is about has to travel with it, or "what does this script do?" cannot be answered.
         assertThat(view.analysis().quiz()).anyMatch(entry -> entry.scratchBlocks() != null);
+
+        final SingleProjectDtos.QuizAnswerKeyView answerKey = quizAnswerKey(view.analysis().id(), created.token());
+        assertThat(answerKey).isNotNull();
+        assertThat(answerKey.questions()).hasSameSizeAs(view.analysis().quiz());
+        assertThat(answerKey.questions())
+            .filteredOn(entry -> entry.questionId().equals(question.questionId()))
+            .singleElement()
+            .satisfies(entry -> assertThat(entry.correctAnswers()).isEqualTo(verdict.correctAnswers()));
+
+        // A stray token from another submission is refused exactly as the write side already is, without saying
+        // whether the analysis itself exists.
+        client.get()
+            .uri("/api/v1/analyses/{id}/quiz-answer-key", view.analysis().id())
+            .header(HttpHeaders.AUTHORIZATION, BEARER_PREFIX + "a-different-submissions-token")
+            .exchange()
+            .expectStatus().isNotFound();
+    }
+
+    private SingleProjectDtos.QuizAnswerKeyView quizAnswerKey(final long analysisId, final String token) {
+        return client.get()
+            .uri("/api/v1/analyses/{id}/quiz-answer-key", analysisId)
+            .header(HttpHeaders.AUTHORIZATION, BEARER_PREFIX + token)
+            .exchange()
+            .expectStatus().isOk()
+            .expectBody(SingleProjectDtos.QuizAnswerKeyView.class)
+            .returnResult().getResponseBody();
     }
 
     @Test
@@ -342,7 +366,7 @@ class SingleProjectIntegrationTest {
         final byte[] project = scratchUrlProject();
         jsonResponse(metadata);
         jsonResponse(project);
-        response(thumbnail(), "image/png");
+        response(thumbnail(), MediaType.IMAGE_PNG_VALUE);
 
         final SingleProjectDtos.CreatedSubmission created = submitUrl(
             "https://scratch.mit.edu/projects/987654/", "synthetic-url", "nl"
@@ -398,13 +422,37 @@ class SingleProjectIntegrationTest {
     }
 
     @Test
+    void analyzesAClassSetListedAsScratchProjectUrls() throws Exception {
+        jsonResponse(scratchMetadata("list-user", "list-token"));
+        jsonResponse(scratchUrlProject());
+        response(thumbnail(), MediaType.IMAGE_PNG_VALUE);
+
+        final byte[] list = ("https://scratch.mit.edu/projects/987655/\n"
+            + "https://www.scratch.mit.edu/projects/987655").getBytes(StandardCharsets.UTF_8);
+        final SingleProjectDtos.CreatedSubmission created = submit(
+            list, "synthetic-project-list", "en", "projects.txt"
+        );
+
+        Awaitility.await().atMost(java.time.Duration.ofSeconds(15)).untilAsserted(() -> {
+            final SingleProjectDtos.SubmissionView view = submission(created.token());
+            assertThat(view.status()).isEqualTo(COMPLETED);
+            assertThat(view.sourceType()).isEqualTo("SCRATCH_URL_LIST");
+            assertThat(view.expectedCount()).isEqualTo(1);
+            assertThat(view.completedCount()).isEqualTo(1);
+            assertThat(view.analyses()).singleElement()
+                .extracting(SingleProjectDtos.AnalysisView::name)
+                .isEqualTo("scratch-987655.sb3");
+        });
+    }
+
+    @Test
     void generatesQuestionsFromCanonicalScratchUrl() throws Exception {
         final byte[] metadata = ("{\"project_token\":\"synthetic-question-url-token\","
             + "\"username\":\"synthetic-question-user\",\"stats\":{},\"history\":{}}")
             .getBytes(StandardCharsets.UTF_8);
         jsonResponse(metadata);
         jsonResponse(scratchUrlProject());
-        response(thumbnail(), "image/png");
+        response(thumbnail(), MediaType.IMAGE_PNG_VALUE);
 
         final SingleProjectDtos.CreatedSubmission created = submitQuestionUrl(
             "https://scratch.mit.edu/projects/876543/", "synthetic-question-url", "de"
@@ -484,7 +532,6 @@ class SingleProjectIntegrationTest {
         final SingleProjectDtos.SubmissionView view = submission(asked.token());
         assertThat(view.sourceType()).isEqualTo("QUESTION_UPLOAD");
         assertThat(view.analysis().quiz()).isNotEmpty();
-        // The same bytes, not a second copy of them: the questions are asked about the project already retained.
         assertThat(view.analysis().sourceSha256())
             .isEqualTo(submission(checked.token()).analysis().sourceSha256());
 
@@ -632,8 +679,6 @@ class SingleProjectIntegrationTest {
             .expectHeader().valueMatches(HttpHeaders.CONTENT_DISPOSITION, "attachment;.*")
             .expectBody(String.class).value(report -> assertThat(report).contains("valid.sb3"));
 
-        // An analysis that never produced anything has no report, and saying so is not the same as saying the
-        // submission does not exist.
         client.get()
             .uri(ANALYSIS_REPORT_PATH, created.token(), failed)
             .exchange()
@@ -737,11 +782,11 @@ class SingleProjectIntegrationTest {
         jsonResponse("[]".getBytes(StandardCharsets.UTF_8));
         jsonResponse(scratchMetadata("studio-user-one", "studio-token-one"));
         jsonResponse(scratchUrlProject());
-        response(thumbnail(), "image/png");
+        response(thumbnail(), MediaType.IMAGE_PNG_VALUE);
         SCRATCH.enqueue(new MockResponse.Builder().code(404).build());
         jsonResponse(scratchMetadata("studio-user-three", "studio-token-three"));
         jsonResponse(scratchUrlProject());
-        response(thumbnail(), "image/png");
+        response(thumbnail(), MediaType.IMAGE_PNG_VALUE);
 
         final SingleProjectDtos.CreatedSubmission created = client.post()
             .uri("/api/v1/submissions")

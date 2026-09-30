@@ -68,7 +68,9 @@ public class MetricReferenceService {
                     .map(
                         distribution -> new MetricBand(
                             distribution.name(), distribution.sampleSize(),
-                            distribution.lowerBound(), distribution.upperBound()
+                            distribution.lowerBound(), distribution.upperBound(),
+                            distribution.minimum(), distribution.q1(), distribution.median(),
+                            distribution.q3(), distribution.maximum()
                         )
                     )
                     .toList()
@@ -84,8 +86,16 @@ public class MetricReferenceService {
      *                   comparison is against rather than being asked to trust the word "usual"
      * @param lowerBound the value a third of those projects come under
      * @param upperBound the value two thirds of them come under
+     * @param minimum    the smallest measurement in the sample
+     * @param q1         the value a quarter of the sample comes under
+     * @param median     the value half of the sample comes under
+     * @param q3         the value three quarters of the sample comes under
+     * @param maximum    the largest measurement in the sample
      */
-    public record MetricBand(String name, long sampleSize, double lowerBound, double upperBound) {
+    public record MetricBand(
+        String name, long sampleSize, double lowerBound, double upperBound,
+        double minimum, double q1, double median, double q3, double maximum
+    ) {
 
         public MetricBand {
             Objects.requireNonNull(name, "name");

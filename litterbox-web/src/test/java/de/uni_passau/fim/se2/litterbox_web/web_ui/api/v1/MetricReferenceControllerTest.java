@@ -27,7 +27,9 @@ class MetricReferenceControllerTest {
     @Test
     void publishesEachBandAndTellsTheBrowserHowLongItKeeps() {
         final MetricReferenceService service = mock(MetricReferenceService.class);
-        when(service.bands()).thenReturn(Mono.just(List.of(new MetricBand("block_count", 512, 20.0, 90.0))));
+        when(service.bands()).thenReturn(
+            Mono.just(List.of(new MetricBand("block_count", 512, 20.0, 90.0, 5.0, 15.0, 30.0, 60.0, 100.0)))
+        );
 
         final ResponseEntity<MetricReferenceDto> response = new MetricReferenceController(service).reference().block();
 
@@ -35,7 +37,7 @@ class MetricReferenceControllerTest {
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
         assertThat(response.getHeaders().getCacheControl()).contains("max-age");
         assertThat(response.getBody().metrics()).containsExactly(
-            new MetricReferenceDto.MetricBandDto("block_count", 512, 20.0, 90.0)
+            new MetricReferenceDto.MetricBandDto("block_count", 512, 20.0, 90.0, 5.0, 15.0, 30.0, 60.0, 100.0)
         );
     }
 

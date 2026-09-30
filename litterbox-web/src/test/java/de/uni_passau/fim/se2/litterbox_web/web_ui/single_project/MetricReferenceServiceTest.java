@@ -37,7 +37,9 @@ class MetricReferenceServiceTest {
     void reportsWhatEachMeasurementUsuallyComesToAndHowManyProjectsSaidSo() {
         final MetricReferenceRepository repository = mock(MetricReferenceRepository.class);
         when(repository.distributions(MetricReferenceService.MINIMUM_SAMPLE_SIZE)).thenReturn(
-            Mono.just(List.of(new MetricDistribution("block_count", 512, 20.0, 90.0)))
+            Mono.just(
+                List.of(new MetricDistribution("block_count", 512, 20.0, 90.0, 5.0, 15.0, 30.0, 60.0, 100.0))
+            )
         );
 
         final List<MetricReferenceService.MetricBand> bands = new MetricReferenceService(
@@ -45,7 +47,7 @@ class MetricReferenceServiceTest {
         ).bands().block();
 
         assertThat(bands).containsExactly(
-            new MetricReferenceService.MetricBand("block_count", 512, 20.0, 90.0)
+            new MetricReferenceService.MetricBand("block_count", 512, 20.0, 90.0, 5.0, 15.0, 30.0, 60.0, 100.0)
         );
     }
 
@@ -53,7 +55,9 @@ class MetricReferenceServiceTest {
     void answersFromTheCacheUntilItExpiresRatherThanRankingEveryMeasurementPerReader() {
         final MetricReferenceRepository repository = mock(MetricReferenceRepository.class);
         when(repository.distributions(anyInt())).thenReturn(
-            Mono.just(List.of(new MetricDistribution("block_count", 512, 20.0, 90.0)))
+            Mono.just(
+                List.of(new MetricDistribution("block_count", 512, 20.0, 90.0, 5.0, 15.0, 30.0, 60.0, 100.0))
+            )
         );
         final MutableClock clock = new MutableClock(START);
         final MetricReferenceService service = new MetricReferenceService(repository, clock);

@@ -57,10 +57,9 @@ public class ScratchProjectClient {
     private static final int STUDIO_PAGE_SIZE = 40;
     private static final int MAX_STUDIO_TITLE_LENGTH = 200;
     /*
-     * How far the size of a studio is established before it is submitted. Counting is one request per forty
-     * projects, and it happens while a teacher is still typing an id, so it stops somewhere: past this the answer
-     * is "more than can be counted first", which is what the form already knows how to say. Two thousand is well
-     * beyond any studio a class or a competition produces, and is fifty requests in the worst case.
+     * How far the size of a studio is established before it is submitted. Counting happens while a teacher is still
+     * typing an id, so it stops here rather than walking the whole studio; past this, the form reports "more than can
+     * be counted first". Two thousand is well beyond any studio a class or competition produces.
      */
     private static final int MAX_PRECHECK_PROJECTS = 2_000;
 
@@ -182,11 +181,7 @@ public class ScratchProjectClient {
         if (!readableStudio(root)) {
             return Mono.just(new StudioSummary(studioId, title, false, null));
         }
-        /*
-         * The listing is counted rather than the studio's own statistics, by the same walk the run itself makes. That
-         * is what makes the number here the number that will be analysed: a teacher who is told 291 gets 291, because
-         * both answers came from the same traversal rather than from two sources that agree until they do not.
-         */
+        // Counted by the same walk the run itself makes, so the number shown here is the number that gets analysed.
         return studioProjectIds(studioId, 0, new LinkedHashSet<>(), () -> Mono.just(false), precheckCeiling())
             .map(ids -> new StudioSummary(studioId, title, true, countedProjects(ids.size())));
     }
@@ -197,9 +192,8 @@ public class ScratchProjectClient {
     }
 
     /**
-     * The size of the studio, or {@code null} where counting stopped before the end of it. A walk that fills its
-     * ceiling has no way to tell a studio of exactly that size from a larger one, and guessing which is a way to name a
-     * number that is quietly wrong.
+     * The size of the studio, or {@code null} where counting stopped before the end of it: a walk that fills its
+     * ceiling cannot tell a studio of exactly that size from a larger one.
      */
     private Integer countedProjects(final int counted) {
         return counted >= precheckCeiling() ? null : counted;
@@ -266,9 +260,8 @@ public class ScratchProjectClient {
     }
 
     /**
-     * One walk of a studio's listing, shared by the run that downloads it and the check that sizes it beforehand.
-     * Shared deliberately: two walks with two stopping rules are two answers, and the one on the form would be the one
-     * nobody notices is wrong.
+     * One walk of a studio's listing, shared by the run that downloads it and the check that sizes it beforehand: two
+     * walks with two stopping rules would be two answers.
      *
      * @param ceiling how many projects this walk will take before it stops, whatever the studio holds
      */

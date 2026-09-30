@@ -315,7 +315,7 @@ final class FaultInjectionCapabilityService implements FaultInjectionCapability 
         if (analysis.submissionId() != owner.id()) {
             return Mono.error(CapabilityException.analysisNotFound());
         }
-        if (!isCompleted(analysis.status())) {
+        if (!analysis.isCompleted()) {
             return Mono.error(CapabilityException.analysisNotReady());
         }
         final String format = normalizedSourceFormat(analysis.inputFormat());
@@ -863,10 +863,6 @@ final class FaultInjectionCapabilityService implements FaultInjectionCapability 
     private boolean artifactMatchesAnalysis(final Analysis analysis, final SourceArtifact artifact) {
         return validDigest(analysis.inputSha256()) && validDigest(artifact.sha256())
             && MessageDigest.isEqual(analysis.inputSha256(), artifact.sha256());
-    }
-
-    private boolean isCompleted(final String status) {
-        return "DONE".equals(status) || "COMPLETED".equals(status);
     }
 
     private boolean isRetainedSubmission(final Submission submission) {

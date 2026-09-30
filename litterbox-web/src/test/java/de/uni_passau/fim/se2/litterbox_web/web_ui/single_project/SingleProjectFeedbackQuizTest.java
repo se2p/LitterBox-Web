@@ -50,6 +50,7 @@ import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.QuizAnswerReposito
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.SingleProjectSubmissionService;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.SourceArtifact;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.SourceArtifactAccess;
+import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.Submission;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.SubmissionEventRepository;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.SubmissionRepository;
 import reactor.core.publisher.Mono;
@@ -60,6 +61,8 @@ class SingleProjectFeedbackQuizTest {
     private static final String CHOICE_B = "B";
     private static final String QUESTION_ID = "1";
     private static final String REPORT_SCHEMA_VERSION = "1";
+    private static final String SUBMISSION_TOKEN = "synthetic-submission-token";
+    private static final String LANGUAGE = "en";
 
     @Test
     void acceptsOnlyKnownFindersAndApprovedReactions() {
@@ -79,8 +82,6 @@ class SingleProjectFeedbackQuizTest {
             () -> service.feedback(41, new SingleProjectDtos.FeedbackRequest(FINDER_ID, "unknown")).block()
         ).isInstanceOf(ResponseStatusException.class)
             .hasMessageContaining("Invalid feedback reaction");
-        // A reaction the enum does not name is refused before the repository is reached, so the two calls above are
-        // still the only two.
         verify(feedback, times(2)).upsert(eq(41L), eq(FINDER_ID), any());
         assertThatThrownBy(
             () -> service.feedback(41, new SingleProjectDtos.FeedbackRequest("missing", "helpful")).block()
@@ -139,6 +140,110 @@ class SingleProjectFeedbackQuizTest {
     }
 
     @Test
+    void quizAnswerKeyReturnsTheStoredCorrectAnswersWhenTheBearerMatchesTheOwningSubmission() {
+        final SubmissionRepository submissionRepository = mock(SubmissionRepository.class);
+        when(submissionRepository.findById(7)).thenReturn(
+            Mono.just(new Submission(7, SUBMISSION_TOKEN, "single", LANGUAGE, "COMPLETED", "ACTIVE", 1, 1, 0))
+        );
+        final SingleProjectApplicationService service = service(
+            analysisWithReport(), mock(IssueFeedbackRepository.class), mock(QuizAnswerRepository.class),
+            mock(AnalysisWork.class), mock(Scratch3ParserService.class), mock(ProjectArchiveInspector.class),
+            mock(QlcService.class), mock(SourceArtifactAccess.class), submissionRepository
+        );
+
+        final SingleProjectDtos.QuizAnswerKeyView view = service
+            .quizAnswerKey(41, SUBMISSION_TOKEN).block();
+
+        assertThat(view).isNotNull();
+        assertThat(view.questions()).containsExactly(
+            new SingleProjectDtos.QuizAnswerKeyQuestion(QUESTION_ID, List.of(CHOICE_B))
+        );
+    }
+
+    @Test
+    void refusesToRegenerateAnAnswerKeyWhenTheSavedQuestionChanged() throws Exception {
+        final AnalysisWork analysisWork = mock(AnalysisWork.class);
+        final Scratch3ParserService parser = mock(Scratch3ParserService.class);
+        final ProjectArchiveInspector inspector = mock(ProjectArchiveInspector.class);
+        final QlcService qlc = mock(QlcService.class);
+        final SourceArtifactAccess sourceArtifacts = mock(SourceArtifactAccess.class);
+        final SubmissionRepository submissionRepository = mock(SubmissionRepository.class);
+        when(submissionRepository.findById(7)).thenReturn(
+            Mono.just(new Submission(7, SUBMISSION_TOKEN, "single", LANGUAGE, "COMPLETED", "ACTIVE", 1, 1, 0))
+        );
+        when(parser.parseFromFile(any(Path.class))).thenReturn(mock(Program.class));
+        when(inspector.inspect(any())).thenReturn(new ProjectArchiveInspector.Inspection(new byte[0], List.of()));
+        when(qlc.getQuestions(any(), any(), any(), any(), any(), eq(300), eq(false), eq(0), eq(false), eq(0L)))
+            .thenReturn(
+                Stream.of(
+                    new QuestionDTO(
+                        1, QuestionType.MULTIPLE_CHOICE, FINDER_ID, "Synthetic question", "Choose B", "Stage", "",
+                        ProgramDimension.TEXT, ScopeOfFocus.ATOM, List.of("A", "C"), List.of("C"), null
+                    )
+                )
+            );
+        when(sourceArtifacts.findForAnalysis(argThat(read -> read != null && read.sourceArtifactId() == 9))).thenReturn(
+            Mono.just(
+                new SourceArtifact(
+                    9, new byte[32], 1, "application/zip", "synthetic.sb3"
+                )
+            )
+        );
+        when(sourceArtifacts.open(any())).thenReturn(Mono.just(new ByteArrayInputStream(new byte[] { 1 })));
+        doAnswer(invocation -> runCallable(invocation.getArgument(0))).when(analysisWork).submit(any());
+
+        final SingleProjectApplicationService service = service(
+            legacyAnalysisWithReport(), mock(IssueFeedbackRepository.class), mock(QuizAnswerRepository.class),
+            analysisWork, parser, inspector, qlc, sourceArtifacts, submissionRepository
+        );
+
+        assertThatThrownBy(() -> service.quizAnswerKey(41, SUBMISSION_TOKEN).block())
+            .isInstanceOf(QuizAnswerMarking.InvalidQuizAnswerException.class)
+            .hasMessageContaining("does not match the saved analysis");
+    }
+
+    @Test
+    void quizAnswerKeyIsRefusedWhenTheBearerDoesNotMatchTheOwningSubmission() {
+        final SubmissionRepository submissionRepository = mock(SubmissionRepository.class);
+        when(submissionRepository.findById(7)).thenReturn(
+            Mono.just(new Submission(7, SUBMISSION_TOKEN, "single", LANGUAGE, "COMPLETED", "ACTIVE", 1, 1, 0))
+        );
+        final SingleProjectApplicationService service = service(
+            analysisWithReport(), mock(IssueFeedbackRepository.class), mock(QuizAnswerRepository.class),
+            mock(AnalysisWork.class), mock(Scratch3ParserService.class), mock(ProjectArchiveInspector.class),
+            mock(QlcService.class), mock(SourceArtifactAccess.class), submissionRepository
+        );
+
+        assertThatThrownBy(() -> service.quizAnswerKey(41, "a-different-token").block())
+            .isInstanceOfSatisfying(
+                ResponseStatusException.class,
+                error -> assertThat(error.getStatusCode().value()).isEqualTo(404)
+            );
+    }
+
+    @Test
+    void quizAnswerKeyIsRefusedForAnAnalysisThatIsNotYetComplete() {
+        final SubmissionRepository submissionRepository = mock(SubmissionRepository.class);
+        when(submissionRepository.findById(7)).thenReturn(
+            Mono.just(new Submission(7, SUBMISSION_TOKEN, "single", LANGUAGE, "COMPLETED", "ACTIVE", 1, 1, 0))
+        );
+        final Analysis running = new Analysis(
+            41, 7, 9, "NEW", REPORT_SCHEMA_VERSION, "synthetic", LANGUAGE, "RUNNING", ".sb3"
+        );
+        final SingleProjectApplicationService service = service(
+            running, mock(IssueFeedbackRepository.class), mock(QuizAnswerRepository.class),
+            mock(AnalysisWork.class), mock(Scratch3ParserService.class), mock(ProjectArchiveInspector.class),
+            mock(QlcService.class), mock(SourceArtifactAccess.class), submissionRepository
+        );
+
+        assertThatThrownBy(() -> service.quizAnswerKey(41, SUBMISSION_TOKEN).block())
+            .isInstanceOfSatisfying(
+                ResponseStatusException.class,
+                error -> assertThat(error.getStatusCode().value()).isEqualTo(409)
+            );
+    }
+
+    @Test
     void enforcesStandaloneReportOutputLimit() throws Exception {
         final BoundedReportOutput output = new BoundedReportOutput(4);
 
@@ -156,7 +261,8 @@ class SingleProjectFeedbackQuizTest {
     ) {
         return service(
             analysis, feedback, answers, analysisWork, mock(Scratch3ParserService.class),
-            mock(ProjectArchiveInspector.class), mock(QlcService.class), mock(SourceArtifactAccess.class)
+            mock(ProjectArchiveInspector.class), mock(QlcService.class), mock(SourceArtifactAccess.class),
+            mock(SubmissionRepository.class)
         );
     }
 
@@ -170,19 +276,39 @@ class SingleProjectFeedbackQuizTest {
         final QlcService qlc,
         final SourceArtifactAccess sourceArtifacts
     ) {
+        return service(
+            analysis, feedback, answers, analysisWork, parser, inspector, qlc, sourceArtifacts,
+            mock(SubmissionRepository.class)
+        );
+    }
+
+    private SingleProjectApplicationService service(
+        final Analysis analysis,
+        final IssueFeedbackRepository feedback,
+        final QuizAnswerRepository answers,
+        final AnalysisWork analysisWork,
+        final Scratch3ParserService parser,
+        final ProjectArchiveInspector inspector,
+        final QlcService qlc,
+        final SourceArtifactAccess sourceArtifacts,
+        final SubmissionRepository submissionRepository
+    ) {
         final AnalysisRepository analyses = mock(AnalysisRepository.class);
         when(analyses.findById(41)).thenReturn(Mono.just(analysis));
+        final QuizAnswerPort quizAnswerPort = new QuizAnswerPort(
+            analyses, sourceArtifacts, analysisWork, parser, inspector, qlc
+        );
         return new SingleProjectApplicationService(
-            mock(SingleProjectSubmissionService.class), mock(SubmissionRepository.class),
+            mock(SingleProjectSubmissionService.class), submissionRepository,
             mock(SubmissionEventRepository.class), analyses, mock(AnalysisJobRepository.class), sourceArtifacts,
             mock(AssetRepository.class), feedback, answers, analysisWork, parser, mock(ScratchProjectClient.class),
-            qlc, inspector, mock(TeacherBatchArchiveInspector.class), "synthetic"
+            qlc, inspector, mock(TeacherBatchArchiveInspector.class), quizAnswerPort, "synthetic"
         );
     }
 
     private Analysis analysisWithReport() {
         return new Analysis(
-            41, 7, 9, "synthetic.sb3", "NEW", REPORT_SCHEMA_VERSION, "synthetic", "en", "DONE", ".sb3",
+            41, 7, 9, "synthetic.sb3", "NEW", REPORT_SCHEMA_VERSION, "synthetic", LANGUAGE, "DONE", ".sb3",
             "{\"name\":\"synthetic.sb3\",\"metrics\":{},\"issues\":[{\"id\":1,"
                 + "\"finderId\":\"finder-one\",\"finderName\":\"Synthetic Finder\",\"severity\":1,"
                 + "\"currentCostume\":0}],"
@@ -191,6 +317,17 @@ class SingleProjectFeedbackQuizTest {
                 + "\"quizAnswerKeys\":[{\"questionId\":\"1\",\"type\":\"MULTIPLE_CHOICE\","
                 + "\"question\":\"Choose B\",\"choices\":[\"A\",\"B\"],"
                 + "\"correctAnswers\":[\"B\"]}],\"assetHashes\":[]}",
+            null, null, "all", "{}", new byte[32], Map.of()
+        );
+    }
+
+    private Analysis legacyAnalysisWithReport() {
+        return new Analysis(
+            41, 7, 9, "synthetic.sb3", "NEW", REPORT_SCHEMA_VERSION, "synthetic", LANGUAGE, "DONE", ".sb3",
+            "{\"name\":\"synthetic.sb3\",\"metrics\":{},\"issues\":[],\"relationships\":[],"
+                + "\"catalogue\":[],\"quiz\":[{\"questionId\":\"1\",\"question\":\"Choose B\","
+                + "\"options\":[\"A\",\"B\"],\"questionType\":\"MULTIPLE_CHOICE\",\"expectedAnswers\":1}],"
+                + "\"quizAnswerKeys\":[],\"assetHashes\":[]}",
             null, null, "all", "{}", new byte[32], Map.of()
         );
     }

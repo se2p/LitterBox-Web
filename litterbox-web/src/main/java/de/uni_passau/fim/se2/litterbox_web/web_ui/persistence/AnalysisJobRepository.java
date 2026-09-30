@@ -81,6 +81,10 @@ public class AnalysisJobRepository {
         return enqueueIngestion(submissionId, "TEACHER_INGEST", Long.toString(artifactId));
     }
 
+    public Mono<Void> enqueueProjectList(final long submissionId, final long artifactId) {
+        return enqueueIngestion(submissionId, "PROJECT_LIST_INGEST", Long.toString(artifactId));
+    }
+
     private Mono<Void> enqueueIngestion(
         final long submissionId,
         final String jobKind,

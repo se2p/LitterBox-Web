@@ -68,7 +68,6 @@ class SpaControllerTest {
                 "/litterbox/teacher",
                 "/litterbox/teacher/modify",
                 "/litterbox/tools",
-                // Reachable from the menu, so a reload or a bookmark has to resolve as well.
                 "/litterbox/advanced",
                 "/litterbox/compare",
                 "/litterbox/statistics",
@@ -79,7 +78,10 @@ class SpaControllerTest {
                 // The page a conversation is held on is the one a reader stays on longest, so it is the one most
                 // likely to be reloaded or bookmarked.
                 "/litterbox/ask-ai",
-                "/litterbox/ask-ai/submissions/synthetic-token"
+                "/litterbox/ask-ai/submissions/synthetic-token",
+                "/litterbox/teacher/task",
+                "/litterbox/quiz/synthetic-token",
+                "/litterbox/quiz/synthetic-token/results"
             }
         ) {
             client.get().uri(path).exchange().expectStatus().isOk()

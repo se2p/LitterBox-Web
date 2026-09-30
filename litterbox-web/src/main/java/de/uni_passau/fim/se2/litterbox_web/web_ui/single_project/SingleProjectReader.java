@@ -217,7 +217,7 @@ class SingleProjectReader {
     }
 
     private Mono<ReportDownload> reportForAnalysis(final Analysis analysis) {
-        if (!"DONE".equals(analysis.status()) && !"COMPLETED".equals(analysis.status())) {
+        if (!analysis.isCompleted()) {
             return Mono.error(
                 new ResponseStatusException(HttpStatus.CONFLICT, "Submission analysis is not available yet")
             );

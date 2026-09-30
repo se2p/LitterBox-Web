@@ -12,15 +12,18 @@ package de.uni_passau.fim.se2.litterbox_web.web_ui.capabilities.export;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serial;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.RejectedExecutionException;
@@ -75,8 +78,11 @@ final class ProgramExportCapabilityService implements ProgramExportCapability {
     private static final int MAX_SCRIPT_PREVIEW_BYTES = 256 * 1024;
     private static final String RETAINED_PROGRAM_NAME = "retained-project";
     private static final String SUCCESS = "success";
-    private static final Set<String> SUPPORTED_SOURCE_FORMATS = Set.of(".sb3", ".mblock");
     private static final Set<String> REJECTION_OUTCOMES = Set.of("limit", "unavailable");
+
+    /** Bounds the cached, source-derived catalogue used by public quiz links. */
+    private static final Duration CATALOGUE_CACHE_TTL = Duration.ofMinutes(10);
+    private static final int CATALOGUE_CACHE_ENTRIES = 16;
 
     private final SubmissionRepository submissions;
     private final AnalysisRepository analyses;
@@ -86,6 +92,21 @@ final class ProgramExportCapabilityService implements ProgramExportCapability {
     private final ProjectArchiveInspector archiveInspector;
     private final AdvancedCapabilitiesConfiguration configuration;
     private final MeterRegistry meterRegistry;
+    /** Least recently used first, so a full cache drops the one catalogue nobody has asked for longest. */
+    private final Map<Long, Mono<AdvancedCapabilityDtos.ExportTargetsView>> catalogues = Collections.synchronizedMap(
+        new LinkedHashMap<>(CATALOGUE_CACHE_ENTRIES, 0.75f, true) {
+
+            @Serial
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected boolean removeEldestEntry(
+                final Map.Entry<Long, Mono<AdvancedCapabilityDtos.ExportTargetsView>> eldest
+            ) {
+                return size() > CATALOGUE_CACHE_ENTRIES;
+            }
+        }
+    );
 
     ProgramExportCapabilityService(
         final SubmissionRepository submissions,
@@ -121,7 +142,12 @@ final class ProgramExportCapabilityService implements ProgramExportCapability {
         final String submissionToken,
         final long analysisId
     ) {
-        return Mono.defer(() -> instrumentedTargets(submissionToken, analysisId));
+        return Mono.defer(() -> instrumentedTargets(authorize(submissionToken, analysisId)));
+    }
+
+    @Override
+    public Mono<AdvancedCapabilityDtos.ExportTargetsView> targets(final Analysis analysis) {
+        return Mono.defer(() -> instrumentedTargets(requireCompleted(analysis)));
     }
 
     private Mono<CapabilityContent> instrumentedExport(
@@ -150,14 +176,11 @@ final class ProgramExportCapabilityService implements ProgramExportCapability {
             );
     }
 
-    private Mono<AdvancedCapabilityDtos.ExportTargetsView> instrumentedTargets(
-        final String submissionToken,
-        final long analysisId
-    ) {
+    private Mono<AdvancedCapabilityDtos.ExportTargetsView> instrumentedTargets(final Mono<Analysis> authorized) {
         final AtomicReference<String> outcome = new AtomicReference<>("failure");
         final Timer.Sample timer = Timer.start(meterRegistry);
-        return authorize(submissionToken, analysisId)
-            .flatMap(analysis -> loadProgram(analysis, this::catalogue))
+        return authorized
+            .flatMap(this::cachedCatalogue)
             .timeout(exportTimeout())
             .onErrorMap(this::mapFailure)
             .doOnSuccess(ignored -> outcome.set(SUCCESS))
@@ -170,7 +193,16 @@ final class ProgramExportCapabilityService implements ProgramExportCapability {
             );
     }
 
-    private Mono<AuthorizedAnalysis> authorize(final String submissionToken, final long analysisId) {
+    private Mono<AdvancedCapabilityDtos.ExportTargetsView> cachedCatalogue(final Analysis analysis) {
+        final RetainedProgram source = RetainedProgram.of(analysis);
+        return catalogues.computeIfAbsent(
+            analysis.id(),
+            id -> loadProgram(source, this::catalogue)
+                .cache(view -> CATALOGUE_CACHE_TTL, error -> Duration.ZERO, () -> Duration.ZERO)
+        );
+    }
+
+    private Mono<Analysis> authorize(final String submissionToken, final long analysisId) {
         if (submissionToken == null || submissionToken.isBlank() || submissionToken.length() > 128 || analysisId < 1) {
             return Mono.error(CapabilityException.analysisNotFound());
         }
@@ -178,28 +210,25 @@ final class ProgramExportCapabilityService implements ProgramExportCapability {
             .filter(this::isRetainedSubmission)
             .flatMap(
                 owner -> nonNull(analyses.findById(analysisId))
-                    .flatMap(analysis -> authorizedAnalysis(owner, analysis))
+                    .filter(analysis -> analysis.submissionId() == owner.id())
+                    .flatMap(this::requireCompleted)
             )
             .switchIfEmpty(Mono.error(CapabilityException.analysisNotFound()));
     }
 
-    private Mono<AuthorizedAnalysis> authorizedAnalysis(final Submission owner, final Analysis analysis) {
-        if (analysis.submissionId() != owner.id()) {
-            return Mono.error(CapabilityException.analysisNotFound());
-        }
-        if (!isCompleted(analysis.status())) {
+    private Mono<Analysis> requireCompleted(final Analysis analysis) {
+        if (!analysis.isCompleted()) {
             return Mono.error(CapabilityException.analysisNotReady());
         }
-        return Mono.just(new AuthorizedAnalysis(owner, analysis));
+        return Mono.just(analysis);
     }
 
-    private <T> Mono<T> loadProgram(
-        final AuthorizedAnalysis authorized,
-        final ProgramOperation<T> operation
-    ) {
-        final Analysis analysis = authorized.analysis();
-        final String sourceFormat = normalizedSourceFormat(analysis.inputFormat());
-        if (!SUPPORTED_SOURCE_FORMATS.contains(sourceFormat)) {
+    private <T> Mono<T> loadProgram(final Analysis analysis, final ProgramOperation<T> operation) {
+        return loadProgram(RetainedProgram.of(analysis), operation);
+    }
+
+    private <T> Mono<T> loadProgram(final RetainedProgram analysis, final ProgramOperation<T> operation) {
+        if (!ProgramExportCapability.isExportable(analysis.inputFormat())) {
             return Mono.error(CapabilityException.unsupportedSourceFormat());
         }
         if (analysis.sourceArtifactId() < 1) {
@@ -211,7 +240,7 @@ final class ProgramExportCapabilityService implements ProgramExportCapability {
     }
 
     private <T> Mono<T> loadProgram(
-        final Analysis analysis,
+        final RetainedProgram analysis,
         final SourceArtifact artifact,
         final ProgramOperation<T> operation
     ) {
@@ -233,7 +262,7 @@ final class ProgramExportCapabilityService implements ProgramExportCapability {
     }
 
     private <T> Mono<T> openProgram(
-        final Analysis analysis,
+        final RetainedProgram analysis,
         final SourceArtifact artifact,
         final ProgramOperation<T> operation
     ) {
@@ -254,7 +283,7 @@ final class ProgramExportCapabilityService implements ProgramExportCapability {
     }
 
     private <T> T applyToStream(
-        final Analysis analysis,
+        final RetainedProgram analysis,
         final SourceArtifact artifact,
         final InputStream stream,
         final ProgramOperation<T> operation
@@ -416,7 +445,7 @@ final class ProgramExportCapabilityService implements ProgramExportCapability {
     }
 
     private byte[] readAndVerify(
-        final Analysis analysis,
+        final RetainedProgram analysis,
         final SourceArtifact artifact,
         final InputStream stream
     ) throws IOException {
@@ -535,20 +564,8 @@ final class ProgramExportCapabilityService implements ProgramExportCapability {
         return digest != null && digest.length == SHA256_BYTES;
     }
 
-    private boolean isCompleted(final String status) {
-        return "DONE".equals(status) || "COMPLETED".equals(status);
-    }
-
     private boolean isRetainedSubmission(final Submission submission) {
         return submission != null && "ACTIVE".equalsIgnoreCase(submission.retentionState());
-    }
-
-    private String normalizedSourceFormat(final String format) {
-        if (format == null) {
-            return "";
-        }
-        final String normalized = format.toLowerCase(Locale.ROOT);
-        return normalized.startsWith(".") ? normalized : "." + normalized;
     }
 
     private String metricFormat(final AdvancedCapabilityDtos.ExportRequest request) {
@@ -708,7 +725,12 @@ final class ProgramExportCapabilityService implements ProgramExportCapability {
         return mono == null ? Mono.empty() : mono;
     }
 
-    private record AuthorizedAnalysis(Submission owner, Analysis analysis) {
+    /** What reading a retained project back needs to know about its analysis, and nothing else. */
+    private record RetainedProgram(long sourceArtifactId, String inputFormat, byte[] inputSha256) {
+
+        static RetainedProgram of(final Analysis analysis) {
+            return new RetainedProgram(analysis.sourceArtifactId(), analysis.inputFormat(), analysis.inputSha256());
+        }
     }
 
     private record ExportSpecification(ExportService.Format format, ExportService.Target target) {

@@ -20,38 +20,21 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 /**
- * Admission check for learner-supplied vector costumes. Most Scratch costumes are vectors, so refusing them leaves
- * nearly every sprite without a preview.
+ * Admission check for learner-supplied vector costumes. This is not a sanitiser: a document it accepts is not safe by
+ * itself, since CSS alone offers renderer capabilities a string-level check cannot keep up with, so this only refuses
+ * markup that is active on its face.
  *
  * <p>
- * <strong>This is not a sanitiser, and a document it accepts is not safe by itself.</strong> A vector is a document,
- * and what a document does is decided by the browser that renders it, not by the strings it contains. Scratch's own
- * sanitiser has been walked past repeatedly — with {@code <script>}, with event handlers, with {@code <image href>},
- * then with CSS {@code @import}, {@code url()} behind escape sequences, custom properties, {@code image-set()} and
- * page-wide transitions — because each fix denied one spelling of a capability the renderer still offered. Extending
- * this check to chase CSS would be joining that race, so it deliberately stops at markup that is active on its face,
- * and says nothing at all about CSS.
+ * Safety instead comes from containment: an accepted costume is served only from the submission asset endpoint under
+ * {@code default-src 'none'; sandbox}, and rendered only through an {@code img} element, which the browser loads in its
+ * restricted image mode with no scripting and no reach into the surrounding document. Content admitted here must never
+ * be inlined into the application DOM, rendered through {@code object}, {@code embed} or an iframe, or handed to
+ * anything that parses it and attaches the result — any of those puts the document back in a context this check does
+ * not cover.
  *
  * <p>
- * What it does say, it says the way the browser reads it. A costume is XML, so it is parsed as XML and judged on
- * namespace and local name: {@code <s:script>} under an alias of the SVG namespace is the same element as
- * {@code <script>}, and Chromium runs it. Matching the spelling rather than the element is how that got missed.
- *
- * <p>
- * What makes an accepted costume harmless is still where it is put, and that containment is the actual security
- * boundary:
- *
- * <ul>
- * <li>it is served only from the submission asset endpoint, under {@code default-src 'none'; sandbox}, so a directly
- * navigated costume sits in an opaque origin and can fetch nothing;</li>
- * <li>it is rendered only through an {@code img} element, which the browser loads in its restricted image mode: no
- * scripting, no external references, and no reach into the surrounding document.</li>
- * </ul>
- *
- * <p>
- * It follows that content admitted here must never be inlined into the application DOM, rendered through
- * {@code object}, {@code embed} or an iframe, or handed to anything that parses it and attaches the result. Any of
- * those puts the document back in a context where the CSS above works, and the check made here will not stop it.
+ * Judged on namespace and local name, since a costume is parsed as XML: {@code <s:script>} under an alias of the SVG
+ * namespace is the same element as {@code <script>}, and Chromium runs it.
  */
 public final class SandboxedSvg {
 
@@ -60,9 +43,8 @@ public final class SandboxedSvg {
     private static final String SVG_NAMESPACE = "http://www.w3.org/2000/svg";
 
     /**
-     * Elements that are active however they are reached, matched on local name in any namespace. The SVG namespace is
-     * what makes a browser act on most of these, but a costume has no honest use for any of these names anywhere, and
-     * refusing the name outright costs nothing and does not depend on reading namespaces the way the browser does.
+     * Matched on local name in any namespace: a costume has no honest use for any of these names, so refusing by name
+     * alone is safe without depending on namespace handling.
      */
     private static final Set<String> FORBIDDEN_ELEMENTS = Set.of(
         "script", "foreignobject", "iframe", "embed", "object", "audio", "video", "handler"
@@ -71,9 +53,8 @@ public final class SandboxedSvg {
     private static final Pattern EVENT_HANDLER_ATTRIBUTE = Pattern.compile("on[a-z]+");
 
     /**
-     * Inline data in one of the raster formats assets are stored in. Notably this refuses a nested
-     * {@code data:image/svg+xml}, which would otherwise smuggle a second document in past the check the first one just
-     * passed.
+     * Excludes {@code data:image/svg+xml} deliberately, which would otherwise smuggle a second document past the check
+     * the first one just passed.
      */
     private static final Pattern INLINE_RASTER = Pattern.compile(
         "data:image/(?:png|jpeg|gif|webp)[;,].*", Pattern.DOTALL
@@ -83,15 +64,9 @@ public final class SandboxedSvg {
     }
 
     /**
-     * A factory of its own for each document, because {@link XMLInputFactory} does not promise to be thread-safe and
-     * costumes are judged on several pool threads at once. Configuring one instance and then leaving it alone is not
-     * enough to rely on: an implementation is free to keep mutable state for creating readers, and this decision is a
-     * security one, so it may not rest on behaviour no interface promises. An object that is never shared cannot be
-     * shared wrongly, and that argument holds for every provider.
-     *
-     * <p>
-     * Every door to something outside the document is shut here rather than guarded later: no DTD at all, so no entity
-     * to expand and nothing for an external identifier to name, and a resolver that refuses regardless.
+     * A factory of its own for each document, since {@link XMLInputFactory} is not thread-safe and costumes are judged
+     * on several pool threads at once. DTDs are disabled entirely and the resolver refuses any external reference, so
+     * there is no entity to expand and nothing an external identifier can name.
      */
     private static XMLInputFactory secureFactory() {
         final XMLInputFactory factory = XMLInputFactory.newInstance();
@@ -120,8 +95,7 @@ public final class SandboxedSvg {
             return readsAsACostume(content);
         }
         catch (XMLStreamException notWellFormed) {
-            // Anything the parser will not read whole — a DOCTYPE, a second root, a truncated file — is refused
-            // rather than guessed at, because a browser guessing differently is exactly the gap being closed.
+            // Refused rather than guessed at: a browser parsing this differently is exactly the gap being closed.
             return false;
         }
     }

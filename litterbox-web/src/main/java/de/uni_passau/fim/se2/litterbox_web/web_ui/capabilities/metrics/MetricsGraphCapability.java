@@ -142,7 +142,7 @@ final class MetricsGraphCapability implements GraphCapability {
     }
 
     private Mono<Analysis> readyAnalysis(final Analysis analysis) {
-        if (!"DONE".equals(analysis.status()) && !"COMPLETED".equals(analysis.status())) {
+        if (!analysis.isCompleted()) {
             return Mono.error(CapabilityException.analysisNotReady());
         }
         return Mono.just(analysis);

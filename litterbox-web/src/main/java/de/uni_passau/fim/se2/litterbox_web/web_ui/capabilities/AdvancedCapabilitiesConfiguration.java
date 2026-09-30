@@ -111,8 +111,7 @@ public final class AdvancedCapabilitiesConfiguration {
         private int maxAstNodes = 200_000;
         private int maxGraphNodes = 100_000;
         private int maxGraphEdges = 250_000;
-        // Node labels carry block source rather than AST class names, so the same graph spells out several times
-        // longer than it used to. The node and edge caps above remain the limit that actually bites.
+        // Block labels are larger than AST class names, so the output-size cap is separate from node and edge caps.
         private int maxDotBytes = 16 * 1024 * 1024;
         private Duration timeout = Duration.ofSeconds(20);
 

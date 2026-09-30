@@ -50,7 +50,8 @@ public class MetricReferenceController {
                     bands.stream()
                         .map(
                             band -> new MetricReferenceDto.MetricBandDto(
-                                band.name(), band.sampleSize(), band.lowerBound(), band.upperBound()
+                                band.name(), band.sampleSize(), band.lowerBound(), band.upperBound(),
+                                band.minimum(), band.q1(), band.median(), band.q3(), band.maximum()
                             )
                         )
                         .toList()

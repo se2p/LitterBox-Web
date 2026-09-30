@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CancellationException;
+import java.util.function.BiFunction;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -141,6 +142,9 @@ class AnalysisRunner {
         if ("TEACHER_INGEST".equals(job.kind())) {
             return runTeacherJob(job, workerId);
         }
+        if ("PROJECT_LIST_INGEST".equals(job.kind())) {
+            return runProjectListJob(job, workerId);
+        }
         if (job.analysisId() == null) {
             return Mono.error(new IllegalStateException("Analysis job has no analysis id"));
         }
@@ -231,13 +235,95 @@ class AnalysisRunner {
         final List<String> projectIds
     ) {
         if (projectIds.isEmpty()) {
-            return Mono.error(new IllegalArgumentException("Scratch studio contains no projects"));
+            return Mono.error(new IllegalArgumentException("Scratch project set contains no projects"));
         }
         return ensureLease(job, workerId)
             .then(submissionRepository.prepareBatch(job.submissionId(), projectIds.size()))
             .thenMany(Flux.fromIterable(projectIds))
             .concatMap(projectId -> ingestStudioProject(job, workerId, submission, projectId))
             .then();
+    }
+
+    private Mono<Boolean> runProjectListJob(final AnalysisJobRepository.Job job, final String workerId) {
+        return runArtifactBatchJob(
+            job, workerId, "Project-list", "fetching-projects",
+            (submission, artifact) -> readProjectList(artifact)
+                .flatMap(projectIds -> ingestStudioProjects(job, workerId, submission, projectIds))
+        );
+    }
+
+    private Mono<List<String>> readProjectList(final SourceArtifact artifact) {
+        return sourceArtifacts.open(artifact.sha256()).flatMap(
+            stream -> Mono.using(
+                () -> stream,
+                owned -> analysisWork.submit(
+                    () -> new String(
+                        SingleProjectSupport.readLimited(owned, SingleProjectIntake.MAX_PROJECT_LIST_BYTES),
+                        StandardCharsets.UTF_8
+                    ).lines().toList()
+                ),
+                SingleProjectSupport::closeQuietly
+            )
+        );
+    }
+
+    /** Runs a batch whose projects come from one stored source artifact named by the job's source reference. */
+    private Mono<Boolean> runArtifactBatchJob(
+        final AnalysisJobRepository.Job job,
+        final String workerId,
+        final String kind,
+        final String runningStatus,
+        final BiFunction<Submission, SourceArtifact, Mono<?>> ingest
+    ) {
+        return Mono.fromCallable(() -> Long.parseLong(job.sourceReference()))
+            .onErrorMap(
+                NumberFormatException.class,
+                error -> new IllegalStateException(kind + " ingestion job has an invalid artifact id", error)
+            )
+            .flatMap(
+                artifactId -> submissionRepository.findById(job.submissionId())
+                    .switchIfEmpty(Mono.error(new IllegalStateException(kind + " submission does not exist")))
+                    .flatMap(
+                        submission -> runArtifactBatch(
+                            job, workerId, kind, runningStatus, artifactId, submission, ingest
+                        )
+                    )
+            )
+            .onErrorResume(error -> failBatchIngestion(job, workerId, error));
+    }
+
+    @SuppressWarnings("checkstyle:ParameterNumber")
+    private Mono<Boolean> runArtifactBatch(
+        final AnalysisJobRepository.Job job,
+        final String workerId,
+        final String kind,
+        final String runningStatus,
+        final long artifactId,
+        final Submission submission,
+        final BiFunction<Submission, SourceArtifact, Mono<?>> ingest
+    ) {
+        if (submission.terminal()) {
+            return Mono.just(false);
+        }
+        return ensureLease(job, workerId)
+            .then(submissionRepository.markRunning(job.submissionId()))
+            .then(
+                submissionEvents.append(job.submissionId(), "RUNNING", "{\"status\":\"" + runningStatus + "\"}")
+            )
+            .then(ensureLease(job, workerId))
+            .then(jobs.cancellationRequested(job.id()))
+            .flatMap(cancelled -> findBatchArtifact(kind, artifactId, cancelled))
+            .flatMap(artifact -> ingest.apply(submission, artifact))
+            .then(confirmBatchNotCancelled(job, workerId))
+            .thenReturn(false);
+    }
+
+    private Mono<SourceArtifact> findBatchArtifact(final String kind, final long artifactId, final boolean cancelled) {
+        if (cancelled) {
+            return Mono.error(new CancellationException(kind + " ingestion was cancelled"));
+        }
+        return sourceArtifacts.findById(artifactId)
+            .switchIfEmpty(Mono.error(new IllegalStateException(kind + " source artifact does not exist")));
     }
 
     private Mono<Void> ingestStudioProject(
@@ -279,11 +365,17 @@ class AnalysisRunner {
         final AnalysisJobRepository.Job job,
         final String projectId
     ) {
-        return jobs.cancellationRequested(job.id()).flatMap(
-            cancelled -> cancelled
-                ? Mono.error(new CancellationException("Studio ingestion was cancelled"))
-                : scratch.downloadStudioProjects(List.of(projectId)).single()
-        );
+        return jobs.cancellationRequested(job.id()).flatMap(cancelled -> downloadUnlessCancelled(cancelled, projectId));
+    }
+
+    private Mono<ScratchProjectClient.ProjectDownload> downloadUnlessCancelled(
+        final boolean cancelled,
+        final String projectId
+    ) {
+        if (cancelled) {
+            return Mono.error(new CancellationException("Scratch project ingestion was cancelled"));
+        }
+        return scratch.downloadStudioProjects(List.of(projectId)).single();
     }
 
     private SingleProjectSubmissionService.BatchProject batchProject(
@@ -301,57 +393,12 @@ class AnalysisRunner {
     }
 
     private Mono<Boolean> runTeacherJob(final AnalysisJobRepository.Job job, final String workerId) {
-        return Mono.fromCallable(() -> Long.parseLong(job.sourceReference()))
-            .onErrorMap(
-                NumberFormatException.class,
-                error -> new IllegalStateException("Teacher ingestion job has an invalid artifact id", error)
-            )
-            .flatMap(artifactId -> runTeacherSubmission(job, workerId, artifactId))
-            .onErrorResume(error -> failBatchIngestion(job, workerId, error));
-    }
-
-    private Mono<Boolean> runTeacherSubmission(
-        final AnalysisJobRepository.Job job,
-        final String workerId,
-        final long artifactId
-    ) {
-        return submissionRepository.findById(job.submissionId())
-            .switchIfEmpty(Mono.error(new IllegalStateException("Teacher submission does not exist")))
-            .flatMap(submission -> runTeacherSubmission(job, workerId, artifactId, submission));
-    }
-
-    private Mono<Boolean> runTeacherSubmission(
-        final AnalysisJobRepository.Job job,
-        final String workerId,
-        final long artifactId,
-        final Submission submission
-    ) {
-        if (submission.terminal()) {
-            return Mono.just(false);
-        }
-        return ensureLease(job, workerId)
-            .then(submissionRepository.markRunning(job.submissionId()))
-            .then(submissionEvents.append(job.submissionId(), "RUNNING", "{\"status\":\"extracting-batch\"}"))
-            .then(ensureLease(job, workerId))
-            .then(jobs.cancellationRequested(job.id()))
-            .flatMap(cancelled -> findTeacherArtifact(job, artifactId, cancelled))
-            .flatMap(this::inspectTeacherArtifact)
-            .map(this::teacherProjects)
-            .flatMap(children -> enqueueTeacherChildren(job, workerId, submission, children))
-            .then(confirmBatchNotCancelled(job, workerId))
-            .thenReturn(false);
-    }
-
-    private Mono<SourceArtifact> findTeacherArtifact(
-        final AnalysisJobRepository.Job job,
-        final long artifactId,
-        final boolean cancelled
-    ) {
-        if (cancelled) {
-            return Mono.error(new CancellationException("Teacher ingestion was cancelled"));
-        }
-        return sourceArtifacts.findById(artifactId)
-            .switchIfEmpty(Mono.error(new IllegalStateException("Teacher source artifact does not exist")));
+        return runArtifactBatchJob(
+            job, workerId, "Teacher", "extracting-batch",
+            (submission, artifact) -> inspectTeacherArtifact(artifact)
+                .map(this::teacherProjects)
+                .flatMap(children -> enqueueTeacherChildren(job, workerId, submission, children))
+        );
     }
 
     private Mono<List<TeacherBatchArchiveInspector.ChildArchive>> inspectTeacherArtifact(

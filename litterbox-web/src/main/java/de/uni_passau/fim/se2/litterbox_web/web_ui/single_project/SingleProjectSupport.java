@@ -26,37 +26,21 @@ import de.uni_passau.fim.se2.litterbox_web.qlc.QlcService;
 import de.uni_passau.fim.se2.litterbox_web.qlc.QuestionDTO;
 import de.uni_passau.fim.se2.litterbox_web.shared.Scratch3ParserService;
 
-/**
- * The few things every part of the single-project workflow needs: what to call a state, what a file's extension is, how
- * much of a stream may be read, and what may safely be said about a failure.
- *
- * <p>
- * These sit together because taking a submission in, running its analysis and reading the result back all need them,
- * and none of the three owns them.
- */
 public final class SingleProjectSupport {
 
     /**
-     * The cap on generated questions. Named here because the number is written into the configuration recorded against
-     * an analysis as well as used when questions are regenerated to mark an answer; two copies of it could drift apart,
-     * and a question set regenerated against a different cap is not the one the reader was shown.
+     * Named here rather than duplicated: it is written into the analysis's stored configuration and reused when
+     * questions are regenerated to mark an answer.
      */
     static final int MAX_GENERATED_QUESTIONS = 300;
 
-    /**
-     * The largest project this service will accept, retain or read back. One number, because a limit that is enforced
-     * at the door and a different one enforced when the bytes are read again is a project that can be taken in and then
-     * never looked at.
-     */
+    /** One number, so the limit enforced at the door cannot differ from the one enforced when bytes are read back. */
     public static final int MAX_PROJECT_BYTES = 50 * 1024 * 1024;
 
     private SingleProjectSupport() {
     }
 
-    /**
-     * The word the API uses for a state, which is not the word the database uses. A row can hold DONE or COMPLETED
-     * depending on when it was written, and a reader should never have to know that.
-     */
+    /** A stored row can hold DONE or COMPLETED depending on when it was written; both are read as completed here. */
     static String status(final String value) {
         return switch (value) {
             case "DONE", "COMPLETED" -> "completed";
@@ -92,11 +76,7 @@ public final class SingleProjectSupport {
         }
     }
 
-    /**
-     * What may be repeated back about a failure. Bounded because the message may have come from a parser that quotes
-     * the input, and the input is somebody's project. The fallback is the caller's, because a failure with nothing to
-     * say still has to be described as the thing that failed.
-     */
+    /** Bounded because the message may quote the input, and the input is somebody's project. */
     static String safeMessage(final Throwable error, final String fallback) {
         final String message = error.getMessage();
         if (message == null) {
@@ -107,7 +87,7 @@ public final class SingleProjectSupport {
         }
     }
 
-    /** A digest of some content, by name. Absent algorithms are a broken runtime rather than a bad project. */
+    /** Absent algorithms are a broken runtime rather than a bad project. */
     static byte[] digest(final String algorithm, final byte[] content) {
         try {
             return MessageDigest.getInstance(algorithm).digest(content);
@@ -134,21 +114,17 @@ public final class SingleProjectSupport {
         return output.toByteArray();
     }
 
-    /** A stream that has done its job. The processing outcome stays authoritative if closing it does not. */
+    /** The processing outcome stays authoritative even if closing this stream fails. */
     static void closeQuietly(final InputStream stream) {
         try {
             stream.close();
         }
         catch (IOException ignored) {
-            // The processing outcome remains authoritative if cleanup fails.
+            // No action needed.
         }
     }
 
-    /**
-     * A project read back out of what was retained, for a second look at it: a report to download, or a question to be
-     * marked against the program it was generated from. The archive is inspected before it is written out, because a
-     * retained source is still a source.
-     */
+    /** Inspected again before being parsed, because a retained source is still a source. */
     static Program parseStoredProgram(
         final Scratch3ParserService parser,
         final ProjectArchiveInspector archiveInspector,
@@ -175,10 +151,8 @@ public final class SingleProjectSupport {
     }
 
     /**
-     * The whole question set, not a sample: a teacher needs to see which block-model cells a project covers, and the
-     * reader's own page picks its handful out of the same answer. The cap only guards against a pathological project.
-     * Shared because a question is generated once when the analysis runs and again when an answer to it is marked, and
-     * the two have to agree.
+     * Shared because a question is generated once when the analysis runs and again when an answer is marked, and the
+     * two must agree.
      */
     static List<QuestionDTO> generateQuestions(
         final QlcService qlc,
@@ -191,18 +165,7 @@ public final class SingleProjectSupport {
         ).filter(SingleProjectSupport::markable).toList();
     }
 
-    /**
-     * Whether an answer to this question could be marked at all.
-     *
-     * <p>
-     * Two kinds cannot. One carries no type, so there is no rule to mark it by. The other carries no expected answer,
-     * so every answer to it is wrong: a reader is asked something and then told they got it wrong whatever they said.
-     *
-     * <p>
-     * Neither is a question this service can honour, so neither is exported. Doing it here rather than where the set is
-     * displayed means the same set is used to ask and to mark, which is what lets an answer be checked against the
-     * question the reader actually saw.
-     */
+    /** Filtered here rather than where the set is displayed, so the same set is used both to ask and to mark. */
     static boolean markable(final QuestionDTO question) {
         if (question == null || question.type() == null) {
             return false;

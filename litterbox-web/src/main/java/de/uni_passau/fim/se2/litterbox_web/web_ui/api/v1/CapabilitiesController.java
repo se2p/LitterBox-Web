@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import de.uni_passau.fim.se2.litterbox.analytics.IssueTool;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.ask_ai.AskAiConfigurationProperties;
+import de.uni_passau.fim.se2.litterbox_web.web_ui.assessment.AssessmentCapabilitiesConfiguration;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.capabilities.AdvancedCapabilitiesConfiguration;
 
 @RestController
@@ -38,11 +39,13 @@ public class CapabilitiesController {
 
     private final String litterboxVersion;
     private final Set<String> enabledFeatures;
+    private final AssessmentLimitsDto assessmentLimits;
 
     public CapabilitiesController(
         @Value("${litterbox.version:unknown}") final String configuredVersion,
         final AdvancedCapabilitiesConfiguration advancedCapabilities,
-        final AskAiConfigurationProperties askAiConfiguration
+        final AskAiConfigurationProperties askAiConfiguration,
+        final AssessmentCapabilitiesConfiguration assessmentCapabilities
     ) {
         litterboxVersion = coreArtifactVersion();
         if (!litterboxVersion.equals(configuredVersion)) {
@@ -56,7 +59,16 @@ public class CapabilitiesController {
         if (askAiConfiguration.isReady()) {
             features.add(ASK_AI);
         }
+        if (assessmentCapabilities.isEnabled()) {
+            features.add(AssessmentCapabilitiesConfiguration.ASSESSMENTS);
+        }
         enabledFeatures = Collections.unmodifiableSet(features);
+        if (assessmentCapabilities.isEnabled()) {
+            assessmentLimits = AssessmentLimitsDto.of(assessmentCapabilities);
+        }
+        else {
+            assessmentLimits = null;
+        }
     }
 
     @GetMapping("/capabilities")
@@ -65,7 +77,8 @@ public class CapabilitiesController {
             ApiV1.SCHEMA_VERSION,
             litterboxVersion,
             ApiV1.SUPPORTED_LOCALES,
-            enabledFeatures
+            enabledFeatures,
+            assessmentLimits
         );
     }
 

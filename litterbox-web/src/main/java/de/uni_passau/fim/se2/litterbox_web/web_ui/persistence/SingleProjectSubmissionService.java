@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HexFormat;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -25,12 +26,12 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import tools.jackson.databind.json.JsonMapper;
 
-/** Coordinates the single-project persistence sequence from bytes to a runnable analysis. */
 @Service
 public class SingleProjectSubmissionService {
 
     private static final String JSON_SUFFIX = ".json";
     private static final String TEACHER_BATCH_SCOPE = "teacher-batch";
+    private static final String PROJECT_LIST_SCOPE = "project-list";
     private static final String STUDIO_SCOPE = "studio";
     private static final String ORIGINAL_ARCHIVE_MANIFEST = "{\"format\":\"original-archive\",\"version\":1}";
 
@@ -88,6 +89,37 @@ public class SingleProjectSubmissionService {
     }
 
     /**
+     * Records a request to analyse a list of Scratch projects, storing the list itself as the batch's source artifact.
+     * A repeated request with the same idempotency key answers with the submission the key already stands for.
+     *
+     * @param projectIds     the Scratch project ids to analyse, in the order they were listed
+     * @param filename       the name of the uploaded list
+     * @param locale         the locale the analyses are reported in
+     * @param idempotencyKey the client's key for recognising a repeated request, or {@code null}
+     * @return the submission together with the stored list; the artifact is absent if the submission has already ended
+     */
+    public Mono<CreatedBatchRequest> createProjectListRequest(
+        final List<String> projectIds,
+        final String filename,
+        final String locale,
+        final String idempotencyKey
+    ) {
+        Objects.requireNonNull(projectIds, "projectIds");
+        RequestStrings.checkFilename(filename);
+        RequestStrings.checkIdempotency(PROJECT_LIST_SCOPE, idempotencyKey);
+        final byte[] descriptor = String.join("\n", projectIds).getBytes(StandardCharsets.UTF_8);
+        final IngestionRequest request = new IngestionRequest(
+            filename, "SCRATCH_URL_LIST", "{\"format\":\"scratch-url-list\",\"version\":1}",
+            "SCRATCH_URL_LIST", locale, PROJECT_LIST_SCOPE, idempotencyKey
+        );
+        return staged(
+            new ByteArrayInputStream(descriptor), "text/plain", filename,
+            staged -> ingestion(staged, request)
+                .map(ingested -> new CreatedBatchRequest(ingested.submission(), ingested.artifact()))
+        );
+    }
+
+    /**
      * The submission a request to ingest a whole batch belongs to, whether this request created it or the key it
      * carries already stood for one.
      *
@@ -127,7 +159,7 @@ public class SingleProjectSubmissionService {
             );
     }
 
-    /** As {@link #buildSubmission}, and repeatable for the same reasons. */
+    /** Idempotent, like {@link #buildSubmission}. */
     private Mono<IngestedRequest> buildIngestion(
         final SourceArtifactStore.StagedSourceArtifact staged,
         final IngestionRequest request,
@@ -167,7 +199,6 @@ public class SingleProjectSubmissionService {
             );
     }
 
-    /** The archive a submission was built around, which is the artifact holding the bytes the key was bound to. */
     private Mono<IngestedRequest> ingested(final Submission submission, final byte[] sha256) {
         return sourceArtifacts.findBySha256(sha256)
             .map(artifact -> new IngestedRequest(submission, artifact))
@@ -222,7 +253,6 @@ public class SingleProjectSubmissionService {
         return storageWork.submitCleanup(staged::close);
     }
 
-    /** Makes the staged bytes part of the store and records what they are, now that the request is going ahead. */
     private Mono<SourceArtifact> keep(
         final SourceArtifactStore.StagedSourceArtifact staged,
         final String filename,
@@ -449,8 +479,7 @@ public class SingleProjectSubmissionService {
     ) {
         final byte[] sha256 = staged.sha256();
         final byte[] fingerprint = fingerprint(request, sha256);
-        // Deferred, because building the fallback reaches the repository that reserves a submission, and a key that
-        // already stands for one must not cost a row.
+        // Deferred: building the fallback reserves a submission row, which a key that already has one must not cost.
         return boundSubmission(request.idempotencyScope(), request.idempotencyKey(), fingerprint)
             .flatMap(owner -> adopt(owner, staged, request))
             .switchIfEmpty(Mono.defer(() -> newSubmission(staged, request, sha256, fingerprint)));
@@ -499,12 +528,6 @@ public class SingleProjectSubmissionService {
         );
     }
 
-    /**
-     * What the request is asking about: the bytes for a request that carries its project, and the name it is fetched
-     * under for a request that only points at one.
-     *
-     * @see RequestFingerprint
-     */
     private String subject(final String sourceType, final byte[] sha256) {
         return sourceType != null && sourceType.endsWith("SCRATCH_URL") ? "fetched-project" : bytes(sha256);
     }
@@ -656,7 +679,6 @@ public class SingleProjectSubmissionService {
             : ORIGINAL_ARCHIVE_MANIFEST;
     }
 
-    /** What a single-project request says about itself, apart from the bytes it carries. */
     private record SubmissionRequest(
         String sourceType,
         String locale,
@@ -668,7 +690,6 @@ public class SingleProjectSubmissionService {
     ) {
     }
 
-    /** What a request to ingest a whole batch says about itself, apart from the bytes that stand for it. */
     private record IngestionRequest(
         String filename,
         String sourceKind,

@@ -22,9 +22,9 @@ import org.springframework.context.annotation.Configuration;
  *
  * <p>
  * Spring Boot ships this together with an ordering rule, but in a module this does not depend on, so the bean is
- * declared here — and a bean alone says nothing about when it is built. Against a database that already has its tables
- * the order never showed; against an empty one Hibernate validated the mapping first and refused to start for want of
- * the tables the migration was about to create.
+ * declared here — and a bean alone says nothing about when it is built. The ordering only shows against an empty
+ * database: with the tables already in place either order works, while without them Hibernate validates the mapping
+ * first and refuses to start for want of the tables the migration is about to create.
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(

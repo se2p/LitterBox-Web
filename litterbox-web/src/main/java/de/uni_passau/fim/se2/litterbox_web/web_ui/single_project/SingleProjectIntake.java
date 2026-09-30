@@ -11,7 +11,10 @@ package de.uni_passau.fim.se2.litterbox_web.web_ui.single_project;
 
 import java.io.ByteArrayInputStream;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -41,6 +44,8 @@ class SingleProjectIntake {
 
     private static final String QUESTION_UPLOAD = "QUESTION_UPLOAD";
     private static final String QUESTION_SCRATCH_URL = "QUESTION_SCRATCH_URL";
+    static final int MAX_PROJECT_LIST_BYTES = 64 * 1024;
+    private static final int MAX_PROJECT_LIST_SIZE = 100;
     private static final Pattern SCRATCH_URL = Pattern.compile(
         "/projects/([1-9][0-9]{0,17})/?", Pattern.CASE_INSENSITIVE
     );
@@ -213,12 +218,8 @@ class SingleProjectIntake {
             new ByteArrayInputStream(bytes), filename, locale, idempotencyKey
         )
             .flatMap(
-                created -> queue(
-                    created.submission(),
-                    created.artifact() == null
-                        ? null
-                        : () -> jobs.enqueueTeacher(created.submission().id(), created.artifact().id())
-                ).thenReturn(reports.toCreated(created.submission()))
+                created -> queueBatch(created, jobs::enqueueTeacher)
+                    .thenReturn(reports.toCreated(created.submission()))
             );
     }
 
@@ -236,6 +237,50 @@ class SingleProjectIntake {
                     created.submission(), () -> jobs.enqueueStudio(created.submission().id(), studioId)
                 ).thenReturn(reports.toCreated(created.submission()))
             );
+    }
+
+    Mono<SingleProjectDtos.CreatedSubmission> submitProjectList(
+        final byte[] bytes,
+        final String filename,
+        final String locale,
+        final String idempotencyKey
+    ) {
+        final List<String> projectIds = projectIds(bytes);
+        return submissions.createProjectListRequest(projectIds, filename, locale, idempotencyKey)
+            .flatMap(
+                created -> queueBatch(created, jobs::enqueueProjectList)
+                    .thenReturn(reports.toCreated(created.submission()))
+            );
+    }
+
+    private List<String> projectIds(final byte[] bytes) {
+        if (bytes == null || bytes.length == 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Scratch project URL list is empty");
+        }
+        if (bytes.length > MAX_PROJECT_LIST_BYTES) {
+            throw new ResponseStatusException(HttpStatus.PAYLOAD_TOO_LARGE, "Scratch project URL list is too large");
+        }
+        final LinkedHashSet<String> ids = new LinkedHashSet<>();
+        for (String line : new String(bytes, StandardCharsets.UTF_8).lines().toList()) {
+            final String value = line.trim();
+            if (value.isEmpty()) {
+                continue;
+            }
+            final String id = scratchProjectId(value);
+            if (id == null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Scratch project URL");
+            }
+            ids.add(id);
+            if (ids.size() > MAX_PROJECT_LIST_SIZE) {
+                throw new ResponseStatusException(
+                    HttpStatus.PAYLOAD_TOO_LARGE, "Scratch project URL list contains too many projects"
+                );
+            }
+        }
+        if (ids.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Scratch project URL list is empty");
+        }
+        return List.copyOf(ids);
     }
 
     private Mono<SingleProjectDtos.CreatedSubmission> createAndAnalyze(
@@ -257,6 +302,17 @@ class SingleProjectIntake {
                     : () -> jobs.enqueue(created.submission().id(), created.analysis().id())
             ).thenReturn(reports.toCreated(created))
         );
+    }
+
+    /** Queues ingestion of a batch request's source artifact; a request without an artifact has nothing to queue. */
+    private Mono<Void> queueBatch(
+        final SingleProjectSubmissionService.CreatedBatchRequest created,
+        final BiFunction<Long, Long, Mono<Void>> enqueue
+    ) {
+        if (created.artifact() == null) {
+            return Mono.empty();
+        }
+        return queue(created.submission(), () -> enqueue.apply(created.submission().id(), created.artifact().id()));
     }
 
     /**

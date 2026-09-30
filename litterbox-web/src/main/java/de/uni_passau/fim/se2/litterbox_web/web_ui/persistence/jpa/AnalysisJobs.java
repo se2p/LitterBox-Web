@@ -21,19 +21,14 @@ import org.springframework.transaction.annotation.Transactional;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.entity.AnalysisJobEntity;
 
 /**
- * The queue.
- *
- * <p>
  * Most of what happens to a job is a decision the database makes in one statement — take this, finish this if it is
- * still mine, count this one out — because two workers reach for the same rows at the same time and a decision split
- * across a read and a later write is one they can both make. Those stay written as statements. Reading a job, and the
- * bookkeeping that follows work nobody is racing for, is ordinary mapping.
+ * still mine, count this one out — because two workers can reach for the same row at once and a decision split across a
+ * read and a later write is one they could both make.
  */
 public interface AnalysisJobs extends JpaRepository<AnalysisJobEntity, Long> {
 
     Optional<AnalysisJobEntity> findByLeaseOwner(String leaseOwner);
 
-    /** Where in its submission's order the next project belongs. See {@link #enqueueAnalysis}. */
     @Query(
         value = "SELECT COALESCE(MAX(queue_position), 0) + 1 FROM analysis_job WHERE submission_id = :submissionId",
         nativeQuery = true
@@ -41,14 +36,9 @@ public interface AnalysisJobs extends JpaRepository<AnalysisJobEntity, Long> {
     int nextQueuePosition(@Param("submissionId") long submissionId);
 
     /**
-     * A job for an analysis that already has one is refused by {@code uq_analysis_job_analysis} rather than passed over
-     * silently. {@code INSERT IGNORE} would have covered that, but it covers a missing analysis just as quietly, and a
-     * caller told nothing happened deserves to know which of the two it was.
-     *
-     * <p>
-     * The position is read by the statement above rather than by this one, for the reason given on
-     * {@link #enqueueIngestion}. Two projects read apart can arrive at the same position, and two projects at the same
-     * position only means they are equally urgent, which they are.
+     * {@code queuePosition} must come from {@link #nextQueuePosition}. A job for an analysis that already has one is
+     * refused by {@code uq_analysis_job_analysis}, not silently skipped — {@code INSERT IGNORE} would also swallow a
+     * missing analysis, and a caller needs to know which happened.
      */
     @Modifying(clearAutomatically = true)
     @Transactional
@@ -64,16 +54,9 @@ public interface AnalysisJobs extends JpaRepository<AnalysisJobEntity, Long> {
     );
 
     /**
-     * Queues an ingestion, which {@code uq_analysis_job_active_ingestion} refuses if one for the same source is already
-     * waiting or running.
-     *
-     * <p>
-     * This used to ask whether such a job existed and insert only if it did not, which is the shape most of this
-     * interface is written in. It cannot be that here. Reading the table it is inserting into makes the statement a
-     * bulk insert, and MariaDB takes a lock over the whole table's numbering for one of those; sixteen requests
-     * arriving together then deadlock on the numbering rather than meeting on the key, and report it as a failure to
-     * read the auto-increment value. Letting the second insert simply be refused costs a wasted number and an exception
-     * on a path that is only reached when a request is repeated.
+     * Deliberately not ask-then-insert: reading this table before inserting into it makes the statement a bulk insert,
+     * and MariaDB takes a table-wide numbering lock for those, so concurrent requests could deadlock on the numbering
+     * instead of being refused safely by {@code uq_analysis_job_active_ingestion}.
      */
     @Modifying(clearAutomatically = true)
     @Transactional
@@ -89,13 +72,9 @@ public interface AnalysisJobs extends JpaRepository<AnalysisJobEntity, Long> {
     );
 
     /**
-     * Chooses the row and stamps it together, ordered so that the nth project of every submission is taken before the
-     * (n+1)th of any.
-     *
-     * <p>
-     * Cancelling a submission marks its jobs, so {@code cancel_requested} is what normally keeps them out of this. The
-     * submission is asked as well because a job can be queued after that mark was made — a batch ingestion cancelled
-     * midway is still adding projects — and running one costs an analysis nobody is waiting for.
+     * Chooses the row and stamps it in the same statement so two workers cannot both believe they hold it. The
+     * submission's own state is checked too, since a job can be queued after {@code cancel_requested} is set (a batch
+     * ingestion cancelled midway is still adding projects).
      */
     @Modifying(clearAutomatically = true)
     @Transactional
@@ -141,11 +120,7 @@ public interface AnalysisJobs extends JpaRepository<AnalysisJobEntity, Long> {
     );
 
     /**
-     * Whether this lease is still held, decided by the database's clock.
-     *
-     * <p>
-     * Asking in Java would mean comparing a time this process read against one the database wrote, and the two agree
-     * only as far as their clocks do. A worker whose lease looks expired is refused its own completed work.
+     * Uses the database's clock rather than the caller's, so a slow worker cannot be refused its own completed work.
      */
     @Query(
         value = "SELECT * FROM analysis_job WHERE id = :jobId AND state = 'RUNNING' "
@@ -194,12 +169,8 @@ public interface AnalysisJobs extends JpaRepository<AnalysisJobEntity, Long> {
     void markFailed(@Param("jobId") long jobId);
 
     /**
-     * Jobs claiming will never pick up again: cancelled while unheld, or out of attempts.
-     *
-     * <p>
-     * Bounded, because settling one of these writes to its analysis and its submission as well, and a backlog that
-     * built up while nobody was reaping would otherwise be one transaction however long it had grown. The caller comes
-     * back for the next page.
+     * Bounded, because settling one writes to its analysis and submission too, and an unbounded backlog would make one
+     * transaction of arbitrary size; the caller comes back for the next page.
      */
     @Query(
         value = "SELECT * FROM analysis_job WHERE state IN ('QUEUED', 'RUNNING') "

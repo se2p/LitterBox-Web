@@ -157,7 +157,7 @@ final class SemanticDiffCapabilityService implements SemanticDiffCapability {
             .flatMap(references -> {
                 final AuthorizedAnalysis before = references.getT1();
                 final AuthorizedAnalysis after = references.getT2();
-                if (!isCompleted(before.analysis()) || !isCompleted(after.analysis())) {
+                if (!before.analysis().isCompleted() || !after.analysis().isCompleted()) {
                     return Mono.error(CapabilityException.analysisNotReady());
                 }
                 return Mono.zip(loadInput(before), loadInput(after))
@@ -470,10 +470,6 @@ final class SemanticDiffCapabilityService implements SemanticDiffCapability {
             throw new ArtifactIntegrityFailure();
         }
         return output.toByteArray();
-    }
-
-    private boolean isCompleted(final Analysis analysis) {
-        return "DONE".equals(analysis.status()) || "COMPLETED".equals(analysis.status());
     }
 
     private boolean isRetainedSubmission(final Submission submission) {

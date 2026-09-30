@@ -17,6 +17,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -63,9 +64,15 @@ import reactor.core.scheduler.Schedulers;
 class ProgramExportCapabilityServiceTest {
 
     private static final String TOKEN = "synthetic-export-token";
+    private static final String ANALYSIS_NOT_FOUND = "analysis_not_found";
     private static final long SUBMISSION_ID = 41;
     private static final long ANALYSIS_ID = 71;
     private static final long ARTIFACT_ID = 81;
+    private static final String SB3_EXT = ".sb3";
+    private static final String SCRATCHBLOCKS_FORMAT = "scratchblocks";
+    private static final String PROGRAM_TARGET = "program";
+    private static final String SPRITE_TARGET = "sprite";
+    private static final String LANG_EN = "en";
     private static final String PROJECT_JSON = loadProjectJson();
 
     private final SubmissionRepository submissions = mock(SubmissionRepository.class);
@@ -95,10 +102,10 @@ class ProgramExportCapabilityServiceTest {
             .getName();
         final String scriptId = AstNodeUtil.getScripts(program).findFirst().map(AstNodeUtil::getBlockId).orElseThrow();
 
-        final List<String> formats = List.of("scratchblocks", "goboscript", "pystage");
+        final List<String> formats = List.of(SCRATCHBLOCKS_FORMAT, "goboscript", "pystage");
         final List<AdvancedCapabilityDtos.ExportTarget> targets = List.of(
-            new AdvancedCapabilityDtos.ExportTarget("program", null, null),
-            new AdvancedCapabilityDtos.ExportTarget("sprite", spriteName, null),
+            new AdvancedCapabilityDtos.ExportTarget(PROGRAM_TARGET, null, null),
+            new AdvancedCapabilityDtos.ExportTarget(SPRITE_TARGET, spriteName, null),
             new AdvancedCapabilityDtos.ExportTarget("script", null, scriptId)
         );
         for (String format : formats) {
@@ -137,7 +144,7 @@ class ProgramExportCapabilityServiceTest {
                 TOKEN,
                 ANALYSIS_ID,
                 request(
-                    "scratchblocks",
+                    SCRATCHBLOCKS_FORMAT,
                     new AdvancedCapabilityDtos.ExportTarget("script", null, script.scriptId())
                 )
             ).block();
@@ -158,6 +165,38 @@ class ProgramExportCapabilityServiceTest {
             new AdvancedCapabilityDtos.ExportSpriteTargetView("Stage", true)
         );
         assertThat(targets.scripts()).isEmpty();
+    }
+
+    /**
+     * The catalogue is read from the retained project once and then served from that copy: the analysis never changes,
+     * and re-parsing it for every request would let one caller looping the endpoint hold the analysis pool for
+     * everyone. Authorization is not part of what is kept — a token that stops being good stops being served.
+     */
+    @Test
+    void readsTheCatalogueOncePerAnalysisAndServesLaterRequestsFromThatCopy() {
+        final ProgramExportCapabilityService capability = capability(immediateWork());
+
+        final AdvancedCapabilityDtos.ExportTargetsView first = capability.targets(TOKEN, ANALYSIS_ID).block();
+        for (int request = 0; request < 4; request++) {
+            assertThat(capability.targets(TOKEN, ANALYSIS_ID).block()).isEqualTo(first);
+        }
+        verify(sourceArtifacts, times(1)).open(any(byte[].class));
+
+        when(submissions.findByToken(TOKEN)).thenReturn(Mono.empty());
+        assertCode(ANALYSIS_NOT_FOUND, () -> capability.targets(TOKEN, ANALYSIS_ID).block());
+    }
+
+    /** A read that failed is not what a later request should be handed; it asks again. */
+    @Test
+    void doesNotKeepAFailedCatalogueRead() {
+        final ProgramExportCapabilityService capability = capability(immediateWork());
+        when(sourceArtifacts.findMetadataById(ARTIFACT_ID)).thenReturn(Mono.empty());
+        assertCode(ANALYSIS_NOT_FOUND, () -> capability.targets(TOKEN, ANALYSIS_ID).block());
+
+        when(sourceArtifacts.findMetadataById(ARTIFACT_ID)).thenReturn(Mono.just(metadata()));
+
+        assertThat(capability.targets(TOKEN, ANALYSIS_ID).block().sprites()).isNotEmpty();
+        verify(sourceArtifacts, times(1)).open(any(byte[].class));
     }
 
     @Test
@@ -201,7 +240,8 @@ class ProgramExportCapabilityServiceTest {
         installSource(archive, ".mblock");
 
         final CapabilityContent content = capability(immediateWork()).export(
-            TOKEN, ANALYSIS_ID, request("scratchblocks", new AdvancedCapabilityDtos.ExportTarget("program", null, null))
+            TOKEN, ANALYSIS_ID,
+            request(SCRATCHBLOCKS_FORMAT, new AdvancedCapabilityDtos.ExportTarget(PROGRAM_TARGET, null, null))
         ).block();
 
         assertThat(content.bytes()).isNotEmpty();
@@ -226,7 +266,7 @@ class ProgramExportCapabilityServiceTest {
 
         final CapabilityContent content = capability(immediateWork(), countingParser, inspector).export(
             TOKEN, ANALYSIS_ID,
-            request("scratchblocks", new AdvancedCapabilityDtos.ExportTarget("sprite", spriteName, null))
+            request(SCRATCHBLOCKS_FORMAT, new AdvancedCapabilityDtos.ExportTarget(SPRITE_TARGET, spriteName, null))
         ).block();
 
         verify(countingParser).parseFromString("retained-project", PROJECT_JSON);
@@ -239,7 +279,9 @@ class ProgramExportCapabilityServiceTest {
             "target_not_found",
             () -> capability(immediateWork()).export(
                 TOKEN, ANALYSIS_ID,
-                request("scratchblocks", new AdvancedCapabilityDtos.ExportTarget("sprite", "does-not-exist", null))
+                request(
+                    SCRATCHBLOCKS_FORMAT, new AdvancedCapabilityDtos.ExportTarget(SPRITE_TARGET, "does-not-exist", null)
+                )
             ).block()
         );
 
@@ -257,7 +299,10 @@ class ProgramExportCapabilityServiceTest {
             "target_not_found",
             () -> capability(immediateWork()).export(
                 TOKEN, ANALYSIS_ID,
-                request("scratchblocks", new AdvancedCapabilityDtos.ExportTarget("sprite", duplicatedSpriteName, null))
+                request(
+                    SCRATCHBLOCKS_FORMAT,
+                    new AdvancedCapabilityDtos.ExportTarget(SPRITE_TARGET, duplicatedSpriteName, null)
+                )
             ).block()
         );
     }
@@ -265,14 +310,14 @@ class ProgramExportCapabilityServiceTest {
     @Test
     void validatesContradictoryMalformedAndUnsupportedRequestsBeforeStorageAccess() {
         final AdvancedCapabilityDtos.ExportRequest contradictory = request(
-            "scratchblocks", new AdvancedCapabilityDtos.ExportTarget("program", "sprite", null)
+            SCRATCHBLOCKS_FORMAT, new AdvancedCapabilityDtos.ExportTarget(PROGRAM_TARGET, SPRITE_TARGET, null)
         );
         assertThatThrownBy(() -> capability(immediateWork()).export(TOKEN, ANALYSIS_ID, contradictory).block())
             .isInstanceOf(IllegalArgumentException.class);
         assertThatThrownBy(
             () -> capability(immediateWork()).export(
                 TOKEN, ANALYSIS_ID,
-                request("leila", new AdvancedCapabilityDtos.ExportTarget("program", null, null))
+                request("leila", new AdvancedCapabilityDtos.ExportTarget(PROGRAM_TARGET, null, null))
             ).block()
         ).isInstanceOf(IllegalArgumentException.class);
         verifyNoInteractions(submissions, analyses, sourceArtifacts);
@@ -282,24 +327,26 @@ class ProgramExportCapabilityServiceTest {
     void deniesCrossTokenReferencesAndMapsAnalysisStateAndRetention() {
         when(submissions.findByToken("other-token")).thenReturn(
             Mono.just(
-                new Submission(SUBMISSION_ID + 1, "other-token", "SINGLE_PROJECT", "en", "COMPLETED", "ACTIVE", 1, 1, 0)
+                new Submission(
+                    SUBMISSION_ID + 1, "other-token", "SINGLE_PROJECT", LANG_EN, "COMPLETED", "ACTIVE", 1, 1, 0
+                )
             )
         );
         assertCode(
-            "analysis_not_found",
+            ANALYSIS_NOT_FOUND,
             () -> capability(immediateWork()).export("other-token", ANALYSIS_ID, programRequest()).block()
         );
         verifyNoInteractions(sourceArtifacts);
 
         when(submissions.findByToken(TOKEN)).thenReturn(
-            Mono.just(new Submission(SUBMISSION_ID, TOKEN, "SINGLE_PROJECT", "en", "COMPLETED", "RELEASED", 1, 1, 0))
+            Mono.just(new Submission(SUBMISSION_ID, TOKEN, "SINGLE_PROJECT", LANG_EN, "COMPLETED", "RELEASED", 1, 1, 0))
         );
         assertCode(
-            "analysis_not_found", () -> capability(immediateWork()).export(TOKEN, ANALYSIS_ID, programRequest()).block()
+            ANALYSIS_NOT_FOUND, () -> capability(immediateWork()).export(TOKEN, ANALYSIS_ID, programRequest()).block()
         );
 
         when(submissions.findByToken(TOKEN)).thenReturn(
-            Mono.just(new Submission(SUBMISSION_ID, TOKEN, "SINGLE_PROJECT", "en", "COMPLETED", "ACTIVE", 1, 1, 0))
+            Mono.just(new Submission(SUBMISSION_ID, TOKEN, "SINGLE_PROJECT", LANG_EN, "COMPLETED", "ACTIVE", 1, 1, 0))
         );
         when(analyses.findById(ANALYSIS_ID)).thenReturn(Mono.just(analysis("FAILED", ".sb3", archive)));
         assertCode(
@@ -311,28 +358,28 @@ class ProgramExportCapabilityServiceTest {
     void mapsMissingMetadataAndAllArtifactIntegrityFailuresToAnalysisNotFound() {
         when(sourceArtifacts.findMetadataById(ARTIFACT_ID)).thenReturn(Mono.empty());
         assertCode(
-            "analysis_not_found", () -> capability(immediateWork()).export(TOKEN, ANALYSIS_ID, programRequest()).block()
+            ANALYSIS_NOT_FOUND, () -> capability(immediateWork()).export(TOKEN, ANALYSIS_ID, programRequest()).block()
         );
 
         when(sourceArtifacts.findMetadataById(ARTIFACT_ID)).thenReturn(
             Mono.just(new SourceArtifactMetadata(ARTIFACT_ID + 1, "UPLOAD", "{}"))
         );
         assertCode(
-            "analysis_not_found", () -> capability(immediateWork()).export(TOKEN, ANALYSIS_ID, programRequest()).block()
+            ANALYSIS_NOT_FOUND, () -> capability(immediateWork()).export(TOKEN, ANALYSIS_ID, programRequest()).block()
         );
 
         when(sourceArtifacts.findMetadataById(ARTIFACT_ID)).thenReturn(Mono.just(metadata()));
         when(analyses.findById(ANALYSIS_ID))
             .thenReturn(Mono.just(analysis("DONE", ".sb3", "different".getBytes(StandardCharsets.UTF_8))));
         assertCode(
-            "analysis_not_found", () -> capability(immediateWork()).export(TOKEN, ANALYSIS_ID, programRequest()).block()
+            ANALYSIS_NOT_FOUND, () -> capability(immediateWork()).export(TOKEN, ANALYSIS_ID, programRequest()).block()
         );
 
         when(analyses.findById(ANALYSIS_ID)).thenReturn(Mono.just(analysis("DONE", ".sb3", archive)));
         when(sourceArtifacts.open(any(byte[].class)))
             .thenReturn(Mono.just(new ByteArrayInputStream(new byte[] { 1, 2, 3 })));
         assertCode(
-            "analysis_not_found", () -> capability(immediateWork()).export(TOKEN, ANALYSIS_ID, programRequest()).block()
+            ANALYSIS_NOT_FOUND, () -> capability(immediateWork()).export(TOKEN, ANALYSIS_ID, programRequest()).block()
         );
     }
 
@@ -463,10 +510,12 @@ class ProgramExportCapabilityServiceTest {
             "target_not_found",
             () -> capability(immediateWork()).export(
                 TOKEN, ANALYSIS_ID,
-                request("scratchblocks", new AdvancedCapabilityDtos.ExportTarget("sprite", adversarial, null))
+                request(SCRATCHBLOCKS_FORMAT, new AdvancedCapabilityDtos.ExportTarget(SPRITE_TARGET, adversarial, null))
             ).block()
         );
-        assertThat(meters.get("litterbox.capabilities.export.outcomes").tag("target_kind", "sprite").counter().count())
+        assertThat(
+            meters.get("litterbox.capabilities.export.outcomes").tag("target_kind", SPRITE_TARGET).counter().count()
+        )
             .isEqualTo(1.0);
         assertThat(
             meters.getMeters().stream()
@@ -490,7 +539,7 @@ class ProgramExportCapabilityServiceTest {
     }
 
     private AdvancedCapabilityDtos.ExportRequest programRequest() {
-        return request("scratchblocks", new AdvancedCapabilityDtos.ExportTarget("program", null, null));
+        return request(SCRATCHBLOCKS_FORMAT, new AdvancedCapabilityDtos.ExportTarget(PROGRAM_TARGET, null, null));
     }
 
     private AdvancedCapabilityDtos.ExportRequest request(
@@ -506,7 +555,7 @@ class ProgramExportCapabilityServiceTest {
             ARTIFACT_ID, digest(source), source.length, "application/zip", "synthetic" + inputFormat
         );
         when(submissions.findByToken(TOKEN)).thenReturn(
-            Mono.just(new Submission(SUBMISSION_ID, TOKEN, "SINGLE_PROJECT", "en", "COMPLETED", "ACTIVE", 1, 1, 0))
+            Mono.just(new Submission(SUBMISSION_ID, TOKEN, "SINGLE_PROJECT", LANG_EN, "COMPLETED", "ACTIVE", 1, 1, 0))
         );
         when(analyses.findById(ANALYSIS_ID)).thenReturn(Mono.just(analysis("DONE", inputFormat, source)));
         when(sourceArtifacts.findById(ARTIFACT_ID)).thenReturn(Mono.just(artifact));
@@ -518,7 +567,7 @@ class ProgramExportCapabilityServiceTest {
 
     private Analysis analysis(final String status, final String format, final byte[] source) {
         return new Analysis(
-            ANALYSIS_ID, SUBMISSION_ID, ARTIFACT_ID, null, "NEW", "1", "1", "en", status, format,
+            ANALYSIS_ID, SUBMISSION_ID, ARTIFACT_ID, null, "NEW", "1", "1", LANG_EN, status, format,
             null, null, null, "all", "{}", digest(source), Map.of()
         );
     }

@@ -120,10 +120,7 @@ public final class SingleProjectDtos {
         }
     }
 
-    /**
-     * A comprehension question as the reader meets it. The answer key stays on the server; everything here is what a
-     * learner needs in order to understand what is being asked, including the script the question is about.
-     */
+    /** A comprehension question shown to a learner without its answer key. */
     public record QuizView(
         String questionId,
         String question,
@@ -134,10 +131,6 @@ public final class SingleProjectDtos {
         @Nullable String hint,
         @Nullable String programDimension,
         @Nullable String scopeOfFocus,
-        /*
-         * How many answers are expected. Part of the question — "pick two" — not part of the answer key. Absent in
-         * reports stored before questions carried their context, where a single answer is the safe reading.
-         */
         @Nullable Integer expectedAnswers
     ) {
 
@@ -150,6 +143,27 @@ public final class SingleProjectDtos {
     public record QuizAnswerResult(String questionId, boolean correct, List<String> correctAnswers) {
 
         public QuizAnswerResult {
+            correctAnswers = List.copyOf(correctAnswers);
+        }
+    }
+
+    /**
+     * The correct answer(s) to every generated question of a completed analysis, gathered for whoever already holds the
+     * submission token that owns it - the same authority that can already read the project back whole, export its code,
+     * or have faults injected into it. Unlike {@link QuizAnswerResult}, which only discloses an answer once a reader
+     * has offered one of their own, this is handed over on request alone, for building a marking key ahead of time
+     * rather than after the fact.
+     */
+    public record QuizAnswerKeyView(int schemaVersion, List<QuizAnswerKeyQuestion> questions) {
+
+        public QuizAnswerKeyView {
+            questions = List.copyOf(questions);
+        }
+    }
+
+    public record QuizAnswerKeyQuestion(String questionId, List<String> correctAnswers) {
+
+        public QuizAnswerKeyQuestion {
             correctAnswers = List.copyOf(correctAnswers);
         }
     }

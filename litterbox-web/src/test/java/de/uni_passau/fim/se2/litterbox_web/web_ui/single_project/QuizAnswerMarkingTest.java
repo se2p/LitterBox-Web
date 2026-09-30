@@ -141,6 +141,20 @@ class QuizAnswerMarkingTest {
     }
 
     @Test
+    void snapshotMarkingRejectsInvalidChoices() {
+        assertThat(
+            QuizAnswerPort.markSnapshot(
+                QuestionType.MULTIPLE_CHOICE, List.of(CAT, DOG), List.of(CAT), CAT
+            ).correct()
+        ).isTrue();
+        assertThatThrownBy(
+            () -> QuizAnswerPort.markSnapshot(
+                QuestionType.MULTIPLE_CHOICE, List.of(CAT, DOG), List.of(CAT), "Fish"
+            )
+        ).isInstanceOf(InvalidQuizAnswerException.class);
+    }
+
+    @Test
     void refusesAnAnswerToAQuestionThatIsNotTheOneTheReaderWasShown() {
         final StoredQuizQuestion key = question(QuestionType.MULTIPLE_CHOICE, List.of(CAT, DOG), CAT);
         final SingleProjectDtos.QuizView shown = new SingleProjectDtos.QuizView(
@@ -156,7 +170,7 @@ class QuizAnswerMarkingTest {
     void handsBackTheExpectedAnswerWithTheVerdict() {
         final StoredQuizQuestion key = question(QuestionType.FREE_TEXT, List.of(), "green flag");
 
-        final QuizAnswerMarking.QuizEvaluation wrong = QuizAnswerMarking.evaluation(key, "the cat");
+        final QuizAnswerPort.Verdict wrong = QuizAnswerMarking.evaluation(key, "the cat");
 
         // Told only "wrong", a learner has learnt nothing; the answer is disclosed in reply, never with the question.
         assertThat(wrong.correct()).isFalse();

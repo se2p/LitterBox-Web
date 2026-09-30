@@ -43,6 +43,15 @@ public interface AnalysisMetrics
      * come under. Anything between the two is the ordinary middle and is reported as such.
      *
      * <p>
+     * Alongside them this also derives a five-number summary — minimum, quartiles and maximum — so a caller that wants
+     * to draw a box plot instead of a three-way verdict has the numbers for it. The quartile positions follow the same
+     * arithmetic as the terciles above, just split into quarters instead of thirds: {@code q1_position} is where a
+     * quarter of the ranked values end, {@code median_position} where half do, {@code q3_position} where three quarters
+     * do. Because {@code position} only ever runs from 1 to {@code sample_size} and rises with {@code value}, every one
+     * of these picked values is bounded between the minimum and maximum by construction, whatever the sample size —
+     * there is no {@code sample_size} for which a quartile could fall outside that order.
+     *
+     * <p>
      * Window functions have no equivalent in JPQL, and rewriting this as one would mean fetching every measurement in
      * the database to sort it in Java. It stays as the database's own arithmetic.
      */
@@ -50,14 +59,22 @@ public interface AnalysisMetrics
         value = """
             SELECT name AS name, sample_size AS sampleSize,
                    MIN(CASE WHEN position = lower_position THEN value END) AS lowerBound,
-                   MIN(CASE WHEN position = upper_position THEN value END) AS upperBound
+                   MIN(CASE WHEN position = upper_position THEN value END) AS upperBound,
+                   MIN(value) AS minimum,
+                   MIN(CASE WHEN position = q1_position THEN value END) AS q1,
+                   MIN(CASE WHEN position = median_position THEN value END) AS median,
+                   MIN(CASE WHEN position = q3_position THEN value END) AS q3,
+                   MAX(value) AS maximum
             FROM (
                 SELECT metric.name,
                        metric.value,
                        ROW_NUMBER() OVER (PARTITION BY metric.name ORDER BY metric.value) AS position,
                        COUNT(*) OVER (PARTITION BY metric.name) AS sample_size,
                        FLOOR(COUNT(*) OVER (PARTITION BY metric.name) / 3) + 1 AS lower_position,
-                       FLOOR(2 * COUNT(*) OVER (PARTITION BY metric.name) / 3) + 1 AS upper_position
+                       FLOOR(2 * COUNT(*) OVER (PARTITION BY metric.name) / 3) + 1 AS upper_position,
+                       FLOOR(COUNT(*) OVER (PARTITION BY metric.name) / 4) + 1 AS q1_position,
+                       FLOOR(COUNT(*) OVER (PARTITION BY metric.name) / 2) + 1 AS median_position,
+                       FLOOR(3 * COUNT(*) OVER (PARTITION BY metric.name) / 4) + 1 AS q3_position
                 FROM analysis_metric metric
                 JOIN analysis ON analysis.id = metric.analysis_id AND analysis.status = 'DONE'
             ) ranked
@@ -79,5 +96,15 @@ public interface AnalysisMetrics
         double getLowerBound();
 
         double getUpperBound();
+
+        double getMinimum();
+
+        double getQ1();
+
+        double getMedian();
+
+        double getQ3();
+
+        double getMaximum();
     }
 }

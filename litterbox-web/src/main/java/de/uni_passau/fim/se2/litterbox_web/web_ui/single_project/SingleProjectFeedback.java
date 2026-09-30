@@ -9,70 +9,43 @@
  */
 package de.uni_passau.fim.se2.litterbox_web.web_ui.single_project;
 
-import java.io.IOException;
-import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import de.uni_passau.fim.se2.litterbox.ast.model.Program;
-import de.uni_passau.fim.se2.litterbox_web.qlc.QlcService;
-import de.uni_passau.fim.se2.litterbox_web.qlc.QuestionDTO;
-import de.uni_passau.fim.se2.litterbox_web.shared.Scratch3ParserService;
-import de.uni_passau.fim.se2.litterbox_web.web_ui.execution.AnalysisWork;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.Analysis;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.AnalysisRepository;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.IssueFeedbackReaction;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.IssueFeedbackRepository;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.QuizAnswerRepository;
-import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.SourceArtifactAccess;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.SubmissionRepository;
 import reactor.core.publisher.Mono;
 
-/**
- * What a reader sends back: whether a finding was useful, an answer to a generated question, and the wish to stop an
- * analysis that is still running.
- *
- * Marking an answer is pure and lives in QuizAnswerMarking; what is here is the work of getting to the question that
- * was actually asked — which means regenerating it the same way the stored report did, because a report written before
- * answer keys were kept does not carry one.
- */
+/** Handles learner feedback, quiz answers, and cancellation requests. */
 class SingleProjectFeedback {
 
     private static final int MAX_QUIZ_ANSWER_LENGTH = 255;
+    private static final String ANALYSIS_NOT_FOUND = "Analysis not found";
 
     private final SubmissionRepository submissionRepository;
     private final AnalysisRepository analyses;
-    private final SourceArtifactAccess sourceArtifacts;
     private final IssueFeedbackRepository feedback;
     private final QuizAnswerRepository quizAnswers;
-    private final AnalysisWork analysisWork;
-    private final Scratch3ParserService parser;
-    private final ProjectArchiveInspector archiveInspector;
-    private final QlcService qlc;
+    private final QuizAnswerPort quizAnswerPort;
     private final SingleProjectReportMapper reports;
 
     SingleProjectFeedback(
         final SubmissionRepository submissionRepository,
         final AnalysisRepository analyses,
-        final SourceArtifactAccess sourceArtifacts,
         final IssueFeedbackRepository feedback,
         final QuizAnswerRepository quizAnswers,
-        final AnalysisWork analysisWork,
-        final Scratch3ParserService parser,
-        final ProjectArchiveInspector archiveInspector,
-        final QlcService qlc,
+        final QuizAnswerPort quizAnswerPort,
         final SingleProjectReportMapper reports
     ) {
         this.submissionRepository = submissionRepository;
         this.analyses = analyses;
-        this.sourceArtifacts = sourceArtifacts;
         this.feedback = feedback;
         this.quizAnswers = quizAnswers;
-        this.analysisWork = analysisWork;
-        this.parser = parser;
-        this.archiveInspector = archiveInspector;
-        this.qlc = qlc;
+        this.quizAnswerPort = quizAnswerPort;
         this.reports = reports;
     }
 
@@ -91,7 +64,7 @@ class SingleProjectFeedback {
             return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid feedback reaction"));
         }
         return analyses.findById(analysisId)
-            .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Analysis not found")))
+            .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, ANALYSIS_NOT_FOUND)))
             .flatMap(analysis -> {
                 final StoredAnalysis stored = reports.storedAnalysis(analysis);
                 final boolean finderPresent = stored.issues().stream()
@@ -121,22 +94,48 @@ class SingleProjectFeedback {
         if (!validQuizRequest(request)) {
             return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Quiz fields are required"));
         }
-        return analyses.findById(analysisId)
-            .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Analysis not found")))
-            .flatMap(analysis -> answerQuizForAnalysis(analysis, request))
+        return quizAnswerPort.mark(analysisId, request.questionId(), request.answer())
             .onErrorMap(
-                QuizAnswerMarking.InvalidQuizAnswerException.class,
+                QuizAnswerPort.AnalysisNotFoundException.class,
+                error -> new ResponseStatusException(HttpStatus.NOT_FOUND, ANALYSIS_NOT_FOUND, error)
+            )
+            .onErrorMap(
+                QuizAnswerPort.UnmarkableAnswerException.class,
                 error -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid quiz answer", error)
             )
             .flatMap(
-                result -> quizAnswers.record(
-                    analysisId, request.questionId(), request.answer(), result.correct()
+                verdict -> quizAnswers.record(
+                    analysisId, request.questionId(), request.answer(), verdict.correct()
                 ).thenReturn(
                     new SingleProjectDtos.QuizAnswerResult(
-                        request.questionId(), result.correct(), result.correctAnswers()
+                        request.questionId(), verdict.correct(), verdict.correctAnswers()
                     )
                 )
             );
+    }
+
+    /** Returns generated answer keys after authorizing the owning submission. */
+    Mono<SingleProjectDtos.QuizAnswerKeyView> quizAnswerKey(final long analysisId, final String bearerToken) {
+        if (bearerToken == null || bearerToken.isBlank()) {
+            return Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Submission token required"));
+        }
+        return analyses.findById(analysisId)
+            .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, ANALYSIS_NOT_FOUND)))
+            .flatMap(analysis -> requireOwningSubmission(bearerToken, analysis))
+            .flatMap(quizAnswerPort::answerKey)
+            .onErrorMap(
+                QuizAnswerPort.AnalysisNotFoundException.class,
+                error -> new ResponseStatusException(HttpStatus.NOT_FOUND, ANALYSIS_NOT_FOUND, error)
+            )
+            .map(questions -> new SingleProjectDtos.QuizAnswerKeyView(SingleProjectDtos.SCHEMA_VERSION, questions));
+    }
+
+    private Mono<Analysis> requireOwningSubmission(final String bearerToken, final Analysis analysis) {
+        return SubmissionAnalysisAuthorizer.requireOwningCompletedAnalysis(
+            submissionRepository, bearerToken, analysis,
+            () -> new ResponseStatusException(HttpStatus.NOT_FOUND, ANALYSIS_NOT_FOUND),
+            () -> new ResponseStatusException(HttpStatus.CONFLICT, "Analysis is not ready")
+        );
     }
 
     private static boolean validFeedbackRequest(final SingleProjectDtos.FeedbackRequest request) {
@@ -154,77 +153,6 @@ class SingleProjectFeedback {
             return false;
         }
         return request.answer().length() <= MAX_QUIZ_ANSWER_LENGTH;
-    }
-
-    private Mono<QuizAnswerMarking.QuizEvaluation> answerQuizForAnalysis(
-        final Analysis analysis,
-        final SingleProjectDtos.QuizAnswerRequest request
-    ) {
-        final StoredAnalysis stored = reports.storedAnalysis(analysis);
-        final SingleProjectDtos.QuizView generatedQuestion = stored.quiz().stream()
-            .filter(question -> request.questionId().equals(question.questionId()))
-            .findFirst()
-            .orElseThrow(() -> new QuizAnswerMarking.InvalidQuizAnswerException("Unknown quiz question"));
-        final QuizAnswerMarking.StoredQuizQuestion answerKey = stored.quizAnswerKeys().stream()
-            .filter(question -> request.questionId().equals(question.questionId()))
-            .findFirst()
-            .orElse(null);
-        if (answerKey != null) {
-            QuizAnswerMarking.validateStoredQuestion(generatedQuestion, answerKey);
-            QuizAnswerMarking.validateQuizAnswer(answerKey, request.answer());
-            return Mono.just(QuizAnswerMarking.evaluation(answerKey, request.answer()));
-        }
-        return sourceArtifacts.findForAnalysis(analysis)
-            .switchIfEmpty(
-                Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Source artifact not found"))
-            )
-            .flatMap(artifact -> evaluateQuizFromArtifact(artifact, analysis, generatedQuestion, request));
-    }
-
-    private Mono<QuizAnswerMarking.QuizEvaluation> evaluateQuizFromArtifact(
-        final de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.SourceArtifact artifact,
-        final Analysis analysis,
-        final SingleProjectDtos.QuizView generatedQuestion,
-        final SingleProjectDtos.QuizAnswerRequest request
-    ) {
-        return sourceArtifacts.open(artifact.sha256()).flatMap(
-            stream -> Mono.using(
-                () -> stream,
-                owned -> analysisWork.submit(
-                    () -> evaluateQuizAnswer(
-                        SingleProjectSupport.readLimited(owned, SingleProjectSupport.MAX_PROJECT_BYTES),
-                        artifact.originalFilename(), analysis, generatedQuestion, request
-                    )
-                ),
-                SingleProjectSupport::closeQuietly
-            )
-        );
-    }
-
-    private QuizAnswerMarking.QuizEvaluation evaluateQuizAnswer(
-        final byte[] bytes,
-        final String filename,
-        final Analysis analysis,
-        final SingleProjectDtos.QuizView generatedQuestion,
-        final SingleProjectDtos.QuizAnswerRequest request
-    ) throws IOException {
-        if (!request.questionId().matches("[1-9][0-9]{0,8}")) {
-            throw new QuizAnswerMarking.InvalidQuizAnswerException("Unknown quiz question");
-        }
-        final int questionId = Integer.parseInt(request.questionId());
-        final Program program = SingleProjectSupport
-            .parseStoredProgram(parser, archiveInspector, bytes, filename, analysis.inputFormat());
-        // Reports stored before answer keys were kept have to be regenerated the same way the report itself was,
-        // or the question the reader is looking at is simply not among the ones regenerated here.
-        final List<QuestionDTO> questions = SingleProjectSupport.generateQuestions(qlc, program, analysis.locale());
-        final QuestionDTO question = questions.stream()
-            .filter(candidate -> candidate.id() == questionId)
-            .findFirst()
-            .orElseThrow(() -> new QuizAnswerMarking.InvalidQuizAnswerException("Unknown quiz question"));
-        final QuizAnswerMarking.StoredQuizQuestion answerKey = QuizAnswerMarking.storedQuizQuestion(question);
-        QuizAnswerMarking.validateStoredQuestion(generatedQuestion, answerKey);
-        QuizAnswerMarking.validateQuizAnswer(answerKey, request.answer());
-        return QuizAnswerMarking.evaluation(answerKey, request.answer());
     }
 
 }

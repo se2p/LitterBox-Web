@@ -42,6 +42,11 @@ public record Analysis(
         return inputSha256 == null ? null : inputSha256.clone();
     }
 
+    /** Whether the analysis finished and its report can be read. */
+    public boolean isCompleted() {
+        return "DONE".equals(status) || "COMPLETED".equals(status);
+    }
+
     public Analysis(
         long id, long submissionId, long sourceArtifactId, String provenance,
         String reportSchemaVersion, String litterboxArtifactVersion, String locale, String status, String inputFormat

@@ -54,6 +54,7 @@ public class SingleProjectApplicationService {
         final QlcService qlc,
         final ProjectArchiveInspector archiveInspector,
         final TeacherBatchArchiveInspector teacherArchives,
+        final QuizAnswerPort quizAnswerPort,
         @Value("${litterbox.version:unknown}") final String litterboxVersion
     ) {
         this.scratch = scratch;
@@ -66,8 +67,7 @@ public class SingleProjectApplicationService {
             archiveInspector, reports
         );
         this.responses = new SingleProjectFeedback(
-            submissionRepository, analyses, sourceArtifacts, feedback, quizAnswers,
-            analysisWork, parser, archiveInspector, qlc, reports
+            submissionRepository, analyses, feedback, quizAnswers, quizAnswerPort, reports
         );
         this.runner = new AnalysisRunner(
             submissions, submissionRepository, submissionEvents, analyses, jobs, sourceArtifacts, assets,
@@ -127,6 +127,15 @@ public class SingleProjectApplicationService {
         return intake.submitTeacherZip(bytes, filename, locale, idempotencyKey);
     }
 
+    public Mono<SingleProjectDtos.CreatedSubmission> submitProjectList(
+        final byte[] bytes,
+        final String filename,
+        final String locale,
+        final String idempotencyKey
+    ) {
+        return intake.submitProjectList(bytes, filename, locale, idempotencyKey);
+    }
+
     public Mono<SingleProjectDtos.CreatedSubmission> submitStudio(
         final String studio,
         final String locale,
@@ -164,6 +173,10 @@ public class SingleProjectApplicationService {
         final SingleProjectDtos.QuizAnswerRequest request
     ) {
         return responses.quizAnswer(analysisId, request);
+    }
+
+    public Mono<SingleProjectDtos.QuizAnswerKeyView> quizAnswerKey(final long analysisId, final String bearerToken) {
+        return responses.quizAnswerKey(analysisId, bearerToken);
     }
 
     public Mono<SingleProjectDtos.AssetContent> asset(final String token, final String sha256) {

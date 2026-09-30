@@ -21,8 +21,9 @@ import org.springframework.transaction.support.TransactionTemplate;
  * this package and for the statistics projection.
  *
  * <p>
- * Nothing else sets an isolation level, so without this these transactions would run at the connection default, which
- * for InnoDB — and so MariaDB — is {@code REPEATABLE READ}. There, a <em>consistent non-locking</em> read is served
+ * Without this these transactions would run at the connection default, which for InnoDB — and so MariaDB — is
+ * {@code REPEATABLE READ}. (Assessment results ask for that level on purpose, in a read-only transaction of their own,
+ * so the attempt count and the answers come from one snapshot.) There, a <em>consistent non-locking</em> read is served
  * from the snapshot established by the transaction's first such read, so a {@code SELECT} later in the transaction can
  * describe rows as they stood when that first consistent read ran. {@code READ COMMITTED} takes a fresh committed
  * snapshot per statement, which is what these transactions want: less stale reads, given that several workers run them

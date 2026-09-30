@@ -47,7 +47,8 @@ class MariaDbMigrationIntegrationTest {
         "quiz_answer", "legacy_id_map", "external_id", "contact_message", "idempotency_key",
         "analysis_job", "ask_ai_conversation", "ask_ai_message",
         "statistics_processed_analysis", "statistics_total", "statistics_distribution",
-        "statistics_finding", "statistics_block_category"
+        "statistics_finding", "statistics_block_category", "assessment", "assessment_attempt",
+        "assessment_answer"
     );
 
     @Test
@@ -105,9 +106,9 @@ class MariaDbMigrationIntegrationTest {
                 .dataSource(database.dataSource())
                 .locations(MIGRATIONS)
                 .load();
-            assertThat(latest.migrate().migrationsExecuted).isEqualTo(3);
+            assertThat(latest.migrate().migrationsExecuted).isEqualTo(4);
 
-            assertThat(latest.info().current().getVersion().getVersion()).isEqualTo("7");
+            assertThat(latest.info().current().getVersion().getVersion()).isEqualTo("8");
             assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM statistics_processed_analysis", Long.class)).isZero();
             assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM statistics_total", Long.class)).isZero();
             assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM statistics_distribution", Long.class)).isZero();
@@ -176,7 +177,7 @@ class MariaDbMigrationIntegrationTest {
             .locations(MIGRATIONS)
             .load();
         assertThat(flyway.migrate().migrationsExecuted).isGreaterThanOrEqualTo(2);
-        assertThat(flyway.info().current().getVersion().getVersion()).isEqualTo("7");
+        assertThat(flyway.info().current().getVersion().getVersion()).isEqualTo("8");
 
         try (Connection connection = database.dataSource().getConnection()) {
             final Set<String> tables;
@@ -375,6 +376,37 @@ class MariaDbMigrationIntegrationTest {
                     assertThat(result.getInt(1)).isZero();
                 }
                 statement.executeUpdate(
+                    "INSERT INTO assessment "
+                        + "(public_token, teacher_token, analysis_id, title, locale, questions_json, expires_at) "
+                        + "VALUES ('synthetic-public', 'synthetic-teacher', 1, 'Quiz', 'en', '{}', "
+                        + "NOW() + INTERVAL 1 DAY)"
+                );
+                statement.executeUpdate(
+                    "INSERT INTO assessment_attempt (assessment_id, public_token) VALUES (1, 'synthetic-attempt')"
+                );
+                statement.executeUpdate(
+                    "INSERT INTO assessment_answer (attempt_id, question_id, answer) VALUES (1, '1', 'first')"
+                );
+                assertThatThrownBy(
+                    () -> statement.executeUpdate(
+                        "INSERT INTO assessment_answer (attempt_id, question_id, answer) VALUES (1, '1', 'second')"
+                    )
+                ).isInstanceOf(SQLException.class);
+                // A quiz opens on being published and carries a deadline whether or not anybody sets one, so neither
+                // column can be left to a caller to remember.
+                try (
+                    var lifecycle = statement.executeQuery(
+                        "SELECT status, expires_at FROM assessment WHERE public_token = 'synthetic-public'"
+                    )
+                ) {
+                    assertThat(lifecycle.next()).isTrue();
+                    assertThat(lifecycle.getString("status")).isEqualTo("OPEN");
+                    assertThat(lifecycle.getObject("expires_at")).isNotNull();
+                }
+                statement.executeUpdate("DELETE FROM assessment_answer WHERE attempt_id = 1");
+                statement.executeUpdate("DELETE FROM assessment_attempt WHERE assessment_id = 1");
+                statement.executeUpdate("DELETE FROM assessment WHERE public_token = 'synthetic-public'");
+                statement.executeUpdate(
                     "INSERT INTO idempotency_key "
                         + "(scope, idempotency_key, request_fingerprint, submission_id) "
                         + "VALUES ('public', 'synthetic-key', UNHEX(REPEAT('bb', 32)), 1)"
@@ -443,8 +475,7 @@ class MariaDbMigrationIntegrationTest {
     }
 
     /**
-     * The repositories and the migration describe one schema between them. This half drives the repositories against
-     * the schema the half above just built, so a column either side gets wrong is a failure rather than a surprise.
+     * The repositories and the migration describe one schema between them.
      */
     @SuppressWarnings("checkstyle:MethodLength")
     private void assertRepositoriesAgreeWithTheSchema(
@@ -482,7 +513,6 @@ class MariaDbMigrationIntegrationTest {
                     "{\"status\":\"failed\"}", null, null, null, jobIds.get(0), WORKER
                 ).block()
             ).isTrue();
-            // The same worker handing in the same answer twice changes nothing the second time.
             assertThat(
                 analyses.completeIfOwned(
                     analysisIds.get(0), batchId, true, null, "SyntheticFailure", "synthetic",

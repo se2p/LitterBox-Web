@@ -87,7 +87,7 @@ class SubmissionEventStreamTest {
             mock(IssueFeedbackRepository.class), mock(QuizAnswerRepository.class), mock(AnalysisWork.class),
             mock(Scratch3ParserService.class), mock(ScratchProjectClient.class),
             mock(QlcService.class), mock(ProjectArchiveInspector.class), mock(TeacherBatchArchiveInspector.class),
-            "synthetic"
+            mock(QuizAnswerPort.class), "synthetic"
         );
     }
 }

@@ -12,10 +12,20 @@ package de.uni_passau.fim.se2.litterbox_web.web_ui.api.v1;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * What this server supports, as reported by the capabilities endpoint.
+ *
+ * @param schemaVersion    the version of the API's response schema
+ * @param litterboxVersion the version of the LitterBox core the server analyses with
+ * @param supportedLocales the locales reports can be produced in
+ * @param enabledFeatures  the optional features switched on for this server
+ * @param assessmentLimits limits accepted by assessment endpoints, or {@code null} when assessments are disabled
+ */
 public record CapabilitiesDto(
     int schemaVersion,
     String litterboxVersion,
     List<String> supportedLocales,
-    Set<String> enabledFeatures
+    Set<String> enabledFeatures,
+    AssessmentLimitsDto assessmentLimits
 ) {
 }

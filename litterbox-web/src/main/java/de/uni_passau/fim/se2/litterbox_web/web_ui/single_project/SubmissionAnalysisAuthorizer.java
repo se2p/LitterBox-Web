@@ -9,6 +9,10 @@
  */
 package de.uni_passau.fim.se2.litterbox_web.web_ui.single_project;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.util.function.Supplier;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
@@ -73,5 +77,60 @@ public final class SubmissionAnalysisAuthorizer {
         return ownedAnalysis(token, analysisId)
             .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Analysis not found")))
             .then();
+    }
+
+    /**
+     * Checks that the bearer token owns the analysis's submission and that the analysis has completed.
+     *
+     * @param submissions the repository used to look up the analysis's submission
+     * @param bearerToken the share token the request presented
+     * @param analysis    the analysis the request is asking about
+     * @param notFound    supplies the error raised when the submission is missing or the token does not own it
+     * @param notReady    supplies the error raised when the token owns the analysis but it has not completed yet
+     * @return the analysis when the token owns it and it has completed, otherwise an error from the matching supplier
+     */
+    public static Mono<Analysis> requireOwningCompletedAnalysis(
+        final SubmissionRepository submissions,
+        final String bearerToken,
+        final Analysis analysis,
+        final Supplier<? extends RuntimeException> notFound,
+        final Supplier<? extends RuntimeException> notReady
+    ) {
+        return submissions.findById(analysis.submissionId())
+            .switchIfEmpty(Mono.error(notFound.get()))
+            .flatMap(
+                submission -> ownedCompletedAnalysis(
+                    matchesBearer(bearerToken, submission.shareToken()), analysis, notFound, notReady
+                )
+            );
+    }
+
+    private static Mono<Analysis> ownedCompletedAnalysis(
+        final boolean owned,
+        final Analysis analysis,
+        final Supplier<? extends RuntimeException> notFound,
+        final Supplier<? extends RuntimeException> notReady
+    ) {
+        if (!owned) {
+            return Mono.error(notFound.get());
+        }
+        if (!analysis.isCompleted()) {
+            return Mono.error(notReady.get());
+        }
+        return Mono.just(analysis);
+    }
+
+    /**
+     * Compares a presented token with the expected one in constant time, so how far a wrong guess misses a real token
+     * is not itself something a guess can learn.
+     *
+     * @param bearerToken the token the request presented
+     * @param expected    the token that grants access
+     * @return {@code true} if both tokens are identical
+     */
+    public static boolean matchesBearer(final String bearerToken, final String expected) {
+        return MessageDigest.isEqual(
+            expected.getBytes(StandardCharsets.UTF_8), bearerToken.getBytes(StandardCharsets.UTF_8)
+        );
     }
 }

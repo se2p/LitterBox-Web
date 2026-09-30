@@ -20,12 +20,14 @@ import org.springframework.http.HttpStatus;
 import de.uni_passau.fim.se2.litterbox_web.LitterboxWebIntegrationTest;
 import de.uni_passau.fim.se2.litterbox_web.util.RequestUtilService;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.ask_ai.AskAiConfigurationProperties;
+import de.uni_passau.fim.se2.litterbox_web.web_ui.assessment.AssessmentCapabilitiesConfiguration;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.capabilities.AdvancedCapabilitiesConfiguration;
 
 class CapabilitiesControllerTest extends LitterboxWebIntegrationTest {
 
     private static final String LITTERBOX_VERSION = "1.13-SNAPSHOT";
     private static final AskAiConfigurationProperties NOT_READY = new AskAiConfigurationProperties();
+    private static final AssessmentCapabilitiesConfiguration NO_ASSESSMENTS = new AssessmentCapabilitiesConfiguration();
 
     @Autowired
     private RequestUtilService requestUtilService;
@@ -73,8 +75,9 @@ class CapabilitiesControllerTest extends LitterboxWebIntegrationTest {
         for (String feature : advanced) {
             final AdvancedCapabilitiesConfiguration configuration = new AdvancedCapabilitiesConfiguration();
             enable(configuration, feature);
-            final CapabilitiesDto response = new CapabilitiesController(LITTERBOX_VERSION, configuration, NOT_READY)
-                .getCapabilities();
+            final CapabilitiesDto response = new CapabilitiesController(
+                LITTERBOX_VERSION, configuration, NOT_READY, NO_ASSESSMENTS
+            ).getCapabilities();
 
             assertThat(response.enabledFeatures()).containsExactlyInAnyOrderElementsOf(
                 java.util.stream.Stream.concat(foundation.stream(), java.util.stream.Stream.of(feature)).toList()
@@ -84,7 +87,8 @@ class CapabilitiesControllerTest extends LitterboxWebIntegrationTest {
         final AdvancedCapabilitiesConfiguration allEnabled = new AdvancedCapabilitiesConfiguration();
         advanced.forEach(feature -> enable(allEnabled, feature));
         assertThat(
-            new CapabilitiesController(LITTERBOX_VERSION, allEnabled, NOT_READY).getCapabilities().enabledFeatures()
+            new CapabilitiesController(LITTERBOX_VERSION, allEnabled, NOT_READY, NO_ASSESSMENTS)
+                .getCapabilities().enabledFeatures()
         )
             .containsExactlyInAnyOrderElementsOf(
                 java.util.stream.Stream.concat(foundation.stream(), advanced.stream()).toList()
@@ -96,16 +100,33 @@ class CapabilitiesControllerTest extends LitterboxWebIntegrationTest {
         final AdvancedCapabilitiesConfiguration noAdvancedCapabilities = new AdvancedCapabilitiesConfiguration();
 
         final CapabilitiesDto notReady = new CapabilitiesController(
-            LITTERBOX_VERSION, noAdvancedCapabilities, NOT_READY
+            LITTERBOX_VERSION, noAdvancedCapabilities, NOT_READY, NO_ASSESSMENTS
         ).getCapabilities();
         assertThat(notReady.enabledFeatures()).doesNotContain("ask-ai");
 
         final AskAiConfigurationProperties readyProperties = new AskAiConfigurationProperties();
         readyProperties.setEnabled(true);
         final CapabilitiesDto ready = new CapabilitiesController(
-            LITTERBOX_VERSION, noAdvancedCapabilities, readyProperties
+            LITTERBOX_VERSION, noAdvancedCapabilities, readyProperties, NO_ASSESSMENTS
         ).getCapabilities();
         assertThat(ready.enabledFeatures()).contains("ask-ai");
+    }
+
+    @Test
+    void advertisesAssessmentsOnlyWhenEnabled() {
+        final AssessmentCapabilitiesConfiguration assessments = new AssessmentCapabilitiesConfiguration();
+        assessments.setEnabled(true);
+
+        final CapabilitiesDto response = new CapabilitiesController(
+            LITTERBOX_VERSION, new AdvancedCapabilitiesConfiguration(), NOT_READY, assessments
+        ).getCapabilities();
+
+        assertThat(response.enabledFeatures()).contains(AssessmentCapabilitiesConfiguration.ASSESSMENTS);
+        assertThat(
+            new CapabilitiesController(
+                LITTERBOX_VERSION, new AdvancedCapabilitiesConfiguration(), NOT_READY, NO_ASSESSMENTS
+            ).getCapabilities().enabledFeatures()
+        ).doesNotContain(AssessmentCapabilitiesConfiguration.ASSESSMENTS);
     }
 
     private void enable(final AdvancedCapabilitiesConfiguration configuration, final String feature) {

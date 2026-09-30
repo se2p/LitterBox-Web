@@ -22,6 +22,24 @@ import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.entity.AnalysisEnt
 
 public interface Analyses extends JpaRepository<AnalysisEntity, Long> {
 
+    @Modifying
+    @Transactional
+    @Query(
+        value = "UPDATE analysis SET assessment_count = assessment_count + 1 "
+            + "WHERE id = :analysisId AND assessment_count < :maximum",
+        nativeQuery = true
+    )
+    int claimAssessmentSlot(@Param("analysisId") long analysisId, @Param("maximum") int maximum);
+
+    @Modifying
+    @Transactional
+    @Query(
+        value = "UPDATE analysis SET assessment_count = assessment_count - 1 "
+            + "WHERE id = :analysisId AND assessment_count > 0",
+        nativeQuery = true
+    )
+    int releaseAssessmentSlot(@Param("analysisId") long analysisId);
+
     List<AnalysisEntity> findBySubmissionIdOrderById(long submissionId);
 
     Optional<AnalysisEntity> findFirstBySubmissionIdOrderByIdDesc(long submissionId);

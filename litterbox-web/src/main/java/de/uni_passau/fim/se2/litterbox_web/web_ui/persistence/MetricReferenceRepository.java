@@ -47,7 +47,8 @@ public class MetricReferenceRepository {
             () -> metrics.terciles(minimumSampleSize).stream()
                 .map(
                     row -> new MetricDistribution(
-                        row.getName(), row.getSampleSize(), row.getLowerBound(), row.getUpperBound()
+                        row.getName(), row.getSampleSize(), row.getLowerBound(), row.getUpperBound(),
+                        row.getMinimum(), row.getQ1(), row.getMedian(), row.getQ3(), row.getMaximum()
                     )
                 )
                 .toList()
@@ -57,8 +58,16 @@ public class MetricReferenceRepository {
     /**
      * @param lowerBound the value a third of the analysed projects come under
      * @param upperBound the value two thirds of them come under
+     * @param minimum    the smallest measurement in the sample
+     * @param q1         the value a quarter of the sample comes under
+     * @param median     the value half of the sample comes under
+     * @param q3         the value three quarters of the sample comes under
+     * @param maximum    the largest measurement in the sample
      */
-    public record MetricDistribution(String name, long sampleSize, double lowerBound, double upperBound) {
+    public record MetricDistribution(
+        String name, long sampleSize, double lowerBound, double upperBound,
+        double minimum, double q1, double median, double q3, double maximum
+    ) {
 
         public MetricDistribution {
             Objects.requireNonNull(name, "name");
