@@ -2,7 +2,6 @@
 // SPDX-FileCopyrightText: 2026 LitterBox-Web contributors
 
 import {
-    commonQuestionIntent,
     type AskAiBlock,
     type AskAiErrorCategory,
     type AskAiFollowUpId,
@@ -111,7 +110,7 @@ const CONTINUING_PHASES: ReadonlySet<ConversationPhase> = new Set([
     'quota-exhausted',
 ]);
 
-export const isSameOngoingScope = (
+const isSameOngoingScope = (
     conversation: ConversationState | undefined,
     scope: ConversationScope,
 ): boolean =>
@@ -264,24 +263,8 @@ export const outOfReplies = (conversation: ConversationState): boolean =>
     conversation.phase === 'quota-exhausted' ||
     (conversation.phase === 'active' && conversation.repliesRemaining === 0);
 
-const proposesAChange = (scope: ConversationScope): boolean =>
-    scope.kind === 'common' &&
-    (commonQuestionIntent(scope.selector) === 'PROVIDE_FEEDBACK' ||
-        commonQuestionIntent(scope.selector) === 'SUGGEST_EXTENSION');
-
-const isStartupInquiry = (scope: ConversationScope): boolean =>
-    scope.kind === 'inquiry' && scope.inquiryKind === 'startup';
-
-const IDEA_SHAPED_INQUIRY_KINDS: ReadonlySet<string> = new Set(['score-idea', 'smooth-motion']);
-
-const isIdeaShapedInquiry = (scope: ConversationScope): boolean =>
-    scope.kind === 'inquiry' && IDEA_SHAPED_INQUIRY_KINDS.has(scope.inquiryKind);
-
 export const aboutAFault = (scope: ConversationScope): boolean =>
-    scope.kind === 'finding' || isStartupInquiry(scope);
-
-const worthShowingTheChange = (scope: ConversationScope): boolean =>
-    aboutAFault(scope) || proposesAChange(scope) || isIdeaShapedInquiry(scope);
+    scope.kind === 'finding' || (scope.kind === 'inquiry' && scope.inquiryKind === 'startup');
 
 // A hint before the fix, so that a reader sees the way to work it out first and being told beside it.
 const FOLLOW_UP_ORDER: AskAiFollowUpId[] = [
@@ -311,30 +294,14 @@ export const offeredFollowUps = (conversation: ConversationState): AskAiFollowUp
     const simplyAskedAfterBlocks =
         indexOfBlocks >= 0 && userFollowUps.slice(indexOfBlocks + 1).includes('EXPLAIN_SIMPLY');
 
-    // Where something is wrong the server decides whether the fix is offered, since it knows whether the answer
-    // already is the fix; the change a suggestion proposes is offered here, and only for an answer.
+    // The server decides which follow-ups an answer offers; here only what the transcript already used is
+    // left out, and the rest is ordered.
     const suggested = new Set(last.followUps);
-    if (
-        last.status === 'answer' &&
-        worthShowingTheChange(conversation.scope) &&
-        !aboutAFault(conversation.scope)
-    ) {
-        suggested.add('SHOW_THE_FIX');
-    }
 
     return [...suggested]
         .filter((followUp) => {
             if (followUp === 'GIVE_HINT') {
-                return (
-                    aboutAFault(conversation.scope) &&
-                    !alreadyAsked.has('GIVE_HINT') &&
-                    !alreadyAsked.has('SHOW_THE_FIX')
-                );
-            }
-            if (followUp === 'SHOW_THE_FIX') {
-                return (
-                    worthShowingTheChange(conversation.scope) && !alreadyAsked.has('SHOW_THE_FIX')
-                );
+                return !alreadyAsked.has('GIVE_HINT') && !alreadyAsked.has('SHOW_THE_FIX');
             }
             if (followUp === 'SHOW_RELEVANT_BLOCKS') {
                 return (

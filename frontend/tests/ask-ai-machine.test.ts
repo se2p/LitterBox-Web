@@ -636,24 +636,16 @@ describe('the follow-ups a reply is worth offering', () => {
         expect(offeredFollowUps(completed)).toEqual([]);
     });
 
-    it('keeps a hint only where the answer left something to work out', () => {
+    it('offers the hint the server listed for any scope, until the hint or the fix was asked for', () => {
         expect(offeredFollowUps(answered(['GIVE_HINT', 'EXPLAIN_SIMPLY']))).toEqual([
+            'GIVE_HINT',
             'EXPLAIN_SIMPLY',
         ]);
         const finding = answered(['GIVE_HINT'], {
             scope: { kind: 'finding', selector: 'finding:v1-a', label: 'Missing loop' },
         });
         expect(offeredFollowUps(finding)).toEqual(['GIVE_HINT']);
-        const summary = answered(['GIVE_HINT'], {
-            scope: {
-                kind: 'common',
-                selector: 'common:SUMMARISE@target:v1-cat',
-                label: 'What does Cat do?',
-            },
-        });
-        expect(offeredFollowUps(summary)).toEqual([]);
-        const feedback = answered(['GIVE_HINT'], { scope: improveScope });
-        expect(offeredFollowUps(feedback)).not.toContain('GIVE_HINT');
+        expect(offeredFollowUps(answered([], { scope: improveScope }))).toEqual([]);
     });
 
     const addScope = {
@@ -663,11 +655,11 @@ describe('the follow-ups a reply is worth offering', () => {
     };
 
     it.each([improveScope, addScope])(
-        'offers the change straight away where the answer is already the hint: %o',
+        'offers the change the server listed where the answer is already the hint: %o',
         (scope) => {
-            const opening = answered(['EXPLAIN_SIMPLY'], { scope });
+            const opening = answered(['SHOW_THE_FIX', 'EXPLAIN_SIMPLY'], { scope });
             expect(offeredFollowUps(opening)).toEqual(['SHOW_THE_FIX', 'EXPLAIN_SIMPLY']);
-            expect(offeredFollowUps(answered(['GIVE_HINT'], { scope }))).not.toContain('GIVE_HINT');
+            expect(offeredFollowUps(answered([], { scope }))).toEqual([]);
 
             const shown = answered(['EXPLAIN_SIMPLY'], {
                 scope,
@@ -692,7 +684,7 @@ describe('the follow-ups a reply is worth offering', () => {
         },
     );
 
-    it('adds the fix to no other question, however the answer was worded', () => {
+    it('offers only what the server listed, so a question it lists nothing for gets nothing', () => {
         const summary = answered(['EXPLAIN_SIMPLY'], {
             scope: {
                 kind: 'common',
@@ -703,7 +695,7 @@ describe('the follow-ups a reply is worth offering', () => {
         expect(offeredFollowUps(summary)).toEqual(['EXPLAIN_SIMPLY']);
     });
 
-    it('treats the startup inquiry exactly like a finding: the hint and the fix side by side, the hint first', () => {
+    it('puts the hint before the fix when the server lists both, and drops the hint once it was asked', () => {
         const startupScope = {
             kind: 'inquiry' as const,
             selector: 'inquiry:v1-c',
@@ -728,7 +720,7 @@ describe('the follow-ups a reply is worth offering', () => {
         expect(offeredFollowUps(afterHint)).toEqual(['SHOW_THE_FIX']);
     });
 
-    it('offers the change straight away for an idea-shaped inquiry, and never offers a hint towards it', () => {
+    it('offers the change and the hint the server listed for an idea-shaped inquiry, the change first', () => {
         const scoreIdeaScope = {
             kind: 'inquiry' as const,
             selector: 'inquiry:v1-d',
@@ -742,12 +734,13 @@ describe('the follow-ups a reply is worth offering', () => {
             inquiryKind: 'smooth-motion',
         };
         for (const scope of [scoreIdeaScope, smoothMotionScope]) {
-            const opening = answered(['EXPLAIN_SIMPLY'], { scope });
+            const opening = answered(['SHOW_THE_FIX', 'EXPLAIN_SIMPLY'], { scope });
             expect(offeredFollowUps(opening)).toEqual(['SHOW_THE_FIX', 'EXPLAIN_SIMPLY']);
-            expect(offeredFollowUps(answered(['GIVE_HINT', 'EXPLAIN_SIMPLY'], { scope }))).toEqual([
-                'SHOW_THE_FIX',
-                'EXPLAIN_SIMPLY',
-            ]);
+            expect(
+                offeredFollowUps(
+                    answered(['GIVE_HINT', 'SHOW_THE_FIX', 'EXPLAIN_SIMPLY'], { scope }),
+                ),
+            ).toEqual(['GIVE_HINT', 'SHOW_THE_FIX', 'EXPLAIN_SIMPLY']);
         }
     });
 
@@ -774,7 +767,7 @@ describe('the follow-ups a reply is worth offering', () => {
         expect(offeredFollowUps(afterFix)).toEqual(['EXPLAIN_SIMPLY']);
     });
 
-    it('leaves a plain generated question with neither', () => {
+    it('shows a plain generated question what the server listed, even a hint and a fix', () => {
         const loopScope = {
             kind: 'inquiry' as const,
             selector: 'inquiry:v1-f',
@@ -783,10 +776,10 @@ describe('the follow-ups a reply is worth offering', () => {
         };
         expect(
             offeredFollowUps(answered(['GIVE_HINT', 'SHOW_THE_FIX'], { scope: loopScope })),
-        ).toEqual([]);
+        ).toEqual(['GIVE_HINT', 'SHOW_THE_FIX']);
     });
 
-    it('never offers the fix a second time, or for anything other than a finding', () => {
+    it('never offers the fix a second time, nor a hint after the fix, whatever the server listed', () => {
         const messagesAfterHintAndFix: TranscriptEntry[] = [
             askEntry,
             { sender: 'assistant', status: 'answer', blocks: [], followUps: ['GIVE_HINT'] },
@@ -801,19 +794,19 @@ describe('the follow-ups a reply is worth offering', () => {
         });
         expect(offeredFollowUps(askedTwice)).toEqual([]);
 
-        const notAFinding = answered(['SHOW_THE_FIX'], {
+        const hintAfterFix = answered(['GIVE_HINT'], {
             scope: inquiryScope,
             messages: [
                 askEntry,
-                { sender: 'assistant', status: 'answer', blocks: [], followUps: ['GIVE_HINT'] },
-                { sender: 'user', action: 'FOLLOW_UP', followUp: 'GIVE_HINT' },
                 { sender: 'assistant', status: 'answer', blocks: [], followUps: ['SHOW_THE_FIX'] },
+                { sender: 'user', action: 'FOLLOW_UP', followUp: 'SHOW_THE_FIX' },
+                { sender: 'assistant', status: 'answer', blocks: [], followUps: ['GIVE_HINT'] },
             ],
         });
-        expect(offeredFollowUps(notAFinding)).toEqual([]);
+        expect(offeredFollowUps(hintAfterFix)).toEqual([]);
     });
 
-    it('offers nothing at all under a refusal, however much the scope would otherwise call for the change', () => {
+    it('offers nothing at all under a refusal that lists no follow-ups', () => {
         const nonAnswerStatuses: AskAiMessageStatus[] = ['out_of_scope', 'unsafe', 'cannot_answer'];
         for (const status of nonAnswerStatuses) {
             const refused = answered([], {
@@ -822,7 +815,19 @@ describe('the follow-ups a reply is worth offering', () => {
             });
             expect(offeredFollowUps(refused)).toEqual([]);
         }
-        expect(offeredFollowUps(answered([], { scope: addScope }))).toEqual(['SHOW_THE_FIX']);
+    });
+
+    it('does not invent the change for a change-proposing scope when the server did not list it', () => {
+        expect(offeredFollowUps(answered([], { scope: addScope }))).toEqual([]);
+        expect(offeredFollowUps(answered(['EXPLAIN_SIMPLY'], { scope: addScope }))).toEqual([
+            'EXPLAIN_SIMPLY',
+        ]);
+    });
+
+    it('offers the change in a change-proposing scope when the server listed it', () => {
+        expect(offeredFollowUps(answered(['SHOW_THE_FIX'], { scope: addScope }))).toEqual([
+            'SHOW_THE_FIX',
+        ]);
     });
 
     it('comes back in a fixed order regardless of what order the model listed it in', () => {

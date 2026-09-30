@@ -41,11 +41,18 @@ import org.mockito.ArgumentCaptor;
 
 import de.uni_passau.fim.se2.litterbox.ast.ParsingException;
 import de.uni_passau.fim.se2.litterbox.ast.model.Program;
+import de.uni_passau.fim.se2.litterbox.llm.askai.AskAiContextAssembler;
+import de.uni_passau.fim.se2.litterbox.llm.askai.AskAiListingOptions;
 import de.uni_passau.fim.se2.litterbox.llm.askai.AskAiPrompt;
 import de.uni_passau.fim.se2.litterbox.llm.askai.AskAiPromptBuilder;
+import de.uni_passau.fim.se2.litterbox.llm.askai.AskAiQuestionService;
+import de.uni_passau.fim.se2.litterbox.llm.askai.AskAiRequest;
+import de.uni_passau.fim.se2.litterbox.llm.askai.AskAiRequestResolver;
+import de.uni_passau.fim.se2.litterbox.llm.askai.AskAiSelection;
 import de.uni_passau.fim.se2.litterbox.llm.askai.ScratchTargetCatalogue;
 import de.uni_passau.fim.se2.litterbox.llm.askai.ScratchTargetCatalogueBuilder;
 import de.uni_passau.fim.se2.litterbox.llm.askai.ScratchTargetKind;
+import de.uni_passau.fim.se2.litterbox.llm.askai.inquiry.ScratchInquiryAnalyzer;
 import de.uni_passau.fim.se2.litterbox_web.util.FixtureLoader;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.Analysis;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.AskAiConversation;
@@ -113,9 +120,13 @@ class AskAiConversationServiceTest {
     }
 
     private AskAiConversation openConversation(final int replyCount) {
+        return openConversation(COMMON_SCOPE_KIND, COMMON_SUMMARISE_SELECTOR, replyCount);
+    }
+
+    private AskAiConversation openConversation(final String scopeKind, final String selector, final int replyCount) {
         return new AskAiConversation(
-            CONVERSATION_ID, CONVERSATION_PUBLIC_ID, SUBMISSION_ID, ANALYSIS_ID, ENGLISH_LOCALE, COMMON_SCOPE_KIND,
-            COMMON_SUMMARISE_SELECTOR,
+            CONVERSATION_ID, CONVERSATION_PUBLIC_ID, SUBMISSION_ID, ANALYSIS_ID, ENGLISH_LOCALE, scopeKind,
+            selector,
             "SUMMARISE", replyCount, clock.instant().plusSeconds(3600), clock.instant().plusSeconds(7200), "OPEN"
         );
     }
@@ -307,7 +318,7 @@ class AskAiConversationServiceTest {
                 assistantMessage(
                     1, ASK_ACTION, null, ANSWER_STATUS,
                     "{\"blocks\":[{\"kind\":\"text\",\"text\":\"The boat sails off.\"}],"
-                        + "\"references\":[],\"followUps\":[]}",
+                        + "\"references\":[],\"followUps\":[\"EXPLAIN_SIMPLY\"]}",
                     VALIDATED
                 )
             )
@@ -337,7 +348,7 @@ class AskAiConversationServiceTest {
                     1, ASK_ACTION, null, ANSWER_STATUS,
                     "{\"blocks\":[{\"kind\":\"text\",\"text\":\"The boat sails off "
                         + "(ref:v1-abc123).\"},{\"kind\":\"scratchblocks\",\"role\":\"existing\",\"code\":\"when "
-                        + "green flag clicked\"}],\"references\":[],\"followUps\":[]}",
+                        + "green flag clicked\"}],\"references\":[],\"followUps\":[\"EXPLAIN_SIMPLY\"]}",
                     VALIDATED
                 )
             )
@@ -392,6 +403,47 @@ class AskAiConversationServiceTest {
                 TOKEN, ANALYSIS_ID, CONVERSATION_PUBLIC_ID, "cmid-x", FOLLOW_UP_ACTION, "NOT_A_FOLLOW_UP"
             ).block()
         ).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void rejectsAFollowUpAsTheFirstTurnWithoutSpendingTheBudget() {
+        stubLoader();
+        stubOpenConversation(openConversation(0));
+        when(repository.findLatestAnswer(CONVERSATION_ID)).thenReturn(Mono.empty());
+
+        assertThatThrownBy(
+            () -> service().postMessage(
+                TOKEN, ANALYSIS_ID, CONVERSATION_PUBLIC_ID, "cmid-first", FOLLOW_UP_ACTION, "EXPLAIN_SIMPLY"
+            ).block()
+        ).isInstanceOf(IllegalArgumentException.class);
+
+        assertThat(provider.callCount()).isZero();
+        verify(repository, never()).beginTurn(anyLong(), any(), any());
+    }
+
+    @Test
+    void rejectsAFollowUpTheLatestAnswerDidNotOfferWithoutSpendingTheBudget() {
+        stubLoader();
+        stubOpenConversation(openConversation(1));
+        when(repository.findLatestAnswer(CONVERSATION_ID)).thenReturn(
+            Mono.just(
+                assistantMessage(
+                    1, ASK_ACTION, null, ANSWER_STATUS,
+                    "{\"blocks\":[{\"kind\":\"text\",\"text\":\"The boat sails off.\"}],"
+                        + "\"references\":[],\"followUps\":[\"EXPLAIN_SIMPLY\"]}",
+                    VALIDATED
+                )
+            )
+        );
+
+        assertThatThrownBy(
+            () -> service().postMessage(
+                TOKEN, ANALYSIS_ID, CONVERSATION_PUBLIC_ID, "cmid-other", FOLLOW_UP_ACTION, "SHOW_THE_FIX"
+            ).block()
+        ).isInstanceOf(IllegalArgumentException.class);
+
+        assertThat(provider.callCount()).isZero();
+        verify(repository, never()).beginTurn(anyLong(), any(), any());
     }
 
     @Test
@@ -837,6 +889,111 @@ class AskAiConversationServiceTest {
             );
     }
 
+    private static final String NO_FOLLOW_UPS_ANSWER = "{\"status\":\"answer\",\"blocks\":[{\"kind\":\"text\","
+        + "\"text\":\"Answer.\"}],\"references\":[],\"followUps\":[]}";
+    private static final String FEEDBACK_SELECTOR = "common:PROVIDE_FEEDBACK";
+
+    private String settledJson() {
+        final ArgumentCaptor<String> json = ArgumentCaptor.forClass(String.class);
+        verify(repository).settleAnswered(any(), anyString(), json.capture(), any());
+        return json.getValue();
+    }
+
+    @Test
+    void offersTheChangeOfASuggestionTheModelDidNotOffer() {
+        stubLoader();
+        stubOpenConversation(openConversation(COMMON_SCOPE_KIND, FEEDBACK_SELECTOR, 0));
+        provider.respondWith(prompt -> Mono.just(NO_FOLLOW_UPS_ANSWER));
+
+        final var result = service()
+            .postMessage(TOKEN, ANALYSIS_ID, CONVERSATION_PUBLIC_ID, "cmid-feedback", ASK_ACTION, null).block();
+
+        assertThat(result).isNotNull();
+        assertThat(result.followUps()).contains("SHOW_THE_FIX");
+        assertThat(settledJson()).contains("SHOW_THE_FIX");
+    }
+
+    @Test
+    void doesNotOfferTheChangeOfFeedbackOnCodeWithoutFindings() {
+        final String cleanActor = cleanActorTarget();
+        stubLoader();
+        stubOpenConversation(openConversation(COMMON_SCOPE_KIND, FEEDBACK_SELECTOR + "@" + cleanActor, 0));
+        provider.respondWith(prompt -> Mono.just(NO_FOLLOW_UPS_ANSWER));
+
+        final var result = service()
+            .postMessage(TOKEN, ANALYSIS_ID, CONVERSATION_PUBLIC_ID, "cmid-clean", ASK_ACTION, null).block();
+
+        assertThat(result).isNotNull();
+        assertThat(result.status()).isEqualTo(ANSWER_STATUS);
+        assertThat(result.followUps()).doesNotContain("SHOW_THE_FIX");
+        assertThat(settledJson()).doesNotContain("SHOW_THE_FIX");
+    }
+
+    @Test
+    void leavesTheFollowUpsOfAFaultToTheLibraryPolicy() {
+        final var listing = new AskAiQuestionService(
+            new ScratchInquiryAnalyzer(), new ScratchTargetCatalogueBuilder()
+        ).questions(PROGRAM, new AskAiListingOptions(ENGLISH_LOCALE, null, 0, 0, null, null, false));
+        assertThat(listing.findings()).isNotEmpty();
+        stubLoader();
+        stubOpenConversation(openConversation("finding", listing.findings().get(0).selector(), 0));
+        provider.respondWith(prompt -> Mono.just(NO_FOLLOW_UPS_ANSWER));
+
+        final var result = service()
+            .postMessage(TOKEN, ANALYSIS_ID, CONVERSATION_PUBLIC_ID, "cmid-fault", ASK_ACTION, null).block();
+
+        assertThat(result).isNotNull();
+        assertThat(result.status()).isEqualTo(ANSWER_STATUS);
+        // The fix of a fault is offered by the library's own rule, once and not added a second time.
+        assertThat(result.followUps()).containsExactly("SHOW_THE_FIX");
+    }
+
+    @Test
+    void answersTheOfferedChangeOfASuggestionWithoutOfferingItAgain() {
+        stubLoader();
+        stubOpenConversation(openConversation(COMMON_SCOPE_KIND, FEEDBACK_SELECTOR, 1));
+        when(repository.findLatestAnswer(CONVERSATION_ID)).thenReturn(
+            Mono.just(
+                assistantMessage(
+                    1, ASK_ACTION, null, ANSWER_STATUS,
+                    "{\"blocks\":[{\"kind\":\"text\",\"text\":\"Try more.\"}],"
+                        + "\"references\":[],\"followUps\":[\"SHOW_THE_FIX\"]}",
+                    VALIDATED
+                )
+            )
+        );
+        provider.respondWith(prompt -> Mono.just(NO_FOLLOW_UPS_ANSWER));
+
+        final var result = service().postMessage(
+            TOKEN, ANALYSIS_ID, CONVERSATION_PUBLIC_ID, "cmid-fix", FOLLOW_UP_ACTION, "SHOW_THE_FIX"
+        ).block();
+
+        assertThat(result).isNotNull();
+        assertThat(provider.callCount()).isEqualTo(1);
+        assertThat(result.followUps()).doesNotContain("SHOW_THE_FIX");
+        assertThat(settledJson()).doesNotContain("SHOW_THE_FIX");
+    }
+
+    @Test
+    void doesNotOfferTheChangeOfASuggestionWhenTheModelCannotAnswer() {
+        stubLoader();
+        stubOpenConversation(openConversation(COMMON_SCOPE_KIND, FEEDBACK_SELECTOR, 0));
+        provider.respondWith(
+            prompt -> Mono.just(
+                "{\"status\":\"cannot_answer\",\"blocks\":[{\"kind\":\"text\",\"text\":\"No.\"}],"
+                    + "\"references\":[],\"followUps\":[]}"
+            )
+        );
+
+        final var result = service()
+            .postMessage(TOKEN, ANALYSIS_ID, CONVERSATION_PUBLIC_ID, "cmid-cannot", ASK_ACTION, null).block();
+
+        assertThat(result).isNotNull();
+        assertThat(result.status()).isEqualTo("cannot_answer");
+        assertThat(result.followUps()).isEmpty();
+        assertThat(settledJson()).doesNotContain("SHOW_THE_FIX");
+    }
+
     private void stubOpenConversation(final AskAiConversation conversation) {
         when(
             repository.findVisible(eq(SUBMISSION_ID), eq(ANALYSIS_ID), eq(CONVERSATION_PUBLIC_ID), any())
@@ -864,6 +1021,27 @@ class AskAiConversationServiceTest {
             ordinal + 1L, CONVERSATION_ID, ordinal, "assistant", action, followUp, status, responseJson, outcome, 5,
             null
         );
+    }
+
+    /** An actor whose feedback context lists no LitterBox finding, found the way the service assembles it. */
+    private static String cleanActorTarget() {
+        final ScratchTargetCatalogue catalogue = new ScratchTargetCatalogueBuilder().buildForResolution(PROGRAM, false);
+        return catalogue.actors().stream()
+            .map(ScratchTargetCatalogue.TargetEntry::key)
+            .filter(actorKey -> !feedbackContextListsAFinding(actorKey))
+            .findFirst()
+            .orElseThrow();
+    }
+
+    private static boolean feedbackContextListsAFinding(final String actorKey) {
+        final AskAiRequest request = new AskAiRequestResolver(
+            new ScratchInquiryAnalyzer(), new ScratchTargetCatalogueBuilder()
+        ).resolve(
+            PROGRAM,
+            new AskAiSelection(FEEDBACK_SELECTOR, actorKey, null, null, ENGLISH_LOCALE, false, null, null, null)
+        );
+        return new AskAiContextAssembler().assemble(PROGRAM, request).facts().stream()
+            .anyMatch(fact -> fact.startsWith("LitterBox finding ("));
     }
 
     private static String firstTargetOfKind(final ScratchTargetKind kind) {

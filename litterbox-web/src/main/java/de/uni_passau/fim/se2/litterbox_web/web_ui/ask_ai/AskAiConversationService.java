@@ -12,6 +12,8 @@ package de.uni_passau.fim.se2.litterbox_web.web_ui.ask_ai;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
@@ -34,8 +36,10 @@ import de.uni_passau.fim.se2.litterbox.llm.askai.AskAiRequest;
 import de.uni_passau.fim.se2.litterbox.llm.askai.AskAiRequestResolver;
 import de.uni_passau.fim.se2.litterbox.llm.askai.AskAiResponse;
 import de.uni_passau.fim.se2.litterbox.llm.askai.AskAiResponseParser;
+import de.uni_passau.fim.se2.litterbox.llm.askai.AskAiResponseStatus;
 import de.uni_passau.fim.se2.litterbox.llm.askai.AskAiSelection;
 import de.uni_passau.fim.se2.litterbox.llm.askai.ScratchTargetCatalogueBuilder;
+import de.uni_passau.fim.se2.litterbox.llm.askai.inquiry.InquiryKind;
 import de.uni_passau.fim.se2.litterbox.llm.askai.inquiry.ScratchInquiryAnalyzer;
 import de.uni_passau.fim.se2.litterbox.utils.IssueTranslatorFactory;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.AskAiConversation;
@@ -53,15 +57,13 @@ import reactor.core.publisher.Signal;
 @Service
 public final class AskAiConversationService {
 
-    private static final Set<String> ALLOWED_COMMON_SELECTORS = AskAiQuestionCatalogue.OFFERED_COMMON_QUERIES
-        .stream().map(query -> "common:" + query.name()).collect(Collectors.toUnmodifiableSet());
-
+    /** The most follow-ups an answer may offer; mirrors AskAiResponseRules.MAX_FOLLOW_UPS. */
+    private static final int MAX_FOLLOW_UPS = 5;
     private static final String TURN_TIMER = "litterbox.ask.ai.turns";
 
     private static final String REFUSED_COUNTER = "litterbox.ask.ai.refused";
 
     private static final Logger log = LoggerFactory.getLogger(AskAiConversationService.class);
-    private static final Pattern TARGET_KEY = Pattern.compile("target:v1-[A-Za-z0-9_-]{1,160}");
     private static final AskAiRequestResolver REQUEST_RESOLVER = new AskAiRequestResolver(
         new ScratchInquiryAnalyzer(), new ScratchTargetCatalogueBuilder()
     );
@@ -192,29 +194,31 @@ public final class AskAiConversationService {
         final String clientMessageId, final String action, final String followUpName
     ) {
         return Mono.defer(() -> {
-            final String followUp = validatedFollowUp(clientMessageId, action, followUpName);
+            final Turn turn = validatedTurn(clientMessageId, action, followUpName);
             return resolveConversationContext(submissionToken, analysisId, conversationPublicId)
-                .flatMap(context -> generateReply(context, clientMessageId, action, followUp));
+                .flatMap(context -> generateReply(context, clientMessageId, turn));
         });
     }
 
-    private String validatedFollowUp(
-        final String clientMessageId, final String action, final String followUpName
-    ) {
+    private Turn validatedTurn(final String clientMessageId, final String action, final String followUpName) {
         if (clientMessageId == null || clientMessageId.isBlank() || clientMessageId.length() > 64) {
             throw new IllegalArgumentException("clientMessageId is required");
         }
-        if (!"ASK".equals(action) && !"FOLLOW_UP".equals(action)) {
+        final Action parsedAction;
+        try {
+            parsedAction = Action.valueOf(action);
+        }
+        catch (IllegalArgumentException | NullPointerException invalid) {
             throw new IllegalArgumentException("action must be ASK or FOLLOW_UP");
         }
-        if ("ASK".equals(action)) {
+        if (parsedAction == Action.ASK) {
             if (followUpName != null) {
                 throw new IllegalArgumentException("ASK does not take a followUp");
             }
-            return null;
+            return new Turn(parsedAction, null);
         }
         try {
-            return AskAiFollowUp.parse(followUpName).name();
+            return new Turn(parsedAction, AskAiFollowUp.parse(followUpName));
         }
         catch (IllegalArgumentException invalid) {
             throw new IllegalArgumentException("Unknown follow-up", invalid);
@@ -236,26 +240,48 @@ public final class AskAiConversationService {
     }
 
     private Mono<AskAiMessageResponseView> generateReply(
-        final ConversationContext context, final String clientMessageId, final String action, final String followUpName
+        final ConversationContext context, final String clientMessageId, final Turn turn
     ) {
-        return answerAlreadySent(context.conversation(), clientMessageId, action, followUpName)
-            .switchIfEmpty(Mono.defer(() -> beginTurn(context, clientMessageId, action, followUpName)));
+        return answerAlreadySent(context.conversation(), clientMessageId, turn)
+            .switchIfEmpty(
+                Mono.defer(
+                    () -> requireOfferedFollowUp(context.conversation(), turn)
+                        .flatMap(given -> beginTurn(context, clientMessageId, turn, given))
+                )
+            );
+    }
+
+    /**
+     * Supplies the prior answer to a follow-up without sending the rest of the transcript, and refuses a follow-up that
+     * the latest validated answer did not offer, before any budget is reserved. A first question quotes nothing.
+     */
+    private Mono<String> requireOfferedFollowUp(final AskAiConversation conversation, final Turn turn) {
+        if (turn.followUp() == null) {
+            return Mono.just("");
+        }
+        return repository.findLatestAnswer(conversation.id())
+            .filter(assistant -> assistant.responseJson() != null)
+            .map(assistant -> AskAiStoredResponse.decode(assistant.responseJson()))
+            .filter(stored -> stored.followUps().contains(turn.followUp().name()))
+            .map(AskAiStoredResponse::asQuotedAnswer)
+            .switchIfEmpty(Mono.error(new IllegalArgumentException("Follow-up was not offered")));
     }
 
     /** Replays a settled send, or returns empty so the caller can reserve a new turn. */
     private Mono<AskAiMessageResponseView> answerAlreadySent(
-        final AskAiConversation conversation, final String clientMessageId, final String action,
-        final String followUpName
+        final AskAiConversation conversation, final String clientMessageId, final Turn turn
     ) {
         return repository.findByClientMessageId(conversation.id(), clientMessageId)
-            .flatMap(existing -> replay(conversation, existing, action, followUpName));
+            .flatMap(existing -> replay(conversation, existing, turn));
     }
 
     private Mono<AskAiMessageResponseView> replay(
-        final AskAiConversation conversation, final AskAiMessage existingUser, final String action,
-        final String followUpName
+        final AskAiConversation conversation, final AskAiMessage existingUser, final Turn turn
     ) {
-        if (!Objects.equals(existingUser.action(), action) || !Objects.equals(existingUser.followUp(), followUpName)) {
+        if (
+            !Objects.equals(existingUser.action(), turn.action().name())
+                || !Objects.equals(existingUser.followUp(), turn.followUpName())
+        ) {
             return Mono.error(AskAiProblemException.idempotencyConflict());
         }
         return repository.findPairedAssistant(conversation.id(), existingUser.ordinal())
@@ -282,39 +308,39 @@ public final class AskAiConversationService {
 
     /** Reserves the reply and unique client id before starting provider work. */
     private Mono<AskAiMessageResponseView> beginTurn(
-        final ConversationContext context, final String clientMessageId, final String action, final String followUpName
+        final ConversationContext context, final String clientMessageId, final Turn turn,
+        final String answerAlreadyGiven
     ) {
         final AskAiConversation conversation = context.conversation();
         return repository.beginTurn(
             conversation.id(), configuration.getConversation().turnBudget(),
-            new AskAiConversationRepository.NewTurn(action, followUpName, clientMessageId)
-        ).flatMap(start -> onTurnStart(context, start, clientMessageId, action, followUpName));
+            new AskAiConversationRepository.NewTurn(turn.action().name(), turn.followUpName(), clientMessageId)
+        ).flatMap(start -> onTurnStart(context, start, clientMessageId, turn, answerAlreadyGiven));
     }
 
     private Mono<AskAiMessageResponseView> onTurnStart(
-        final ConversationContext context, final TurnStart start, final String clientMessageId, final String action,
-        final String followUpName
+        final ConversationContext context, final TurnStart start, final String clientMessageId, final Turn turn,
+        final String answerAlreadyGiven
     ) {
         return switch (start) {
-            case TurnStart.Begun begun -> generateAgainst(context, begun.turn(), action, followUpName);
+            case TurnStart.Begun begun -> generateAgainst(context, begun.turn(), turn, answerAlreadyGiven);
             case TurnStart.NoReplyLeft() -> Mono.error(refuse("replies", AskAiProblemException.quotaExhausted()));
             case TurnStart.NoAttemptLeft() ->
                 Mono.error(refuse("attempts", AskAiProblemException.attemptsExhausted()));
-            case TurnStart.AlreadyBegun() -> answerAlreadySent(
-                context.conversation(), clientMessageId, action, followUpName
-            ).switchIfEmpty(
-                Mono.defer(() -> Mono.error(refuse("in_progress", AskAiProblemException.turnInProgress())))
-            );
+            case TurnStart.AlreadyBegun() -> answerAlreadySent(context.conversation(), clientMessageId, turn)
+                .switchIfEmpty(
+                    Mono.defer(() -> Mono.error(refuse("in_progress", AskAiProblemException.turnInProgress())))
+                );
         };
     }
 
     /** Settles the turn conditionally so cancellation cannot race a successful answer into a double refund. */
     private Mono<AskAiMessageResponseView> generateAgainst(
-        final ConversationContext context, final StartedTurn started, final String action, final String followUpName
+        final ConversationContext context, final StartedTurn started, final Turn turn, final String answerAlreadyGiven
     ) {
         return Mono.defer(() -> {
             final long startNanos = System.nanoTime();
-            return prepareAndComplete(context, started, action, followUpName, startNanos)
+            return prepareAndComplete(context, started, turn, answerAlreadyGiven, startNanos)
                 .onErrorResume(error -> abandon(started, outcomeOf(error), startNanos).then(Mono.error(error)))
                 .doOnCancel(
                     () -> abandon(started, "cancelled", startNanos)
@@ -337,23 +363,13 @@ public final class AskAiConversationService {
     }
 
     private Mono<AskAiMessageResponseView> prepareAndComplete(
-        final ConversationContext context, final StartedTurn started, final String action, final String followUpName,
+        final ConversationContext context, final StartedTurn started, final Turn turn, final String answerAlreadyGiven,
         final long startNanos
     ) {
         final AskAiConversation conversation = context.conversation();
-        final AskAiFollowUp followUp;
-        if ("FOLLOW_UP".equals(action)) {
-            followUp = AskAiFollowUp.parse(followUpName);
-        }
-        else {
-            followUp = null;
-        }
-        return answerAlreadyGiven(conversation, followUp)
-            .flatMap(
-                given -> loader.loadProgram(context.authorized())
-                    .onErrorMap(AskAiProgramLoader::mapContextFailure)
-                    .flatMap(program -> buildPromptAndContext(program, conversation, followUp, given))
-            )
+        return loader.loadProgram(context.authorized())
+            .onErrorMap(AskAiProgramLoader::mapContextFailure)
+            .flatMap(program -> buildPromptAndContext(program, conversation, turn.followUp(), answerAlreadyGiven))
             .flatMap(prepared -> completeWithinGate(conversation, started, prepared, startNanos));
     }
 
@@ -415,7 +431,7 @@ public final class AskAiConversationService {
         final AskAiConversation conversation, final StartedTurn started, final PreparedRequest prepared,
         final String json, final long startNanos, final boolean allowRetry
     ) {
-        final AskAiResponse response;
+        AskAiResponse response;
         try {
             response = RESPONSE_PARSER
                 .parse(
@@ -425,6 +441,7 @@ public final class AskAiConversationService {
                 .checkingCodeAgainst(prepared.program())
                 .simplifiedFor(prepared.request(), prepared.answerAlreadyGiven())
                 .offeringFollowUpsFor(prepared.request());
+            response = offeringTheChangeOfASuggestion(response, prepared.request(), prepared.context());
         }
         catch (IllegalArgumentException invalid) {
             if (allowRetry) {
@@ -443,6 +460,30 @@ public final class AskAiConversationService {
         final int latencyMs = elapsedMs(startNanos);
         return repository.settleAnswered(started, status, stored.encode(), latencyMs)
             .flatMap(settled -> answeredOrAbandoned(started, stored, status, latencyMs, settled));
+    }
+
+    /** A suggestion's change is always worth showing, whether or not the model offered it. */
+    private static AskAiResponse offeringTheChangeOfASuggestion(
+        final AskAiResponse response, final AskAiRequest request, final AskAiContext context
+    ) {
+        final boolean aboutAFault = request instanceof AskAiRequest.Finding
+            || request instanceof AskAiRequest.SelectedInquiry inquiry
+                && inquiry.inquiry().kind() == InquiryKind.STARTUP;
+        if (
+            response.status() != AskAiResponseStatus.ANSWER || aboutAFault
+                || request.followUp() == AskAiFollowUp.SHOW_THE_FIX
+                || !AskAiFollowUp.offeredFor(request, context).contains(AskAiFollowUp.SHOW_THE_FIX)
+                || response.followUps().contains(AskAiFollowUp.SHOW_THE_FIX)
+        ) {
+            return response;
+        }
+        final List<AskAiFollowUp> followUps = new ArrayList<>();
+        followUps.add(AskAiFollowUp.SHOW_THE_FIX);
+        followUps.addAll(response.followUps());
+        return new AskAiResponse(
+            response.status(), response.blocks(), response.references(),
+            List.copyOf(followUps.subList(0, Math.min(followUps.size(), MAX_FOLLOW_UPS)))
+        );
     }
 
     private Mono<AskAiMessageResponseView> answeredOrAbandoned(
@@ -483,23 +524,6 @@ public final class AskAiConversationService {
             };
             default -> "failed";
         };
-    }
-
-    /** Supplies the prior answer to follow-ups without sending the rest of the transcript. */
-    private Mono<String> answerAlreadyGiven(final AskAiConversation conversation, final AskAiFollowUp followUp) {
-        if (followUp == null) {
-            return Mono.just("");
-        }
-        return repository.findLatestAnswer(conversation.id())
-            .map(assistant -> quotedAnswer(assistant.responseJson()))
-            .defaultIfEmpty("");
-    }
-
-    private static String quotedAnswer(final String responseJson) {
-        if (responseJson == null) {
-            return "";
-        }
-        return AskAiStoredResponse.decode(responseJson).asQuotedAnswer();
     }
 
     private Mono<PreparedRequest> buildPromptAndContext(
@@ -584,49 +608,14 @@ public final class AskAiConversationService {
     private static AskAiSelection buildSelection(
         final String scopeKind, final String scopeSelector, final String locale, final AskAiFollowUp followUp
     ) {
-        if ("finding".equals(scopeKind)) {
-            return new AskAiSelection(null, null, null, null, locale, false, scopeSelector, null, followUp);
-        }
-        if ("common".equals(scopeKind)) {
-            return new AskAiSelection(
-                commonQuery(scopeSelector), commonTarget(scopeSelector), null, null, locale, false, null, null,
-                followUp
-            );
-        }
-        return new AskAiSelection(scopeSelector, null, null, null, locale, false, null, null, followUp);
-    }
-
-    private static String commonQuery(final String selector) {
-        final int at = selector.indexOf('@');
-        if (at < 0) {
-            return selector;
-        }
-        return selector.substring(0, at);
-    }
-
-    private static String commonTarget(final String selector) {
-        final int at = selector.indexOf('@');
-        if (at < 0) {
-            return null;
-        }
-        return selector.substring(at + 1);
+        return ScopeSelector.parse(scopeKind, scopeSelector).toSelection(locale, followUp);
     }
 
     private static boolean validScope(final String kind, final String selector) {
         if (selector == null || selector.isBlank() || selector.length() > 200) {
             return false;
         }
-        return switch (kind) {
-            case "common" -> ALLOWED_COMMON_SELECTORS.contains(commonQuery(selector))
-                && validCommonTarget(commonTarget(selector));
-            case "inquiry" -> selector.startsWith("inquiry:v1-");
-            case "finding" -> selector.startsWith("finding:v1-");
-            case null, default -> false;
-        };
-    }
-
-    private static boolean validCommonTarget(final String target) {
-        return target == null || TARGET_KEY.matcher(target).matches();
+        return ScopeSelector.parse(kind, selector).valid();
     }
 
     private String label(final AskAiRequest request, final String locale) {
@@ -654,6 +643,61 @@ public final class AskAiConversationService {
 
     private int repliesRemaining(final int usedReplies) {
         return Math.max(0, configuration.getConversation().getMaxRepliesPerConversation() - usedReplies);
+    }
+
+    private enum Action {
+        ASK, FOLLOW_UP
+    }
+
+    /** What a send asks for: the action, and the follow-up when the action is one. */
+    private record Turn(Action action, AskAiFollowUp followUp) {
+
+        String followUpName() {
+            if (followUp == null) {
+                return null;
+            }
+            return followUp.name();
+        }
+    }
+
+    /**
+     * A conversation's scope selector as stored: the only place that knows its prefixes and the {@code @} that
+     * separates a common query from the target it is limited to. For an inquiry or finding, {@code query} is the whole
+     * selector.
+     */
+    private record ScopeSelector(String kind, String query, String target) {
+
+        private static final Set<String> COMMON_QUERIES = AskAiQuestionCatalogue.OFFERED_COMMON_QUERIES
+            .stream().map(query -> "common:" + query.name()).collect(Collectors.toUnmodifiableSet());
+        private static final Pattern TARGET_KEY = Pattern.compile("target:v1-[A-Za-z0-9_-]{1,160}");
+
+        static ScopeSelector parse(final String kind, final String selector) {
+            if ("common".equals(kind)) {
+                final int at = selector.indexOf('@');
+                if (at >= 0) {
+                    return new ScopeSelector(kind, selector.substring(0, at), selector.substring(at + 1));
+                }
+            }
+            return new ScopeSelector(kind, selector, null);
+        }
+
+        boolean valid() {
+            return switch (kind) {
+                case "common" -> COMMON_QUERIES.contains(query)
+                    && (target == null || TARGET_KEY.matcher(target).matches());
+                case "inquiry" -> query.startsWith("inquiry:v1-");
+                case "finding" -> query.startsWith("finding:v1-");
+                case null, default -> false;
+            };
+        }
+
+        AskAiSelection toSelection(final String locale, final AskAiFollowUp followUp) {
+            return switch (kind) {
+                case "finding" -> new AskAiSelection(null, null, null, null, locale, false, query, null, followUp);
+                case "common" -> new AskAiSelection(query, target, null, null, locale, false, null, null, followUp);
+                case null, default -> new AskAiSelection(query, null, null, null, locale, false, null, null, followUp);
+            };
+        }
     }
 
     private record ResolvedCreation(AskAiProgramLoader.Authorized authorized, AskAiRequest request) {

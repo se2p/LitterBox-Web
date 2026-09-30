@@ -70,22 +70,18 @@ record AskAiStoredResponse(List<Block> blocks, List<AskAiReferenceView> referenc
     }
 
     static AskAiStoredResponse decode(final String json) {
-        final AskAiStoredResponse stored;
-        try {
-            if (json == null) {
-                stored = null;
+        if (json != null) {
+            try {
+                final AskAiStoredResponse stored = MAPPER.readValue(json, AskAiStoredResponse.class);
+                if (stored != null) {
+                    return stored;
+                }
             }
-            else {
-                stored = MAPPER.readValue(json, AskAiStoredResponse.class);
+            catch (JacksonException | IllegalArgumentException malformed) {
+                // Treated like a missing answer, below.
             }
         }
-        catch (JacksonException | IllegalArgumentException malformed) {
-            throw AskAiProblemException.contextNotFound();
-        }
-        if (stored == null) {
-            throw AskAiProblemException.contextNotFound();
-        }
-        return stored;
+        throw AskAiProblemException.contextNotFound();
     }
 
     String encode() {
