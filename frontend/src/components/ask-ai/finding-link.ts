@@ -41,8 +41,7 @@ export const findingLinkParams = (search: string): FindingLinkParams => {
     };
 };
 
-const compare = (value: string | undefined, locale: string): string =>
-    richHintPlainText(value ?? '', locale).toLowerCase();
+const normalise = (value: string): string => value.trim().toLowerCase();
 
 /** The sprite or stage a finding sits in: the target's parent, or the target itself when it is one. */
 export const actorOf = (
@@ -62,36 +61,35 @@ export const scopeForLink = (
     params: FindingLinkParams,
     locale: string,
 ): ConversationScope | undefined => {
-    const scoped = (finding: AskAiFinding | undefined): ConversationScope | undefined =>
-        finding ? { kind: 'finding', selector: finding.selector, label: finding.label } : undefined;
+    const scoped = (finding: AskAiFinding): ConversationScope => ({
+        kind: 'finding',
+        selector: finding.selector,
+        label: finding.label,
+    });
+    const findingText = (value: string): string => normalise(richHintPlainText(value, locale));
 
-    let candidates = params.finder
-        ? questions.findings.filter((finding) => finding.finder === params.finder)
+    // Every supplied discriminator must hold, so an absent occurrence never resolves to a sibling.
+    const narrow = (candidates: AskAiFinding[]): AskAiFinding[] => {
+        let remaining = candidates;
+        if (params.sprite) {
+            const wanted = normalise(params.sprite);
+            remaining = remaining.filter(
+                (finding) => normalise(actorOf(questions, finding)?.label ?? '') === wanted,
+            );
+        }
+        if (params.finding) {
+            const wanted = findingText(params.finding);
+            remaining = remaining.filter((finding) => findingText(finding.label) === wanted);
+        }
+        return remaining;
+    };
+
+    const { findings } = questions;
+    const byFinder = params.finder
+        ? findings.filter((finding) => finding.finder === params.finder)
         : [];
-
-    if (candidates.length > 1 && params.sprite) {
-        const wanted = params.sprite.toLowerCase().trim();
-        const inSprite = candidates.filter(
-            (finding) => (actorOf(questions, finding)?.label ?? '').toLowerCase().trim() === wanted,
-        );
-        if (inSprite.length > 0) candidates = inSprite;
-    }
-
-    if (candidates.length > 1 && params.finding) {
-        const wanted = compare(params.finding, locale);
-        const sameWords = candidates.filter((finding) => compare(finding.label, locale) === wanted);
-        if (sameWords.length > 0) candidates = sameWords;
-    }
-
-    if (candidates.length === 1) return scoped(candidates[0]);
-
-    // Fall back to the label only when no finder candidate exists.
-    if (candidates.length === 0 && params.finding) {
-        const wanted = compare(params.finding, locale);
-        return scoped(
-            questions.findings.find((finding) => compare(finding.label, locale) === wanted),
-        );
-    }
-
-    return undefined;
+    // With no finder to go by, the words must name the finding, and any sprite must still agree.
+    const candidates = byFinder.length > 0 ? byFinder : params.finding ? findings : [];
+    const narrowed = narrow(candidates);
+    return narrowed.length === 1 ? scoped(narrowed[0]) : undefined;
 };

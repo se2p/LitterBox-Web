@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 // SPDX-FileCopyrightText: 2026 LitterBox-Web contributors
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import type { SupportedLocale } from '../api/capabilities';
@@ -56,9 +56,9 @@ function AskAiWorkspace({
     const service = useAskAiService({ token, analysisId, locale });
     const { state, questions, openScope } = service;
     const [askedLast, setAskedLast] = useState<string>();
-    const [askedFrom, setAskedFrom] = useState<ChooserPosition>({});
+    const [askedFromChoice, setAskedFrom] = useState<ChooserPosition>();
     const [askedAbout, setAskedAbout] = useState<CataloguePlace>();
-    const [openChooserAt, setOpenChooserAt] = useState<ChooserPosition>();
+    const [movedTo, setMovedTo] = useState<ChooserPosition>();
 
     const conversationHeading = useRef<HTMLHeadingElement>(null);
     const catalogue = useCatalogue(questions);
@@ -69,31 +69,34 @@ function AskAiWorkspace({
     }, [state.conversation?.scope.selector]);
 
     const location = useLocation();
-    const initialQueryHandled = useRef(false);
+    const [link] = useState(() => findingLinkParams(location.search));
+    const hasLink = Boolean(link.finder || link.finding);
+    const linkScope = useMemo(
+        () => (questions ? scopeForLink(questions, link, locale) : undefined),
+        [questions, link, locale],
+    );
+    // Trail back to the chooser screen the catalogue files a linked finding under.
+    const linkTrail: ChooserPosition = useMemo(() => {
+        const asked =
+            linkScope?.kind === 'finding'
+                ? catalogue.questions.find((q) => q.scope.selector === linkScope.selector)
+                : undefined;
+        return linkScope?.kind === 'finding'
+            ? { goal: 'problems', place: asked?.place ?? null }
+            : {};
+    }, [linkScope, catalogue]);
+    const askedFrom = askedFromChoice ?? linkTrail;
+    const linkOpened = useRef(false);
     useEffect(() => {
-        if (initialQueryHandled.current) return;
-        if (state.questions.status !== 'loaded') return;
-        initialQueryHandled.current = true;
-        const loadedQuestions = state.questions.value;
-        const params = findingLinkParams(location.search);
-        const scope = scopeForLink(loadedQuestions, params, locale);
-        if (!scope) {
-            // eslint-disable-next-line react-hooks/set-state-in-effect
-            if (params.finder || params.finding) setOpenChooserAt({ goal: 'problems' });
-            return;
-        }
-        if (scope.kind === 'finding') {
-            // Trail back to the chooser screen the catalogue files this finding under.
-            const asked = catalogue.questions.find(
-                (question) => question.scope.selector === scope.selector,
-            );
-            setAskedFrom({ goal: 'problems', place: asked?.place ?? null });
-        }
-        openScope(scope);
-    }, [state.questions, catalogue, location.search, locale, openScope]);
+        if (!linkScope || linkOpened.current) return;
+        linkOpened.current = true;
+        openScope(linkScope);
+    }, [linkScope, openScope]);
+    // A link that names no single finding still opens the chooser where such findings are listed.
+    const openAt = movedTo ?? (hasLink && !linkScope ? { goal: 'problems' } : undefined);
 
     const returnToChooser = (to?: ChooserPosition) => {
-        setOpenChooserAt(to ?? askedFrom);
+        setMovedTo(to ?? askedFrom);
         setAskedLast(state.conversation?.scope.selector);
         service.leaveConversation();
     };
@@ -156,13 +159,14 @@ function AskAiWorkspace({
             />
         );
 
-    if (!questions) return null;
+    // Hold the chooser back until a finding link has been opened, so it mounts at the right screen.
+    if (!questions || (linkScope && !state.conversation && movedTo === undefined)) return null;
 
     return (
         <>
             {!state.conversation ? (
                 <QuestionsChooser
-                    questions={questions}
+                    catalogue={catalogue}
                     project={projectName}
                     locale={locale}
                     onSelect={(scope, from, about) => {
@@ -171,11 +175,11 @@ function AskAiWorkspace({
                         openScope(scope);
                     }}
                     onMove={(to) => {
-                        setOpenChooserAt(to);
+                        setMovedTo(to);
                         setAskedLast(undefined);
                     }}
                     restoreFocusTo={askedLast}
-                    openAt={openChooserAt}
+                    openAt={openAt}
                 />
             ) : (
                 <>

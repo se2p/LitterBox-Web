@@ -737,6 +737,64 @@ describe('the Ask AI conversation flow', () => {
         expect(screen.getByText(/repeat \(10\)/)).toBeInTheDocument();
         expect(screen.getByText('What did LitterBox notice here?')).toBeInTheDocument();
     });
+
+    it('falls back to the problems chooser when a finding query matches no finding', async () => {
+        const questionsWithFinding = () =>
+            response({
+                schemaVersion: 1,
+                truncated: false,
+                previewsTruncated: false,
+                inquiries: [],
+                findings: [
+                    {
+                        selector: 'finding:v1-7f3a9c21b48e05d6a1c7fe32089b4d5a',
+                        label: 'In sprite Cat: this loop is empty.',
+                        family: 'bug',
+                        target: 'target:v1-cat-flag',
+                        finder: 'EmptyLoopFinder',
+                        scratchblocks: '',
+                    },
+                    {
+                        selector: 'finding:v1-0a1b2c3d4e5f60718293a4b5c6d7e8f9',
+                        label: 'In sprite Cat: this variable is never used.',
+                        family: 'smell',
+                        target: 'target:v1-cat-flag',
+                        finder: 'UnusedVariableFinder',
+                        scratchblocks: '',
+                    },
+                ],
+                targets: [
+                    {
+                        key: 'target:v1-cat',
+                        kind: 'sprite',
+                        label: 'Cat',
+                        parent: '',
+                        scratchblocks: '',
+                        thumbnail: null,
+                        intents: [],
+                    },
+                    {
+                        key: 'target:v1-cat-flag',
+                        kind: 'script',
+                        label: 'when green flag clicked',
+                        parent: 'target:v1-cat',
+                        scratchblocks: '',
+                        thumbnail: null,
+                        intents: [],
+                    },
+                ],
+            });
+        mockAskAi([], undefined, questionsWithFinding);
+
+        renderAt(`/ask-ai/submissions/${TOKEN}?finder=NoSuchFinder&finding=nothing`);
+
+        expect(
+            await screen.findByRole('button', { name: /In sprite Cat: this loop is empty\./ }),
+        ).toBeInTheDocument();
+        expect(
+            screen.queryByRole('button', { name: new RegExp(`^${UNDERSTAND}`) }),
+        ).not.toBeInTheDocument();
+    });
 });
 
 describe('same-tick Ask AI actions', () => {
