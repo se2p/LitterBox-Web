@@ -24,6 +24,16 @@ export const preflightMessageKey = (reason: ArchivePreflightReason): Translation
         case 'too-large-uncompressed':
         case 'too-large-manifest':
             return 'preflighttoo_large_uncompressed';
+        case 'unsupported-batch-type':
+            return 'preflightunsupported_batch_type';
+        case 'url-list-too-large':
+            return 'preflighturl_list_too_large';
+        case 'invalid-url-list':
+            return 'preflightinvalid_url_list';
+        case 'empty-url-list':
+            return 'preflightempty_url_list';
+        case 'too-many-projects':
+            return 'preflighttoo_many_projects';
         default:
             return 'preflightinvalid_archive';
     }

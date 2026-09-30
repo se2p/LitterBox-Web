@@ -19,6 +19,7 @@ import {
     isJsonContentType,
     isObject,
     isProblemJsonContentType,
+    MAX_SEVERITY,
     nonnegativeSafeInteger,
     nullableBoundedString,
     positiveSafeInteger,
@@ -122,7 +123,7 @@ const exactIssue = (value: unknown): DiffIssueViewDto => {
         !boundedString(value.finderId, MAX_SHORT_TEXT_LENGTH) ||
         !boundedString(value.finderName, MAX_SHORT_TEXT_LENGTH) ||
         !boundedString(value.issueType, MAX_SHORT_TEXT_LENGTH) ||
-        !nonnegativeSafeInteger(value.severity, 100) ||
+        !nonnegativeSafeInteger(value.severity, MAX_SEVERITY) ||
         !boundedString(value.sprite, MAX_SHORT_TEXT_LENGTH) ||
         !nullableBoundedString(value.blockId, MAX_SHORT_TEXT_LENGTH) ||
         !boundedString(value.scratchblocks, MAX_SCRATCHBLOCKS_LENGTH)

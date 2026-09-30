@@ -8,6 +8,13 @@ import { BASE_URL } from '../../lib/base-url';
 /** The address of this result, spelled out. Relative to the application root, without a leading slash. */
 interface ResultLinkProps {
     path: string;
+    /**
+     * What this particular link is worth saying, when the default "link to this result" is not it — a published
+     * quiz hands back two links from one action, and a reader who cannot tell them apart by their wording has no
+     * way to tell them apart at all.
+     */
+    label?: string;
+    hint?: string;
 }
 
 const absoluteUrl = (path: string): string => {
@@ -20,7 +27,7 @@ const absoluteUrl = (path: string): string => {
  * What a submission actually hands back is a link, not a code to be kept and typed in somewhere: there is nowhere
  * to type it. So the address is shown as an address, ready to be copied, bookmarked or sent to a teacher.
  */
-export function ResultLink({ path }: ResultLinkProps) {
+export function ResultLink({ path, label, hint }: ResultLinkProps) {
     const { t } = useTranslation();
     const [copied, setCopied] = useState(false);
     const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -50,7 +57,7 @@ export function ResultLink({ path }: ResultLinkProps) {
     return (
         <div className="result-link">
             <p className="result-link-address">
-                <span className="result-link-label">{t('resultLinkLabel')}:</span>{' '}
+                <span className="result-link-label">{label ?? t('resultLinkLabel')}:</span>{' '}
                 <a className="result-link-value" href={url}>
                     {url}
                 </a>
@@ -59,7 +66,7 @@ export function ResultLink({ path }: ResultLinkProps) {
                 </button>
             </p>
             <p className="hint" role="status">
-                {copied ? t('copiedLink') : t('resultLinkHint')}
+                {copied ? t('copiedLink') : (hint ?? t('resultLinkHint'))}
             </p>
         </div>
     );

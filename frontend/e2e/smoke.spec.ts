@@ -191,8 +191,11 @@ for (const [locale, expected] of Object.entries(localeExpectations)) {
         // by position rather than by name, for the same four languages.
         await page.getByRole('dialog').locator('.dialog-actions button').nth(1).click();
         await expect(page).toHaveURL(/\/submissions\/synthetic-studio-token$/);
-        // Twice: once as its row in the table, once in the heading of the panel it opens.
-        await expect(page.getByText('Synthetic success').first()).toBeVisible();
+        // The class set opens on its overview, with the project reports folded away until asked for.
+        await page.locator('#batch-all-projects > summary').click();
+        await expect(
+            page.locator('.batch-result-select', { hasText: 'Synthetic success' }),
+        ).toBeVisible();
         // What went wrong is gathered above the table rather than carried in a cell, so the reason has the width
         // of the card and the project names keep theirs.
         await expect(page.locator('.batch-failure-list')).toContainText('Synthetic failure');

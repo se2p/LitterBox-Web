@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 // SPDX-FileCopyrightText: 2026 LitterBox-Web contributors
 
+import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router';
@@ -23,6 +24,12 @@ export interface RetainedAnalysisEntryProps {
     continueTo: string;
     destination: (selection: RetainedAnalysisSelection) => RetainedAnalysisDestination<string>;
     copy: RetainedAnalysisCopy;
+    /**
+     * Content a caller wants beside the entry form rather than instead of it — a list of everything this device
+     * could pick up again, say, next to the single quick offer above that only ever names the latest one. Absent
+     * for the caller that has nothing more to add.
+     */
+    entryExtra?: ReactNode;
 }
 
 /**
@@ -37,6 +44,7 @@ export function RetainedAnalysisEntry({
     continueTo,
     destination,
     copy,
+    entryExtra,
 }: RetainedAnalysisEntryProps) {
     const { i18n } = useTranslation();
     const navigate = useNavigate();
@@ -98,6 +106,7 @@ export function RetainedAnalysisEntry({
                     })
                 }
             />
+            {entryExtra}
         </>
     );
 }

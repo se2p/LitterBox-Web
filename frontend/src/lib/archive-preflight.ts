@@ -15,6 +15,7 @@ export const MAX_ENTRY_NAME_LENGTH = 255;
 export const MAX_PATH_DEPTH = 3;
 export const MAX_ARCHIVE_NESTING = 1;
 export const MAX_TEACHER_PROJECTS = 100;
+export const MAX_SCRATCH_URL_LIST_BYTES = 64 * 1024;
 export const ACCEPTED_ARCHIVE_EXTENSIONS = ['.sb3', '.mblock'] as const;
 
 export type ArchivePreflightReason =
@@ -28,7 +29,12 @@ export type ArchivePreflightReason =
     | 'too-large-uncompressed'
     | 'too-large-manifest'
     | 'too-deep'
-    | 'several-folders';
+    | 'several-folders'
+    | 'unsupported-batch-type'
+    | 'url-list-too-large'
+    | 'invalid-url-list'
+    | 'empty-url-list'
+    | 'too-many-projects';
 
 export interface ArchiveChildError {
     name: string;
@@ -48,6 +54,7 @@ const extensionIsAccepted = (name: string): boolean =>
     ACCEPTED_ARCHIVE_EXTENSIONS.some((extension) => name.toLowerCase().endsWith(extension));
 
 const isTeacherArchive = (name: string): boolean => name.toLowerCase().endsWith('.zip');
+const isScratchUrlList = (name: string): boolean => name.toLowerCase().endsWith('.txt');
 
 const readArrayBuffer = (blob: Blob): Promise<ArrayBuffer> => {
     if (typeof blob.arrayBuffer === 'function') return blob.arrayBuffer();
@@ -114,13 +121,31 @@ export async function preflightArchive(
     return runInWorker(file, undefined, signal);
 }
 
-export async function preflightTeacherArchive(
+export async function preflightTeacherInput(
     file: File,
     signal?: AbortSignal,
 ): Promise<ArchivePreflightResult> {
+    if (isScratchUrlList(file.name)) {
+        if (file.size > MAX_SCRATCH_URL_LIST_BYTES)
+            return { valid: false, reason: 'url-list-too-large', entries: 0 };
+        if (signal?.aborted) return { valid: false, reason: 'invalid-url-list', entries: 0 };
+        const text = new TextDecoder().decode(await readArrayBuffer(file));
+        const lines = text
+            .split(/\r?\n/)
+            .map((line) => line.trim())
+            .filter(Boolean);
+        if (lines.length === 0) return { valid: false, reason: 'empty-url-list', entries: 0 };
+        const ids = lines.map(scratchProjectId);
+        if (ids.some((id) => id === undefined))
+            return { valid: false, reason: 'invalid-url-list', entries: lines.length };
+        const projects = new Set(ids).size;
+        if (projects > MAX_TEACHER_PROJECTS)
+            return { valid: false, reason: 'too-many-projects', entries: lines.length, projects };
+        return { valid: true, entries: lines.length, projects };
+    }
     if (file.size > MAX_ARCHIVE_BYTES) return { valid: false, reason: 'too-large', entries: 0 };
     if (!isTeacherArchive(file.name))
-        return { valid: false, reason: 'unsupported-type', entries: 0 };
+        return { valid: false, reason: 'unsupported-batch-type', entries: 0 };
     if (typeof Worker === 'undefined') {
         const { validateTeacherArchiveBuffer } = await import('./archive-inspection');
         return validateTeacherArchiveBuffer(await readArrayBuffer(file));
@@ -128,20 +153,25 @@ export async function preflightTeacherArchive(
     return runInWorker(file, 'teacher', signal);
 }
 
-export const isNumericScratchProjectUrl = (value: string): boolean => {
+const scratchProjectId = (value: string): string | undefined => {
     try {
         const url = new URL(value);
-        return (
+        if (
             url.protocol === 'https:' &&
-            url.hostname === 'scratch.mit.edu' &&
+            (url.hostname === 'scratch.mit.edu' || url.hostname === 'www.scratch.mit.edu') &&
             url.search === '' &&
-            url.hash === '' &&
-            /^\/projects\/[1-9]\d*\/?$/.test(url.pathname)
-        );
+            url.hash === ''
+        ) {
+            return /^\/projects\/([1-9]\d{0,17})\/?$/.exec(url.pathname)?.[1];
+        }
+        return undefined;
     } catch {
-        return false;
+        return undefined;
     }
 };
+
+export const isNumericScratchProjectUrl = (value: string): boolean =>
+    scratchProjectId(value) !== undefined;
 
 export const parseScratchStudioId = (value: string): string | undefined => {
     if (/^[1-9]\d*$/.test(value)) return value;

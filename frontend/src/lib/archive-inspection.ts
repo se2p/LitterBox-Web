@@ -2,11 +2,9 @@
 // SPDX-FileCopyrightText: 2025 LitterBox-Web contributors
 
 /**
- * Reading the inside of an archive, which is the only thing here that needs a zip library.
- *
- * It is a module of its own because of where it runs: the inspection happens in a worker, and the page that starts
- * it has no use for a zip reader at all. Kept beside the rest, the library was linked into the entry chunk and a
- * hundred kilobytes of it were downloaded by every visitor, including the ones who never chose a file.
+ * Reading the inside of an archive, which is the only thing here that needs a zip library. Split out because the
+ * inspection runs in a worker; kept beside the rest, the library would be downloaded by every visitor regardless of
+ * whether they ever chose a file.
  */
 import JSZip from 'jszip';
 
@@ -39,9 +37,8 @@ const originalEntryName = (entry: unknown, fallback: string): string =>
     (entry as { unsafeOriginalName?: string }).unsafeOriginalName ?? fallback;
 
 /**
- * The uncompressed size the archive declares for an entry, which is how an entry is sized without inflating it.
- * JSZip keeps it on a private field, so it is read in one guarded place and treated as absent whenever a future
- * version stops offering it — every caller has to be able to fall back on inflating anyway.
+ * The uncompressed size the archive declares for an entry, letting an entry be sized without inflating it. JSZip
+ * keeps it on a private field, so this is the one guarded read; every caller must still fall back to inflating.
  */
 const declaredUncompressedSize = (entry: unknown): number | undefined => {
     const declared = (entry as { _data?: { uncompressedSize?: number } })._data?.uncompressedSize;
@@ -49,12 +46,9 @@ const declaredUncompressedSize = (entry: unknown): number | undefined => {
 };
 
 /**
- * The entries exactly as the ZIP central directory lists them, read directly from the archive bytes rather
- * than through JSZip. JSZip's own file map assigns each entry into a plain object keyed by its name, so two
- * entries that share an exact name collapse into whichever was written last long before any check in this
- * module runs — Object.keys only ever sees the survivor, and the duplicate is gone without a trace. The
- * central directory is a fixed, standardised structure, so reading it here does not depend on JSZip
- * continuing to expose any particular internal property.
+ * The entries exactly as the ZIP central directory lists them, read directly from the archive bytes rather than
+ * through JSZip. JSZip's own file map is keyed by name, so two entries sharing a name silently collapse to the
+ * last one written before any check here runs; the central directory is a fixed structure that does not lose them.
  */
 const rawEntryNames = (data: ArrayBuffer): string[] => {
     if (data.byteLength < 22) return [];
@@ -109,10 +103,9 @@ const validateEntryName = (name: string): ArchivePreflightReason | undefined => 
 const isNestedArchive = (name: string): boolean => /\.(?:zip|sb3|mblock)$/i.test(name);
 
 /**
- * Whether two entries would land on the same file. Read from the archive's own central directory, because
- * JSZip's file map is a plain object keyed by name and has already dropped one of any exact pair by the time
- * this module sees it; the fallback to JSZip's names is for an archive whose directory could not be read at all.
- * Compared case-insensitively, since that is how the filesystem the reader eventually extracts onto will compare.
+ * Whether two entries would land on the same file. Read from the archive's own central directory, since JSZip's
+ * file map has already dropped one of any exact pair by the time this module sees it; falls back to JSZip's names
+ * when the directory could not be read. Compared case-insensitively, matching the target filesystem.
  */
 const hasDuplicateEntryNames = (data: ArrayBuffer, names: string[]): boolean => {
     const rawNames = rawEntryNames(data);
@@ -169,8 +162,7 @@ const inspectZip = async (data: ArrayBuffer, nesting: number): Promise<ArchivePr
 
         for (const name of files) {
             const entry = archive.files[name];
-            // project.json and the manifest are the only entries this module ever looks inside; every other
-            // entry only needs to be sized, and the declared size already answers that without inflating it.
+            // The only entries this module looks inside; every other entry only needs to be sized.
             const needsContent = name === 'project.json' || name === 'litterbox/manifest.json';
             const declared = declaredUncompressedSize(entry);
             if (declared !== undefined) {
@@ -219,9 +211,9 @@ const childNameIsUnsafe = (name: string): boolean =>
     Boolean(validateEntryName(name)) || /\.zip$/i.test(name);
 
 /**
- * Entries the computer added rather than the teacher. Compressing a folder on macOS writes a parallel `__MACOSX`
- * tree of resource forks beside it, and both macOS and Windows leave a folder listing behind; refusing an archive
- * over them would refuse the ordinary way of making one. Mirrors TeacherBatchArchiveInspector on the service.
+ * Entries the computer added rather than the teacher — macOS's `__MACOSX` resource-fork tree and folder-listing
+ * files both platforms leave behind. Refusing an archive over them would refuse the ordinary way of making one.
+ * Mirrors TeacherBatchArchiveInspector on the service.
  */
 const isDesktopMetadata = (name: string): boolean => {
     if (name === '__MACOSX' || name.startsWith('__MACOSX/')) return true;
@@ -251,14 +243,13 @@ export async function validateTeacherArchiveBuffer(
     try {
         const outer = await JSZip.loadAsync(data, { createFolders: false });
         const names = Object.keys(outer.files);
-        // Named as the teacher named it, not as the archive addressed it.
         const asNamed = (name: string): string => originalEntryName(outer.files[name], name);
         if (hasDuplicateEntryNames(data, names))
             return { valid: false, reason: 'duplicate-entry', entries: names.length };
         if (names.length > MAX_ARCHIVE_ENTRIES)
             return { valid: false, reason: 'too-many-entries', entries: names.length };
 
-        // Path safety is asked of every entry, including the ones the desktop added: only their shape is excused.
+        // Path safety applies to every entry, including desktop metadata: only their shape is excused.
         if (names.some((name) => entryNameIsUnsafe(asNamed(name))))
             return { valid: false, reason: 'unsafe-entry', entries: names.length };
 
@@ -278,11 +269,7 @@ export async function validateTeacherArchiveBuffer(
             })
         )
             return { valid: false, reason: 'unsafe-entry', entries: names.length };
-        /*
-         * Zipping the folder the projects are already in is how an archive gets made, so a single wrapper is
-         * unwrapped. A folder each is a grouping the teacher made rather than a wrapper: flattening it would merge
-         * the groups and leave two projects of the same name indistinguishable.
-         */
+        // A single wrapper folder is unwrapped; a folder per project is a grouping the teacher made and stays.
         const directories = new Set(files.map((name) => projectDirectory(asNamed(name))));
         if (directories.size > 1)
             return { valid: false, reason: 'several-folders', entries: names.length };
@@ -299,12 +286,10 @@ export async function validateTeacherArchiveBuffer(
         const childErrors: ArchiveChildError[] = [];
         for (const name of files) {
             const entry = outer.files[name];
-            // The wrapper folder is not part of the name; this is what the service reports the analysis under.
             const shown = projectName(asNamed(name));
             const declared = declaredUncompressedSize(entry);
-            // One project being too big is that project's failure, reported beside its name like any other bad
-            // child so the rest of the class set still goes through, and left out of the total below because it
-            // is not being carried. Going over the total is the archive's failure, with no one project to name.
+            // One project being too big is that project's own failure, so the rest of the class set still goes
+            // through; going over the total is the archive's failure, with no single project to name.
             if (declared !== undefined && declared > MAX_ENTRY_BYTES) {
                 childErrors.push({ name: shown, reason: 'too-large-uncompressed' });
                 continue;

@@ -20,17 +20,10 @@ const partialLabels: Record<Locale, string> = {
 };
 
 const batchHeadings: Record<Locale, string> = {
-    de: 'Sammelfortschritt',
-    en: 'Batch progress',
-    es: 'Progreso del lote',
-    nl: 'Batchvoortgang',
-};
-
-const progressSummaries: Record<Locale, string> = {
-    de: '3 von 5 Projekten sind fertig verarbeitet.',
-    en: '3 of 5 projects have finished processing.',
-    es: '3 de 5 proyectos han terminado de procesarse.',
-    nl: '3 van 5 projecten zijn verwerkt.',
+    de: 'Zusammenfassung des Klassensatzes',
+    en: 'Class set summary',
+    es: 'Resumen del conjunto de clase',
+    nl: 'Overzicht van de klassenset',
 };
 
 const capabilities = (enabledFeatures: string[]) => ({
@@ -114,9 +107,8 @@ for (const [viewportName, viewport] of Object.entries(viewports)) {
                 await expect(
                     page.getByRole('heading', { name: batchHeadings[locale] }),
                 ).toBeVisible();
-                await expect(page.getByText(progressSummaries[locale])).toBeVisible();
-                // Twice now: once as its row in the table, and once in the heading of the panel that names
-                // which project the drill-down is about.
+                await expect(page.getByRole('progressbar')).toHaveCount(0);
+                await page.locator('#batch-all-projects > summary').click();
                 await expect(page.getByText('successful.sb3').first()).toBeVisible();
                 await expect(page.getByText(/dense-synthetic-.*\.mblock/)).toBeVisible();
                 await expect(page.getByText(/raw upstream error|synthetic-private/)).toHaveCount(0);
@@ -124,26 +116,31 @@ for (const [viewportName, viewport] of Object.entries(viewports)) {
                 const select = page.locator('.batch-result-select').nth(1);
                 await select.focus();
                 await page.keyboard.press('Enter');
-                await expect(select).toHaveAttribute('aria-pressed', 'true');
+                const inspector = page.locator('#batch-project-inspector');
+                await expect(inspector).toBeVisible();
+                await expect(
+                    inspector.locator('p').filter({ hasText: /dense-synthetic-.*\.mblock/ }),
+                ).toBeVisible();
+                await inspector.getByRole('button').first().click();
+                await page.locator('#batch-all-projects > summary').click();
+                await expect(page.locator('.batch-result-select').nth(1)).toBeVisible();
 
-                // Every column the class set earned, inside the width the page has. The select action used to be
-                // a column of its own, wider than any figure in the table, and it was what pushed the rest out.
-                const table = await page.locator('.batch-table-scroll').evaluate((element) => {
-                    const cell = element.querySelector('tbody th') as HTMLElement;
-                    const button = cell.querySelector('button') as HTMLElement;
-                    const padding = getComputedStyle(cell);
-                    return {
-                        scrollWidth: element.scrollWidth,
-                        clientWidth: element.clientWidth,
-                        // The name is the column a teacher scans by. It used to be capped narrower than the
-                        // column it sits in, so a name wrapped three deep with room to spare beside it.
-                        nameWidth: button.getBoundingClientRect().width,
-                        cellWidth:
-                            cell.getBoundingClientRect().width -
-                            parseFloat(padding.paddingLeft) -
-                            parseFloat(padding.paddingRight),
-                    };
-                });
+                const table = await page
+                    .locator('#batch-all-projects .batch-table-scroll')
+                    .evaluate((element) => {
+                        const cell = element.querySelector('tbody th') as HTMLElement;
+                        const button = cell.querySelector('button') as HTMLElement;
+                        const padding = getComputedStyle(cell);
+                        return {
+                            scrollWidth: element.scrollWidth,
+                            clientWidth: element.clientWidth,
+                            nameWidth: button.getBoundingClientRect().width,
+                            cellWidth:
+                                cell.getBoundingClientRect().width -
+                                parseFloat(padding.paddingLeft) -
+                                parseFloat(padding.paddingRight),
+                        };
+                    });
                 expect(table.nameWidth, JSON.stringify(table)).toBeGreaterThanOrEqual(
                     table.cellWidth - 1,
                 );
@@ -219,10 +216,13 @@ test('teacher archive submission retains one idempotency key and reaches a parti
     await expect(page.getByRole('status')).toContainText('2 projects are ready to analyse.');
     await page.locator('form button[type="submit"]').click();
     await expect(page).toHaveURL(/\/submissions\/synthetic-teacher-browser$/);
-    // The project is named twice on this page, in the table row that selects it and in the heading of the panel
-    // that row opens. Both are asked for by name, so neither can quietly stop being drawn.
-    await expect(page.getByRole('button', { name: /successful\.sb3/ })).toBeVisible();
-    await expect(page.getByRole('heading', { name: /successful\.sb3/ })).toBeVisible();
+    await page.locator('#batch-all-projects > summary').click();
+    const row = page.getByRole('button', { name: /successful\.sb3/ });
+    await expect(row).toBeVisible();
+    await row.click();
+    await expect(
+        page.locator('#batch-project-inspector p').filter({ hasText: 'successful.sb3' }),
+    ).toBeVisible();
     expect(idempotencyKey).not.toBe('');
 });
 
@@ -277,7 +277,6 @@ test('studio submission sends only the numeric id and terminal reload remains pr
 
     await page.goto('./teacher');
     await page.locator('#studio-id').fill('12345');
-    // The studio is read before it is sent, so what the confirmation warns about is a number rather than a maybe.
     await expect(
         page.getByText('“Synthetic studio” holds 240 projects, ready to analyse.'),
     ).toBeVisible();
@@ -294,12 +293,6 @@ test('studio submission sends only the numeric id and terminal reload remains pr
     await expect(page.getByText(/raw upstream error|synthetic-private/)).toHaveCount(0);
 });
 
-/*
- * The teacher page stacks three separate pieces of work, and each is set off from the one above it. The question
- * set used to take its gap from an adjacent-sibling rule, so the gap disappeared the moment a teacher had earlier
- * results to list between the two — which is every teacher who has used the page before. A separator that depends
- * on what happens to precede it is a separator that is missing exactly when the page is at its fullest.
- */
 test('separates the three teacher sections even with earlier results listed between them', async ({
     page,
 }) => {
@@ -308,7 +301,7 @@ test('separates the three teacher sections even with earlier results listed betw
             status: 200,
             contentType: 'application/json',
             body: JSON.stringify(
-                capabilities(['teacher-archive', 'studio', 'qlc', 'fault-injection']),
+                capabilities(['single-project', 'teacher-archive', 'studio', 'qlc']),
             ),
         }),
     );
@@ -324,26 +317,25 @@ test('separates the three teacher sections even with earlier results listed betw
     await expect(page.locator('.recent-results-forget')).toBeVisible();
 
     const spacing = await page.evaluate(() => {
-        const gapAbove = (selector: string) => {
-            const section = document.querySelector(selector);
-            if (!section) return null;
-            const previous = section.previousElementSibling;
-            if (!previous) return null;
-            const style = getComputedStyle(section);
-            return {
-                gap: Math.round(
-                    section.getBoundingClientRect().top - previous.getBoundingClientRect().bottom,
-                ),
-                border: parseFloat(style.borderTopWidth),
-            };
-        };
+        const sections = [...document.querySelectorAll('.teacher-workflow')];
         return {
-            questions: gapAbove('.teacher-questions-entry'),
-            modification: gapAbove('.teacher-modification-entry'),
+            count: sections.length,
+            following: sections.slice(1).map((section) => {
+                const previous = section.previousElementSibling;
+                if (!previous) return null;
+                const style = getComputedStyle(section);
+                return {
+                    gap: Math.round(
+                        section.getBoundingClientRect().top -
+                            previous.getBoundingClientRect().bottom,
+                    ),
+                    border: parseFloat(style.borderTopWidth),
+                };
+            }),
         };
     });
-    // A rule to divide them, and air between that rule and whatever ended above it.
-    for (const section of [spacing.questions, spacing.modification]) {
+    expect(spacing.count, JSON.stringify(spacing)).toBe(3);
+    for (const section of spacing.following) {
         expect(section, JSON.stringify(spacing)).not.toBeNull();
         expect(section!.border, JSON.stringify(spacing)).toBeGreaterThan(0);
         expect(section!.gap, JSON.stringify(spacing)).toBeGreaterThanOrEqual(24);

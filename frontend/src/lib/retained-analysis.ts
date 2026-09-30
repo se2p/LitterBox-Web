@@ -5,8 +5,8 @@
  * How a page hands a completed analysis on to another page: in navigation state, never in the address. The token is
  * the reader's own authorization for that analysis, and an address is copied, logged and shared without a thought.
  *
- * Two destinations carry one now — the advanced workspace and the teacher's modification tool — so the rule about
- * what may travel in that state is written once rather than once per destination.
+ * Two destinations carry one now — the advanced workspace and the teacher's task analysis — so the rule about what
+ * may travel in that state is written once rather than once per destination.
  */
 
 const MAX_SUBMISSION_TOKEN_LENGTH = 128;
@@ -15,11 +15,19 @@ export const ADVANCED_ANALYSIS_PATH = '/advanced';
 export const ADVANCED_ANALYSIS_COMPATIBILITY_PATH = '/tools';
 
 /**
- * Injecting a fault into a project is not a reading of it: it makes a second project for a class to find the bug in.
- * That is something a teacher prepares a lesson with, so it lives under the teacher's pages rather than beside the
- * measurements and graphs of the advanced workspace.
+ * Fault injection has no page of its own any more; it is a section of the advanced workspace. Kept as a destination
+ * in its own right, and not folded into ADVANCED_ANALYSIS_PATH, only so a link or an in-flight "analyse then
+ * continue" navigation still aimed at the old address resolves — App redirects it there itself.
  */
 export const MODIFICATION_PATH = '/teacher/modify';
+
+/**
+ * A teacher analysing their own model solution, or their own starter project, is not analysing a child's work at
+ * all: the reading is of the task, not of a submission to it. It lives under the teacher's pages, and it is a page
+ * of its own rather than a mode of the child's result page, because the questions a teacher asks of a task are not
+ * the questions that page already answers.
+ */
+export const TASK_ANALYSIS_PATH = '/teacher/task';
 
 export interface RetainedAnalysisSelection {
     readonly submissionToken: string;

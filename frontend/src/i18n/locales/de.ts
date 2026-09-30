@@ -1,12 +1,9 @@
 // SPDX-License-Identifier: EUPL-1.2
 // SPDX-FileCopyrightText: 2025 LitterBox-Web contributors
 
-/** Where German says something differently from the English in en.ts. Everything else falls through to it. */
 import type { TranslationPack } from './en';
 
 export const pack: Partial<TranslationPack> = {
-    // "Prüfen" is the word a school report uses. The children this link is for are not being examined; they
-    // are being offered a way to make something they built better.
     navHome: 'Projekt verbessern',
     navTeacher: 'Für Lehrkräfte',
     navTools: 'Erweiterte Analyse',
@@ -44,23 +41,27 @@ export const pack: Partial<TranslationPack> = {
     advancedComparisonLead:
         'Vergleiche dieses abgeschlossene Ergebnis mit einem anderen Projekt oder Ergebnis.',
     advancedComparisonAction: 'Ergebnisse vergleichen',
-    modificationTitle: 'Verändertes Projekt erstellen',
-    modificationLead:
-        'Baue einen bekannten Fehler in ein Projekt ein und lade das Ergebnis herunter, damit eine Klasse ihn suchen kann.',
-    modificationAction: 'Verändertes Projekt vorbereiten',
-    modificationLoading: 'Das analysierte Projekt wird geladen …',
-    modificationRecoveryBody:
-        'Wähle ein abgeschlossenes Projektergebnis zum Verändern. Dieses Ergebnis kann hier nicht mehr geöffnet werden.',
-    modificationEntryTitle: 'Projekt auswählen',
-    modificationEntryLead:
-        'Lade ein Projekt hoch oder füge seinen Scratch-Link ein. Es wird zuerst analysiert, danach werden die Fehler angeboten, die eingebaut werden können.',
-    modificationUnavailableTitle: 'Dieses Projekt kann nicht verändert werden',
-    modificationUnavailableBody:
-        'Ein verändertes Projekt entsteht nur aus einer abgeschlossenen Analyse einer .sb3- oder .mblock-Datei.',
-    modificationBackToTeacher: 'Zurück zu den Seiten für Lehrkräfte',
-    teacherModificationChoiceTitle: 'Fehlerhafte Versionen eines Projekts erstellen',
-    teacherModificationChoiceDescription:
-        'Baue einen bekannten Fehler in ein Projekt ein und lade das Ergebnis herunter, damit eine Klasse ihn darin findet.',
+    taskAnalysisTitle: 'Eine Aufgabe analysieren',
+    taskAnalysisLead:
+        'Lade deine Musterlösung oder dein Startprojekt hoch, um zu sehen, was LitterBox darin finden würde, bevor eine Klasse es tut.',
+    taskAnalysisAction: 'Diese Aufgabe analysieren',
+    taskAnalysisLoading: 'Die analysierte Aufgabe wird geladen …',
+    taskAnalysisRecoveryBody:
+        'Wähle ein abgeschlossenes Projektergebnis, um es als Aufgabe zu analysieren. Dieses Ergebnis kann hier nicht mehr geöffnet werden.',
+    taskAnalysisEntryTitle: 'Projekt auswählen',
+    taskAnalysisEntryLead:
+        'Lade ein Projekt hoch oder füge seinen Scratch-Link ein. Es wird zuerst analysiert, dann öffnet sich diese Seite dafür.',
+    reuseTaskAnalysisNamed: '{{project}} als Aufgabe betrachten',
+    taskAnalysisSectionMenu: 'Abschnitte der Aufgabenanalyse',
+    teacherTaskAnalysisChoiceTitle: 'Eine Aufgabe analysieren',
+    teacherTaskAnalysisChoiceDescription:
+        'Lade deine eigene Musterlösung oder dein Startprojekt hoch, um zu sehen, was LitterBox darin findet und welche guten Praktiken es belohnt, bevor du sie einer Klasse stellst.',
+    teacherRecentTaskProjectsHeading: 'Auf diesem Gerät analysierte Projekte',
+    taskAnalysisNotReported: 'Nicht gemeldet',
+    taskProjectCodeNav: 'Projektcode und Struktur',
+    taskProjectCodeTitle: 'Der Code dieser Aufgabe',
+    taskProjectCodeLead:
+        'Die Skripte, aus denen diese Aufgabe besteht, Figur für Figur – das, worin jeder Befund oben gefunden wurde.',
     navigationLabel: 'Hauptnavigation',
     navMenuToggle: 'Menü',
     homeTitle: 'LitterBox',
@@ -139,15 +140,6 @@ export const pack: Partial<TranslationPack> = {
     statisticsOccurrences: 'Vorkommen',
     statisticsPrevalenceAccessible:
         '{{name}}: {{percentage}} der Projekte, {{projects}} Projekte mit diesem Muster, {{occurrences}} Vorkommen.',
-    statisticsBlockCategoryMotion: 'Bewegung',
-    statisticsBlockCategoryLooks: 'Aussehen',
-    statisticsBlockCategorySound: 'Klang',
-    statisticsBlockCategoryEvents: 'Ereignisse',
-    statisticsBlockCategoryControl: 'Steuerung',
-    statisticsBlockCategorySensing: 'Fühlen',
-    statisticsBlockCategoryOperators: 'Operatoren',
-    statisticsBlockCategoryVariables: 'Variablen',
-    statisticsBlockCategoryMyBlocks: 'Meine Blöcke',
     statisticsBlockCategoryOther: 'Andere Blockfamilie',
     statisticsCompositionHeading: 'Zusammensetzung der Blockfamilien',
     statisticsCompositionLead:
@@ -163,13 +155,17 @@ export const pack: Partial<TranslationPack> = {
         'Lade ein vollständiges Projektarchiv hoch oder gib eine numerische Scratch-Projekt-URL ein.',
     teacherTitle: 'Für Lehrkräfte',
     teacherLead:
-        'Alles, was diese Seite Lehrkräften bietet: eine ganze Klasse auf einmal prüfen, Fragen zu einem Projekt erzeugen und eine veränderte Kopie erstellen, in der eine Klasse den Fehler suchen kann.',
+        'Diese Seite bietet drei Dinge: eine Aufgabe analysieren, um zu sehen, was LitterBox darin findet, den Fragensatz erzeugen, mit dem eine Klasse dazu befragt wird, oder einen ganzen Klassensatz auf einmal prüfen.',
     teacherSubmissionChoices: 'Klassensatz prüfen',
+    teacherClassSetChoiceDescription:
+        'Lade ein Archiv mit den Projekten deiner Klasse hoch, oder gib das Scratch-Studio an, in das sie eingereicht wurden, und jedes Projekt darin wird auf einmal analysiert.',
+    teacherRecentClassSetsHeading: 'Auf diesem Gerät analysierte Klassensätze',
     primaryAnalysisChoices: 'Ein Projekt analysieren',
     uploadLabel: 'Deine Programmdatei',
     uploadHint: 'Eine .sb3- oder .mblock-Datei von deinem Computer.',
-    teacherUploadLabel: 'Lehrkraft-Sammelarchiv (.zip)',
-    teacherUploadHint: 'Das Archiv muss gültige .sb3- oder .mblock-Projektarchive enthalten.',
+    teacherUploadLabel: 'Klassensatz-Datei (.zip oder .txt)',
+    teacherUploadHint:
+        'Verwende eine ZIP-Datei mit .sb3- oder .mblock-Projekten oder eine Textdatei mit einer öffentlichen Scratch-Projekt-URL pro Zeile (höchstens 100 Projekte).',
     teacherPreflightReady_one: '{{count}} Projekt kann analysiert werden.',
     teacherPreflightReady_other: '{{count}} Projekte können analysiert werden.',
     teacherPreflightMixed:
@@ -205,6 +201,13 @@ export const pack: Partial<TranslationPack> = {
     preflighttoo_large: 'Das Archiv ist zu groß (maximal 50 MB).',
     preflightunsupported_type: 'Verwende ein .sb3- oder .mblock-Archiv.',
     preflightinvalid_archive: 'Die Datei ist kein gültiges ZIP-Archiv.',
+    preflightunsupported_batch_type:
+        'Verwende ein .zip-Archiv oder eine .txt-Liste mit Scratch-URLs.',
+    preflighturl_list_too_large: 'Die Scratch-URL-Liste ist zu groß (maximal 64 KB).',
+    preflightinvalid_url_list:
+        'Jede nicht leere Zeile muss genau eine öffentliche Scratch-Projekt-URL enthalten.',
+    preflightempty_url_list: 'Die Scratch-URL-Liste enthält keine Projekt-URLs.',
+    preflighttoo_many_projects: 'Ein Klassensatz darf höchstens 100 Projekte enthalten.',
     preflightmissing_project_json: 'Jedes Projektarchiv muss genau eine project.json enthalten.',
     preflightunsafe_entry:
         'Das Archiv enthält einen unsicheren Pfad oder ein verschachteltes Archiv.',
@@ -233,7 +236,7 @@ export const pack: Partial<TranslationPack> = {
     questionsUrlHint: 'Der Link zu deinem Projekt auf Scratch oder einfach seine Nummer.',
     questionsUrlError: 'Nutze einen Link, der mit der Projektnummer endet, oder die Nummer allein.',
     questionsSubmit: 'Frag mich zu diesem Projekt',
-    teacherQuestionsSubmit: 'Alle Fragen zu diesem Projekt erzeugen',
+    teacherQuestionsSubmit: 'Aus diesem Projekt ein Quiz bauen',
     questionsSubmitError: 'Dein Projekt konnte nicht gesendet werden. Versuche es erneut.',
     questionsUnavailable: 'Dieser Dienst kann dir keine Fragen zu einem Projekt stellen.',
     questionsCapabilitiesLoading:
@@ -398,7 +401,8 @@ export const pack: Partial<TranslationPack> = {
     statusFailed: 'Analyse fehlgeschlagen',
     statusPartial: 'Analyse teilweise abgeschlossen',
     statusCancelled: 'Analyse abgebrochen',
-    batchCountsTitle: 'Sammelfortschritt',
+    batchCountsTitle: 'Fortschritt des Klassensatzes',
+    batchSummaryTitle: 'Zusammenfassung des Klassensatzes',
     batchExpected: 'Erwartet',
     analysisContextTitle: 'Analysekontext',
     analysisContextLead: 'Woraus dieses Ergebnis entstand, so wie die Analyse es festgehalten hat.',
@@ -418,15 +422,12 @@ export const pack: Partial<TranslationPack> = {
     analysisStatusCancelled: 'Analyse abgebrochen',
     batchAnalysisStatus: 'Analysestatus',
     batchTotalFindings: 'Alle Befunde',
+    batchConcerns: 'Fehler und Code-Smells zusammen',
+    batchFindings_one: '{{formatted}} Befund gemeldet.',
+    batchFindings_other: '{{formatted}} Befunde gemeldet.',
     batchStillProcessing: 'Noch in Verarbeitung',
     batchNotAnalysed: 'Nicht analysiert',
     batchWithoutFindings: 'Abgeschlossen ohne Befunde',
-    batchFrequentFindings: 'Häufig gemeldete Befunde',
-    batchFinderOccurrences_one: '{{formatted}} Vorkommen',
-    batchFinderOccurrences_other: '{{formatted}} Vorkommen',
-    batchFinderAnalyses_one: 'in {{formatted}} Analyse',
-    batchFinderAnalyses_other: 'in {{formatted}} Analysen',
-    batchShowAllFinders: 'Alle {{formatted}} anzeigen',
     batchFilters: 'Analysen filtern',
     batchFilterStatus: 'Nach Analysestatus filtern',
     batchFilterAllStatuses: 'Beliebiger Status',
@@ -435,23 +436,194 @@ export const pack: Partial<TranslationPack> = {
     batchFailuresTitle_other: '{{formatted}} Analysen wurden nicht abgeschlossen',
     batchFailuresLead:
         'Für diese Projekte wurden keine Befunde gemeldet, weil sie nicht analysiert werden konnten. Alles andere im Satz wurde wie gewohnt analysiert.',
-    batchCsvTitle: 'Als Tabelle herunterladen',
     batchCsvLead:
-        'Eine CSV-Datei dieser Ergebnisse, in diesem Browser erzeugt. Dafür wird nichts irgendwohin geschickt.',
-    batchCsvInclude: 'Was enthalten sein soll',
-    batchCsvFamilies: 'Funde nach Art und die Summe',
-    batchCsvMeasurements: 'Figuren, Skripte, Blöcke und der Computational-Thinking-Wert',
-    batchCsvFinders: 'Eine Spalte je häufig gemeldetem Fund',
-    batchCsvRowsHint:
-        'Eine Zeile je Projekt, in der Reihenfolge der Tabelle. Wo eine Analyse noch nichts zu melden hat, bleibt die Zelle leer.',
+        'Wähle eine Tabelle als CSV oder alle drei als ZIP. Die Dateien werden in diesem Browser erstellt.',
     batchCsvDownload: 'CSV herunterladen',
+    batchCsvDownloadZip: 'ZIP herunterladen',
+    batchWorkspaceTitle: 'Klassensatz-Analyse',
+    batchWorkspaceLead:
+        'Gehe von Mustern der ganzen Klasse zu den Projekten, die eine gesonderte Prüfung verdienen. Sofern nicht anders angegeben, verwendet jeder Abschnitt alle abgeschlossenen Berichte.',
+    batchWorkspaceNavigation: 'Abschnitte des Klassensatzes',
+    batchWorkspaceOverview: 'Klassenüberblick',
+    batchWorkspaceProjects: 'Projekte prüfen',
+    batchWorkspaceExport: 'Daten exportieren',
+    batchCommonFindings: 'Befunde in der Klasse',
+    batchCommonFindingsHint:
+        'Alle gemeldeten Befundtypen sind zuerst nach betroffenen Projekten und dann nach Vorkommen sortiert. Zunächst werden sechs je Familie gezeigt. Bugs und Smells sind Hinweise zum Prüfen; Perfumes sind positive Praktiken, die Anerkennung verdienen.',
+    batchAnalyticsScope:
+        'Die Klassensatz-Analyse verwendet alle abgeschlossenen Projektberichte. Die Filter unten ändern nur die Berichtsliste.',
+    batchFinder: 'Befundmelder',
+    batchFinderTypes_one: '{{formatted}} Befundmelder-Typ',
+    batchFinderTypes_other: '{{formatted}} Befundmelder-Typen',
+    batchOccurrences: 'Vorkommen',
+    batchPrevalence: 'Betroffene Projekte',
+    batchPrevalenceValue: '{{count}} / {{total}} ({{rate}}%)',
+    batchIssueDensity: 'Befundrate (je 1.000 Blöcke)',
+    batchIssueDensityBase: 'Projekte mit Blockzahl',
+    batchFindingAction: 'Projektfilter',
+    batchFindingExplain: 'Was ist das?',
+    batchFindingExplainShort: '?',
+    batchFindingExplainFor: 'Was ist das: {{finder}}?',
+    batchFindingNoCatalogue: 'Für diesen Befundmelder liegt kein Katalogeintrag vor.',
+    batchFindingCatalogueLink: 'Vollständigen Katalog öffnen',
+    batchShowAffectedProjects: 'Projekte zeigen',
+    batchShowAllProjects: 'Filter löschen',
+    batchActiveProjectFilter: 'Angezeigt: {{label}}',
+    batchProjectSetFilterLabel: '{{primary}} · {{secondary}}',
+    batchIssueDensityHint:
+        'Die Dichte ist beschreibend und verwendet nur abgeschlossene Projekte mit einer positiven Blockzahl. Sie belegt nicht, dass die Projektgröße einen Befund verursacht hat.',
+    batchConceptCoverageTitle: 'Programmierkonzepte in der Klasse',
+    batchConceptCoverageHint:
+        'Wie viele abgeschlossene Projektberichte jedes Konzept enthalten oder keines davon melden.',
+    batchConceptColumnName: 'Konzept',
+    batchConceptColumnPresent: 'Enthält es',
+    batchConceptColumnZero: 'Keines gemeldet',
+    batchConceptPresentValue: '{{present}} von {{total}}',
+    batchNotReportedByClass: 'Von keiner Analyse in dieser Klasse gemeldet.',
+    batchCtProfileTitle: 'Computationales Denken in der Klasse',
+    batchCtProfileHint:
+        'Wie sich die abgeschlossenen Projektberichte auf die Gesamtpunktzahl und die einzelnen Dimensionen der Dr.-Scratch-Bewertungsskala verteilen.',
+    batchCtOverallTitle: 'Verteilung der Gesamtpunktzahl (von 21)',
+    batchCtOverallCoverage:
+        'Gesamtpunktzahlen sind für {{measured}} von {{total}} abgeschlossenen Berichten verfügbar ({{missing}} nicht gemessen).',
+    batchCtOverallDistribution:
+        'Gesamtpunktzahlen: Minimum {{min}}, unteres Quartil {{q1}}, Median {{median}}, oberes Quartil {{q3}}, Maximum {{max}}.',
+    batchCtLevelColumn: 'Stufe {{level}}',
+    batchCtUnreportedColumn: 'Nicht gemessen',
+    batchCtMedianColumn: 'Medianstufe',
+    batchReferenceTitle: 'Mit der Aufgabe vergleichen',
+    batchReferenceLead:
+        'Vergleiche, was LitterBox in einer analysierten Aufgabe gemessen hat, mit dem, was es in diesem Klassensatz gemessen hat.',
+    batchReferenceScopeNote:
+        'Dies ist kein Bewertungsschema. Ein Projekt, das ein von der Aufgabe verwendetes Konzept nicht enthält, hat hier nicht zwangsläufig etwas falsch gemacht — die Aufgabe war möglicherweise offen gestellt.',
+    batchReferenceChooseLabel: 'Bezugsaufgabe',
+    batchReferenceChoosePlaceholder: 'Analysierte Aufgabe wählen …',
+    batchReferenceEmptyBody:
+        'Dieser Vergleich verwendet eine auf diesem Gerät analysierte Aufgabe. Analysiere zuerst eine Aufgabe und kehre dann hierher zurück, um sie mit diesem Klassensatz zu vergleichen.',
+    batchReferenceEmptyLink: 'Eine Aufgabe analysieren',
+    batchReferenceLoading: 'Bezugsaufgabe wird geladen …',
+    batchReferenceLoadError:
+        'Diese Bezugsaufgabe konnte nicht geladen werden. Sie ist möglicherweise abgelaufen, oder die Anfrage ist fehlgeschlagen.',
+    batchReferenceConceptGapTitle:
+        'Konzepte, die die Aufgabe verwendet und Projekte der Klasse nicht',
+    batchReferenceConceptGap:
+        'Die Aufgabe verwendet {{concept}}; {{count}} von {{total}} Projekten enthalten keines davon.',
+    batchReferenceConceptGapUnreported: '{{count}} für dieses Konzept nicht gemessen.',
+    batchReferenceConceptNeverMeasured:
+        'Die Aufgabe verwendet {{concept}}, was keine Analyse in dieser Klasse misst.',
+    batchReferenceConceptGapNone:
+        'Der Klassensatz meldet jedes Konzept, das die Aufgabe verwendet.',
+    batchReferenceConceptNone:
+        'Die Aufgabe und dieser Klassensatz melden dieselben Konzepte als vorhanden oder fehlend.',
+    batchReferenceConceptExtraTitle:
+        'Konzepte, die Projekte der Klasse verwenden und die Aufgabe nicht',
+    batchReferenceConceptExtra:
+        '{{count}} von {{total}} Projekten verwenden {{concept}}; die Aufgabe nicht.',
+    batchReferenceCtTitle: 'Computationales Denken: Aufgabe gegen Klasse',
+    batchReferenceCtTaskColumn: 'Stufe der Aufgabe',
+    batchReferenceCtClassColumn: 'Median-Stufe der Klasse',
+    batchReferenceSizeTitle: 'Größe: Aufgabe gegen Klasse',
+    batchReferenceSizeTaskColumn: 'Aufgabe',
+    batchReferenceSizeClassColumn: 'Median der Klasse',
+    batchReferenceSizeNone: 'Kein Größenmaß steht für einen Vergleich zur Verfügung.',
+    batchMetricCoverage: 'Verteilungen und Abdeckung der Metriken',
+    batchMetricsWorkspace: 'Metriken und Merkmalsmatrix',
+    batchMetricsShown: 'Metriken in Übersicht und Matrix',
+    batchMetricSelectionHint:
+        'Die ausgewählten Metriken werden in beiden Ansichten und im Download der Merkmalsmatrix verwendet.',
+    batchGoToExport: 'Diese ausgewählten Metriken unter „Daten exportieren“ herunterladen',
+    batchMetricViews: 'Metrikansicht',
+    batchMetricSearch: 'Metrik suchen',
+    batchMetricSearchPlaceholder: 'Metriknamen durchsuchen',
+    batchMetricChoiceCount: '{{shown}} von {{total}} Metriken angezeigt.',
+    batchMetricSearchEmpty: 'Keine Metrik passt zu dieser Suche.',
+    batchMetricsCore: 'Kernmetriken',
+    batchMetricsAll: 'Alle auswählen',
+    batchMetricsNone: 'Auswahl löschen',
+    batchMetricsNoneSelected: 'Wähle mindestens eine Metrik für die Übersicht oder Matrix aus.',
+    batchMatrixFindingColumns_one: 'Die Befundspalte in die Matrix aufnehmen',
+    batchMatrixFindingColumns_other: 'Alle {{formatted}} Befundspalten in die Matrix aufnehmen',
+    batchMetricCoverageLabel: '{{present}} von {{total}} Projekten melden diese Metrik.',
+    batchMetricCoverageCompact:
+        '{{present}}/{{total}} vorhanden · {{missing}} fehlend · {{zero}} als null gemeldet',
+    batchMetricDistributionLabel:
+        'Median {{median}}; mittlere Hälfte {{q1}} bis {{q3}}; Spannweite {{min}} bis {{max}}.',
+    batchMetricShowLowest: 'Niedrigste {{count}} zeigen',
+    batchMetricShowHighest: 'Höchste {{count}} zeigen',
+    batchMetricShowTypical: 'Typische {{count}} zeigen',
+    batchMetricExtremeLowLabel: 'niedrigste',
+    batchMetricExtremeHighLabel: 'höchste',
+    batchMetricExtremeTypicalLabel: 'typische',
+    batchMetricExtremesExcluded_one:
+        '{{formatted}} Projekt, das diese Metrik nicht meldet, bleibt an beiden Enden unberücksichtigt.',
+    batchMetricExtremesExcluded_other:
+        '{{formatted}} Projekte, die diese Metrik nicht melden, bleiben an beiden Enden unberücksichtigt.',
+    batchConcernRatePerThousandBlocks: 'Bugs und Smells je 1.000 Blöcke',
+    batchTriageTitle: 'Projekte für einen genaueren Blick',
+    batchTriageLead:
+        'Bis zu zwei Projekte mit den meisten Bugs, zwei mit den meisten Code-Smells sowie das kleinste und größte Projekt nach Blockzahl. Für ein Projekt kann es mehrere Prüfgründe geben.',
+    batchTriageReasonBugs: 'Bugs prüfen',
+    batchTriageReasonSmells: 'Code-Smells',
+    batchTriageReasonSmall: 'Kleinstes Projekt',
+    batchTriageReasonLarge: 'Größtes Projekt',
+    batchTriageReasonsLabel: 'Gründe für eine genauere Prüfung',
+    batchTriageBugs_one: '{{formatted}} Bug',
+    batchTriageBugs_other: '{{formatted}} Bugs',
+    batchTriageSmells_one: '{{formatted}} Code-Smell',
+    batchTriageSmells_other: '{{formatted}} Code-Smells',
+    batchTriageBlocks_one: '{{formatted}} Block',
+    batchTriageBlocks_other: '{{formatted}} Blöcke',
+    batchTriageBlocksMissing: 'Blockzahl nicht verfügbar',
+    batchTriageShowProjects_one: 'Dieses Projekt zeigen',
+    batchTriageShowProjects_other: 'Diese {{formatted}} Projekte zeigen',
+    batchTriageUnsized_one:
+        '{{formatted}} abgeschlossenes Projekt hat keine Blockzahl; seine Befunde sind trotzdem enthalten.',
+    batchTriageUnsized_other:
+        '{{formatted}} abgeschlossene Projekte haben keine Blockzahl; ihre Befunde sind trotzdem enthalten.',
+    batchFeatureMatrix: 'Vollständige Merkmalsmatrix',
+    batchFeatureMatrixHint:
+        '{{shown}} von {{total}} abgeschlossenen Projekten werden gezeigt; der Export enthält alle. Ein Gedankenstrich bedeutet, dass der Wert nicht berichtet wurde. Null ist ein berichteter Wert.',
+    batchFeatureMatrixHintFiltered:
+        '{{shown}} von {{matching}} zur Suche passenden Projekten werden gezeigt, von {{total}} abgeschlossenen insgesamt; der Export enthält alle {{total}}. Ein Gedankenstrich bedeutet, dass der Wert nicht berichtet wurde. Null ist ein berichteter Wert.',
+    batchMatrixSearch: 'Projekt suchen',
+    batchMatrixSearchPlaceholder: 'Projektnamen durchsuchen',
+    batchMatrixSearchEmpty: 'Kein Projekt passt zu dieser Suche.',
+    batchProjectsHint: 'Filtere, sortiere und wähle ein Projekt aus, um seinen Bericht zu prüfen.',
+    batchCsvDatasets: 'Daten zum Herunterladen',
+    batchCsvMatrixDataset: 'Merkmalsmatrix',
+    batchCsvWideDataset: 'Projektübersicht',
+    batchCsvFindingDataset: 'Befundprofil',
+    batchCsvAllDatasets: 'Alle Tabellen (ZIP)',
+    batchCsvMatrixHint:
+        'Eine Zeile pro abgeschlossenem Projekt mit den unter „Metriken und Merkmalsmatrix“ ausgewählten Spalten.',
+    batchCsvWideHint:
+        'Eine Zeile pro Projekt mit Analysestatus und ausgewählten Überblicksspalten.',
+    batchCsvFindingHint: 'Eine Zeile pro Befundtyp in jedem abgeschlossenen Projekt.',
+    batchCsvAllHint: 'Eine ZIP-Datei mit Merkmalsmatrix, Projektübersicht und Befundprofil.',
+    batchCsvPreparing: 'Download wird vorbereitet …',
+    batchCsvError: 'Der Download konnte nicht vorbereitet werden. Bitte versuche es erneut.',
+    batchFinderId: 'Befund-ID',
+    batchFindingFamily: 'Befundfamilie',
+    batchCohortEmpty: 'Keine abgeschlossenen Analysen passen zu den aktuellen Filtern.',
+    batchCommonFindingSingleton: 'In einem abgeschlossenen Projekt gemeldet',
+    batchInspectProject: 'Bericht prüfen',
+    batchShowAllIssues_one: 'Die eine Befundart zeigen',
+    batchShowAllIssues_other: 'Alle {{formatted}} Befundarten zeigen',
+    batchShowFewerIssues: 'Weniger Befundarten zeigen',
     batchResultsTitle: 'Projektergebnisse',
+    batchAllProjects: 'Alle Projektberichte',
+    batchProjectCount_one: '{{formatted}} angezeigt',
+    batchProjectCount_other: '{{formatted}} angezeigt',
+    batchAllProjectsHint:
+        'Grenze den Klassensatz mit Filtern ein. Wähle einen Projektnamen, um den vollständigen Bericht in der Projektansicht zu öffnen.',
     batchProject: 'Projekt',
-    batchFindings_one: '{{formatted}} Befund gemeldet.',
-    batchFindings_other: '{{formatted}} Befunde gemeldet.',
     batchProgressSummary: '{{finished}} von {{expected}} Projekten sind fertig verarbeitet.',
-    batchProgressMeter: 'Fortschritt der Sammelanalyse',
-    batchSelectionHint: 'Wähle eine Analyse, um ihre gemeldeten Befunde anzusehen.',
+    batchProgressMeter: 'Verarbeitungsfortschritt des Klassensatzes',
+    batchBackToOverview: '← Zurück zum Klassensatz',
+    batchProjectReport: 'Projektbericht',
+    batchChooseProjectReport: 'Projektbericht wechseln',
+    batchProjectCodeTitle: 'Projektcode ansehen',
+    batchProjectCodeLead: 'Die Skripte dieses Berichts öffnen, ohne den Klassensatz zu verlassen.',
     batchSelectProject: 'Projektergebnis anzeigen',
     batchSelectedProject: 'Dieses Projektergebnis wird angezeigt',
     batchEmptyTitle: 'Noch keine Analyse abgeschlossen',
@@ -482,6 +654,8 @@ export const pack: Partial<TranslationPack> = {
     cancelledBody: 'Diese Einreichung wurde abgebrochen, bevor alle Projekte abgeschlossen waren.',
     resultLinkLabel: 'Link zu diesem Ergebnis',
     resultLinkHint: 'Merke dir diesen Link, um später zu diesem Ergebnis zurückzukommen.',
+    resultLinkBatchHint:
+        'Wer diesen Link hat, kann den gesamten Klassensatz öffnen: jeden Projektnamen und jeden Bericht darin. Bewahre ihn auf und gib ihn nur an Personen weiter, die die Arbeit der Klasse sehen sollen.',
     copyLink: 'Link kopieren',
     copiedLink: 'Link kopiert.',
     recentResultsTitle: 'Deine letzten Ergebnisse',
@@ -489,6 +663,7 @@ export const pack: Partial<TranslationPack> = {
     recentResultsForget: 'Diese vergessen',
     recentResultIssues: 'Prüfung',
     recentResultQuestions: 'Frag mich',
+    recentResultQuestionSet: 'Fragensatz',
     recentResultBatch: 'Klassensatz',
     recentResultBatchProjects_one: '{{formatted}} Projekt',
     recentResultBatchProjects_other: '{{formatted}} Projekte',
@@ -497,15 +672,40 @@ export const pack: Partial<TranslationPack> = {
         'Du hast gesehen, was LitterBox hier gefunden hat. Finde jetzt heraus, wie viel von diesem Projekt du selbst erklären könntest — es liegt schon hier, du kannst sofort mit dem Antworten anfangen.',
     reuseQuestionsAction: 'Frag mich zu diesem Projekt',
     reuseQuestionsNamed: 'Frag mich zu {{project}}',
+    reuseQuizNamed: 'Aus {{project}} ein Quiz bauen',
     reuseOpenQuestions: 'Fragen zu {{project}} öffnen',
     reuseAdvancedNamed: 'Erweiterte Analyse für {{project}} öffnen',
-    reuseModificationNamed: 'Veränderte Kopie von {{project}} erstellen',
     reuseBusy: 'Wird vorbereitet …',
     reuseError: 'Dieses Projekt konnte nicht erneut verwendet werden. Lade es noch einmal hoch.',
     reuseGone: 'Dieses Projekt wird hier nicht mehr aufbewahrt. Lade es noch einmal hoch.',
     originIssues: 'Zurück zur Prüfung von {{project}}',
     originQuestions: 'Zurück zu den Fragen über {{project}}',
     analysedProject: 'Analysiertes Projekt',
+    taskFindingsTitle: 'Was LitterBox in dieser Aufgabe gefunden hat',
+    taskFindingsNav: 'Befunde und Hinweise',
+    taskFindingsLead:
+        'Die Fehler, Code-Gerüche und guten Praktiken, die LitterBox für dieses Projekt gemeldet hat, eine Zeile je gefundenem Muster.',
+    taskFindingsByFamilyLabel: 'Befunde nach Familie',
+    taskFindingsTopFindersTitle: 'Befunde nach Finder',
+    taskFindingsReviewLead:
+        'Prüfe diese anhand deiner eigenen Musterlösung, bevor du mit dieser Aufgabe unterrichtest.',
+    taskFindingsStrengthsTitle: 'Was diese Aufgabe zeigt',
+    taskFindingsStrengthsLead:
+        'LitterBox meldet diese als gute Praxis, die in dieser Aufgabe bereits vorhanden ist.',
+    taskFindingsColumnFinder: 'Finder',
+    taskFindingsColumnFamily: 'Familie',
+    taskFindingsColumnSeverity: 'Schweregrad',
+    taskFindingsColumnOccurrences: 'Anzahl',
+    taskFindingsColumnSprites: 'Figuren',
+    taskFindingsSortAscending: 'Aufsteigend sortiert',
+    taskFindingsSortDescending: 'Absteigend sortiert',
+    taskFindingsFinderWhatLabel: 'Was das ist',
+    taskFindingsFinderDoLabel: 'Was zu tun ist',
+    taskFindingsFinderNoCatalogue: 'Zu diesem Finder liegt keine weitere Erklärung vor.',
+    taskFindingsFinderReportLink: 'Diesen Befund im vollständigen Ergebnis ansehen',
+    taskFindingsFinderReportHint: 'Öffnet in einem neuen Tab.',
+    taskFindingsEmpty: 'LitterBox hat für dieses Projekt nichts gemeldet.',
+    taskFindingsViewFull: 'Das vollständige Ergebnis dieser Aufgabe ansehen',
     issuesTitle: 'Befunde',
     issueSummaryTitle: 'Dieses Projekt auf einen Blick',
     issueSummaryTitleFor: '{{project}} auf einen Blick',
@@ -575,6 +775,7 @@ export const pack: Partial<TranslationPack> = {
     projectCodeLoading: 'Der Code wird geladen …',
     projectCodeError: 'Der Code konnte nicht geladen werden.',
     projectCodeEmpty: 'Die Analyse hat für dieses Projekt keine Figuren gemeldet.',
+    projectCodeUnavailable: 'Für dieses Quiz ist der Code nicht verfügbar.',
     quizBackToSummary: 'Zurück zur Übersicht',
     quizReviewUnanswered: 'Nicht beantwortet',
     quizRecordedWithoutVerdict_one: '{{formatted}} Antwort wurde gespeichert, aber nicht bewertet.',
@@ -585,8 +786,12 @@ export const pack: Partial<TranslationPack> = {
     quizSaving: 'Antwort wird gespeichert …',
     quizSaved: 'Antwort gespeichert.',
     quizError: 'Antwort konnte nicht gespeichert werden.',
-    quizAnswerTooLong: 'Antworten dürfen höchstens 255 Zeichen enthalten.',
+    quizAnswerTooLong: 'Antworten dürfen höchstens {{count}} Zeichen enthalten.',
+    quizAttemptsExhausted:
+        'Dieses Quiz wurde schon so oft geöffnet, wie es geht. Deine Antwort steht noch da, lässt sich aber nicht abschicken. Frag deine Lehrkraft.',
     quizAuthorizationError: 'Deine Autorisierung für diese Antwort ist nicht mehr gültig.',
+    quizClosed:
+        'Dieses Quiz ist gerade nicht geöffnet, deshalb konnte deine Antwort nicht abgeschickt werden. Sie steht noch da – frag deine Lehrkraft, ob das Quiz wieder geöffnet wird.',
     quizCodeContext: 'Der Code, um den es in dieser Frage geht',
     quizChooseSeveral: 'Wähle {{count}} Antworten',
     quizCorrect: 'Richtig!',
@@ -595,20 +800,72 @@ export const pack: Partial<TranslationPack> = {
     quizYourScore: 'Dein Punktestand',
     quizScoreSummary: '{{correct}} von {{total}} richtig.',
     quizRecorded: 'Deine Antworten wurden gespeichert.',
-    teacherQuestionsTitle: 'Alle Fragen',
+    assessmentQuizTitle: 'Quiz',
+    assessmentUnavailable: 'Veröffentlichte Quiz sind auf diesem Server nicht verfügbar.',
+    assessmentQuizLoading: 'Dein Quiz wird vorbereitet …',
+    assessmentQuizQuestionsTitle: 'Beantworte die Fragen',
+    assessmentQuizQuestionsLead:
+        'Eine Frage nach der anderen. Sende deine Antwort ab, um zu sehen, wie es war, und geh dann zur nächsten Frage weiter.',
+    assessmentQuizNotFoundBody:
+        'Der Link könnte falsch eingegeben sein, oder das Quiz ist nicht mehr verfügbar. Überprüfe die Adresse, die du erhalten hast.',
+    assessmentQuizGoneBody:
+        'Dieses Quiz wurde geschlossen, oder das Datum, bis zu dem es offen war, ist verstrichen. Frage die Person, die es erstellt hat, ob es einen neuen Link gibt.',
+    assessmentQuizAttemptRestarted:
+        'Dieses Quiz musste neu gestartet werden. Deine früheren Antworten wurden nicht gespeichert. Bitte beantworte diese Fragen erneut.',
+    assessmentResultsTitle: 'Quiz-Ergebnisse',
+    assessmentResultsLoading: 'Ergebnisse werden geladen …',
+    assessmentResultsPrivacyNote:
+        'Hier werden nur Summen angezeigt: wie viele Versuche es gab und wie viele Antworten auf jede Frage richtig waren. Es werden nie Namen, wer eine Antwort geschickt hat oder der eingegebene Text angezeigt – eine Freitextantwort könnte einen Namen enthalten, den ein Kind eingegeben hat, deshalb wird der Antworttext hier nie zurückgeschickt.',
+    assessmentResultsInvalidBody:
+        'Der Link könnte falsch eingegeben sein, oder sein Token ist nicht mehr gültig. Überprüfe die Adresse, die du beim Veröffentlichen des Quiz erhalten hast.',
+    assessmentResultsTotalAttempts_one: '{{formatted}} Versuch aufgezeichnet.',
+    assessmentResultsTotalAttempts_other: '{{formatted}} Versuche aufgezeichnet.',
+    assessmentResultsAnswered: 'Beantwortet',
+    assessmentResultsCorrect: 'Richtig',
+    assessmentResultsIncorrect: 'Falsch',
+    assessmentResultsNotMarkable: 'Nicht bewertbar',
+    assessmentResultsEmpty: 'Noch niemand hat dieses Quiz bearbeitet.',
+    assessmentResultsNoQuestions: 'Dieses Quiz enthält keine Fragen.',
+    assessmentResultsQuestion: 'Frage',
+    assessmentResultsQuizName: 'Quiz',
+    assessmentResultsRefresh: 'Nach neuen Antworten sehen',
+    assessmentLifecycleTitle: 'Dieses Quiz',
+    assessmentLifecycleOpen: 'Offen — über den Link können weiterhin Antworten abgegeben werden.',
+    assessmentLifecycleClosed:
+        'Geschlossen — über den Link können keine Antworten mehr abgegeben werden. Diese Ergebnisse bleiben hier.',
+    assessmentLifecycleExpires:
+        'Nimmt bis zum {{date}} Antworten an und wird danach mitsamt den Antworten entfernt.',
+    assessmentLifecycleClose: 'Quiz schließen',
+    assessmentLifecycleReopen: 'Quiz wieder öffnen',
+    assessmentLifecycleLapsed:
+        'Beendet — das Datum unten ist erreicht, der Link nimmt keine Antworten mehr an. Diese Ergebnisse bleiben bis zur Löschung erhalten.',
+    assessmentLifecycleExpired:
+        'Nimmt seit {{date}} keine Antworten mehr an und wird mit seinen Antworten bald darauf gelöscht.',
+    assessmentLifecycleDeleting: 'Wird gelöscht …',
+    assessmentLifecycleDelete: 'Quiz löschen',
+    assessmentLifecycleDeleteConfirmTitle: 'Dieses Quiz und alle Antworten löschen?',
+    assessmentLifecycleDeleteConfirmBody:
+        'Das Quiz funktioniert für niemanden mehr, der den Link hat, und jede Antwort deiner Klasse wird mitgelöscht. Auch diese Ergebnisse verschwinden. Das lässt sich nicht rückgängig machen — schließe das Quiz stattdessen, wenn es nur keine Antworten mehr annehmen soll.',
+    assessmentLifecycleDeleteConfirmBack: 'Behalten',
+    assessmentLifecycleDeleted: 'Dieses Quiz und alle Antworten darauf wurden gelöscht.',
+    assessmentLifecycleError:
+        'Das konnte gerade nicht geändert werden. Du kannst es erneut versuchen.',
+    teacherQuestionsTitle: 'Quiz-Baukasten',
     teacherQuestionsLead:
-        'Alle Fragen, die dieses Projekt hergibt, nach dem Blockmodell gruppiert – so sehen Sie, was abgedeckt ist, und wählen aus, was Sie im Unterricht einsetzen.',
+        'Alle Fragen, die dieses Projekt hergibt, nach dem Blockmodell gruppiert – so sehen Sie, was abgedeckt ist, wählen aus, was Sie im Unterricht einsetzen, und veröffentlichen den Satz als Quiz.',
     teacherQuestionsNavLabel: 'Alle Fragen',
-    teacherQuestionsChoiceTitle: 'Alle Fragen erzeugen',
+    teacherQuestionsChoiceTitle: 'Quiz-Baukasten',
     teacherQuestionsChoiceDescription:
-        'Laden Sie ein Projekt hoch, um den vollständigen Fragensatz mit seiner Blockmodell-Abdeckung zu sehen.',
-    teacherQuestionsCoverage: 'Abdeckung im Blockmodell',
+        'Laden Sie ein Projekt hoch, um jede Frage daraus mit ihrer Blockmodell-Abdeckung zu sehen, sie anzupassen, eigene zu ergänzen und den Satz als Quiz für Ihre Klasse zu veröffentlichen.',
+    teacherRecentQuizProjectsHeading: 'Auf diesem Gerät analysierte Projekte',
+    teacherRecentQuestionSetsHeading: 'Auf diesem Gerät erstellte Fragensätze',
+    teacherQuestionsCoverage: 'Nach Blockmodell filtern',
     teacherQuestionsCount_one: '{{count}} Frage',
     teacherQuestionsCount_other: '{{count}} Fragen',
     teacherQuestionsCell: '{{dimension}} / {{scope}}',
     teacherQuestionsUncategorised: 'Ohne Blockmodell-Zelle',
     teacherQuestionsAnswerNote:
-        'Antworten werden beim Absenden geprüft, genau wie bei den Lernenden; sie stehen nicht vorab in der Liste.',
+        'Die Lehrkraftfassung druckt bei einer erzeugten Frage die richtige Antwort zusammen mit jedem hier ergänzten Bewertungshinweis.',
     teacherQuestionsCoverageHint:
         'Wähle eine Zeile, eine Spalte oder eine einzelne Zelle, um nur deren Fragen zu sehen. Noch einmal gewählt, erscheinen wieder alle.',
     teacherQuestionsFilterCell_one: '{{dimension}} und {{scope}}, {{count}} Frage',
@@ -762,6 +1019,148 @@ export const pack: Partial<TranslationPack> = {
     metricComparisonBasis_other:
         'Verglichen mit {{formatted}} Projekten, die hier schon analysiert wurden.',
     metricAverageLineWidth: 'Durchschnittliche Zeilenbreite',
+    taskSizeTitle: 'Umfang und Komplexität dieser Aufgabe',
+    taskSizeNav: 'Umfang und Komplexität',
+    taskSizeLead:
+        'Wie groß und wie verschachtelt diese Aufgabe im Vergleich zu den anderen von diesem Dienst analysierten Projekten ist, um zu beurteilen, ob sie zur vorgesehenen Zielgruppe passt.',
+    taskSizeColumnMeasurement: 'Messung',
+    taskSizeColumnComparison: 'Im Vergleich zu anderen Projekten',
+    taskSizeLongestScript: 'Längstes Skript',
+    taskSizeMaxNesting: 'Tiefste Verschachtelung',
+    taskSizeMostComplexScript: 'Komplexestes Skript',
+    taskSizeWeightedMethodCount: 'Gewichtete Methodenanzahl',
+    taskSizeCyclomaticComplexity: 'Zyklomatische Komplexität',
+    taskSizeMarkerWithinRange:
+        'Der Wert für diese Aufgabe, {{value}}, liegt innerhalb dieses Bereichs.',
+    taskSizeMarkerBelowRange:
+        'Der Wert für diese Aufgabe, {{value}}, ist niedriger als jedes hier verglichene Projekt; die Markierung wird am unteren Ende des Diagramms gezeichnet.',
+    taskSizeMarkerAboveRange:
+        'Der Wert für diese Aufgabe, {{value}}, ist höher als jedes hier verglichene Projekt; die Markierung wird am oberen Ende des Diagramms gezeichnet.',
+
+    programConceptMotion: 'Bewegung',
+    programConceptLooks: 'Aussehen',
+    programConceptSound: 'Klang',
+    programConceptEvents: 'Ereignisse',
+    programConceptEventTriggers: 'Ereignisgesteuerte Skripte',
+    programConceptControl: 'Steuerung',
+    programConceptSensing: 'Fühlen',
+    programConceptOperators: 'Operatoren',
+    programConceptVariables: 'Variablen',
+    programConceptLists: 'Listen',
+    programConceptCustomBlocks: 'Eigene Blöcke',
+    programConceptBooleanLogic: 'Boolesche Operatoren',
+    programConceptPen: 'Stift',
+    programConceptMusic: 'Musik',
+    programConceptTextToSpeech: 'Text-zu-Sprache',
+    programConceptTranslate: 'Übersetzen',
+    programConceptSequences: 'Sequenzen',
+    programConceptLoops: 'Schleifen',
+    programConceptConditionals: 'Bedingungen',
+    programConceptBroadcasts: 'Nachrichten',
+    programConceptClones: 'Klone',
+    ctDimensionFlowControl: 'Ablaufsteuerung',
+    ctDimensionFlowControlDescription: 'Wie Skripte Aktionen anordnen und wiederholen.',
+    ctDimensionLogic: 'Logik',
+    ctDimensionLogicDescription: 'Wie Bedingungen entscheiden, welche Aktionen ausgeführt werden.',
+    ctDimensionDataRepresentation: 'Datenrepräsentation',
+    ctDimensionDataRepresentationDescription:
+        'Wie Figuren, Variablen und Listen veränderliche Informationen darstellen.',
+    ctDimensionAbstraction: 'Abstraktion',
+    ctDimensionAbstractionDescription:
+        'Wie Code auf Figuren, Skripte, eigene Blöcke und Klone aufgeteilt wird.',
+    ctDimensionSynchronization: 'Synchronisation',
+    ctDimensionSynchronizationDescription:
+        'Wie Skripte Zeitabläufe und Nachrichten aufeinander abstimmen.',
+    ctDimensionParallelism: 'Parallelität',
+    ctDimensionParallelismDescription: 'Wie mehrere Skripte gleichzeitig ausgeführt werden.',
+    ctDimensionUserInteractivity: 'Interaktivität',
+    ctDimensionUserInteractivityDescription:
+        'Wie das Projekt auf Eingaben von Menschen und Sensoren reagiert.',
+    ctLevelNotShown: 'In diesem Projekt nicht gezeigt.',
+    ctLevelFlowControl1: 'Führt eine Folge von Blöcken nacheinander aus.',
+    ctLevelFlowControl2: 'Wiederholt Blöcke mit wiederhole fortlaufend oder wiederhole.',
+    ctLevelFlowControl3: 'Wiederholt Blöcke mit wiederhole bis.',
+    ctLevelLogic1: 'Verwendet einen falls-Block.',
+    ctLevelLogic2: 'Verwendet einen falls-sonst-Block.',
+    ctLevelLogic3: 'Verknüpft Bedingungen mit und, oder oder nicht.',
+    ctLevelDataRepresentation1: 'Ändert eine Eigenschaft einer Figur, etwa Größe oder Kostüm.',
+    ctLevelDataRepresentation2: 'Speichert Werte in Variablen.',
+    ctLevelDataRepresentation3: 'Speichert Werte in Listen.',
+    ctLevelAbstraction1: 'Verteilt das Projekt auf mehrere Figuren mit jeweils mehreren Skripten.',
+    ctLevelAbstraction2: 'Definiert eigene Blöcke.',
+    ctLevelAbstraction3: 'Erzeugt Klone einer Figur mit dem Klon-Block.',
+    ctLevelSynchronization1: 'Verwendet warte, um ein Skript anzuhalten.',
+    ctLevelSynchronization2: 'Koordiniert Skripte mit sende, wenn ich empfange oder stoppe.',
+    ctLevelSynchronization3:
+        'Koordiniert Skripte mit warte bis, wenn Bühnenbild wechselt zu oder sende und warte.',
+    ctLevelParallelism1: 'Lässt zwei Skripte gleichzeitig über die grüne Flagge starten.',
+    ctLevelParallelism2:
+        'Lässt zwei Skripte gleichzeitig über denselben Tastendruck oder Klick starten.',
+    ctLevelParallelism3:
+        'Lässt zwei Skripte gleichzeitig über dieselbe Nachricht, denselben Bühnenbildwechsel oder dasselbe Sensor-Ereignis starten.',
+    ctLevelUserInteractivity1: 'Startet über die grüne Flagge.',
+    ctLevelUserInteractivity2: 'Reagiert auf Tasten, Klicks, frage und warte oder die Maus.',
+    ctLevelUserInteractivity3: 'Reagiert auf Lautstärke oder Video.',
+    ctLevelBarLabel: 'Stufe {{level}} von {{max}}',
+    ctProfileLevelReachedLabel: 'Erreicht',
+
+    ctProfileTitle: 'Computationales Denken in dieser Aufgabe',
+    ctProfileNav: 'Computationales Denken',
+    ctProfileLead:
+        'Dies ist die Dr.-Scratch-Bewertungsskala für computationales Denken, angewendet auf dieses Projekt. Sie beschreibt, was das Projekt enthält, nicht, wer es gebaut hat: Eine niedrige Stufe in einer Dimension bedeutet, dass die Aufgabe dieses Muster derzeit nicht aufgreift, nicht, dass die Aufgabe schlecht ist.',
+    ctProfileDimensionLink: 'Beispiele bei Dr. Scratch',
+    ctProfileOverall: 'Gesamtergebnis',
+    ctProfileColumnDimension: 'Dimension',
+    ctProfileColumnLevel: 'Erreichte Stufe',
+    ctProfileColumnMeaning: 'Was diese Stufe bedeutet',
+    ctProfileTotal: '{{score}} von {{max}}',
+    ctProfileTotalNotReported: 'Für dieses Projekt nicht gemeldet.',
+    ctTotalBandNarrow:
+        'Diese Gesamtpunktzahl liegt im Bereich 0–7: Die Aufgabe deckt derzeit nur einen schmalen Ausschnitt der sieben Dimensionen ab.',
+    ctTotalBandModerate:
+        'Diese Gesamtpunktzahl liegt im Bereich 8–14: Die Aufgabe deckt etwa die Hälfte der sieben Dimensionen ab oder reicht bei mehreren von ihnen nur bis zur Mitte.',
+    ctTotalBandBroad:
+        'Diese Gesamtpunktzahl liegt im Bereich 15–21: Die Aufgabe deckt die meisten der sieben Dimensionen ab, mehrere davon auf der höchsten Stufe.',
+    ctTotalBandNote:
+        'Ein niedriger Bereich ist kein Urteil über die Aufgabe — sie kann trotzdem eine völlig gute, bewusst eng gefasste Übung sein, die nur einen Ausschnitt dieser Bewertungsskala benötigt hat.',
+    conceptCoverageTitle: 'Programmierkonzepte und Blöcke in dieser Aufgabe',
+    conceptCoverageNav: 'Konzepte und Blöcke',
+    conceptCoverageLead:
+        'Null bedeutet, dass nichts gefunden wurde; „nicht gemeldet“ bedeutet, dass diese Analyse keinen Messwert dafür enthält.',
+
+    blockCategoriesTitle: 'Blockkategorien',
+    blockCategoriesLead:
+        'Die neun Scratch-Blockkategorien, in den Farben des Editors und nach ihrem Anteil an den gezählten Blöcken dieses Projekts skaliert.',
+    blockCategoriesTreemapLabel:
+        'Blockkategorien, als Flächen im Verhältnis zu den jeweils gezählten Blöcken, mit Anzahl und Anteil beschriftet, wo eine Fläche Platz dafür hat.',
+    blockCategoriesTableCaption: 'Gezählte Blöcke je Kategorie',
+    blockCategoriesColumnCategory: 'Kategorie',
+    blockCategoriesColumnBlocks: 'Blöcke',
+    blockCategoriesColumnShare: 'Anteil',
+    blockCategoriesShareValue: '{{percent}} %',
+    blockCategoriesFigures: '{{count}} ({{share}})',
+    blockCategoriesUnnamed: 'In der Grafik nicht ausgeschrieben:',
+    blockCategoriesNoneCounted:
+        'Kein an diesen Dienst angeschlossener Analysator hat für diese Aufgabe eine Blockanzahl für irgendeine Kategorie gemeldet, es gibt hier also nichts zu zeichnen.',
+    blockCategoriesShareNote:
+        'Ein Anteil bezieht sich auf die Blöcke, die über die Kategorien oben gezählt wurden, nicht auf alle Blöcke des Projekts: Eine Kategorie, die niemand gemessen hat, fehlt in der Grafik und in der Summe, auf die sich der Anteil bezieht.',
+    programmingConceptsTitle: 'Programmierkonzepte',
+    programmingConceptsLead:
+        'Gezählte Programmierstrukturen in diesem Projekt. Boolesche Operatoren sind und, oder und nicht. Variablen und eigene Blöcke erscheinen unten auch als Blockkategorien.',
+    programmingConceptsContextTitle: 'Unterrichtskontext',
+    programmingConceptsContextBody:
+        'Lehrpläne führen häufig von Sequenzen und Ereignissen über Wiederholungen und Entscheidungen zu Daten, Abstraktion und Koordination. Vergleiche die Konzepte oben mit dem bereits behandelten Stoff; allein aus der Mischung lässt sich keine passende Altersstufe ableiten.',
+    programmingConceptsCreativeComputingLink: 'Creative-Computing-Lehrplan',
+    programmingConceptsGermanyLink: 'Deutsches Lehrplanbeispiel (Bayern)',
+    programmingConceptsEnglandLink: 'Englischer Computing-Lehrplan',
+    programmingConceptsFoundationTitle: 'Sequenzen und Ereignisse',
+    programmingConceptsControlTitle: 'Wiederholungen und Entscheidungen',
+    programmingConceptsDataTitle: 'Daten und Abstraktion',
+    programmingConceptsCoordinationTitle: 'Koordination zwischen Skripten',
+    programmingConceptsUnmeasuredTitle: 'In dieser Analyse nicht gemeldet ({{count}})',
+    programmingConceptsUnmeasuredHint:
+        'Für diese Konzepte liegt in dieser Analyse kein Messwert vor. Analysiere die Aufgabe erneut, um Messwerte der aktuellen Version zu erhalten.',
+
     metricsGraphsTitle: 'Programmgrafen',
     metricsGraphsLead: 'Wähle einen Graphen aus und fordere ihn gezielt an.',
     metricsGraphViewControls: 'Ansichtssteuerung für den Grafen',
@@ -857,6 +1256,9 @@ export const pack: Partial<TranslationPack> = {
     privacyUploadHeading: 'Deine Verantwortung',
     privacyUploadBody:
         'Lade keine personenbezogenen Daten hoch. Ein Scratch-Projekt kann Namen, Fotos oder Tonaufnahmen enthalten; entferne diese, bevor du es einreichst.',
+    privacyAssessmentHeading: 'Ein Quiz für deine Klasse veröffentlichen',
+    privacyAssessmentBody:
+        'Beim Veröffentlichen eines Quiz werden dessen Titel, Anweisungen und Fragetexte gespeichert, zusammen mit den zwei Links, die du erhältst: einer, mit dem Lernende das Quiz öffnen, einer, mit dem du die Ergebnisse siehst. Eine von einem Lernenden abgegebene Antwort wird nur gespeichert, um sie in die Ergebnisse einzurechnen – wie viele richtig, falsch oder nicht bewertbar waren – und nie zusammen mit etwas, das verrät, wer sie geschickt hat: kein Name, kein Gerät, nichts, das sie mit einer anderen Einreichung auf dieser Seite verbindet. Ein veröffentlichtes Quiz und seine Antworten werden so lange aufbewahrt wie die Analyse, aus der es erstellt wurde, und mit ihr gemeinsam gelöscht.',
     privacyControllerHeading: 'Verantwortlich',
     privacyControllerBody:
         'Die Universität Passau ist eine Körperschaft des öffentlichen Rechts gemäß Art. 11 Abs. 1 BayHSchG und wird von dem Vorsitzenden des Leitungsgremiums, Präsident Prof. Dr. Jan Schumann, gesetzlich vertreten.',
@@ -1117,9 +1519,9 @@ export const pack: Partial<TranslationPack> = {
     injectionPreviewReady: 'Mutationsvorschauen bereit',
     injectionPreviewSource: 'Quellprojekt',
     injectionSpriteName: 'Figurenname',
-    injectionOriginalScript: 'Ursprüngliche Skript-ID',
-    injectionMutatedScript: 'Mutierte Skript-ID',
-    injectionScriptUnnamed: 'An Ort und Stelle geändert',
+    injectionOriginalScript: 'Das Skript, wie es war',
+    injectionMutatedScript: 'Das Skript mit dem eingebauten Fehler',
+    injectionResultOrdinal: 'Mutation {{position}} von {{count}}',
     injectionPartialFailure: 'Einige ausgewählte Injektoren lieferten kein Ergebnis.',
     injectionNoApplicable: 'Kein ausgewählter Injektor lieferte eine anwendbare Mutation.',
     injectionNoApplicableBody:

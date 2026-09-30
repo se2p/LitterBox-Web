@@ -14,6 +14,7 @@ import {
 import { DefinitionList } from '../DataList';
 import { StatusIndicator } from '../Status';
 import { MetricSummary } from '../capabilities/metrics/MetricSummary';
+import { injectionEligible } from '../capabilities/injection/injection-utils';
 import { OriginResultLink } from './OriginResultLink';
 import { ResultLink } from './ResultLink';
 import { ReuseProjectButton } from './ReuseProjectButton';
@@ -48,22 +49,23 @@ export function SubmissionStatusBanner({
     return (
         <>
             <section className="hero analysis-identity" aria-labelledby="status-heading">
-                {/* The heading and the line under it were saying the same thing twice — what this page is, and then
-                    which project it is about. One sentence answers both and gives the findings a screen's start. */}
                 <h1 id="status-heading">
-                    {projectName ? t('statusTitleFor', { project: projectName }) : t('statusTitle')}
+                    {isBatchSubmission(value)
+                        ? t('batchWorkspaceTitle')
+                        : projectName
+                          ? t('statusTitleFor', { project: projectName })
+                          : t('statusTitle')}
                 </h1>
                 <StatusIndicator
                     tone={statusTone(value.status)}
                     label={statusLabel(value.status, t)}
                 />
-                {/* The address of this result, spelled out: what a submission hands back is a link, and there is
-                    nowhere on this site to type a code back in. */}
                 {terminal && value.token && (
-                    <ResultLink path={`submissions/${encodeURIComponent(value.token)}`} />
+                    <ResultLink
+                        path={`submissions/${encodeURIComponent(value.token)}`}
+                        hint={isBatchSubmission(value) ? t('resultLinkBatchHint') : undefined}
+                    />
                 )}
-                {/* Checking a project that had already been asked about made a second result; this is the way
-                    back to the first one. */}
                 {value.token && <OriginResultLink token={value.token} />}
                 {!terminal && (
                     <button
@@ -301,22 +303,30 @@ export function AdvancedAnalysisAction({
     graphCapabilityEnabled,
     diffCapabilityEnabled,
     exportCapabilityEnabled,
+    injectionCapabilityEnabled,
 }: {
     token: string;
     analysis: BatchAnalysis;
     graphCapabilityEnabled: boolean;
     diffCapabilityEnabled: boolean;
     exportCapabilityEnabled: boolean;
+    injectionCapabilityEnabled: boolean;
 }) {
     const { t } = useTranslation();
     const validReference = token.trim().length > 0 && positiveAnalysisId(analysis.id);
     const validFormat = validToolFormat(analysis.inputFormat);
-    // Fault injection is not among them: it is offered on the teacher's pages, and a service that only has
-    // that one turned on has nothing to show in the advanced workspace.
+    // Fault injection is among them, on the same terms its own section answers to: a service with only that one
+    // turned on still has something to show in the advanced workspace, so the way in has to be offered for it.
     const advancedAvailable =
         (diffCapabilityEnabled && validReference) ||
         (graphCapabilityEnabled && validReference && validFormat) ||
-        (exportCapabilityEnabled && validReference && validFormat);
+        (exportCapabilityEnabled && validReference && validFormat) ||
+        injectionEligible(
+            injectionCapabilityEnabled,
+            analysis.id,
+            analysis.status,
+            analysis.inputFormat,
+        );
 
     if (!advancedAvailable) return null;
 

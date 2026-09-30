@@ -2,8 +2,10 @@
 // SPDX-FileCopyrightText: 2025 LitterBox-Web contributors
 
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     parseRichHint,
+    richHintFormatTag,
     richHintTerms,
     scratchblocksSourceForInline,
     type RichHintFormat,
@@ -14,8 +16,9 @@ import { ScratchblocksPreview } from './ScratchblocksPreview';
 interface RichHintProps {
     value: string | null | undefined;
     locale: string;
-    scratchblocksLabel: string;
-    textAlternativeLabel: string;
+    /** Defaults to the shared translations; pass only where a page words the notation differently. */
+    scratchblocksLabel?: string;
+    textAlternativeLabel?: string;
 }
 
 const formatClassName: Record<RichHintFormat, string> = {
@@ -25,15 +28,6 @@ const formatClassName: Record<RichHintFormat, string> = {
     strike: 'rich-hint-strike',
     code: 'rich-hint-code',
     color: 'rich-hint-color',
-};
-
-const formatTag: Record<RichHintFormat, 'strong' | 'em' | 'u' | 's' | 'code' | 'span'> = {
-    strong: 'strong',
-    italic: 'em',
-    underline: 'u',
-    strike: 's',
-    code: 'code',
-    color: 'span',
 };
 
 const renderNodes = (
@@ -74,7 +68,7 @@ const renderNodes = (
                 );
             }
             case 'format': {
-                const Tag = formatTag[node.format];
+                const Tag = richHintFormatTag[node.format];
                 return (
                     <Tag
                         key={key}
@@ -125,7 +119,15 @@ export function RichHint({
     scratchblocksLabel,
     textAlternativeLabel,
 }: RichHintProps) {
+    const { t } = useTranslation();
     return (
-        <>{renderNodes(parseRichHint(value), locale, scratchblocksLabel, textAlternativeLabel)}</>
+        <>
+            {renderNodes(
+                parseRichHint(value),
+                locale,
+                scratchblocksLabel ?? t('scratchblocks'),
+                textAlternativeLabel ?? t('textAlternative'),
+            )}
+        </>
     );
 }

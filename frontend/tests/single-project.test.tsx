@@ -138,6 +138,33 @@ describe('single-project UI', () => {
         expect(isNumericScratchProjectUrl('http://scratch.mit.edu/projects/12345/')).toBe(false);
     });
 
+    it('labels a class-set result as a class-set analysis', async () => {
+        vi.spyOn(globalThis, 'fetch').mockImplementation((input) =>
+            Promise.resolve(
+                String(input).includes('/capabilities')
+                    ? capabilitiesResponse(['teacher-archive'])
+                    : response({
+                          status: 'completed',
+                          sourceType: 'TEACHER_BATCH',
+                          token: 'synthetic-batch-token',
+                          analysis: null,
+                          analyses: [
+                              { id: 1, status: 'completed', name: 'first.sb3', issues: [] },
+                              { id: 2, status: 'completed', name: 'second.sb3', issues: [] },
+                          ],
+                          counts: { expected: 2, completed: 2, failed: 0 },
+                      }),
+            ),
+        );
+
+        renderAt('/submissions/synthetic-batch-token');
+
+        expect(
+            await screen.findByRole('heading', { name: 'Class set analysis' }),
+        ).toBeInTheDocument();
+        expect(screen.queryByRole('heading', { name: 'Project analysis' })).not.toBeInTheDocument();
+    });
+
     // There is no error boundary above these pages, so anything thrown while drawing them takes the whole
     // application down to a blank screen with no way back. A response that disagrees with the schema has to
     // stop being wrong at the boundary rather than halfway down a render.

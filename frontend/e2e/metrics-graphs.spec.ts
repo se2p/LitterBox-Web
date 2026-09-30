@@ -30,9 +30,8 @@ const completedSubmission = {
     counts: { expected: 1, completed: 1, failed: 0 },
 };
 
-/** The graphs are one fold of the advanced workspace, so they are opened before they can be used. */
 async function openGraphSection(page: Page) {
-    const summary = page.locator('.advanced-section-title', { hasText: 'Program graphs' });
+    const summary = page.locator('.fold-section-title', { hasText: 'Program graphs' });
     await expect(summary).toBeVisible();
     if (!(await page.getByRole('combobox', { name: 'Graph type' }).isVisible()))
         await summary.click();
@@ -84,17 +83,14 @@ test('requests and safely renders one selected graph on demand', async ({ page }
     await expect(
         page.getByRole('heading', { name: 'Persisted metrics', exact: true }),
     ).toBeVisible();
-    // Once in the overview and once in the full list, with its reported name beside it.
     await expect(page.getByText('24').first()).toBeVisible();
     await expect(page.getByText('block_count')).toBeVisible();
     expect(graphRequests).toBe(0);
 
-    // The advanced workspace folds its capabilities away; the graphs are behind their own summary.
     await openGraphSection(page);
     await page.getByRole('combobox', { name: 'Graph type' }).selectOption('cfg');
     await page.getByRole('button', { name: 'Render selected graph' }).click();
 
-    // The graph itself says it arrived; the reader lands on its heading, not on a line repeating the news.
     await expect(page.getByRole('heading', { name: 'CFG result' })).toBeFocused();
     // Clipped away rather than removed: it is still spoken, and Playwright still counts a clipped node as visible.
     await expect(page.getByText('CFG is ready.')).toHaveClass('visually-hidden');
@@ -106,7 +102,6 @@ test('requests and safely renders one selected graph on demand', async ({ page }
     await page.getByText('Show plain-text DOT alternative').click();
     await expect(page.getByText(graphDot)).toBeVisible();
 
-    // Expanded mode is the same elements given the viewport, so the graph is neither refetched nor re-rendered.
     const zoomLevel = page.locator('.metrics-graph-zoom-level');
     const zoomBefore = await zoomLevel.textContent();
     await page.getByRole('button', { name: 'Expand graph' }).click();
@@ -116,13 +111,11 @@ test('requests and safely renders one selected graph on demand', async ({ page }
     expect(graphRequests).toBe(1);
     expect(await zoomLevel.textContent()).toBe(zoomBefore);
 
-    // Zoom and pan keep working against the same graph.
     await page.getByRole('button', { name: 'Zoom in' }).click();
     expect(await zoomLevel.textContent()).not.toBe(zoomBefore);
     await page.locator('.metrics-graph-canvas').focus();
     await page.keyboard.press('ArrowRight');
 
-    // Escape closes it, focus returns to the control that opened it, and the transform survives the trip.
     const zoomExpanded = await zoomLevel.textContent();
     await page.keyboard.press('Escape');
     await expect(dialog).toHaveCount(0);

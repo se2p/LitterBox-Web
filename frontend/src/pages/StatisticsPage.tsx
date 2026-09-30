@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: 2026 LitterBox-Web contributors
 
 import { useTranslation } from 'react-i18next';
+import '../styles/pages/statistics.css';
 import {
     fetchPublicStatistics,
     type StatisticsDistribution,

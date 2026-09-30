@@ -238,8 +238,7 @@
     color: var(--color-brand-cyan-dark);
 }
 
-.catalogue-description,
-.catalogue-meta {
+.catalogue-description {
     margin: 0;
     overflow-wrap: anywhere;
 }

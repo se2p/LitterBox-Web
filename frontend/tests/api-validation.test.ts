@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: EUPL-1.2
 // SPDX-FileCopyrightText: 2026 LitterBox-Web contributors
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
     boundedNonblankString,
     boundedString,
@@ -14,6 +14,7 @@ import {
     problemCodeFrom,
 } from '../src/api/validation';
 import { isAbortError } from '../src/lib/abort-error';
+import { fetchMetricReference } from '../src/api/metric-reference';
 
 describe('api response validation', () => {
     it('accepts only plain objects', () => {
@@ -23,10 +24,8 @@ describe('api response validation', () => {
 
     it('requires exactly the declared keys', () => {
         expect(hasExactKeys({ a: 1, b: 2 }, ['a', 'b'])).toBe(true);
-        // A field this client does not know about means the response is not the one it was written for.
         expect(hasExactKeys({ a: 1, b: 2, c: 3 }, ['a', 'b'])).toBe(false);
         expect(hasExactKeys({ a: 1 }, ['a', 'b'])).toBe(false);
-        // Same count, different names.
         expect(hasExactKeys({ a: 1, z: 2 }, ['a', 'b'])).toBe(false);
     });
 
@@ -49,8 +48,6 @@ describe('api response validation', () => {
         expect(nonnegativeSafeInteger(-1)).toBe(false);
     });
 
-    // Three copies of this had drifted; two recognised only something carrying a name. Both spellings a runtime
-    // actually uses are recognised here, and nothing that merely looks like one is.
     it('recognises an abort however the runtime raised it', () => {
         expect(isAbortError(new DOMException('gone', 'AbortError'))).toBe(true);
         const error = new Error('gone');
@@ -64,7 +61,6 @@ describe('api response validation', () => {
     it('separates a payload content type from a problem content type', () => {
         expect(isJsonContentType('application/json')).toBe(true);
         expect(isJsonContentType('Application/JSON; charset=UTF-8')).toBe(true);
-        // A problem is not a payload: a success path must not read one as its result.
         expect(isJsonContentType('application/problem+json')).toBe(false);
         expect(isJsonContentType('text/html')).toBe(false);
         expect(isJsonContentType(null)).toBe(false);
@@ -84,8 +80,92 @@ describe('api response validation', () => {
         );
         expect(problemCodeFrom('{"code":"something_else"}', known)).toBeUndefined();
         expect(problemCodeFrom('{"code":42}', known)).toBeUndefined();
-        // A body that is not an object, or not JSON at all, yields nothing rather than throwing.
         expect(problemCodeFrom('["capability_disabled"]', known)).toBeUndefined();
         expect(problemCodeFrom('not json', known)).toBeUndefined();
+    });
+});
+
+describe('metric reference band validation', () => {
+    afterEach(() => {
+        vi.restoreAllMocks();
+    });
+
+    const respondWith = (metrics: readonly unknown[]) =>
+        vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+            new Response(JSON.stringify({ metrics }), {
+                status: 200,
+                headers: { 'Content-Type': 'application/json' },
+            }),
+        );
+
+    it('keeps a band whose five-number summary is present and in nondecreasing order', async () => {
+        respondWith([
+            {
+                name: 'block_count',
+                sampleSize: 40,
+                lowerBound: 20,
+                upperBound: 90,
+                minimum: 1,
+                q1: 15,
+                median: 40,
+                q3: 80,
+                maximum: 200,
+            },
+        ]);
+        const [band] = await fetchMetricReference();
+        expect(band).toMatchObject({
+            name: 'block_count',
+            minimum: 1,
+            q1: 15,
+            median: 40,
+            q3: 80,
+            maximum: 200,
+        });
+    });
+
+    it('keeps a band whose five-number summary is entirely absent - an older deployment - for the tercile fallback', async () => {
+        respondWith([{ name: 'block_count', sampleSize: 40, lowerBound: 20, upperBound: 90 }]);
+        const [band] = await fetchMetricReference();
+        expect(band).toBeDefined();
+        expect(band?.lowerBound).toBe(20);
+        expect(band?.minimum).toBeUndefined();
+        expect(band?.median).toBeUndefined();
+        expect(band?.maximum).toBeUndefined();
+    });
+
+    it('drops a band whose five-number summary is out of order - it would draw a box outside its own whiskers', async () => {
+        respondWith([
+            {
+                name: 'block_count',
+                sampleSize: 40,
+                lowerBound: 20,
+                upperBound: 90,
+                minimum: 1,
+                q1: 50,
+                median: 40,
+                q3: 80,
+                maximum: 200,
+            },
+        ]);
+        expect(await fetchMetricReference()).toHaveLength(0);
+    });
+
+    it('drops a band that sends only some of the five fields, rather than guess at the rest', async () => {
+        respondWith([
+            {
+                name: 'block_count',
+                sampleSize: 40,
+                lowerBound: 20,
+                upperBound: 90,
+                minimum: 1,
+                median: 40,
+            },
+        ]);
+        expect(await fetchMetricReference()).toHaveLength(0);
+    });
+
+    it('still drops a band whose tercile bounds are the wrong way round, regardless of the five-number summary', async () => {
+        respondWith([{ name: 'block_count', sampleSize: 40, lowerBound: 90, upperBound: 20 }]);
+        expect(await fetchMetricReference()).toHaveLength(0);
     });
 });

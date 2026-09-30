@@ -40,7 +40,7 @@ export const reportedAnalyses = (value: SubmissionStatusResponse): BatchAnalysis
     return value.analysis ? [value.analysis] : [];
 };
 
-const BATCH_SOURCE_TYPES = ['TEACHER_BATCH', 'TEACHER_ZIP', 'SCRATCH_STUDIO'];
+const BATCH_SOURCE_TYPES = ['TEACHER_BATCH', 'TEACHER_ZIP', 'SCRATCH_STUDIO', 'SCRATCH_URL_LIST'];
 
 /**
  * A class set rather than one project. The source type settles it even before anything has finished, which is what a

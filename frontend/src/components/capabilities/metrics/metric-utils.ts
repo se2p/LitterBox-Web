@@ -60,6 +60,10 @@ const metricLabel = (
     return { label: readableMetricId(id), translated: false };
 };
 
+/** The same translated or human-readable name used by the metric explorer, for consumers that only need a label. */
+export const metricDisplayName = (id: string, translate: (key: TranslationKey) => string): string =>
+    metricLabel(id, translate).label;
+
 /**
  * Every measurement the analysis reported, in one flat list ordered by its own identifier. Nothing in the report says
  * which group a measurement belongs to, so none is invented here: a group guessed from the spelling of a name puts
@@ -119,6 +123,14 @@ export const tercile = (value: number, band: MetricBand): 'lower' | 'middle' | '
     if (value > band.upperBound) return 'upper';
     return 'middle';
 };
+
+/** The translation key for each third `tercile` can return, kept beside it rather than copied out to every screen
+ * that reads a value against a band. */
+export const BAND_LABEL_KEYS = {
+    lower: 'metricBandLowerThird',
+    middle: 'metricBandMiddleThird',
+    upper: 'metricBandUpperThird',
+} as const satisfies Record<'lower' | 'middle' | 'upper', TranslationKey>;
 
 /** Matches the raw identifier as well as the label, because one of them is what a researcher has in mind. */
 export const searchMetrics = (entries: readonly MetricEntry[], query: string): MetricEntry[] => {

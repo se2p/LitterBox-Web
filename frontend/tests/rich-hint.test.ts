@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest';
 import {
     parseRichHint,
     richHintLead,
+    richHintPlainText,
     richHintTerms,
     scratchblocksSourceForInline,
     type RichHintNode,
@@ -80,6 +81,49 @@ describe('rich hint parser', () => {
         expect(textValue(parseRichHint('[scratchblocks]unclosed'))).toBe('[scratchblocks]unclosed');
     });
 
+    /**
+     * A teacher pressing Enter is what makes most of these, but the analyser writes them too: four of its own
+     * hints carry a raw newline pair exactly where their 183 siblings carry `[newLine] [newLine]`. One rule in
+     * the parser serves both authors, and is why the builder preview, the printed sheet and the class's screen
+     * cannot disagree about a line break.
+     */
+    it('makes a line break from a newline the author typed, exactly as the [newLine] token does', () => {
+        expect(parseRichHint('First line\nSecond line')).toEqual([
+            { kind: 'text', value: 'First line' },
+            { kind: 'lineBreak' },
+            { kind: 'text', value: 'Second line' },
+        ]);
+        expect(parseRichHint('First line\nSecond line')).toEqual(
+            parseRichHint('First line[newLine]Second line'),
+        );
+
+        // A blank line is two breaks, which is what the hint bundle's own `[newLine] [newLine]` pair means.
+        expect(
+            parseRichHint('One\n\nTwo').filter((node) => node.kind === 'lineBreak'),
+        ).toHaveLength(2);
+        // A CRLF is one break rather than two, so nothing pasted from a Windows editor double-spaces itself.
+        expect(parseRichHint('One\r\nTwo')).toEqual(parseRichHint('One\nTwo'));
+        expect(parseRichHint('One\rTwo')).toEqual(parseRichHint('One\nTwo'));
+
+        // Markup still parses either side of a break, and inside one span that spans several lines.
+        expect(textValue(parseRichHint('[b]Bold[/b]\nplain\n[i]over\ntwo lines[/i]'))).toBe(
+            'Bold\nplain\nover\ntwo lines',
+        );
+    });
+
+    it('leaves a newline inside a quoted script alone, because there it is part of the script', () => {
+        expect(
+            parseRichHint('[scratchblocks]move (10) steps\nturn (15) degrees[/scratchblocks]'),
+        ).toEqual([{ kind: 'script', source: 'move (10) steps\nturn (15) degrees' }]);
+        expect(parseRichHint('[sbi]move (10) steps\nturn (15) degrees[/sbi]')).toEqual([
+            {
+                kind: 'inline',
+                inlineKind: 'scratchblocks',
+                source: 'move (10) steps\nturn (15) degrees',
+            },
+        ]);
+    });
+
     it('keeps unknown, unclosed, mismatched, and unsafe markers visible', () => {
         const value =
             '[unknown] [b]unclosed [i]nested <img src=x onerror=alert(1)> [c=url(https://bad)]unsafe[/c]';
@@ -108,6 +152,31 @@ describe('rich hint parser', () => {
         expect(scratchblocksSourceForInline(inline[0]!, 'de')).toBe('(größe)');
         expect(scratchblocksSourceForInline(inline[1]!, 'de')).toBe('falls :: #ffab19');
         expect(scratchblocksSourceForInline(inline[2]!, 'de')).toBe('<() < ()>');
+    });
+});
+
+describe('rich hint plain text', () => {
+    /**
+     * The one-line guarantee the collapsed question summary, the CSV writer and every accessible name rely on.
+     * A newline reaching any of those would break the row or the label rather than format it, so a line break
+     * has to flatten to a space however it was written.
+     */
+    it('flattens every line break to a single space, whichever way it was written', () => {
+        expect(richHintPlainText('First line\nSecond line', 'en')).toBe('First line Second line');
+        expect(richHintPlainText('First line[newLine]Second line', 'en')).toBe(
+            'First line Second line',
+        );
+        // A blank line is still just a word gap once flattened, never two.
+        expect(richHintPlainText('One\n\n\nTwo', 'en')).toBe('One Two');
+        expect(richHintPlainText('\r\nEdges trimmed\r\n', 'en')).toBe('Edges trimmed');
+        // Including the newlines a quoted script carries, which are the parser's one remaining source of them.
+        expect(
+            richHintPlainText(
+                '[scratchblocks]move (10) steps\nturn (15) degrees[/scratchblocks]',
+                'en',
+            ),
+        ).toBe('move (10) steps turn (15) degrees');
+        expect(richHintPlainText('Any\r\nbreak\rat\nall', 'en')).toBe('Any break at all');
     });
 });
 

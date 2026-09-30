@@ -95,12 +95,115 @@ test('qlc submits a canonical URL, renders questions, and records answers', asyn
     await expect(page).toHaveURL(/\/questions\/question-e2e-token$/);
     await expect(page.getByText('Which answer is recorded?')).toBeVisible();
     await page.getByRole('radio', { name: 'A' }).click();
-    // One question, then what came back about it, before there is any next question to read.
     await page.getByRole('button', { name: 'Send answer' }).click();
     await expect(page.getByText('Answer recorded.')).toBeVisible();
     await page.getByRole('button', { name: 'See summary' }).click();
     await expect(page.getByRole('heading', { name: 'Your score' })).toBeVisible();
     expect(idempotencyKey).not.toBe('');
+});
+
+test('a teacher curates, edits, adds, and exports a quiz', async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 1000 });
+    // `html`'s own smooth scrolling, unconditional outside this preference, stretches that scroll
+    // across enough animation frames for Playwright to see the target as still moving and time the click out;
+    // the same reduced-motion switch the app's own CSS already answers to is what a real reader with the
+    // preference set would get for free, and it is what makes this click land on the first attempt here too.
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.route('**/api/v1/capabilities', (route) =>
+        route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify(capabilities(['qlc', 'teacher-archive'])),
+        }),
+    );
+    await page.route('**/api/v1/submissions/teacher-builder-token', (route) =>
+        route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify({
+                ...completedQuestions(),
+                token: 'teacher-builder-token',
+                analysis: {
+                    ...completedQuestions().analysis,
+                    quiz: [
+                        {
+                            questionId: 'builder-1',
+                            question: 'What starts the script?',
+                            options: ['The flag', 'A click'],
+                            questionType: 'MULTIPLE_CHOICE',
+                            programDimension: 'TEXT',
+                            scopeOfFocus: 'ATOM',
+                            expectedAnswers: 1,
+                        },
+                        {
+                            questionId: 'builder-2',
+                            question: 'Why does it repeat?',
+                            options: [],
+                            questionType: 'FREE_TEXT',
+                            programDimension: 'PURPOSE',
+                            scopeOfFocus: 'MACRO',
+                            expectedAnswers: 1,
+                        },
+                    ],
+                },
+            }),
+        }),
+    );
+
+    await page.goto('./teacher/questions/teacher-builder-token');
+    await expect(
+        page.getByRole('heading', { name: 'Build a quiz from these questions' }),
+    ).toBeVisible();
+    await expect(
+        page.getByText('0 of 12 block-model cells covered by the selected questions.'),
+    ).toBeVisible();
+    await page.getByRole('button', { name: 'Select shown questions', exact: true }).click();
+    await expect(
+        page.getByText('2 of 12 block-model cells covered by the selected questions.'),
+    ).toBeVisible();
+
+    await page.getByRole('button', { name: /^Question 2 details:/ }).click();
+    await page.getByRole('button', { name: 'Edit question 2' }).click();
+    await page.getByRole('textbox', { name: 'Question text' }).fill('Explain the repeat block.');
+    await page
+        .getByRole('textbox', { name: 'Answer or marking guidance' })
+        .fill('Names the repeat count.');
+    await page.getByRole('button', { name: 'Close editor' }).click();
+
+    // Unchecking question 1 sends it back to the bank, and the quiz's one remaining question — the one just
+    // edited — is renumbered to take its place. Scoped to the row that names it rather than found by "question
+    // 1" alone: that label names a position, not this particular question, and the position it names is exactly
+    // what this click is about to hand to the row being edited above — a locator re-read by number after the
+    // click would find that row instead and undo the very thing this line means to do.
+    const returnedToBank = page.locator('.assessment-question', {
+        hasText: 'What starts the script?',
+    });
+    await returnedToBank.getByRole('checkbox').click();
+    // A question in the quiz carries a checkbox that takes it out again; one sitting in the bank carries an
+    // "Add to quiz" button instead, because putting a question in and taking it out are not the same act and
+    // the bank has no position to check against. Waiting for that button is what proves the move happened —
+    // and it is why this is a click plus an assertion rather than `uncheck`, which would go looking for the
+    // very checkbox the move has just replaced.
+    await expect(
+        returnedToBank.getByRole('button', { name: /^Add ".*" to the quiz$/ }),
+    ).toBeVisible();
+
+    await page.getByRole('button', { name: 'Add your own question' }).click();
+    await expect(page.getByText('Added by teacher — not marked automatically')).toBeVisible();
+    await page.getByRole('textbox', { name: 'Question text' }).fill('What would you change?');
+    await page.getByRole('textbox', { name: 'Accepted answers' }).fill('the backdrop\nthe colours');
+    await page.getByRole('textbox', { name: 'Question text' }).click();
+    await expect(page.getByText('Added by teacher', { exact: true })).toBeVisible();
+
+    const downloadReady = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Download editable JSON' }).click();
+    const download = await downloadReady;
+    expect(download.suggestedFilename()).toBe('synthetic-question-project-sb3-quiz.json');
+
+    const noOverflow = await page.evaluate(
+        () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+    );
+    expect(noOverflow).toBe(true);
 });
 
 test('qlc accepts a preflighted local project and keeps invalid input local', async ({ page }) => {
@@ -335,12 +438,10 @@ test('lays four answer options across one row, or under each other, never three 
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto('./questions/four-option-token');
     await expect(page.getByRole('radio', { name: 'Fourth' })).toBeVisible();
-    // All four share a top edge, so none of them was left over on a line of its own.
     const wide = await optionTops();
     expect(wide).toHaveLength(4);
     expect(new Set(wide).size).toBe(1);
 
-    // Too narrow for four columns, so they go under each other rather than three across and one below.
     await page.setViewportSize({ width: 700, height: 1000 });
     const narrow = await optionTops();
     expect(new Set(narrow).size).toBe(4);
@@ -429,7 +530,6 @@ test('a learner answers one question at a time, and free text is never one of th
     await expect(page.getByText('Correct!')).toBeVisible();
     await page.getByRole('button', { name: 'Next question' }).click();
 
-    // The move lands on the heading that says where the reader now is.
     await expect(page.getByRole('heading', { name: 'Question 2 of 2' })).toBeFocused();
     await page.getByRole('spinbutton').fill('4');
     await page.getByRole('button', { name: 'Send answer' }).click();
@@ -439,7 +539,6 @@ test('a learner answers one question at a time, and free text is never one of th
     await expect(page.getByText('2 of 2 correct.')).toBeVisible();
     expect(answers).toBe(2);
 
-    // Back into a question from the summary, still showing what was answered.
     await page.getByRole('button', { name: 'Question 1' }).click();
     await expect(page.getByRole('radio', { name: 'A' })).toBeChecked();
     await expect(page.getByRole('radio', { name: 'A' })).toBeDisabled();

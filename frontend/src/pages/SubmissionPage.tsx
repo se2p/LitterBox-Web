@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 // SPDX-FileCopyrightText: 2025 LitterBox-Web contributors
 
-import { useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import { formatNumber } from '../i18n';
@@ -31,12 +31,19 @@ import {
 import { useIssueFilters } from '../components/single-project/use-issue-filters';
 import { Dialog } from '../components/Dialog';
 import { BatchEmptyState } from '../components/batch/BatchEmptyState';
-import { BatchDashboard } from '../components/batch/BatchDashboard';
+const BatchDashboard = lazy(() =>
+    import('../components/batch/BatchDashboard').then((module) => ({
+        default: module.BatchDashboard,
+    })),
+);
 import { safeFailureMessage } from '../components/batch/batch-utils';
+import { batchProjectName } from '../components/batch/batch-summary';
 import { MetricsGraphControls } from '../components/capabilities/metrics/MetricsGraphControls';
 import { ExportControls } from '../components/capabilities/export/ExportControls';
 import { InjectionControls } from '../components/capabilities/injection/InjectionControls';
 import { BasicStatistics } from '../components/single-project/BasicStatistics';
+import { ProjectCode } from '../components/questions/ProjectCode';
+import { fetchExportTargets } from '../api/exports';
 import { FamilyIcon } from '../components/single-project/FamilyIcon';
 import {
     AdvancedAnalysisAction,
@@ -49,6 +56,7 @@ import {
 import {
     ADVANCED_ANALYSIS_PATH,
     MODIFICATION_PATH,
+    TASK_ANALYSIS_PATH,
     retainedAnalysisDestination,
 } from '../lib/retained-analysis';
 import { useDeclaredNavigation } from '../lib/active-navigation';
@@ -70,18 +78,11 @@ import {
     type IssueSort,
 } from './submission-utils';
 
-/**
- * The findings of one analysis and the catalogue that describes them. Kept out of the component so the analysis they
- * belong to arrives as an argument: everything below is then held against that one analysis, and moving to another in
- * a class set is the only thing that rebuilds it.
- */
 function useAnalysisContent(analysis: BatchAnalysis | undefined, value: SubmissionStatusResponse) {
     const issues = useMemo(
         () => analysis?.issues ?? value.issues ?? [],
         [analysis?.issues, value.issues],
     );
-    // The analysis ships the catalogue for the patterns it reported, so the result page has it on hand rather
-    // than fetching it again.
     const catalogue = useMemo(
         () => buildCatalogueLookup(analysis?.catalogue ?? value.catalogueEntries ?? []),
         [analysis?.catalogue, value.catalogueEntries],
@@ -120,10 +121,24 @@ function SubmissionResult({
         ? String(completedEntries[0].item.id ?? completedEntries[0].index)
         : undefined;
     const [chosenId, setChosenId] = useState<string>();
-    // Which analysis of a class set is on screen. Whatever the reader last opened, unless it is not among the
-    // completed ones — nothing opened yet, or a set that has moved on — in which case the first that is.
+    const [chosenView, setChosenView] = useState<'cohort' | 'project'>('cohort');
+    // Keep a selected project valid as completed results change during processing.
     const selectedId =
-        isBatch && !completedIds.split('|').includes(chosenId ?? '') ? firstCompletedId : chosenId;
+        isBatch && chosenId !== undefined && !completedIds.split('|').includes(chosenId)
+            ? firstCompletedId
+            : chosenId;
+    const batchView = isBatch && !firstCompletedId ? 'cohort' : chosenView;
+    const inspectBatchProject = (id: string) => {
+        setChosenId(id);
+        setChosenView('project');
+        globalThis.setTimeout(
+            () =>
+                globalThis.document
+                    ?.getElementById('batch-project-inspector')
+                    ?.scrollIntoView?.({ block: 'start' }),
+            0,
+        );
+    };
     const analysis = isBatch
         ? completedEntries.find(({ item, index }) => String(item.id ?? index) === selectedId)?.item
         : baseAnalysis;
@@ -194,8 +209,14 @@ function SubmissionResult({
                     <p>{t('statusPartial')}</p>
                 </Alert>
             )}
-            {isBatch && (
-                <BatchDashboard value={value} selectedId={selectedId} onSelect={setChosenId} />
+            {isBatch && batchView === 'cohort' && (
+                <Suspense fallback={<p role="status">{t('statusLoading')}</p>}>
+                    <BatchDashboard
+                        value={value}
+                        selectedId={selectedId}
+                        onSelect={inspectBatchProject}
+                    />
+                </Suspense>
             )}
             {isBatch && !running && completedAnalyses.length === 0 && (
                 <BatchEmptyState
@@ -205,134 +226,231 @@ function SubmissionResult({
                     }
                 />
             )}
-            {analysis && analysisIsCompleted(analysis, value.status) && (
-                <>
-                    {isBatch ? (
-                        <IssueSummary
-                            issues={issues}
-                            metrics={analysis.metrics}
-                            name={analysis.name}
-                            locale={locale}
-                        />
-                    ) : (
-                        <BasicStatistics metrics={analysis.metrics} locale={locale} />
-                    )}
-                    <section
-                        className="result-card card analysis-findings"
-                        aria-labelledby="findings-heading"
-                    >
-                        <div className="section-heading">
-                            <h2 id="findings-heading">{t('issuesTitle')}</h2>
-                            <IssueFilters
-                                spriteThumbnailLabel={issueLabels.thumbnail}
-                                thumbnailFallbackLabel={issueLabels.thumbnailFallback}
-                                formatSeverity={issueLabels.severity}
-                                familyOptions={familyOptions}
-                                spriteOptions={spriteOptions}
-                                types={types}
-                                finders={finders}
-                                severities={severities}
-                                sortOptions={sortOptions}
-                                family={activeFilters.family}
-                                type={activeFilters.type}
-                                finder={activeFilters.finder}
-                                sprite={activeFilters.sprite}
-                                severity={activeFilters.severity}
-                                sort={activeFilters.sort}
-                                onFamilyChange={(value) => updateFilters({ family: value })}
-                                onTypeChange={(value) => updateFilters({ type: value })}
-                                onFinderChange={(value) => updateFilters({ finder: value })}
-                                onSpriteChange={(value) => updateFilters({ sprite: value })}
-                                onSeverityChange={(value) => updateFilters({ severity: value })}
-                                onSortChange={(value) =>
-                                    updateFilters({ sort: value as IssueSort })
-                                }
-                                onReset={() => updateFilters(DEFAULT_ISSUE_FILTERS)}
-                            />
-                        </div>
-                        <p className="issue-filter-status" role="status" aria-live="polite">
-                            {t('issueFilterShowing', {
-                                visible: formatNumber(visibleIssues.length),
-                                total: formatNumber(issues.length),
-                            })}
-                        </p>
-                        {visibleIssues.length > 0 ? (
-                            <div className="issue-family-list">
-                                {displayedFamilies.map((family) => {
-                                    const familyIssues = groupedIssues.get(family) ?? [];
-                                    return (
-                                        // A fold apiece, as the advanced workspace folds its capabilities: the
-                                        // three parts and their counts are visible at a glance, and a reader
-                                        // unrolls the one they are working through.
-                                        <details
-                                            key={family}
-                                            className={`issue-family issue-family-${family}`}
-                                            open={familyOpen(family)}
-                                            onToggle={(event) => {
-                                                openFamilies.current[family] =
-                                                    event.currentTarget.open;
-                                            }}
+            {analysis &&
+                analysisIsCompleted(analysis, value.status) &&
+                (!isBatch || batchView === 'project') && (
+                    <>
+                        {isBatch && (
+                            <section
+                                id="batch-project-inspector"
+                                className="batch-project-inspector"
+                                aria-labelledby="batch-project-inspector-heading"
+                            >
+                                <button type="button" onClick={() => setChosenView('cohort')}>
+                                    {t('batchBackToOverview')}
+                                </button>
+                                <div className="batch-project-inspector-main">
+                                    <div>
+                                        <h2 id="batch-project-inspector-heading">
+                                            {t('batchProjectReport')}
+                                        </h2>
+                                        <p>{analysis.name}</p>
+                                    </div>
+                                    <label>
+                                        <span>{t('batchChooseProjectReport')}</span>
+                                        <select
+                                            value={selectedId}
+                                            onChange={(event) => setChosenId(event.target.value)}
                                         >
-                                            <summary className="issue-family-heading">
-                                                <h3 id={`issue-family-${family}`}>
-                                                    <FamilyIcon family={family} />
-                                                    {familyLabels[family]}
-                                                </h3>
-                                                <span className="issue-family-count">
-                                                    {formatNumber(familyIssues.length)}
-                                                </span>
-                                            </summary>
-                                            <p className="issue-family-explainer">
-                                                {familyExplainers[family]}
-                                            </p>
-                                            {familyIssues.length > 0 ? (
-                                                <div className="finding-group-list">
-                                                    {groupFindings(familyIssues).map((group) => (
-                                                        <FindingGroup
-                                                            key={group.key}
-                                                            group={group}
-                                                            entry={catalogueForFinder(
-                                                                group.finderId,
-                                                                catalogue,
-                                                            )}
-                                                            analysisId={analysis.id}
-                                                            analysisKey={analysisKey}
-                                                            showTechnical={isBatch}
-                                                            findingName={findingName}
-                                                            token={token}
-                                                            locale={locale}
-                                                            labels={issueLabels}
-                                                            askAiAvailable={askAiAvailable}
-                                                        />
-                                                    ))}
-                                                </div>
-                                            ) : (
-                                                <p className="issue-family-empty">
-                                                    {t('issueFamilyEmpty', {
-                                                        family: familyLabels[family],
-                                                    })}
-                                                </p>
-                                            )}
-                                        </details>
-                                    );
-                                })}
-                            </div>
-                        ) : (
-                            <div className="empty-state">
-                                <p>{t('noIssues')}</p>
-                            </div>
+                                            {completedEntries.map(({ item, index }) => {
+                                                const id = String(item.id ?? index);
+                                                return (
+                                                    <option key={id} value={id}>
+                                                        {batchProjectName(
+                                                            { name: item.name ?? null, index },
+                                                            t,
+                                                        )}
+                                                    </option>
+                                                );
+                                            })}
+                                        </select>
+                                    </label>
+                                </div>
+                            </section>
                         )}
-                    </section>
-                    {/* A teacher who picked a project out of the table came for its findings. The tools are
-                        for the analysis they end up on, so they follow it rather than standing between the
-                        table and the result. */}
-                    {isBatch && (
-                        <details className="result-card card batch-advanced-tools">
-                            <summary>
-                                <h2>{t('resultToolsTitle')}</h2>
-                            </summary>
-                            <ProjectReportAction token={token} analysis={analysis} heading={3} />
-                            <ToolsForProject
+                        {isBatch ? (
+                            <IssueSummary
+                                issues={issues}
+                                metrics={analysis.metrics}
+                                name={analysis.name}
+                                locale={locale}
+                            />
+                        ) : (
+                            <BasicStatistics metrics={analysis.metrics} locale={locale} />
+                        )}
+                        {isBatch &&
+                            exportCapabilityEnabled &&
+                            positiveAnalysisId(analysis.id) &&
+                            validToolFormat(analysis.inputFormat) && (
+                                <ProjectCode
+                                    key={analysisKey}
+                                    loadCode={() => fetchExportTargets(token, analysis.id!)}
+                                    locale={locale}
+                                    title={t('batchProjectCodeTitle')}
+                                    lead={t('batchProjectCodeLead')}
+                                />
+                            )}
+                        <section
+                            className="result-card card analysis-findings"
+                            aria-labelledby="findings-heading"
+                        >
+                            <div className="section-heading">
+                                <h2 id="findings-heading">{t('issuesTitle')}</h2>
+                                <IssueFilters
+                                    spriteThumbnailLabel={issueLabels.thumbnail}
+                                    thumbnailFallbackLabel={issueLabels.thumbnailFallback}
+                                    formatSeverity={issueLabels.severity}
+                                    familyOptions={familyOptions}
+                                    spriteOptions={spriteOptions}
+                                    types={types}
+                                    finders={finders}
+                                    severities={severities}
+                                    sortOptions={sortOptions}
+                                    family={activeFilters.family}
+                                    type={activeFilters.type}
+                                    finder={activeFilters.finder}
+                                    sprite={activeFilters.sprite}
+                                    severity={activeFilters.severity}
+                                    sort={activeFilters.sort}
+                                    onFamilyChange={(value) => updateFilters({ family: value })}
+                                    onTypeChange={(value) => updateFilters({ type: value })}
+                                    onFinderChange={(value) => updateFilters({ finder: value })}
+                                    onSpriteChange={(value) => updateFilters({ sprite: value })}
+                                    onSeverityChange={(value) => updateFilters({ severity: value })}
+                                    onSortChange={(value) =>
+                                        updateFilters({ sort: value as IssueSort })
+                                    }
+                                    onReset={() => updateFilters(DEFAULT_ISSUE_FILTERS)}
+                                />
+                            </div>
+                            <p className="issue-filter-status" role="status" aria-live="polite">
+                                {t('issueFilterShowing', {
+                                    visible: formatNumber(visibleIssues.length),
+                                    total: formatNumber(issues.length),
+                                })}
+                            </p>
+                            {visibleIssues.length > 0 ? (
+                                <div className="issue-family-list">
+                                    {displayedFamilies.map((family) => {
+                                        const familyIssues = groupedIssues.get(family) ?? [];
+                                        return (
+                                            <details
+                                                key={family}
+                                                className={`issue-family issue-family-${family}`}
+                                                open={familyOpen(family)}
+                                                onToggle={(event) => {
+                                                    openFamilies.current[family] =
+                                                        event.currentTarget.open;
+                                                }}
+                                            >
+                                                <summary className="issue-family-heading">
+                                                    <h3 id={`issue-family-${family}`}>
+                                                        <FamilyIcon family={family} />
+                                                        {familyLabels[family]}
+                                                    </h3>
+                                                    <span className="issue-family-count">
+                                                        {formatNumber(familyIssues.length)}
+                                                    </span>
+                                                </summary>
+                                                <p className="issue-family-explainer">
+                                                    {familyExplainers[family]}
+                                                </p>
+                                                {familyIssues.length > 0 ? (
+                                                    <div className="finding-group-list">
+                                                        {groupFindings(familyIssues).map(
+                                                            (group) => (
+                                                                <FindingGroup
+                                                                    key={group.key}
+                                                                    group={group}
+                                                                    entry={catalogueForFinder(
+                                                                        group.finderId,
+                                                                        catalogue,
+                                                                    )}
+                                                                    analysisId={analysis.id}
+                                                                    analysisKey={analysisKey}
+                                                                    showTechnical={isBatch}
+                                                                    findingName={findingName}
+                                                                    token={token}
+                                                                    locale={locale}
+                                                                    labels={issueLabels}
+                                                                    askAiAvailable={askAiAvailable}
+                                                                />
+                                                            ),
+                                                        )}
+                                                    </div>
+                                                ) : (
+                                                    <p className="issue-family-empty">
+                                                        {t('issueFamilyEmpty', {
+                                                            family: familyLabels[family],
+                                                        })}
+                                                    </p>
+                                                )}
+                                            </details>
+                                        );
+                                    })}
+                                </div>
+                            ) : (
+                                <div className="empty-state">
+                                    <p>{t('noIssues')}</p>
+                                </div>
+                            )}
+                        </section>
+                        {isBatch && (
+                            <details className="result-card card batch-advanced-tools">
+                                <summary>
+                                    <h2>{t('resultToolsTitle')}</h2>
+                                </summary>
+                                <ProjectReportAction
+                                    token={token}
+                                    analysis={analysis}
+                                    heading={3}
+                                />
+                                <ToolsForProject
+                                    token={token}
+                                    analysis={analysis}
+                                    graphCapabilityEnabled={graphCapabilityEnabled}
+                                    diffCapabilityEnabled={diffCapabilityEnabled}
+                                    exportCapabilityEnabled={exportCapabilityEnabled}
+                                    injectionCapabilityEnabled={injectionCapabilityEnabled}
+                                />
+                                <MetricsGraphControls
+                                    enabled={
+                                        graphCapabilityEnabled &&
+                                        positiveAnalysisId(analysis.id) &&
+                                        validToolFormat(analysis.inputFormat)
+                                    }
+                                    token={token}
+                                    analysisId={analysis.id}
+                                    locale={locale}
+                                />
+                                <ExportControls
+                                    enabled={exportCapabilityEnabled}
+                                    token={token}
+                                    analysisId={analysis.id}
+                                    inputFormat={analysis.inputFormat}
+                                    locale={locale}
+                                />
+                                <InjectionControls
+                                    enabled={injectionCapabilityEnabled}
+                                    token={token}
+                                    analysisId={analysis.id}
+                                    analysisStatus={analysis.status}
+                                    inputFormat={analysis.inputFormat}
+                                    locale={locale}
+                                />
+                            </details>
+                        )}
+                        {!isBatch && (
+                            <AskQuestionsAction
+                                token={token}
+                                analysis={analysis}
+                                locale={locale}
+                                enabled={questionsCapabilityEnabled}
+                            />
+                        )}
+                        {!isBatch && <ProjectReportAction token={token} analysis={analysis} />}
+                        {!isBatch && (
+                            <AdvancedAnalysisAction
                                 token={token}
                                 analysis={analysis}
                                 graphCapabilityEnabled={graphCapabilityEnabled}
@@ -340,57 +458,9 @@ function SubmissionResult({
                                 exportCapabilityEnabled={exportCapabilityEnabled}
                                 injectionCapabilityEnabled={injectionCapabilityEnabled}
                             />
-                            <MetricsGraphControls
-                                enabled={
-                                    graphCapabilityEnabled &&
-                                    positiveAnalysisId(analysis.id) &&
-                                    validToolFormat(analysis.inputFormat)
-                                }
-                                token={token}
-                                analysisId={analysis.id}
-                                locale={locale}
-                            />
-                            <ExportControls
-                                enabled={exportCapabilityEnabled}
-                                token={token}
-                                analysisId={analysis.id}
-                                inputFormat={analysis.inputFormat}
-                                locale={locale}
-                            />
-                            <InjectionControls
-                                enabled={injectionCapabilityEnabled}
-                                token={token}
-                                analysisId={analysis.id}
-                                analysisStatus={analysis.status}
-                                inputFormat={analysis.inputFormat}
-                                locale={locale}
-                            />
-                        </details>
-                    )}
-                    {/* The project is here and analysed; the other thing this site does with it is one press
-                        away, rather than another trip through the upload form. */}
-                    {!isBatch && (
-                        <AskQuestionsAction
-                            token={token}
-                            analysis={analysis}
-                            locale={locale}
-                            enabled={questionsCapabilityEnabled}
-                        />
-                    )}
-                    {!isBatch && <ProjectReportAction token={token} analysis={analysis} />}
-                    {/* The offer to dig deeper follows the findings; leading with it made the results look like a
-                        detour on the way to a second, more technical analysis. */}
-                    {!isBatch && (
-                        <AdvancedAnalysisAction
-                            token={token}
-                            analysis={analysis}
-                            graphCapabilityEnabled={graphCapabilityEnabled}
-                            diffCapabilityEnabled={diffCapabilityEnabled}
-                            exportCapabilityEnabled={exportCapabilityEnabled}
-                        />
-                    )}
-                </>
-            )}
+                        )}
+                    </>
+                )}
             {!isBatch && !running && !analysis && analyses.length === 0 && (
                 <div className="empty-state">
                     <p>{t('noIssues')}</p>
@@ -401,16 +471,21 @@ function SubmissionResult({
 }
 
 /**
- * Where the reader is to be returned once the analysis finishes, set by the page that started it. Only the two
- * pages that can start one this way are accepted, so a crafted history entry cannot redirect anywhere else.
+ * Where the reader is to be returned once the analysis finishes, set by the page that started it. Only the pages
+ * that can start one this way are accepted, so a crafted history entry cannot redirect anywhere else.
  */
 const continuationDestination = (
     state: unknown,
-): typeof ADVANCED_ANALYSIS_PATH | typeof MODIFICATION_PATH | undefined => {
+):
+    | typeof ADVANCED_ANALYSIS_PATH
+    | typeof MODIFICATION_PATH
+    | typeof TASK_ANALYSIS_PATH
+    | undefined => {
     if (typeof state !== 'object' || state === null) return undefined;
     const { continueTo } = state as { continueTo?: unknown };
     if (continueTo === ADVANCED_ANALYSIS_PATH) return ADVANCED_ANALYSIS_PATH;
     if (continueTo === MODIFICATION_PATH) return MODIFICATION_PATH;
+    if (continueTo === TASK_ANALYSIS_PATH) return TASK_ANALYSIS_PATH;
     return undefined;
 };
 
@@ -431,8 +506,6 @@ export function SubmissionPage({
     const [cancelError, setCancelError] = useState(false);
     const terminal =
         state.status === 'ready' && TERMINAL_STATUSES.has(state.value.status.toLowerCase());
-    // One address serves both journeys. A class set belongs to the page a teacher sent it from, and marking the
-    // child's form instead told a teacher they were somewhere they had never been.
     useDeclaredNavigation(
         state.status === 'ready' && isBatchSubmission(state.value) ? '/teacher' : '/',
     );
@@ -442,7 +515,6 @@ export function SubmissionPage({
         focusToolFromHash(location.hash);
     }, [location.hash, state.status]);
 
-    // Nothing left to cancel once the analysis has finished, so the dialogue and its failure go with it.
     const [wasTerminal, setWasTerminal] = useState(terminal);
     if (wasTerminal !== terminal) {
         setWasTerminal(terminal);
@@ -452,13 +524,8 @@ export function SubmissionPage({
         }
     }
 
-    // The device remembers where this result is, so the reader can come back to it, or put the same project
-    // through another analysis, without keeping the link themselves.
     useEffect(() => {
         if (!terminal || state.status !== 'ready') return;
-        // A class set is remembered under its own kind, with however many projects it turned out to hold. The name
-        // came from the page that sent it, if this device is the one that did; an empty name leaves what is
-        // already known alone rather than overwriting it.
         if (isBatchSubmission(state.value)) {
             const analyses = submissionAnalyses(state.value);
             rememberProject({

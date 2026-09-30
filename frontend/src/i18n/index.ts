@@ -3,6 +3,7 @@
 import i18n, { type BackendModule, type ReadCallback } from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { isSupportedLocale, loadPack, translationKeys, type TranslationPack } from './locales';
+import { loadAssessmentPack, type AssessmentPack } from './locales/assessment';
 import type { SupportedLocale } from '../api/capabilities';
 
 export { localeLabels } from './locales';
@@ -30,13 +31,14 @@ const storedLocale = (): Locale => {
 const packs: BackendModule = {
     type: 'backend',
     init: () => undefined,
-    read: (language: string, _namespace: string, callback: ReadCallback) => {
+    read: (language: string, namespace: string, callback: ReadCallback) => {
         if (!isLocale(language)) {
             callback(null, {});
             return;
         }
-        void loadPack(language).then(
-            (pack) => callback(null, pack),
+        const pack = namespace === 'assessment' ? loadAssessmentPack(language) : loadPack(language);
+        void pack.then(
+            (resolved) => callback(null, resolved),
             (error: unknown) => callback(error as Error, false),
         );
     },
@@ -77,6 +79,9 @@ export const formatNumber = (value: number, locale = getLocale()): string =>
 export const formatPercent = (value: number, locale = getLocale()): string =>
     new Intl.NumberFormat(locale, { style: 'percent', maximumFractionDigits: 1 }).format(value);
 
+export const formatRate = (value: number, digits = 1, locale = getLocale()): string =>
+    new Intl.NumberFormat(locale, { maximumFractionDigits: digits }).format(value);
+
 const RELATIVE_UNITS: [Intl.RelativeTimeFormatUnit, number][] = [
     ['year', 365 * 24 * 60 * 60 * 1000],
     ['month', 30 * 24 * 60 * 60 * 1000],
@@ -115,7 +120,7 @@ export const formatDateTime = (value: Date | string | number, locale = getLocale
 declare module 'i18next' {
     interface CustomTypeOptions {
         defaultNS: 'translation';
-        resources: { translation: TranslationPack };
+        resources: { translation: TranslationPack; assessment: AssessmentPack };
     }
 }
 

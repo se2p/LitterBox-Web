@@ -37,10 +37,8 @@ describe('app shell', () => {
             </MemoryRouter>,
         );
         expect(screen.getByRole('heading', { name: 'LitterBox', level: 1 })).toBeInTheDocument();
-        // The hero blocks are a picture of what the site does, and are shipped as one: drawn ahead of time, so
-        // no home visitor fetches a block renderer for a picture that never varies. It keeps the name that tells
-        // a screen reader what the picture is of, and loses the caption and the transcript that repeated it to
-        // everyone else.
+        // It keeps the name that tells a screen reader what the picture is of, and loses the caption and the
+        // transcript that repeated it to everyone else.
         const heroBlocks = await screen.findByRole('img', { name: 'A small Scratch program' });
         expect(heroBlocks.tagName).toBe('IMG');
         expect(screen.queryByText('A small Scratch program')).not.toBeInTheDocument();
@@ -48,8 +46,7 @@ describe('app shell', () => {
         await waitFor(() => expect(screen.getByLabelText('Your project file')).toBeInTheDocument());
         expect(fetchMock).toHaveBeenCalledTimes(1);
 
-        // The version is the only thing the readiness page said that a reader could use, and it now says it on
-        // every page instead of behind a link. Nothing else about the service is anyone's business.
+        // Nothing else about the service is anyone's business.
         expect(screen.getByText('LitterBox test')).toBeInTheDocument();
         expect(screen.queryByRole('link', { name: 'System information' })).not.toBeInTheDocument();
         expect(screen.queryByText('Schema version')).not.toBeInTheDocument();
@@ -128,7 +125,6 @@ describe('app shell', () => {
             'href',
             '/',
         );
-        // Home is the submission form, so it is the only always-present entry.
         expect(
             navigationQueries.queryByRole('link', { name: 'Submit project' }),
         ).not.toBeInTheDocument();
@@ -155,7 +151,6 @@ describe('app shell', () => {
         expect(await screen.findByRole('link', { name: 'For teachers' })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Advanced analysis' })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Ask me' })).toBeInTheDocument();
-        // What a child came to do stands at the front of the menu; the rest is for whoever is teaching them.
         expect(
             navigationQueries.getAllByRole('link').map((link) => link.textContent),
         ).toStrictEqual([
@@ -176,7 +171,6 @@ describe('app shell', () => {
         ).toHaveAttribute('href', '/statistics');
         expect(navigation).not.toHaveAttribute('aria-busy');
         expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('aria-current', 'page');
-        // The version appears only once the service has answered; before that the footer says nothing about it.
         expect(screen.getByText('LitterBox synthetic-static-navigation')).toBeInTheDocument();
     });
 
@@ -210,13 +204,12 @@ describe('app shell', () => {
                 <App />
             </MemoryRouter>,
         );
-        await waitFor(() => expect(screen.getByText('Batch progress')).toBeInTheDocument());
+        await waitFor(() => expect(screen.getByText('Class set summary')).toBeInTheDocument());
+        const reportsHeading = screen.getByRole('heading', { name: 'All project reports' });
+        await userEvent.setup().click(reportsHeading.closest('summary') as HTMLElement);
         expect(screen.getByText('Working project')).toBeInTheDocument();
-        // The reason is reported once, under the heading that gathers what did not finish, rather than in a
-        // table cell that has to be as wide as a sentence.
         expect(screen.getByRole('heading', { name: '1 analysis did not finish' })).toBeVisible();
         expect(screen.getByText('Malformed project.json')).toBeInTheDocument();
-        // One expected, one complete, one failed, none still processing — plus the row's own counts.
         expect(screen.getAllByText('1').length).toBeGreaterThanOrEqual(2);
     });
 
@@ -294,8 +287,6 @@ describe('app shell', () => {
         ).not.toBeInTheDocument();
         expect(screen.queryByRole('heading', { name: 'Program graphs' })).not.toBeInTheDocument();
         expect(screen.queryByRole('heading', { name: 'Export program' })).not.toBeInTheDocument();
-        // LitterBox's own report, which the service has always been able to write and nothing linked. Named per
-        // analysis, because a class set holds many and the submission's last one is not the one on screen.
         expect(screen.getByRole('link', { name: 'Download the report' })).toHaveAttribute(
             'href',
             '/litterbox/api/v1/submissions/synthetic-all-capabilities/analyses/17/report.html',
@@ -307,9 +298,7 @@ describe('app shell', () => {
             expect(screen.getByRole('heading', { name: 'Program graphs' })).toBeInTheDocument();
             expect(screen.getByRole('heading', { name: 'Export program' })).toBeInTheDocument();
         });
-        // Fault injection is not among them any more. It makes a second project rather than reading the one in
-        // hand, which is lesson preparation, so it is offered on the teacher's pages instead.
-        expect(screen.queryByRole('heading', { name: 'Fault injection' })).not.toBeInTheDocument();
+        expect(screen.getAllByText('Fault injection').length).toBeGreaterThan(0);
         expect(screen.getByRole('link', { name: 'Compare results' })).toHaveAttribute(
             'href',
             '/compare',
@@ -464,7 +453,6 @@ describe('advanced analysis discovery', () => {
             </MemoryRouter>,
         );
 
-        // No dead end back to the start page: a project can be handed over right here.
         expect(
             await screen.findByRole('heading', { name: 'Advanced analysis', level: 1 }),
         ).toBeInTheDocument();
@@ -563,7 +551,6 @@ describe('advanced analysis discovery', () => {
         await userEvent
             .setup()
             .click(screen.getByRole('button', { name: 'Change retained analysis' }));
-        // Once in the hero and once in the analysis context, which records what produced the result.
         expect((await screen.findAllByText('new-retained-project.sb3')).length).toBeGreaterThan(0);
         expect(screen.queryByText('old-retained-project.sb3')).not.toBeInTheDocument();
 
@@ -617,7 +604,6 @@ describe('advanced analysis discovery', () => {
 
         const menu = await screen.findByRole('navigation', { name: 'Sections on this page' });
         const menuQueries = within(menu);
-        // The first section stands open so the page is not a wall of shut drawers.
         expect(menuQueries.getByRole('button', { name: 'Detailed metrics' })).toHaveAttribute(
             'aria-expanded',
             'true',
@@ -628,7 +614,6 @@ describe('advanced analysis discovery', () => {
         );
 
         await user.click(menuQueries.getByRole('button', { name: 'Program graphs' }));
-        // Opening one closes the other: that is the whole point of the fold.
         expect(menuQueries.getByRole('button', { name: 'Program graphs' })).toHaveAttribute(
             'aria-expanded',
             'true',
@@ -648,8 +633,7 @@ describe('advanced analysis discovery', () => {
         ['metrics-graphs', ['Detailed metrics', 'Persisted metrics', 'Program graphs']],
         ['semantic-diff', ['Detailed metrics', 'Persisted metrics', 'Compare this result']],
         ['program-export', ['Detailed metrics', 'Persisted metrics', 'Export program']],
-        // Fault injection is deliberately absent: it is the teacher's tool and has left this page.
-        ['fault-injection', ['Detailed metrics', 'Persisted metrics']],
+        ['fault-injection', ['Detailed metrics', 'Persisted metrics', 'Fault injection']],
     ] as const)('shows only applicable sections for %s', async (feature, headings) => {
         vi.stubGlobal('EventSource', undefined);
         vi.spyOn(globalThis, 'fetch').mockImplementation((input) => {

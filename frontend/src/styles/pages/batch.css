@@ -1,0 +1,638 @@
+/* SPDX-License-Identifier: EUPL-1.2 */
+/* SPDX-FileCopyrightText: 2026 LitterBox-Web contributors */
+
+.batch-dashboard,
+.batch-dashboard section {
+    min-width: 0;
+}
+
+.batch-table-scroll {
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: auto;
+    margin-top: var(--space-3);
+}
+
+.batch-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.batch-table th,
+.batch-table td {
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+    text-align: left;
+    vertical-align: top;
+}
+
+.batch-table th.batch-table-numeric,
+.batch-table td.batch-table-numeric {
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+}
+
+.batch-table thead th {
+    border-bottom: 2px solid var(--color-border);
+}
+
+@media (min-width: 60rem) {
+    .batch-table thead th,
+    .batch-table thead th .table-sort {
+        overflow-wrap: normal;
+        word-break: normal;
+    }
+}
+
+.batch-table-project {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    min-width: 12rem;
+    background: var(--color-surface);
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.batch-table .table-sort {
+    font-weight: 700;
+}
+
+.batch-row-selected,
+.batch-row-selected .batch-table-project {
+    background: var(--color-surface-muted);
+}
+
+.batch-dashboard .batch-count-list + .batch-count-list,
+.batch-workspace {
+    margin-top: var(--space-6);
+}
+
+.batch-workspace {
+    padding-top: var(--space-6);
+    border-top: 2px solid var(--color-border-strong);
+}
+
+.batch-workspace > h3,
+.batch-workspace-lead {
+    margin: 0;
+}
+
+.batch-workspace .fold-section-title {
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.batch-workspace-lead {
+    max-width: 70rem;
+    margin-top: var(--space-2);
+    color: var(--color-ink-muted);
+}
+
+.batch-table-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+}
+
+.batch-table-filters,
+.batch-table-filters label {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.batch-table-filters label {
+    display: grid;
+    gap: var(--space-1);
+    font-size: 0.85rem;
+}
+
+.batch-table-filters select {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.batch-table-empty {
+    color: var(--color-ink-muted);
+}
+
+.batch-status {
+    display: block;
+    margin-top: var(--space-1);
+    color: var(--color-ink-muted);
+    font-size: 0.8rem;
+    font-weight: 400;
+}
+
+.batch-failures .batch-failure-list {
+    display: grid;
+    gap: var(--space-3);
+    margin: var(--space-3) 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.batch-failure-list > li {
+    display: grid;
+    gap: var(--space-1);
+    padding-left: var(--space-3);
+    border-left: 3px solid var(--color-danger);
+}
+
+.batch-failure-project {
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.batch-failure-reason {
+    color: var(--color-ink-muted);
+    font-size: 0.9rem;
+}
+
+.batch-finder-family {
+    align-self: center;
+    color: var(--color-brand-cyan-dark);
+}
+
+.batch-finder-family-bug {
+    color: var(--color-danger);
+}
+
+.batch-finder-family-smell {
+    color: var(--color-warning);
+}
+
+.batch-finder-family-perfume {
+    color: var(--color-success);
+}
+
+.batch-fold {
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-border);
+}
+
+.batch-workspace .section-card-body > .fold-section:first-child {
+    border-top: 0;
+}
+
+.batch-fold-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+}
+
+.batch-fold-heading h5,
+.batch-fold-heading h6,
+.batch-fold-title {
+    margin: 0;
+}
+
+.batch-concept-group th {
+    padding-top: var(--space-3);
+    background: var(--color-surface-muted);
+    font-size: 0.95rem;
+    font-weight: 750;
+}
+
+.batch-table-action {
+    min-height: 2rem;
+    padding: var(--space-1) var(--space-2);
+    white-space: nowrap;
+}
+
+.disclosure-chip {
+    min-height: 2rem;
+    padding: var(--space-1) var(--space-3);
+    font: inherit;
+}
+
+.disclosure-chip-marker {
+    color: var(--color-brand-cyan-dark);
+}
+
+.disclosure-chip[aria-expanded='true'] {
+    background: var(--color-brand-yellow);
+    box-shadow: inset 0 0 0 2px var(--color-brand-slate);
+}
+
+.batch-finding-family-grid {
+    display: grid;
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+}
+
+.batch-ct-overall {
+    max-width: 34rem;
+    margin-top: var(--space-4);
+    padding: var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface-finding);
+}
+
+.batch-ct-overall h6,
+.batch-ct-overall p {
+    margin: 0;
+}
+
+.batch-ct-overall .metric-box-plot {
+    margin-top: var(--space-3);
+}
+
+.batch-dashboard .batch-finding-family-panel {
+    margin-top: 0;
+    padding: var(--space-3);
+    border: 1px solid var(--color-border);
+    border-left: 0.35rem solid var(--color-brand-cyan-dark);
+    border-radius: var(--radius-md);
+}
+
+.batch-dashboard .batch-finding-family-bug {
+    border-left-color: var(--color-danger);
+}
+
+.batch-dashboard .batch-finding-family-smell {
+    border-left-color: var(--color-warning);
+}
+
+.batch-dashboard .batch-finding-family-perfume {
+    border-left-color: var(--color-success);
+    background: var(--color-success-surface);
+}
+
+.batch-finding-family-panel h6 {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin: 0;
+    font-size: 1rem;
+}
+
+.batch-family-total {
+    min-width: 1.7rem;
+    padding: 0 var(--space-1);
+    border-radius: 999px;
+    background: var(--color-surface-muted);
+    font-size: 0.8rem;
+    line-height: 1.7rem;
+    text-align: center;
+}
+
+.batch-finding-table {
+    font-size: 0.82rem;
+}
+
+.batch-metric-chooser {
+    margin-top: var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+}
+
+.batch-metric-choice-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr));
+    gap: 0 var(--space-3);
+    max-height: 10rem;
+    overflow-y: auto;
+    padding: var(--space-2) 0;
+}
+
+.batch-metric-search {
+    display: grid;
+    gap: var(--space-1);
+    max-width: 28rem;
+    margin-top: var(--space-2);
+    font-size: 0.85rem;
+}
+
+.batch-metric-choice-grid label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 1.75rem;
+    line-height: 1.2;
+}
+
+.batch-metric-choice-grid input[type='checkbox'],
+.batch-matrix-findings-toggle input[type='checkbox'] {
+    flex: 0 0 auto;
+    width: 1rem;
+    height: 1rem;
+    min-height: 0;
+    margin: 0;
+}
+
+.batch-metric-choice-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.batch-metric-choice-actions button {
+    min-height: 2rem;
+    padding: var(--space-1) var(--space-2);
+}
+
+.batch-metric-selection-hint {
+    margin: var(--space-1) 0 0;
+}
+
+.batch-metric-export-link {
+    margin: var(--space-4) 0 0;
+    font-size: 0.88rem;
+    font-weight: 650;
+}
+
+.batch-metric-view-switch {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    margin-top: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-border);
+}
+
+.batch-metric-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+}
+
+.batch-metric-card {
+    padding: var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface-finding);
+}
+
+.batch-metric-card h6,
+.batch-metric-card p {
+    margin: 0;
+}
+
+.batch-metric-coverage-bar {
+    height: 0.55rem;
+    margin-top: var(--space-3);
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--color-surface-muted);
+}
+
+.batch-metric-coverage-bar > span {
+    display: block;
+    height: 100%;
+    background: var(--color-brand-cyan-dark);
+}
+
+.batch-metric-card .batch-metric-coverage-copy {
+    margin-top: var(--space-1);
+    color: var(--color-ink-muted);
+    font-size: 0.78rem;
+}
+
+.batch-metric-extremes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+}
+
+.batch-matrix-export {
+    min-width: 0;
+}
+
+.batch-export-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: var(--space-2);
+}
+
+.batch-export-controls label {
+    display: grid;
+    gap: var(--space-1);
+    min-width: 0;
+}
+
+.batch-export-controls button,
+.batch-export-controls select {
+    min-height: 2rem;
+    padding: var(--space-1) var(--space-3);
+}
+
+.batch-matrix-export > .hint {
+    margin: var(--space-2) 0 0;
+}
+
+.batch-matrix-findings-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+}
+
+.batch-all-projects-title {
+    display: flex;
+    width: 100%;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin: 0;
+}
+
+.batch-all-projects-title > span:last-child {
+    color: var(--color-ink-muted);
+    font-size: 0.85rem;
+    font-weight: 400;
+}
+
+.batch-finding-catalogue {
+    display: grid;
+    gap: var(--space-2);
+    max-width: 60rem;
+    padding: var(--space-1) 0;
+}
+
+.batch-finding-catalogue p {
+    margin: 0;
+}
+
+.batch-project-inspector {
+    position: sticky;
+    top: var(--space-2);
+    z-index: 5;
+    display: grid;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+    padding: var(--space-3);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-overlay);
+    background: var(--color-surface);
+}
+
+.batch-project-inspector > button {
+    justify-self: start;
+}
+
+.batch-project-inspector-main {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: var(--space-4);
+}
+
+.batch-project-inspector h2,
+.batch-project-inspector p {
+    margin: 0;
+}
+
+.batch-project-inspector p {
+    margin-top: var(--space-1);
+    color: var(--color-ink-muted);
+}
+
+.batch-project-inspector label {
+    display: grid;
+    gap: var(--space-1);
+    min-width: min(24rem, 100%);
+    font-size: 0.85rem;
+}
+
+@media (max-width: 44rem) {
+    .batch-project-inspector-main {
+        display: grid;
+    }
+
+    .batch-project-inspector label {
+        min-width: 0;
+    }
+}
+
+@media (max-width: 60rem) {
+    .batch-table thead {
+        display: none;
+    }
+
+    .batch-table,
+    .batch-table tbody,
+    .batch-table tr,
+    .batch-table th,
+    .batch-table td {
+        display: block;
+    }
+
+    .batch-table tr {
+        margin-bottom: var(--space-4);
+        border-bottom: 2px solid var(--color-border);
+    }
+
+    .batch-table td {
+        display: flex;
+        justify-content: space-between;
+        gap: var(--space-3);
+        border-bottom: 0;
+        text-align: left;
+    }
+
+    .batch-table td[data-label]::before {
+        color: var(--color-ink-muted);
+        content: attr(data-label);
+    }
+
+    .batch-table-project {
+        position: static;
+        min-width: 0;
+    }
+}
+
+.batch-advanced-tools > summary {
+    cursor: pointer;
+}
+
+.batch-advanced-tools > summary h2 {
+    display: inline;
+    margin: 0;
+}
+
+.batch-triage {
+    display: grid;
+    gap: var(--space-4);
+    max-width: 60rem;
+}
+
+.batch-triage-list {
+    display: grid;
+    gap: var(--space-2);
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.batch-triage-list > li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-2) var(--space-3);
+    padding-block: var(--space-2);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.batch-triage-project {
+    flex: 1 1 100%;
+    overflow-wrap: anywhere;
+    font-weight: 600;
+}
+
+.batch-triage-reasons {
+    display: inline-flex;
+    flex: 0 1 auto;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+}
+
+.batch-triage-reason {
+    display: inline-block;
+    padding: 0.15rem var(--space-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-muted);
+    color: var(--color-ink-muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.batch-triage-measurement {
+    color: var(--color-ink-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.batch-active-filter-chip {
+    display: inline-flex;
+    min-width: 0;
+    max-width: 100%;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    margin: 0;
+    padding: var(--space-1) var(--space-2) var(--space-1) var(--space-3);
+    border: 1px solid var(--color-border-strong);
+    border-radius: 999px;
+    background: var(--color-brand-yellow);
+    box-shadow: inset 0 0 0 2px var(--color-brand-slate);
+    font-size: 0.85rem;
+}
+
+.batch-active-filter-chip-text {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    font-weight: 600;
+}

@@ -8,23 +8,33 @@ export const METRIC_REFERENCE_URL = `${BASE_URL}api/v1/metrics/reference`;
 
 export type MetricBand = MetricBandDto;
 
-/**
- * A band has to be able to divide something into thirds before it can say which third a value is in. Two ways it
- * cannot: drawn from no projects at all, or with its boundaries the wrong way round, which would put every value
- * in the outer thirds and none in the middle. Both would otherwise render as a confident comparison.
- */
+const DISTRIBUTION_FIELDS = ['minimum', 'q1', 'median', 'q3', 'maximum'] as const;
+
+const finite = (field: unknown): field is number =>
+    typeof field === 'number' && Number.isFinite(field);
+
 const isBand = (value: unknown): value is MetricBand => {
     if (!value || typeof value !== 'object') return false;
     const candidate = value as Record<string, unknown>;
-    const finite = (field: unknown): field is number =>
-        typeof field === 'number' && Number.isFinite(field);
+    if (
+        typeof candidate.name !== 'string' ||
+        !finite(candidate.sampleSize) ||
+        candidate.sampleSize <= 0 ||
+        !finite(candidate.lowerBound) ||
+        !finite(candidate.upperBound) ||
+        candidate.lowerBound > candidate.upperBound
+    ) {
+        return false;
+    }
+    const present = DISTRIBUTION_FIELDS.filter((field) => candidate[field] !== undefined);
+    if (present.length === 0) return true;
+    if (present.length !== DISTRIBUTION_FIELDS.length) return false;
+    const values = DISTRIBUTION_FIELDS.map((field) => candidate[field]);
     return (
-        typeof candidate.name === 'string' &&
-        finite(candidate.sampleSize) &&
-        candidate.sampleSize > 0 &&
-        finite(candidate.lowerBound) &&
-        finite(candidate.upperBound) &&
-        candidate.lowerBound <= candidate.upperBound
+        values.every(finite) &&
+        values.every(
+            (field, index) => index === 0 || (values[index - 1] as number) <= (field as number),
+        )
     );
 };
 

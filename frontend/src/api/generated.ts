@@ -7,6 +7,18 @@ export interface CapabilitiesDto {
     litterboxVersion: string;
     supportedLocales: string[];
     enabledFeatures: string[];
+    assessmentLimits?: AssessmentLimitsDto;
+}
+
+export interface AssessmentLimitsDto {
+    maxQuestions: number;
+    maxTitleLength: number;
+    maxInstructionsLength: number;
+    maxQuestionTextLength: number;
+    maxAnswerGuideLength: number;
+    maxOptions: number;
+    maxOptionLength: number;
+    maxAnswerLength: number;
 }
 
 export interface MetricBandDto {
@@ -14,6 +26,11 @@ export interface MetricBandDto {
     sampleSize: number;
     lowerBound: number;
     upperBound: number;
+    minimum?: number;
+    q1?: number;
+    median?: number;
+    q3?: number;
+    maximum?: number;
 }
 
 export interface MetricReferenceDto {

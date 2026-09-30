@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: 2026 LitterBox-Web contributors
 
 import type { TFunction } from 'i18next';
+import { BLOCK_CATEGORY_ORDER, CONCEPTS, type ConceptId } from '../../lib/program-concepts';
 
 const categoryNames = {
     motion_block_count: 'motion',
@@ -19,20 +20,14 @@ const categoryNames = {
 export const blockCategoryClass = (metric: string): string =>
     categoryNames[metric.toLowerCase() as keyof typeof categoryNames] ?? 'other';
 
-export const blockCategoryLabel = (metric: string, translate: TFunction): string => {
-    const labels = {
-        motion_block_count: 'statisticsBlockCategoryMotion',
-        looks_block_count: 'statisticsBlockCategoryLooks',
-        sound_block_count: 'statisticsBlockCategorySound',
-        events_block_count: 'statisticsBlockCategoryEvents',
-        control_block_count: 'statisticsBlockCategoryControl',
-        sensing_block_count: 'statisticsBlockCategorySensing',
-        operators_block_count: 'statisticsBlockCategoryOperators',
-        variables_block_count: 'statisticsBlockCategoryVariables',
-        my_blocks_block_count: 'statisticsBlockCategoryMyBlocks',
-        other_block_count: 'statisticsBlockCategoryOther',
-    } as const;
-    return translate(
-        labels[metric.toLowerCase() as keyof typeof labels] ?? 'statisticsBlockCategoryOther',
+/** These metrics name the same Scratch categories the task-analysis treemap shows, so the label is borrowed from
+ * {@link CONCEPTS} — read off its own metric names, rather than kept as a second, driftable copy. */
+const categoryConceptId = (metric: string): ConceptId | undefined =>
+    BLOCK_CATEGORY_ORDER.find((id) =>
+        (CONCEPTS[id].names as readonly string[]).includes(metric.toLowerCase()),
     );
+
+export const blockCategoryLabel = (metric: string, translate: TFunction): string => {
+    const conceptId = categoryConceptId(metric);
+    return translate(conceptId ? CONCEPTS[conceptId].nameKey : 'statisticsBlockCategoryOther');
 };

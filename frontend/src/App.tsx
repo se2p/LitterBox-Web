@@ -32,13 +32,22 @@ const QuestionsPage = lazy(() =>
 const AskAiPage = lazy(() =>
     import('./pages/AskAiPage').then((module) => ({ default: module.AskAiPage })),
 );
-const ModificationPage = lazy(() =>
-    import('./pages/ModificationPage').then((module) => ({ default: module.ModificationPage })),
+const TaskAnalysisPage = lazy(() =>
+    import('./pages/TaskAnalysisPage').then((module) => ({ default: module.TaskAnalysisPage })),
+);
+const AssessmentQuizPage = lazy(() =>
+    import('./pages/AssessmentQuizPage').then((module) => ({ default: module.AssessmentQuizPage })),
+);
+const AssessmentResultsPage = lazy(() =>
+    import('./pages/AssessmentResultsPage').then((module) => ({
+        default: module.AssessmentResultsPage,
+    })),
 );
 import {
     ADVANCED_ANALYSIS_COMPATIBILITY_PATH,
     ADVANCED_ANALYSIS_PATH,
     MODIFICATION_PATH,
+    TASK_ANALYSIS_PATH,
     readRetainedAnalysis,
     retainedAnalysisDestination,
 } from './lib/retained-analysis';
@@ -47,7 +56,12 @@ import { useAskAiEligibility } from './lib/ask-ai-eligibility';
 import { useCapabilities, type CapabilityState } from './lib/capabilities';
 import { capabilityEnabled, featureEnabled, teacherWorkflowEnabled } from './lib/features';
 
-const ADVANCED_CAPABILITIES = ['metrics-graphs', 'semantic-diff', 'program-export'] as const;
+const ADVANCED_CAPABILITIES = [
+    'metrics-graphs',
+    'semantic-diff',
+    'program-export',
+    'fault-injection',
+] as const;
 
 function LocaleCompatibilityNotice({
     state,
@@ -198,7 +212,20 @@ export function App() {
                         <Route
                             path={MODIFICATION_PATH}
                             element={
-                                <ModificationPage
+                                <Navigate
+                                    to={{
+                                        pathname: ADVANCED_ANALYSIS_PATH,
+                                        hash: '#advanced-injection',
+                                    }}
+                                    state={location.state}
+                                    replace
+                                />
+                            }
+                        />
+                        <Route
+                            path={TASK_ANALYSIS_PATH}
+                            element={
+                                <TaskAnalysisPage
                                     capabilityState={state}
                                     onCapabilityRetry={retry}
                                 />
@@ -255,6 +282,24 @@ export function App() {
                                 <SubmissionPage
                                     capabilityState={state}
                                     askAiAvailable={askAiAvailable}
+                                />
+                            }
+                        />
+                        <Route
+                            path="/quiz/:token/results"
+                            element={
+                                <AssessmentResultsPage
+                                    capabilityState={state}
+                                    onCapabilityRetry={retry}
+                                />
+                            }
+                        />
+                        <Route
+                            path="/quiz/:token"
+                            element={
+                                <AssessmentQuizPage
+                                    capabilityState={state}
+                                    onCapabilityRetry={retry}
                                 />
                             }
                         />

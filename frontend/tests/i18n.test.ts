@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: EUPL-1.2
 // SPDX-FileCopyrightText: 2025 LitterBox-Web contributors
 import { beforeAll, describe, expect, it } from 'vitest';
+import { readdirSync, readFileSync } from 'node:fs';
+import { join, resolve } from 'node:path';
+import { cwd } from 'node:process';
 import i18n, { formatDateTime, formatNumber, setLocale } from '../src/i18n';
 import type { SupportedLocale } from '../src/api/capabilities';
 import { translationKeys, type TranslationKey, type TranslationPack } from '../src/i18n/locales';
@@ -24,8 +27,6 @@ describe('locale packs', () => {
         }
     });
 
-    // "1 projects are ready to analyse." A counted noun that only ever has its plural form is wrong exactly once
-    // per count, and one is the count a child sees most.
     it.each([
         ['en', 'project is', 'projects are'],
         ['de', 'Projekt kann', 'Projekte können'],
@@ -66,8 +67,6 @@ describe('locale packs', () => {
         }
     });
 
-    // English is the canonical set: a key exists because en.ts names it. A translated pack that invents one of
-    // its own would merge in silently and only ever show up in the language nobody testing it reads.
     it('lets no translated pack invent a key English does not have', async () => {
         const canonical = new Set(Object.keys(translationKeys));
         const packs = {
@@ -78,12 +77,35 @@ describe('locale packs', () => {
         for (const [locale, pack] of Object.entries(packs)) {
             const invented = Object.keys(pack).filter((key) => !canonical.has(key));
             expect(invented, locale).toEqual([]);
-            // And nothing translated to nothing: an empty string renders as a gap on the page.
             expect(
                 Object.entries(pack).filter(([, value]) => (value ?? '').length === 0),
                 locale,
             ).toEqual([]);
         }
+    });
+
+    it('keeps batch-workspace translations tied to a source use', () => {
+        const sourceRoot = resolve(cwd(), 'src');
+        const source: string[] = [];
+        const visit = (directory: string) => {
+            for (const entry of readdirSync(directory, { withFileTypes: true })) {
+                const path = join(directory, entry.name);
+                if (entry.isDirectory()) {
+                    if (path !== join(sourceRoot, 'i18n', 'locales')) visit(path);
+                } else if (/\.tsx?$/.test(entry.name)) source.push(readFileSync(path, 'utf8'));
+            }
+        };
+        visit(sourceRoot);
+        const used = new Set(
+            [...source.join('\n').matchAll(/['"](batch[A-Za-z0-9_]+)['"]/g)].map(
+                (match) => match[1],
+            ),
+        );
+        const unused = Object.keys(translationKeys)
+            .filter((key) => key.startsWith('batch'))
+            .filter((key) => !used.has(key.replace(/_(one|other)$/, '')) && !used.has(key));
+
+        expect(unused).toEqual([]);
     });
 
     it('falls back to English for an unavailable translation', async () => {

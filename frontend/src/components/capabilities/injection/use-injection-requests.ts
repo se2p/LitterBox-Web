@@ -20,6 +20,7 @@ import {
 } from '../../../api/injections';
 import { resultForKey, resultKey, sortInjectorsByName } from './injection-utils';
 import type { InjectorSelectionMode } from './use-injector-selection';
+import { canDownloadBlobs, clickDownload } from '../../../lib/download-blob';
 
 type InjectionOperation = 'injectors' | 'preview' | 'download';
 /** Which mutation is being fetched: one of them by key, or the whole set. */
@@ -236,16 +237,9 @@ export function useInjectionRequests({
 
     /** Hands the fetched archive to the browser under the name the service put on it. */
     const saveArchive = (archive: InjectionArchiveResult) => {
-        if (typeof URL.createObjectURL !== 'function')
-            throw new InjectionApiError('malformed_response');
+        if (!canDownloadBlobs()) throw new InjectionApiError('malformed_response');
         objectUrl.current = URL.createObjectURL(archive.blob);
-        const link = document.createElement('a');
-        link.href = objectUrl.current;
-        link.download = archive.filename;
-        link.rel = 'noopener';
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
+        clickDownload(objectUrl.current, archive.filename);
     };
 
     /**

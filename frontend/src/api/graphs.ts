@@ -3,7 +3,12 @@
 
 import { isAbortError } from '../lib/abort-error';
 import { BASE_URL } from '../lib/base-url';
-import { readBoundedText } from './validation';
+import {
+    isProblemJsonContentType,
+    MAX_PROBLEM_RESPONSE_BYTES,
+    problemCodeFrom,
+    readBoundedText,
+} from './validation';
 
 export const GRAPH_TYPES = ['ast', 'cfg', 'cdg', 'ddg', 'dt', 'pdt', 'tdg', 'pdg'] as const;
 export type GraphType = (typeof GRAPH_TYPES)[number];
@@ -90,16 +95,14 @@ const categoryFor = (status: number, code?: string): GraphErrorCategory => {
     return status === 404 ? 'unavailable' : 'server';
 };
 
+const isCode = (value: unknown): value is string => typeof value === 'string';
+
+/* A problem body is read under the same ceiling as the graph itself is - bounded while it is read rather than
+   measured once it is already in memory, which is the only point at which a ceiling can still refuse anything. */
 const readProblemCode = async (response: Response): Promise<string | undefined> => {
-    const contentType = response.headers.get('Content-Type')?.toLowerCase() ?? '';
-    if (!contentType.includes('json')) return undefined;
+    if (!isProblemJsonContentType(response.headers.get('Content-Type'))) return undefined;
     try {
-        const body = await response.text();
-        if (body.length > 16_384) return undefined;
-        const parsed: unknown = JSON.parse(body);
-        if (!parsed || typeof parsed !== 'object') return undefined;
-        const code = (parsed as Record<string, unknown>).code;
-        return typeof code === 'string' ? code : undefined;
+        return problemCodeFrom(await readGraphText(response, MAX_PROBLEM_RESPONSE_BYTES), isCode);
     } catch {
         return undefined;
     }
@@ -120,9 +123,9 @@ const boundedCount = (response: Response, header: string, maximum: number): numb
     return count;
 };
 
-const readGraphDot = (response: Response): Promise<string> =>
-    readBoundedText(response, MAX_GRAPH_DOT_BYTES, {
-        tooLarge: () => new GraphApiError('limit', 'Graph DOT exceeded its bounded response size'),
+const readGraphText = (response: Response, maximum: number): Promise<string> =>
+    readBoundedText(response, maximum, {
+        tooLarge: () => new GraphApiError('limit', 'The graph response exceeded its bounded size'),
         // Bytes that are not UTF-8 are not a graph this client can draw. Named as a server fault rather than left
         // to escape as the decoder's own TypeError, which the caller would have no category for.
         malformed: () => new GraphApiError('server', 'The graph response was not valid UTF-8'),
@@ -167,7 +170,7 @@ export async function fetchGraph(
     }
     const nodeCount = boundedCount(response, 'X-LitterBox-Graph-Nodes', MAX_GRAPH_NODES);
     const edgeCount = boundedCount(response, 'X-LitterBox-Graph-Edges', MAX_GRAPH_EDGES);
-    const dot = await readGraphDot(response);
+    const dot = await readGraphText(response, MAX_GRAPH_DOT_BYTES);
     if (!dot.trim()) throw new GraphApiError('empty', 'The graph response was empty');
     return { graphType, dot, nodeCount, edgeCount };
 }

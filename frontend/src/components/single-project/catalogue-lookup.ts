@@ -9,12 +9,12 @@ export type CatalogueLookup = ReadonlyMap<string, CatalogueEntry>;
 /** A token the service left unfilled, such as `%SPRITE`, because the pattern has no project behind it. */
 const UNRESOLVED_TOKEN = /%[A-Z_]+/;
 
-export const buildCatalogueLookup = (entries: readonly CatalogueEntry[] = []): CatalogueLookup => {
+export const buildCatalogueLookup = (entries: Iterable<CatalogueEntry> = []): CatalogueLookup => {
     const byId = new Map<string, CatalogueEntry>();
-    entries.forEach((entry) => {
+    for (const entry of entries) {
         const id = entry.id?.trim();
         if (id) byId.set(id, entry);
-    });
+    }
     return byId;
 };
 

@@ -7,9 +7,12 @@ import { expect, test, type Page } from '@playwright/test';
 const locales = ['de', 'en', 'es', 'nl'] as const;
 type Locale = (typeof locales)[number];
 
-// Fault injection is not one of them: it makes a second project rather than reading the one in hand, so it is
-// offered on the teacher's pages and has its own spec.
-const advancedFeatures = ['metrics-graphs', 'semantic-diff', 'program-export'] as const;
+const advancedFeatures = [
+    'metrics-graphs',
+    'semantic-diff',
+    'program-export',
+    'fault-injection',
+] as const;
 
 const capabilities = (enabledFeatures: readonly string[]) => ({
     schemaVersion: 1,
@@ -261,7 +264,6 @@ async function assertShell(page: Page) {
         }),
     );
     expect(surfaces[0]?.backgroundColor).not.toBe(surfaces[1]?.backgroundColor);
-    // A single yellow rule is the header's only decoration.
     expect(surfaces[1]?.borderBottomWidth).toBe('2px');
 }
 
@@ -447,8 +449,6 @@ for (const combination of capabilityCombinations) {
         await assertWorkflowFields(page, './submit', combination.features);
         await assertWorkflowFields(page, './teacher', combination.features);
 
-        // Which analysis produced a finding is the one service detail a reader can act on, and the footer carries
-        // it whatever the deployment can do; the page that listed the rest of the internals is gone.
         await expect(page.locator('.footer-version')).toHaveText(/^LitterBox \S+/);
         await expect(
             page.getByRole('navigation', { name: 'Footer navigation' }).getByRole('link', {
@@ -559,13 +559,10 @@ test('assembled ordinary results preserve hierarchy, safe thumbnails, feedback, 
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto('./submissions/assembled-result');
     await expect(page.getByRole('heading', { name: 'Project analysis', level: 1 })).toBeVisible();
-    // The statistics are one compact line now; findings are counted beside the findings themselves.
     await expect(page.getByLabel('Analysis summary')).toBeVisible();
     for (const label of ['Sprites', 'Scripts', 'Blocks'])
         await expect(page.getByText(label, { exact: true })).toBeVisible();
     await expect(page.locator('.issue-filter-status')).toHaveText('Showing 3 of 3 findings.');
-    // Bugs, smells and perfumes are three folds. The first part that found something is unrolled; the reader
-    // opens the rest, and everything below is asserted with all three open.
     await expect(page.locator('details.issue-family')).toHaveCount(3);
     await expect(page.locator('details.issue-family[open]')).toHaveCount(1);
     const folds = page.locator('details.issue-family');
@@ -603,22 +600,17 @@ test('assembled ordinary results preserve hierarchy, safe thumbnails, feedback, 
     expect(desktopLayout.codeLeft).toBeGreaterThan(desktopLayout.explanationLeft);
 
     const findingsMarkup = await page.locator('.analysis-findings').innerHTML();
-    // Never rendered at all: a costume filename and a question belong to other workflows, and the catalogue entry
-    // here is not the one this finder is described by.
     for (const rawIdentifier of [
         'raw-costume-identifier-1.png',
         'This catalogue entry must stay on the standalone page.',
         'This question belongs only to the dedicated workflow.',
     ])
         expect(findingsMarkup).not.toContain(rawIdentifier);
-    // Not on a child's page at all, folded or otherwise: the severity number and the graph of findings this one
-    // sits in are for whoever is checking the analysis against the tool, which is what the class-set view is for.
     await expect(page.locator('.issue-technical')).toHaveCount(0);
     await expect(page.getByText('Finding 818181')).toHaveCount(0);
     // On the markup rather than by text: the severity filter offers "All severity levels", which a
     // case-insensitive text query cannot tell apart from the analyser's own label.
     expect(findingsMarkup).not.toContain('Severity level');
-    // The block identifier likewise: the block it names is drawn right there.
     await expect(page.getByText('raw-block-identifier-1')).toHaveCount(0);
     for (const heading of ['Relationships', 'Project assets', 'Catalogue'])
         await expect(page.getByRole('heading', { name: heading })).toHaveCount(0);
@@ -628,7 +620,6 @@ test('assembled ordinary results preserve hierarchy, safe thumbnails, feedback, 
     await expect(card.locator('[onerror]')).toHaveCount(0);
     await expect(card).toContainText('<script>alert(1)</script>');
 
-    // Family and sprite are buttons; type, finder and severity stay behind the detail disclosure.
     await page.locator('.issue-filters').getByRole('button', { name: /^Bugs/ }).click();
     await page.getByRole('button', { name: /^Success sprite/ }).click();
     await page.locator('.issue-filters-detailed > summary').click();
@@ -708,14 +699,14 @@ async function expectNoHorizontalOverflowAndSingleColumn(
     if (strictRootOverflow) await assertNoHorizontalOverflow(page);
 }
 
-/** Each capability is a fold now, so what names it is the summary that opens it. */
 const advancedSection = (page: Page, title: string) =>
-    page.locator('.advanced-section-title', { hasText: title });
+    page.locator('.fold-section-title', { hasText: title });
 
 const advancedSectionTitles = {
     'metrics-graphs': 'Program graphs',
     'semantic-diff': 'Compare this result',
     'program-export': 'Export program',
+    'fault-injection': 'Fault injection',
 } as const;
 
 for (const feature of advancedFeatures) {
@@ -738,25 +729,23 @@ for (const feature of advancedFeatures) {
 }
 
 /**
- * The advanced workspace shows one section at a time. A panel that is merely painted over still hands its selects
- * and buttons to the keyboard and to a screen reader; a closed <details> does not, and this is where that is
- * checked rather than assumed.
+ * A panel that is merely painted over still hands its selects and buttons to the keyboard and to a screen reader;
+ * a closed <details> does not, and this is where that is checked rather than assumed.
  */
 test('a closed advanced section hands nothing to the keyboard', async ({ page }) => {
     await useCapabilities(page, advancedFeatures);
     await useOrdinaryResult(page, advancedFeatures);
     await page.goto('./submissions/assembled-result');
     await page.getByRole('link', { name: 'Open advanced analysis' }).click();
-    await expect(page.locator('details.advanced-section')).not.toHaveCount(0);
+    await expect(page.locator('details.fold-section')).not.toHaveCount(0);
 
-    const closed = page.locator('details.advanced-section:not([open])');
+    const closed = page.locator('details.fold-section:not([open])');
     expect(await closed.count()).toBeGreaterThan(0);
     const controls = closed.locator('button, select, input, a, textarea, [tabindex]');
     expect(await controls.count()).toBeGreaterThan(0);
     for (let index = 0; index < (await controls.count()); index++)
         await expect(controls.nth(index)).toBeHidden();
 
-    // And nothing inside one can be reached by tabbing through the page.
     const reached = await page.evaluate(() => {
         const focusable = [
             ...document.querySelectorAll<HTMLElement>(
@@ -767,7 +756,7 @@ test('a closed advanced section hands nothing to the keyboard', async ({ page })
             element.focus();
             return (
                 document.activeElement === element &&
-                element.closest('details.advanced-section:not([open])') !== null
+                element.closest('details.fold-section:not([open])') !== null
             );
         }).length;
     });
@@ -778,7 +767,6 @@ test('the legacy Tools path redirects to the canonical advanced entry', async ({
     await useCapabilities(page, ['metrics-graphs']);
     await page.goto('./tools');
     await expect(page).toHaveURL(/\/advanced$/);
-    // Without a retained analysis the page offers its own project entry rather than a way back to the start page.
     await expect(page.getByRole('heading', { name: 'Advanced analysis', level: 1 })).toBeVisible();
     await expect(page.getByRole('group', { name: 'Choose a project' })).toBeVisible();
 });
@@ -996,71 +984,31 @@ test('a drawn script fits the viewport drawn for it under the assembled policy',
     }
 });
 
-/**
- * The page offers one shape for one kind of choice. Picking which analysis to look at is the same act as picking a
- * family of findings on the result page, and that one is a chip; this row used to be drawn like the banner's
- * navigation instead, which reads as a way off the page rather than a choice within it.
- *
- * Asserted against the result page's own chip rather than against a list of values, because the property wanted
- * here is agreement with the rest of the site, not a particular radius. A future change to the site's button
- * shape should move both of these or neither.
- */
-test('the advanced workspace picks a section with the same chip the rest of the site uses', async ({
+test('the advanced workspace uses numbered sections without colour-coded selection', async ({
     page,
 }) => {
-    await useCapabilities(page, ['single-project']);
-    await useOrdinaryResult(page);
-    await page.goto('./submissions/assembled-result');
-    const chip = await page
-        .locator('.issue-choice')
-        .first()
-        .evaluate((element) => {
-            const style = getComputedStyle(element);
-            return {
-                borderRadius: style.borderRadius,
-                borderStyle: style.borderStyle,
-                chosen: getComputedStyle(
-                    document.querySelector('.issue-choice[aria-pressed="true"]')!,
-                ).backgroundColor,
-            };
-        });
-
     await useCapabilities(page, advancedFeatures);
     await useOrdinaryResult(page, advancedFeatures);
     await page.goto('./submissions/assembled-result');
     await page.getByRole('link', { name: 'Open advanced analysis' }).click();
-    const menu = page.locator('.advanced-section-menu button');
+    const menu = page.locator('.section-nav button');
     await expect(menu.first()).toBeVisible();
-    // One section stands open, and it is the one the menu marks.
-    await expect(page.locator('.advanced-section-menu button[aria-expanded="true"]')).toHaveCount(
-        1,
+    await expect(page.locator('.section-nav button[aria-expanded="true"]')).toHaveCount(1);
+    const cards = page.locator('.advanced-analysis-page details.section-card');
+    await expect(cards).toHaveCount(5);
+    await expect(cards.first().locator('summary.section-card-heading')).toHaveAttribute(
+        'data-section-number',
+        '1',
     );
-
-    const section = await menu.first().evaluate((element) => {
-        const style = getComputedStyle(element);
-        return {
-            borderRadius: style.borderRadius,
-            borderStyle: style.borderStyle,
-            chosen: getComputedStyle(
-                document.querySelector('.advanced-section-menu button[aria-expanded="true"]')!,
-            ).backgroundColor,
-        };
-    });
-
-    expect(section, JSON.stringify({ chip, section })).toEqual(chip);
+    await expect(menu.first()).not.toHaveCSS('border-radius', '999px');
+    await expect(cards.first()).toHaveCSS('border-top-style', 'solid');
+    const active = page.locator('.section-nav button[aria-expanded="true"]');
+    const inactiveBackground = await menu
+        .nth(1)
+        .evaluate((button) => getComputedStyle(button).backgroundColor);
+    await expect(active).toHaveCSS('background-color', inactiveBackground);
 });
 
-/**
- * Bug, smell and perfume are told apart by a colour as well as by a word, and the same three colours are meant to
- * mean the same three families wherever they appear. Twice they had quietly stopped: the chip naming a finding's
- * family was styled through an ancestor it no longer has, and the catalogue's badge was out-specified by a rule
- * greying every span in the list. Both left the mark drawn in one flat colour, and neither could fail — a
- * selector that matches nothing raises nothing.
- *
- * So this asks for the property that was lost rather than for particular colours: three families, three different
- * marks, in each of the places that claims to make that distinction. A palette may be rechosen without touching
- * this; a rule that stops applying cannot pass it.
- */
 test('a finding family is marked by its own colour wherever the mark is drawn', async ({
     page,
 }) => {
@@ -1083,7 +1031,6 @@ test('a finding family is marked by its own colour wherever the mark is drawn', 
     expect(new Set(chips.map((chip) => chip.colour)).size, JSON.stringify(chips)).toBe(3);
     expect(new Set(chips.map((chip) => chip.text)).size, JSON.stringify(chips)).toBe(3);
 
-    // One entry per family, so the list has all three marks to compare and the buttons above it all three counts.
     await page.route('**/api/v1/catalogue*', (route) =>
         route.fulfill({
             status: 200,
@@ -1120,7 +1067,6 @@ test('a finding family is marked by its own colour wherever the mark is drawn', 
     for (const badge of badges) expect(badge.colour, JSON.stringify(badges)).toBeTruthy();
     expect(new Set(badges.map((badge) => badge.colour)).size, JSON.stringify(badges)).toBe(3);
 
-    // The filter buttons never broke, and they are what the other two are meant to agree with.
     const buttons = await page.evaluate(
         (names) =>
             names.map((family) => {

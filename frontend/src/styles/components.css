@@ -126,8 +126,7 @@
     gap: var(--space-1) var(--space-5);
 }
 
-/* Plain text links, as on the legacy page. The horizontal budget the header has is
-   spent on labels, not on pill padding — that is what kept the German nav wrapping. */
+/* Plain text links: pill padding was what kept the German nav wrapping. */
 .site-nav a {
     display: inline-block;
     padding: var(--space-2) 0;
@@ -203,8 +202,7 @@ h6 {
     font-family: Verdana, Geneva, Tahoma, system-ui, sans-serif;
 }
 
-/* The banner carries the brand. Page titles stay secondary to it — Verdana is a wide,
-   heavy face and reads as a slab above ~2rem. */
+/* Page titles stay secondary to the banner — Verdana reads as a slab above ~2rem. */
 h1 {
     margin: 0 0 var(--space-4);
     color: var(--color-heading-muted);
@@ -229,6 +227,24 @@ h3 {
     font-size: 1.05rem;
 }
 
+h4,
+h5,
+h6 {
+    margin: 0 0 var(--space-3);
+}
+
+h4 {
+    font-size: 1rem;
+}
+
+h5 {
+    font-size: 0.95rem;
+}
+
+h6 {
+    font-size: 0.9rem;
+}
+
 .lead {
     max-width: 52rem;
     margin: 0 0 var(--space-4);
@@ -243,9 +259,7 @@ h3 {
     line-height: 1.6;
 }
 
-/* `.card` is a spacing class, not a chrome class. Depth is expressed with space and
-   heading weight; only `.panel` draws a visible container, matching the single legacy
-   `.chooseFile` box style. */
+/* `.card` is a spacing class, not a chrome class; only `.panel` draws a visible container. */
 .card {
     padding: 0;
     border: 0;
@@ -254,6 +268,195 @@ h3 {
 
 .card + .card {
     margin-top: var(--space-10);
+}
+
+.fold-section {
+    min-width: 0;
+    border-top: 1px solid var(--color-border);
+}
+
+.fold-section-summary {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4) 0;
+    cursor: pointer;
+    list-style: none;
+}
+
+.fold-section-summary::-webkit-details-marker {
+    display: none;
+}
+
+.fold-section-summary::before {
+    content: '\25b8';
+    color: var(--color-brand-cyan-dark);
+    font-size: 1.1em;
+}
+
+.fold-section[open] > .fold-section-summary::before {
+    content: '\25be';
+}
+
+.fold-section-title {
+    min-width: 0;
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 800;
+}
+
+.fold-section-body {
+    min-width: 0;
+    padding-bottom: var(--space-6);
+}
+
+.fold-section-body > .card {
+    padding-top: 0;
+    border-top: 0;
+}
+
+.section-cards {
+    display: grid;
+    gap: var(--space-6);
+    margin-top: var(--space-6);
+}
+
+.section-card {
+    margin: 0;
+    scroll-margin-top: var(--space-5);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+}
+
+.section-card-heading {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-3);
+    align-items: start;
+    padding: var(--space-4) var(--space-5);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface-muted);
+}
+
+.section-card-heading::before {
+    display: grid;
+    width: 2rem;
+    height: 2rem;
+    place-items: center;
+    border-radius: 999px;
+    background: var(--color-brand-slate);
+    color: var(--color-surface);
+    content: attr(data-section-number);
+    font-weight: 750;
+}
+
+.section-card-heading :where(h1, h2, h3, h4, h5, h6),
+.section-card-heading p {
+    margin: 0;
+}
+
+.section-card-heading p {
+    max-width: 72rem;
+    margin-top: var(--space-1);
+    color: var(--color-ink-muted);
+    font-size: 0.9rem;
+}
+
+summary.section-card-heading {
+    grid-template-columns: auto 1fr auto;
+    cursor: pointer;
+    list-style: none;
+}
+
+summary.section-card-heading::-webkit-details-marker {
+    display: none;
+}
+
+summary.section-card-heading::after {
+    align-self: center;
+    color: var(--color-brand-cyan-dark);
+    content: '\25b8';
+    font-size: 1.1em;
+}
+
+details[open] > summary.section-card-heading::after {
+    content: '\25be';
+}
+
+.section-card-body {
+    padding: var(--space-5);
+}
+
+.section-card-body > :first-child {
+    margin-top: 0;
+}
+
+.section-nav {
+    margin-top: var(--space-5);
+}
+
+.section-nav ol {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(11rem, 100%), 1fr));
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: section-nav;
+}
+
+.section-nav li {
+    display: flex;
+    counter-increment: section-nav;
+}
+
+.section-nav a,
+.section-nav button {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 2.75rem;
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface-muted);
+    color: var(--color-ink);
+    font: inherit;
+    font-size: 0.88rem;
+    font-weight: 650;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.section-nav a::before,
+.section-nav button::before {
+    display: grid;
+    width: 1.65rem;
+    height: 1.65rem;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 999px;
+    background: var(--color-brand-slate);
+    color: var(--color-surface);
+    content: counter(section-nav);
+    font-size: 0.76rem;
+}
+
+.section-nav a:hover,
+.section-nav button:hover {
+    border-color: var(--color-brand-cyan-dark);
+    background: var(--color-cyan-wash);
+}
+
+.section-nav button[aria-expanded='true'] {
+    border-color: var(--color-brand-slate);
+    box-shadow: inset 0 0 0 1px var(--color-brand-slate);
+    font-weight: 700;
 }
 
 .panel {
@@ -370,6 +573,7 @@ h3 {
 }
 
 .table-region {
+    position: relative;
     max-width: 100%;
     overflow-x: auto;
 }
@@ -397,6 +601,22 @@ h3 {
     color: var(--color-brand-slate);
 }
 
+.table-sort {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+}
+
+.table-sort-mark {
+    color: var(--color-ink-subtle);
+}
+
 dt {
     margin-bottom: var(--space-1);
     color: var(--color-ink-muted);
@@ -415,16 +635,9 @@ dd {
     font-size: 0.85rem;
 }
 
-/* One shape for everything a reader can press.
- *
- * The filter chips on the result page were the only controls anyone had a good word for, and the page beneath them
- * had square buttons, full-width bordered links and underlined links doing the same job as each other — two offers
- * at the foot of one result, a button and a stretched link, side by side. This is that chip, and it is the shape a
- * button has everywhere now, whether the element is a button or a link with somewhere to go.
- *
- * A button is already marked out by its border and its background; setting the label in bold on top of that made
- * every one of them shout, and a page with six of them shout in chorus. Verdana carries no weight between regular
- * and bold, so this is the only step down there is. */
+/* One shape for everything a reader can press, whether the element is a button or a link with somewhere to go.
+ * Regular weight: a button is already marked out by its border and background, and Verdana carries no weight
+ * between regular and bold, so bold would be the only step down there is. */
 button,
 .action-button {
     padding: var(--space-2) var(--space-4);
@@ -479,8 +692,8 @@ button.primary-action:hover:not(:disabled) {
     background: var(--color-surface);
 }
 
-/* The one legacy box shape (`.chooseFile`): soft grey fill, no border. Rounded further than the legacy 5px, because
-   this is the box a nine-year-old is asked to walk up to first and a square corner reads as paperwork. */
+/* Rounded further than the site's usual 5px: this is the box a child is asked to walk up to first, and a
+   square corner reads as paperwork. */
 .form-field {
     display: grid;
     min-width: 0;
@@ -498,6 +711,7 @@ button.primary-action:hover:not(:disabled) {
 
 .form-field input,
 .form-field select,
+.form-field textarea,
 .quiz-card select,
 .section-heading select {
     width: 100%;
@@ -509,27 +723,29 @@ button.primary-action:hover:not(:disabled) {
     color: var(--color-ink);
 }
 
-/* A file input is a button and a filename, not a text box. Framing it like one put a white rectangle inside the grey
-   card for no purpose the eye could use; the styled button below carries the whole affordance. */
+.form-field textarea {
+    min-height: 5.5rem;
+    resize: vertical;
+}
+
+/* A file input is a button and a filename, not a text box; the styled button below carries the affordance. */
 .form-field input[type='file'] {
     padding: 0;
     border: 0;
     background: transparent;
 }
 
-/* The browser's own "Choose File" button is the squarest thing on the page; dressed as the site's own action it stops
-   looking like a piece of the operating system that wandered in. */
+/* Dressed as the site's own action button so it stops looking like a piece of the OS that wandered in. */
 .form-field input[type='file']::file-selector-button {
     margin-right: var(--space-3);
     padding: var(--space-2) var(--space-4);
     border: 1px solid var(--color-action-border);
-    /* The one shape every other pressable thing on the site wears. It was the only rounded rectangle left. */
     border-radius: 999px;
     background: var(--color-brand-yellow);
     color: var(--color-ink);
     cursor: pointer;
-    /* Not `font: inherit`: narrow viewports zero the input's own font size to hide a long filename, and the button
-       would inherit that and lose its label with it. */
+    /* Not `font: inherit`: narrow viewports zero the input's own font size to hide a long filename, and the
+       button would inherit that and lose its label with it. */
     font-family: inherit;
     font-size: 0.95rem;
     font-weight: 400;
@@ -542,24 +758,6 @@ button.primary-action:hover:not(:disabled) {
 
 .form-field p {
     margin: 0;
-}
-
-.form-divider {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    color: var(--color-ink-muted);
-    font-size: 0.85rem;
-    font-weight: 700;
-    text-transform: uppercase;
-}
-
-.form-divider::before,
-.form-divider::after {
-    flex: 1;
-    height: 1px;
-    background: var(--color-border);
-    content: '';
 }
 
 /* A page whose last word is one offer sets it off from the prose above it. */
@@ -608,9 +806,8 @@ button.primary-action:hover:not(:disabled) {
     width: fit-content;
 }
 
-/* An aside beside the finding's title, not a call to action under it. Two framed buttons the size of the site's own
-   submit button asked the question louder than the finding stated its case, so the frame goes and the thumb and its
-   word are left to carry it. */
+/* An aside beside the finding's title, not a call to action under it — no frame, so it reads quieter than
+   the finding's own case. */
 .feedback-controls button {
     display: inline-flex;
     min-height: 0;
@@ -654,7 +851,6 @@ button.primary-action:hover:not(:disabled) {
     font-size: 0.78rem;
 }
 
-.item-list,
 .catalogue-list {
     display: grid;
     gap: var(--space-3);
@@ -818,8 +1014,7 @@ button.primary-action:hover:not(:disabled) {
     margin-top: var(--space-5);
 }
 
-/* One script before and after a change, framed the way LitterBox's own diff report frames it: the side that loses
-   blocks in red, the side that gains them in green, with the differing blocks themselves tinted inside the drawing. */
+/* One script before and after a change: the side that loses blocks in red, the side that gains them in green. */
 .script-diff {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -873,7 +1068,7 @@ button.primary-action:hover:not(:disabled) {
     padding: var(--space-3);
 }
 
-/* The two drawings are read against each other, so neither may push the other off the row. */
+/* Read against each other, so neither may push the other off the row. */
 .script-diff-panel .scratchblocks-rendered {
     overflow-x: auto;
 }
@@ -882,6 +1077,68 @@ button.primary-action:hover:not(:disabled) {
     .script-diff {
         grid-template-columns: minmax(0, 1fr);
     }
+}
+
+.metric-box-plot {
+    position: relative;
+    height: 1.4rem;
+    margin-top: var(--space-3);
+}
+
+.metric-box-plot-line,
+.metric-box-plot-box,
+.metric-box-plot-median {
+    position: absolute;
+}
+
+.metric-box-plot-line {
+    top: 0.65rem;
+    right: 0;
+    left: 0;
+    height: 2px;
+    background: var(--color-border-strong);
+}
+
+.metric-box-plot-box {
+    top: 0.25rem;
+    right: calc(100% - var(--box-plot-q3));
+    bottom: 0.25rem;
+    left: var(--box-plot-q1);
+    border: 2px solid var(--color-brand-cyan-dark);
+    background: var(--color-cyan-wash);
+}
+
+.metric-box-plot-median {
+    top: 0;
+    bottom: 0;
+    left: var(--box-plot-median);
+    width: 3px;
+    background: var(--color-brand-slate);
+}
+
+.metric-box-plot-marker {
+    position: absolute;
+    top: -0.15rem;
+    left: var(--box-plot-marker);
+    width: 0.6rem;
+    height: 0.6rem;
+    background: var(--color-brand-yellow);
+    border: 1px solid var(--color-brand-slate);
+    transform: translateX(-50%) rotate(45deg);
+}
+
+.metric-box-plot-marker-clamped {
+    background: var(--color-canvas);
+    border-width: 2px;
+}
+
+.metric-box-plot-labels {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-2);
+    color: var(--color-ink-muted);
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
 }
 
 /* Collapse to the Menu button while the widest locale (de/nl) would still wrap.

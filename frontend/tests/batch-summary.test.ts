@@ -50,8 +50,6 @@ describe('what a class set adds up to', () => {
     it('counts occurrences and containing analyses independently', () => {
         const summary = summarizeBatch(classSet());
 
-        // The family travels with the finder: its name says what it looks for, never whether finding it is a
-        // complaint or praise.
         expect(summary.finders).toEqual([
             {
                 finderId: 'never-set',
@@ -71,14 +69,27 @@ describe('what a class set adds up to', () => {
     });
 
     it('leaves findings without a finder id out of the frequency list', () => {
-        // They could only be counted together by their displayed name, which is a translation.
         const summary = summarizeBatch([
             analysis(1, 'a.sb3', 'completed', [issue('', 'bug', 1), issue('   ', 'bug', 2)]),
         ]);
 
         expect(summary.finders).toEqual([]);
-        // They are still findings, and still counted as such.
         expect(summary.totalFindings).toBe(2);
+    });
+
+    it('counts bugs and smells as the concerns, and leaves praise out of them', () => {
+        const summary = summarizeBatch([
+            analysis(1, 'a.sb3', 'completed', [
+                issue('missing-loop', 'bug', 1),
+                issue('long-script', 'smell', 2),
+                issue('good-naming', 'perfume', 3),
+                issue('good-naming', 'perfume', 4),
+                issue('good-naming', 'perfume', 5),
+            ]),
+        ]);
+
+        expect(summary.totalFindings).toBe(5);
+        expect(summary.concerns).toBe(2);
     });
 
     it('gives an unfinished analysis no counts to be read as nought', () => {
@@ -89,8 +100,6 @@ describe('what a class set adds up to', () => {
     });
 
     it('offers a column only for what the set has something to say about', () => {
-        // No finding fell outside the three families, so a column headed "Other findings" could only ask a
-        // question and answer it with a nought.
         expect(summarizeBatch(classSet()).families).toEqual(['bug', 'smell', 'perfume']);
         expect(summarizeBatch(classSet()).measurements).toEqual([]);
 
@@ -126,8 +135,6 @@ describe('ordering and filtering a class set', () => {
             direction: 'descending',
         });
 
-        // Three bugs, then one, then the two finished analyses with none — in the order they arrived — and the
-        // analyses with no result at the end, where a count cannot put them.
         expect(byBugs.map((row) => row.name)).toEqual([
             'charlie.sb3',
             'bob.sb3',
@@ -149,7 +156,6 @@ describe('ordering and filtering a class set', () => {
                 direction,
             }).map((row) => row.name);
 
-        // A report that did not carry the measurement says nothing about it, either way round.
         expect(order('ascending')).toEqual(['small.sb3', 'large.sb3', 'unmeasured.sb3']);
         expect(order('descending')).toEqual(['large.sb3', 'small.sb3', 'unmeasured.sb3']);
     });
@@ -189,5 +195,21 @@ describe('ordering and filtering a class set', () => {
         );
 
         expect(failed.map((row) => row.name)).toEqual(['alice.sb3']);
+    });
+
+    it('narrows to an arbitrary project id set chosen from a class-overview panel', () => {
+        const byProjectSet = filterAndSortBatchRows(
+            rows(),
+            {
+                ...NO_BATCH_FILTERS,
+                projectSet: {
+                    key: 'concept:pen',
+                    ids: new Set(['1', '3']),
+                    label: 'Pen · Contains it',
+                },
+            },
+            undefined,
+        );
+        expect(byProjectSet.map((row) => row.name)).toEqual(['charlie.sb3', 'bob.sb3']);
     });
 });

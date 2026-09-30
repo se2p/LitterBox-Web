@@ -57,7 +57,6 @@ describe('reusing a project that is already here', () => {
             'token-3',
             'token-2',
         ]);
-        // Remembering the same result again moves it to the front instead of listing it twice.
         rememberProject({ token: 'token-2', name: 'Project 2', kind: 'questions' });
         expect(recentProjects().filter((project) => project.token === 'token-2')).toHaveLength(1);
         expect(latestProject()).toMatchObject({
@@ -65,10 +64,8 @@ describe('reusing a project that is already here', () => {
             name: 'Project 2',
             kind: 'questions',
         });
-        // Every entry is stamped with when it was last open, which is what tells two results of one project apart.
         expect(latestProject()?.at).toBeGreaterThan(0);
 
-        // The store is a place anything could have written to, so only entries of exactly this shape survive.
         window.localStorage.setItem(
             'litterbox.recent-projects',
             JSON.stringify([
@@ -84,6 +81,26 @@ describe('reusing a project that is already here', () => {
 
         window.localStorage.setItem('litterbox.recent-projects', 'not json at all');
         expect(recentProjects()).toEqual([]);
+    });
+
+    it('forgets only the kinds it is told to, leaving the rest readable', () => {
+        rememberProject({ token: 'a', name: 'Kept project', kind: 'issues', analysisId: 1 });
+        rememberProject({ token: 'b', name: 'Kept question set', kind: 'questions' });
+        rememberProject({ token: 'c', name: 'classset.zip', kind: 'batch', projects: 3 });
+
+        forgetProjects(['batch']);
+
+        expect(
+            recentProjects()
+                .map((project) => project.token)
+                .sort(),
+        ).toEqual(['a', 'b']);
+        expect(recentProjects().some((project) => project.kind === 'batch')).toBe(false);
+
+        forgetProjects(['issues', 'questions']);
+
+        expect(recentProjects()).toEqual([]);
+        expect(window.localStorage.getItem('litterbox.recent-projects')).toBeNull();
     });
 
     it('asks questions about the analysed project without a second upload', async () => {
@@ -135,12 +152,9 @@ describe('reusing a project that is already here', () => {
                 }),
             );
         });
-        // The reader is taken to the questions for the same project, under their own result link.
         await waitFor(() =>
             expect(screen.getAllByRole('heading', { name: 'Ask me' })).not.toHaveLength(0),
         );
-        // The two results have different links, so the question set carries the way back to the check it was
-        // made from rather than leaving it to the reader's history.
         expect(
             await screen.findByRole('link', { name: 'Back to the check of cat-chase.sb3' }),
         ).toBeInTheDocument();
@@ -157,8 +171,6 @@ describe('reusing a project that is already here', () => {
             kind: 'questions',
             origin: { token: 'checked-token', kind: 'issues' },
         });
-        // The result page remembers itself as soon as it loads, knowing its own name and nothing else. That must
-        // add to what is already known about it, not replace it.
         rememberProject({ token: 'asked-token', name: 'Cat chase (renamed)', kind: 'questions' });
 
         expect(recentProjects()[0]).toMatchObject({
@@ -168,7 +180,6 @@ describe('reusing a project that is already here', () => {
             origin: { token: 'checked-token', kind: 'issues' },
         });
 
-        // A result may not claim to have come from itself, and an origin is held to the same standard as an entry.
         window.localStorage.setItem(
             'litterbox.recent-projects',
             JSON.stringify([
@@ -219,7 +230,6 @@ describe('reusing a project that is already here', () => {
 
         const result = renderAt('/submissions/checked-token');
         await waitFor(() => expect(screen.getByText('Link to this result:')).toBeInTheDocument());
-        // The address, not the code inside it: there is nowhere on this site to type a token in.
         expect(
             screen.getByRole('link', { name: /\/submissions\/checked-token$/ }),
         ).toBeInTheDocument();
@@ -231,10 +241,7 @@ describe('reusing a project that is already here', () => {
             await screen.findByRole('heading', { name: 'Your recent results' }),
         ).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'cat-chase.sb3' })).toBeInTheDocument();
-        // The name is the filename, so a check and a set of questions about one project read the same. What each
-        // entry is, and when it was last open, is what separates them.
         expect(screen.getByText(/^Check · /)).toBeInTheDocument();
-        // A shared classroom machine can be told to forget what it has seen.
         await user.click(screen.getByRole('button', { name: 'Forget these' }));
         expect(
             screen.queryByRole('heading', { name: 'Your recent results' }),

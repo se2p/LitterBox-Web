@@ -6,13 +6,14 @@ import { useTranslation } from 'react-i18next';
 import type { SupportedLocale } from '../../../api/capabilities';
 import { formatNumber } from '../../../i18n';
 import { useMetricReference } from '../../../lib/use-metric-reference';
-import { bandFor, metricEntries, overviewEntries, searchMetrics, tercile } from './metric-utils';
-
-const BAND_LABEL_KEYS = {
-    lower: 'metricBandLowerThird',
-    middle: 'metricBandMiddleThird',
-    upper: 'metricBandUpperThird',
-} as const;
+import {
+    BAND_LABEL_KEYS,
+    bandFor,
+    metricEntries,
+    overviewEntries,
+    searchMetrics,
+    tercile,
+} from './metric-utils';
 
 /**
  * Everything the analysis measured: the four measurements most readers want, and then all of them.

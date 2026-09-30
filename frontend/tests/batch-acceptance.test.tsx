@@ -81,32 +81,33 @@ describe('batch acceptance surface', () => {
         renderSubmission();
 
         expect(
-            await screen.findByText('3 of 5 projects have finished processing.'),
+            await screen.findByRole('heading', { name: 'Class set summary' }),
         ).toBeInTheDocument();
-        expect(screen.getByText('successful.sb3')).toBeInTheDocument();
-        expect(screen.getByText(/dense-synthetic-.*\.mblock/)).toBeInTheDocument();
-        // Twice: as its row in the table, and again in the list of what did not finish.
+        expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
+        const reportsHeading = screen.getByRole('heading', { name: 'All project reports' });
+        await userEvent.setup().click(reportsHeading.closest('summary') as HTMLElement);
+        expect(screen.getAllByText('successful.sb3').length).toBeGreaterThanOrEqual(1);
+        expect(screen.getAllByText(/dense-synthetic-.*\.mblock/).length).toBeGreaterThanOrEqual(1);
         expect(screen.getAllByText('failed.sb3')).toHaveLength(2);
         // A message carrying anything private is not shown at all; the fact of the failure still is.
         expect(screen.getAllByText('Analysis failed').length).toBeGreaterThanOrEqual(1);
         expect(screen.queryByText(/raw upstream error|synthetic-private/)).not.toBeInTheDocument();
 
-        const denseProject = screen
+        // Scoped to the report list: the feature matrix in the folded metrics workspace names every completed
+        // project too, so an unscoped row lookup finds the same project twice.
+        const denseProject = within(screen.getByRole('table', { name: 'Project results' }))
             .getByRole('rowheader', { name: /dense-synthetic-.*\.mblock/ })
             .closest('tr');
         expect(denseProject).not.toBeNull();
-        // The project's name is the control now; what pressing it does is still part of the accessible name.
         const select = within(denseProject!).getByRole('button', { name: /View project result/ });
         select.focus();
         await userEvent.setup().keyboard('{Enter}');
-        await waitFor(() => expect(select).toHaveAttribute('aria-pressed', 'true'));
+        expect(await screen.findByRole('heading', { name: 'Project report' })).toBeInTheDocument();
+        expect(screen.getByLabelText('Switch project report')).toHaveValue('successful-mblock');
         expect(screen.getAllByText('No findings were reported for this project.')).not.toHaveLength(
             0,
         );
-        // The summary above the findings used to be headed "Findings" as well, so the drill-down carried two
-        // headings of the same name and neither told a teacher which one they were reading.
         expect(screen.getAllByRole('heading', { name: 'Findings' })).toHaveLength(1);
-        // Which project, not "this project": the row it was chosen from is thirty rows up the page.
         expect(
             screen.getByRole('heading', { name: /^dense-synthetic-.*\.mblock at a glance$/ }),
         ).toBeInTheDocument();
@@ -116,10 +117,10 @@ describe('batch acceptance surface', () => {
     });
 
     it.each([
-        ['en', 'Analysis partly complete', 'Batch progress'],
-        ['de', 'Analyse teilweise abgeschlossen', 'Sammelfortschritt'],
-        ['es', 'Análisis parcialmente completado', 'Progreso del lote'],
-        ['nl', 'Analyse gedeeltelijk voltooid', 'Batchvoortgang'],
+        ['en', 'Analysis partly complete', 'Class set summary'],
+        ['de', 'Analyse teilweise abgeschlossen', 'Zusammenfassung des Klassensatzes'],
+        ['es', 'Análisis parcialmente completado', 'Resumen del conjunto de clase'],
+        ['nl', 'Analyse gedeeltelijk voltooid', 'Overzicht van de klassenset'],
     ])(
         'keeps the partial batch state available after a reload in %s',
         async (locale, label, heading) => {
@@ -135,14 +136,12 @@ describe('batch acceptance surface', () => {
 
             expect(await screen.findAllByText(label)).not.toHaveLength(0);
             expect(screen.getByRole('heading', { name: heading })).toBeInTheDocument();
-            expect(screen.getByRole('progressbar')).toHaveAttribute('max', '5');
+            expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
         },
     );
 
     it('keeps cancellation accessible while resuming the authoritative terminal state', async () => {
         const user = userEvent.setup();
-        // Dispatched by URL rather than by call order: the page fetches what it needs when it needs it, and a
-        // queue of responses makes every test a hostage to the order it happens to ask in.
         const submissions = [
             response(batchPayload('processing')),
             response(undefined, 204),

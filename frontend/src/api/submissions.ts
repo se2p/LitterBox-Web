@@ -2,7 +2,16 @@
 // SPDX-FileCopyrightText: 2025 LitterBox-Web contributors
 
 import { BASE_URL } from '../lib/base-url';
-import { isJsonContentType, isObject, readBoundedText } from './validation';
+import {
+    boundedNonblankString,
+    boundedString,
+    hasExactKeys,
+    isJsonContentType,
+    isObject,
+    MAX_SEVERITY,
+    nonnegativeSafeInteger,
+    readBoundedText,
+} from './validation';
 import type {
     AnalysisViewDto,
     CatalogueViewDto,
@@ -18,18 +27,10 @@ import type {
 
 export const SUBMISSIONS_URL = `${BASE_URL}api/v1/submissions`;
 
-/**
- * LitterBox's own report for one analysis, as the tool has always written it. Served with a disposition header, so
- * an ordinary link is the whole of the client side: nothing to fetch, nothing to hold in memory, and a browser that
- * already knows how to save a file.
- */
 export const analysisReportUrl = (token: string, analysisId: number): string =>
     `${SUBMISSIONS_URL}/${encodeURIComponent(token)}/analyses/${analysisId}/report.html`;
 export const QUESTION_SUBMISSIONS_URL = `${BASE_URL}api/v1/question-submissions`;
 export const STUDIOS_URL = `${BASE_URL}api/v1/studios`;
-
-export type SubmissionStatus =
-    'queued' | 'processing' | 'completed' | 'partial' | 'failed' | 'cancelled' | string;
 
 export type AnalysisIssue = IssueViewDto;
 export type AnalysisRelationship = RelationshipViewDto;
@@ -37,8 +38,6 @@ export type CatalogueEntry = CatalogueViewDto;
 export type BatchAnalysis = AnalysisViewDto;
 
 export type SubmissionStatusResponse = SubmissionViewDto & {
-    // These optional fields keep old synthetic fixtures and unversioned callers readable while
-    // the frozen v1 response remains the source of truth for the rendered result.
     issues?: AnalysisIssue[];
     relationships?: AnalysisRelationship[];
     catalogueEntries?: CatalogueEntry[];
@@ -72,19 +71,8 @@ const asOptions = (value?: AbortSignal | SubmissionRequestOptions): SubmissionRe
     return value ? (value as SubmissionRequestOptions) : {};
 };
 
-/**
- * What these endpoints answer with: a link, a summary, a catalogue. Generous for all of them, and low enough that
- * nothing can talk this client into holding a response it will never finish reading.
- */
 const MAX_RESPONSE_BYTES = 4 * 1024 * 1024;
 
-/**
- * A submission's own state is the exception, because a studio may hold ten thousand projects and the response
- * carries every one of their analyses. Measured against a real one: the envelope alone is 580 bytes per project,
- * and each finding about 600 more. Ten thousand projects with ten findings apiece is a little over 60 MiB, so
- * that is what this leaves room for. A ceiling below it would refuse a result the service is entitled to give,
- * and refuse it after the work had been done.
- */
 const MAX_SUBMISSION_BYTES = 64 * 1024 * 1024;
 
 const requestJson = async <T>(
@@ -100,8 +88,6 @@ const requestJson = async <T>(
         throw new SubmissionApiError(`Request failed (${response.status})`, response.status);
     }
     if (response.status === 204) return undefined as T;
-    // Said in the same terms as every other capability: a response is untrusted until it has declared itself
-    // JSON and come in under a ceiling this client set, not one the sender claimed.
     if (!isJsonContentType(response.headers.get('Content-Type')))
         throw new SubmissionApiError('Response was not JSON', response.status);
     const text = await readBoundedText(response, maximum, {
@@ -115,10 +101,6 @@ const requestJson = async <T>(
     }
 };
 
-/**
- * What a submission is answered with: the token everything afterwards is addressed by. A form that got something
- * else would take the reader to a result that cannot exist, so it is refused here as a failed request instead.
- */
 const accepted = (value: unknown): SubmissionAccepted => {
     if (!isObject(value) || typeof value.token !== 'string' || value.token.trim() === '')
         throw new SubmissionApiError('Response carried no submission token');
@@ -194,10 +176,6 @@ export async function submitQuestionProjectUrl(
     );
 }
 
-/**
- * Runs another kind of analysis over a project the service already holds. The project is named by the result it
- * produced, so a reader who has just checked a project can ask questions about it without finding the file again.
- */
 export async function reuseSubmission(
     token: string,
     analysis: 'issues' | 'questions',
@@ -229,10 +207,6 @@ export async function submitStudio(
     );
 }
 
-/**
- * Reads what a studio holds before anything is sent. A studio runs until it is done and no project can be taken back
- * out of it, so its size belongs on the form rather than in the result.
- */
 export async function fetchStudioSummary(
     studioId: string,
     signal?: AbortSignal,
@@ -240,10 +214,6 @@ export async function fetchStudioSummary(
     return requestJson<StudioSummary>(`${STUDIOS_URL}/${encodeURIComponent(studioId)}`, { signal });
 }
 
-/**
- * Everything downstream reads the state of a submission off its status, and reads it unguarded, because a result
- * that does not say where it has got to is not a result.
- */
 const namesItsState = (value: unknown): value is SubmissionStatusResponse =>
     isObject(value) && typeof value.status === 'string';
 
@@ -255,16 +225,13 @@ const list = (value: unknown): unknown[] => (Array.isArray(value) ? value : []);
 const strings = (value: unknown): string[] =>
     list(value).filter((one): one is string => typeof one === 'string');
 
-/**
- * A field the schema declares as text and the pages read as text — trimmed, lowercased, compared, put on the page.
- * Anything that is not text cannot be read as text, so it is reported as absent rather than as itself.
- */
 const text = (value: unknown): string | null => (typeof value === 'string' ? value : null);
 
-/** The same, where the reader does not check first because the schema promised the field would be there. */
 const required = (value: unknown): string => (typeof value === 'string' ? value : '');
 
-/** Only the entries whose value is the text the schema said it would be. */
+const severity = (value: unknown): number =>
+    nonnegativeSafeInteger(value, MAX_SEVERITY) ? value : 0;
+
 const textMap = (value: unknown): Record<string, string> =>
     isObject(value)
         ? Object.fromEntries(
@@ -274,10 +241,6 @@ const textMap = (value: unknown): Record<string, string> =>
           )
         : {};
 
-/**
- * What the catalogue says about one finder. Its locale, title and id are read without being checked first — the
- * schema promised them — so they are held to being text here rather than throwing three components down.
- */
 const asCatalogueEntry = (value: Record<string, unknown>): CatalogueEntry =>
     ({
         ...value,
@@ -293,19 +256,13 @@ const asCatalogueEntry = (value: Record<string, unknown>): CatalogueEntry =>
         })),
     }) as unknown as CatalogueEntry;
 
-/**
- * A finding, with its lists held to being lists and its text held to being text.
- *
- * Nothing here invents a field or repairs a value: a response that disagrees with the schema is wrong however it
- * is read, and this only decides where the wrongness stops. A missing list becomes an empty one and unusable text
- * becomes absent, both of which draw as "nothing to show" — the true answer for a response that showed nothing.
- */
 const asIssue = (value: Record<string, unknown>): AnalysisIssue =>
     ({
         ...value,
         finderId: required(value.finderId),
         finderName: required(value.finderName),
         type: required(value.type),
+        severity: severity(value.severity),
         sprite: required(value.sprite),
         hint: required(value.hint),
         scratchblocks: required(value.scratchblocks),
@@ -342,14 +299,6 @@ const asAnalysis = (value: Record<string, unknown>): BatchAnalysis =>
         quiz: objects(value.quiz),
     }) as unknown as BatchAnalysis;
 
-/**
- * The response, in the shape the pages are entitled to assume.
- *
- * They are entitled to assume it because the schema says so, and they read it that way: an analysis arriving as
- * null, or its findings arriving as an object, threw during the render. React has no boundary above these pages,
- * so what a reader got for a response the service should never have sent was a blank white screen and no way
- * back. One pass here is what stands between a malformed field and that.
- */
 const asSubmission = (value: SubmissionStatusResponse): SubmissionStatusResponse => ({
     ...value,
     token: required(value.token),
@@ -395,8 +344,6 @@ export async function fetchCatalogue(
 ): Promise<CatalogueEntry[]> {
     const query = new URLSearchParams({ locale });
     const value = await requestJson<unknown>(`${BASE_URL}api/v1/catalogue?${query}`, { signal });
-    // A catalogue that is not a list of entries is not a catalogue, and the page has an error state for a
-    // service that cannot answer. An entry that is merely wrong in a field is held to the shape instead.
     if (!Array.isArray(value)) throw new SubmissionApiError('Response was not a catalogue');
     return value.filter(isObject).map(asCatalogueEntry);
 }
@@ -425,16 +372,11 @@ export async function sendFeedback(
     );
 }
 
-/** The verdict, once the answer has been sent. Older deployments answered with no body at all. */
 export interface QuizAnswerResult {
     correct: boolean;
     correctAnswers: string[];
 }
 
-/**
- * A deployment that still answers with no body has recorded the answer but cannot say whether it was right, which is
- * not the same as saying it was wrong.
- */
 const quizAnswerResult = (value: unknown): QuizAnswerResult | undefined => {
     if (!value || typeof value !== 'object') return undefined;
     const candidate = value as Partial<QuizAnswerResultDto>;
@@ -470,4 +412,59 @@ export async function sendQuizAnswer(
         },
     );
     return quizAnswerResult(result);
+}
+
+export interface QuizAnswerKeyQuestion {
+    questionId: string;
+    correctAnswers: string[];
+}
+
+export interface QuizAnswerKey {
+    schemaVersion: number;
+    questions: QuizAnswerKeyQuestion[];
+}
+
+const MAX_ANSWER_KEY_QUESTIONS = 1000;
+const MAX_ANSWER_KEY_ANSWERS = 50;
+const MAX_ANSWER_KEY_ID_LENGTH = 128;
+const MAX_ANSWER_KEY_ANSWER_LENGTH = 500;
+
+const isQuizAnswerKeyQuestion = (value: unknown): value is QuizAnswerKeyQuestion =>
+    hasExactKeys(value, ['questionId', 'correctAnswers']) &&
+    boundedNonblankString(value.questionId, MAX_ANSWER_KEY_ID_LENGTH) &&
+    Array.isArray(value.correctAnswers) &&
+    value.correctAnswers.length <= MAX_ANSWER_KEY_ANSWERS &&
+    value.correctAnswers.every((answer) => boundedString(answer, MAX_ANSWER_KEY_ANSWER_LENGTH));
+
+const asQuizAnswerKey = (value: unknown): QuizAnswerKey => {
+    if (
+        !hasExactKeys(value, ['schemaVersion', 'questions']) ||
+        value.schemaVersion !== 1 ||
+        !Array.isArray(value.questions) ||
+        value.questions.length > MAX_ANSWER_KEY_QUESTIONS ||
+        !value.questions.every(isQuizAnswerKeyQuestion)
+    )
+        throw new SubmissionApiError('Response did not match the quiz answer key format');
+    return {
+        schemaVersion: 1,
+        questions: (value.questions as QuizAnswerKeyQuestion[]).map((question) => ({
+            questionId: question.questionId,
+            correctAnswers: [...question.correctAnswers],
+        })),
+    };
+};
+
+export async function fetchQuizAnswerKey(
+    token: string,
+    analysisId: number,
+    signal?: AbortSignal,
+): Promise<QuizAnswerKey> {
+    const value = await requestJson<unknown>(
+        `${BASE_URL}api/v1/analyses/${encodeURIComponent(String(analysisId))}/quiz-answer-key`,
+        {
+            headers: { Authorization: `Bearer ${token}` },
+            signal,
+        },
+    );
+    return asQuizAnswerKey(value);
 }

@@ -3,8 +3,9 @@
 
 import { describe, expect, it } from 'vitest';
 import type { BatchAnalysis } from '../src/api/submissions';
-import { batchCsv, type CsvLabels } from '../src/components/batch/batch-csv';
+import { batchCsv, findingProfileCsv, type CsvLabels } from '../src/components/batch/batch-csv';
 import { batchRows, summarizeBatch } from '../src/components/batch/batch-summary';
+import { csvBlob } from '../src/lib/csv';
 import { issue as finding } from './helpers';
 
 const issue = (finderId: string, type: string) =>
@@ -47,15 +48,18 @@ const csv = (sections: { families: boolean; measurements: boolean; finders: bool
     const summary = summarizeBatch(analyses);
     return batchCsv({
         rows: batchRows(analyses),
-        families: summary.families,
-        measurements: summary.measurements,
-        finders: summary.finders,
-        sections,
+        families: sections.families ? summary.families : [],
+        measurements: sections.measurements ? summary.measurements : [],
+        finders: sections.finders ? summary.finders : [],
         labels,
     });
 };
 
 describe('the class set as a file', () => {
+    it('marks CSV downloads as UTF-8', () => {
+        expect(csvBlob('Project\r\n').type).toBe('text/csv;charset=utf-8');
+    });
+
     it('writes one row per analysis with the counts the table shows', () => {
         const lines = csv({ families: true, measurements: true, finders: false }).split('\r\n');
 
@@ -63,8 +67,6 @@ describe('the class set as a file', () => {
             'Project,Analysis status,bug,smell,perfume,Total findings,metricSprites,metricBlocks',
         );
         expect(lines[1]).toBe('cat.sb3,completed,2,1,0,3,3,40');
-        // A running analysis has reported nothing, which is not the same as having reported nought. An empty
-        // cell stays out of an average; a nought does not.
         expect(lines[3]).toBe('still-going.sb3,running,,,,,,');
         expect(lines).toHaveLength(5);
         expect(lines[4]).toBe('');
@@ -84,9 +86,15 @@ describe('the class set as a file', () => {
         const lines = csv({ families: false, measurements: false, finders: true }).split('\r\n');
         expect(lines[0]).toBe('Project,Analysis status,Finder missing-init,Finder tidy');
         expect(lines[1]).toBe('cat.sb3,completed,2,1');
-        // Completed and reporting neither: nought is the honest number here.
         expect(lines[2]).toMatch(/,0,0$/);
-        // Unfinished, so still nothing rather than nought.
         expect(lines[3]).toBe('still-going.sb3,running,,');
+    });
+
+    it('uses every reported finder when a findings download has no explicit finder selection', () => {
+        const lines = findingProfileCsv(batchRows(analyses), []).split('\r\n');
+
+        expect(lines).toContain('cat.sb3,completed,missing-init,Finder missing-init,bug,2');
+        expect(lines).toContain('cat.sb3,completed,tidy,Finder tidy,smell,1');
+        expect(lines).toHaveLength(4);
     });
 });

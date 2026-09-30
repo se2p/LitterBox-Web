@@ -241,9 +241,9 @@ function ScriptChange({ script }: { script: ScriptDiffViewDto }) {
     return (
         <article className="diff-script-change">
             <h4>{typeLabel}</h4>
-            {/* The service marks up which blocks changed, and until now the page printed those markings as two
-                further copies of the script beside the plain ones: four drawings where the reader wanted one
-                comparison. The marked-up pair is the comparison, and the plain text stands behind each side. */}
+            {/* The service marks up which blocks changed. Printing those markings as two further copies of the
+                script beside the plain ones would give four drawings where the reader wanted one comparison. The
+                marked-up pair is the comparison, and the plain text stands behind each side. */}
             {bothSidesEmpty ? (
                 <div className="diff-script-fields">
                     <CodeField label={t('diffBeforeCode')} source={script.beforeScratchblocks} />

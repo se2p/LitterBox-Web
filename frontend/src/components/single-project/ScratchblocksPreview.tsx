@@ -2,25 +2,17 @@
 // SPDX-FileCopyrightText: 2025 LitterBox-Web contributors
 
 import { useEffect, useRef, useState } from 'react';
-import {
-    normalizeScratchblocksTransforms,
-    prepareScratchblocks,
-    translateScratchblocks,
-} from '../../lib/scratchblocks-runtime';
-import { normalizeScratchblocksSource, scratchblocksLanguages } from './scratchblocks-source';
-
-/**
- * How large a rendered block is drawn. Blocks are quoted evidence inside an explanation, and at full size they read as
- * the point of the paragraph rather than as the thing being pointed at, so they are drawn a little under the
- * surrounding prose.
- */
-const BLOCK_SCALE = 0.6;
+import { useTranslation } from 'react-i18next';
+import { prepareScratchblocks } from '../../lib/scratchblocks-runtime';
+import { drawScratchblocks } from './draw-scratchblocks';
+import { normalizeScratchblocksSource } from './scratchblocks-source';
 
 interface ScratchblocksPreviewProps {
     source: string | null | undefined;
     locale?: string;
     label: string;
-    textAlternativeLabel: string;
+    /** Defaults to the shared translation. */
+    textAlternativeLabel?: string;
     inline?: boolean;
     showLabel?: boolean;
     showTextAlternative?: boolean;
@@ -65,6 +57,7 @@ export function ScratchblocksPreview({
     alternativeSource,
     deferred = false,
 }: ScratchblocksPreviewProps) {
+    const { t } = useTranslation();
     const hostRef = useRef<HTMLElement>(null);
     const setHostRef = (host: HTMLElement | null): void => {
         hostRef.current = host;
@@ -89,24 +82,11 @@ export function ScratchblocksPreview({
         const draw = () => {
             void prepareScratchblocks(host.ownerDocument)
                 .then((renderer) => {
-                    if (!active || !host.ownerDocument.defaultView) return;
-                    const languages = scratchblocksLanguages(locale);
-                    const documentModel = renderer.parse(code, {
-                        inline,
-                        languages,
-                    });
-                    translateScratchblocks(renderer, documentModel, languages[0]);
-                    const rendered = renderer.render(documentModel, {
-                        inline,
-                        languages,
-                        scale: BLOCK_SCALE,
-                        style: 'scratch3',
-                    });
-                    const NodeConstructor = host.ownerDocument.defaultView.Node;
-                    if (!(rendered instanceof NodeConstructor))
-                        throw new Error('Scratchblocks did not return a DOM node');
-                    normalizeScratchblocksTransforms(rendered);
-                    host.replaceChildren(rendered);
+                    const view = host.ownerDocument.defaultView;
+                    if (!active || !view) return;
+                    host.replaceChildren(
+                        drawScratchblocks(renderer, code, { locale, inline }, view),
+                    );
                     if (active) setState('ready');
                 })
                 .catch(() => {
@@ -164,7 +144,7 @@ export function ScratchblocksPreview({
                 inside the very region its caller marked as decoration. The words on the button say what it is. */}
             {showTextAlternative && (
                 <details className="code-alternative" open={state === 'error'}>
-                    <summary>{textAlternativeLabel}</summary>
+                    <summary>{textAlternativeLabel ?? t('textAlternative')}</summary>
                     <pre>{readableCode}</pre>
                 </details>
             )}

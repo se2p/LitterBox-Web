@@ -25,6 +25,7 @@ import {
     type ExportTargetSelectionKind,
     type TargetCatalogueState,
 } from './ExportTargetSelector';
+import { canDownloadBlobs, clickDownload } from '../../../lib/download-blob';
 
 type TargetKind = 'program' | ExportTargetSelectionKind;
 type CatalogueRequestReason = 'initial' | 'retry' | 'target-not-found';
@@ -280,7 +281,7 @@ function EligibleExportControls({
                 controller.signal,
             );
             if (controller.signal.aborted || sequence !== requestSequence.current) return;
-            if (typeof URL.createObjectURL !== 'function') {
+            if (!canDownloadBlobs()) {
                 throw new ExportApiError('malformed_response');
             }
             objectUrl.current = URL.createObjectURL(result.blob);
@@ -313,13 +314,7 @@ function EligibleExportControls({
 
     const download = () => {
         if (state.status !== 'prepared' || !objectUrl.current) return;
-        const link = document.createElement('a');
-        link.href = objectUrl.current;
-        link.download = state.result.metadata.filename;
-        link.rel = 'noopener';
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
+        clickDownload(objectUrl.current, state.result.metadata.filename);
     };
 
     const changeFormat = (value: string) => {

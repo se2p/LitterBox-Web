@@ -30,8 +30,6 @@ export const getBatchCounts = (value: SubmissionStatusResponse): BatchCounts => 
         Math.max(0, expected - completed),
         Math.max(finiteCount(value.counts?.failed), finiteCount(value.failedCount)),
     );
-    // The response's own guard against a missing `analyses` field lives in submission-utils, so this reads
-    // through it rather than keeping its own copy of the same defensive check.
     const analyses = submissionAnalyses(value);
     const explicitRunning = analyses.filter((analysis) =>
         ['processing', 'running'].includes(statusOf(analysis)),
@@ -53,6 +51,17 @@ export const getBatchCounts = (value: SubmissionStatusResponse): BatchCounts => 
         completed,
         failed,
     };
+};
+
+export const scrollToProjectReports = (): void => {
+    const scroll = () => {
+        globalThis.document
+            ?.getElementById('batch-all-projects')
+            ?.scrollIntoView?.({ block: 'start' });
+    };
+    const raf = globalThis.requestAnimationFrame;
+    if (typeof raf === 'function') raf(scroll);
+    else scroll();
 };
 
 export const safeFailureMessage = (

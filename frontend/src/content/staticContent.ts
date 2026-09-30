@@ -169,6 +169,10 @@ export const staticPageContent: Record<StaticPageKind, StaticPageContent> = {
                 paragraphs: ['privacyAskAiBody', 'privacyAskAiStorageBody'],
             },
             { heading: 'privacyUploadHeading', paragraphs: ['privacyUploadBody'] },
+            // Hosting a quiz is the first thing this site stores on a class's behalf rather than on a single
+            // reader's, so it earns its own section beside the other two things specific to LitterBox rather than
+            // being folded into the general-purpose paragraphs below it.
+            { heading: 'privacyAssessmentHeading', paragraphs: ['privacyAssessmentBody'] },
             {
                 heading: 'privacyControllerHeading',
                 lines: universityAddress,

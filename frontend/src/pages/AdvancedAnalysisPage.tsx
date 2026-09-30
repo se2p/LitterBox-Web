@@ -1,16 +1,20 @@
 // SPDX-License-Identifier: EUPL-1.2
 // SPDX-FileCopyrightText: 2026 LitterBox-Web contributors
 
-import { useMemo, useRef, useState, type ReactNode } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router';
 import type { CapabilityState } from '../lib/capabilities';
 import { Card } from '../components/Card';
 import { PageMain } from '../components/Page';
+import { FoldSection } from '../components/FoldSection';
+import { SectionNav } from '../components/SectionCard';
 import { MetricSummary } from '../components/capabilities/metrics/MetricSummary';
 import { AnalysisContext } from '../components/single-project/AnalysisContext';
 import { MetricsGraphControls } from '../components/capabilities/metrics/MetricsGraphControls';
 import { ExportControls } from '../components/capabilities/export/ExportControls';
+import { InjectionControls } from '../components/capabilities/injection/InjectionControls';
+import { injectionEligible } from '../components/capabilities/injection/injection-utils';
 import {
     ADVANCED_ANALYSIS_PATH,
     readRetainedAnalysis,
@@ -31,39 +35,6 @@ const hasUsableMetrics = (metrics: unknown): boolean =>
         ),
     );
 
-/**
- * One foldable part of the workspace. Five capabilities open at once made a page metres long, so only one is unfolded
- * at a time and the menu above is how the others are reached.
- */
-function AdvancedSection({
-    id,
-    title,
-    open,
-    onOpen,
-    children,
-}: {
-    id: string;
-    title: string;
-    open: boolean;
-    onOpen: (id: string, open: boolean) => void;
-    children: ReactNode;
-}) {
-    return (
-        // Not a card: cards hold each other a whole step apart, and a list of folds reads as a list.
-        <details
-            id={id}
-            className="advanced-section"
-            open={open}
-            onToggle={(event) => onOpen(id, event.currentTarget.open)}
-        >
-            <summary className="advanced-section-summary">
-                <span className="advanced-section-title">{title}</span>
-            </summary>
-            <div className="advanced-section-body">{children}</div>
-        </details>
-    );
-}
-
 export function AdvancedAnalysisPage({
     capabilityState = { status: 'idle' },
     onCapabilityRetry = () => undefined,
@@ -74,10 +45,12 @@ export function AdvancedAnalysisPage({
     const { t, i18n } = useTranslation();
     const location = useLocation();
     const selection = useMemo(() => readRetainedAnalysis(location.state), [location.state]);
-    const state = useRetainedAnalysis(selection);
-    // undefined until the reader picks: the first available section stands open. null once they fold everything shut.
+    const { state } = useRetainedAnalysis(selection);
+    // Five capabilities open at once made this page metres long, so only one is unfolded at a time and the menu
+    // below the hero is how the others are reached. undefined until the reader picks: the address decides which
+    // one stands open, and the first available section is what it decides when the address says nothing. null once
+    // they fold everything shut.
     const [openSection, setOpenSection] = useState<string | null>();
-    const menuRef = useRef<HTMLElement>(null);
 
     const gate = retainedAnalysisGate({
         selection,
@@ -115,6 +88,14 @@ export function AdvancedAnalysisPage({
     const hasGraphs = graphCapabilityEnabled && validToolFormat(analysis.inputFormat);
     const hasExport = exportCapabilityEnabled && validToolFormat(analysis.inputFormat);
     const hasComparison = comparisonCapabilityEnabled;
+    // The one capability here that makes a project instead of reading one. It answers to the same eligibility the
+    // controls themselves check, so the menu can never name a section that draws nothing.
+    const hasInjection = injectionEligible(
+        capabilityEnabled(capabilityState, 'fault-injection'),
+        retainedSelection.analysisId,
+        analysis.status,
+        analysis.inputFormat,
+    );
     const sections: Array<{ id: string; title: string; content: ReactNode }> = [];
     if (hasMetrics)
         sections.push({
@@ -172,8 +153,32 @@ export function AdvancedAnalysisPage({
                 </div>
             ),
         });
+    // Last of the list: everything above reads the analysis in hand, and this leaves with a different project.
+    if (hasInjection)
+        sections.push({
+            id: 'advanced-injection',
+            title: t('injectionTitle'),
+            content: (
+                <InjectionControls
+                    enabled
+                    headingHidden
+                    token={retainedSelection.submissionToken}
+                    analysisId={retainedSelection.analysisId}
+                    analysisStatus={analysis.status}
+                    inputFormat={analysis.inputFormat}
+                    locale={locale}
+                />
+            ),
+        });
 
-    const activeSection = openSection === undefined ? sections[0]?.id : (openSection ?? undefined);
+    // The old fault-injection address redirects here naming its section in the hash, so a link written when that
+    // was a page of its own still opens the thing it was written for. A hash naming a section this analysis does
+    // not have — the capability is off, or its format is not one injection reads — is no reason to open nothing.
+    const requestedSection = location.hash.slice(1);
+    const defaultSection = sections.some((section) => section.id === requestedSection)
+        ? requestedSection
+        : sections[0]?.id;
+    const activeSection = openSection === undefined ? defaultSection : (openSection ?? undefined);
     // A section only closes itself. Opening another one closes this one on the way, and that report must not
     // undo the opening it was caused by.
     const changeSection = (id: string, open: boolean) =>
@@ -214,39 +219,28 @@ export function AdvancedAnalysisPage({
             )}
 
             {sections.length > 1 && (
-                <nav
-                    ref={menuRef}
-                    className="advanced-section-menu"
-                    aria-label={t('advancedSectionMenu')}
-                >
-                    <ul>
-                        {sections.map((section) => (
-                            <li key={section.id}>
-                                <button
-                                    type="button"
-                                    aria-expanded={activeSection === section.id}
-                                    aria-controls={section.id}
-                                    onClick={() => revealSection(section.id)}
-                                >
-                                    {section.title}
-                                </button>
-                            </li>
-                        ))}
-                    </ul>
-                </nav>
+                <SectionNav
+                    label={t('advancedSectionMenu')}
+                    sections={sections}
+                    isOpen={(id) => activeSection === id}
+                    onSelect={revealSection}
+                />
             )}
 
-            {sections.map((section) => (
-                <AdvancedSection
-                    key={section.id}
-                    id={section.id}
-                    title={section.title}
-                    open={activeSection === section.id}
-                    onOpen={changeSection}
-                >
-                    {section.content}
-                </AdvancedSection>
-            ))}
+            <div className="section-cards">
+                {sections.map((section, index) => (
+                    <FoldSection
+                        key={section.id}
+                        id={section.id}
+                        number={index + 1}
+                        title={<span className="fold-section-title">{section.title}</span>}
+                        open={activeSection === section.id}
+                        onToggle={changeSection}
+                    >
+                        {section.content}
+                    </FoldSection>
+                ))}
+            </div>
         </PageMain>
     );
 }

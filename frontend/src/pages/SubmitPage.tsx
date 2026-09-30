@@ -9,7 +9,7 @@ import { featureEnabled, teacherWorkflowEnabled } from '../lib/features';
 import { submitFile, submitStudio, type SubmissionRequestOptions } from '../api/submissions';
 import {
     parseScratchStudioId,
-    preflightTeacherArchive,
+    preflightTeacherInput,
     type ArchivePreflightResult,
 } from '../lib/archive-preflight';
 import { Alert } from '../components/Alert';
@@ -27,19 +27,24 @@ import {
     type StudioPreflight,
 } from '../lib/studio-preflight';
 import { formatNumber } from '../i18n';
-import { MODIFICATION_PATH } from '../lib/retained-analysis';
+import { TASK_ANALYSIS_PATH } from '../lib/retained-analysis';
 import { localeFrom, newIdempotencyKey } from '../lib/project-submission';
 import { ProjectSubmissionForm } from '../components/single-project/ProjectSubmissionForm';
 import { RecentResults } from '../components/single-project/RecentResults';
-import { rememberProject } from '../lib/recent-projects';
+import { RecentAnalysesFooter } from '../components/RecentAnalysesSection';
+import { TaskRecentAnalyses } from '../components/task-analysis/TaskRecentAnalyses';
+import {
+    rememberProject,
+    useRecentProjects,
+    type RecentAnalysisKind,
+} from '../lib/recent-projects';
 import { QuestionSubmissionForm } from '../components/questions/QuestionSubmissionForm';
+import { QuizRecentAnalyses } from '../components/questions/QuizRecentAnalyses';
 import { homeVisual } from '../assets/home-visual';
 
-/**
- * How many projects make a class set worth confirming. Below it the run is a moment and a second press is friction;
- * above it a mistaken archive costs a teacher a long wait and the service a long job.
- */
 const LARGE_CLASS_SET = 50;
+
+const QUIZ_HISTORY_KINDS: readonly RecentAnalysisKind[] = ['issues', 'questions'];
 
 export type SubmissionMode = 'single-project' | 'teacher';
 export type SubmissionPageKind = 'home' | 'submit' | 'teacher';
@@ -58,7 +63,7 @@ export function SubmitPage({
     page = 'submit',
 }: SubmitPageProps) {
     const { t, i18n } = useTranslation();
-    // Drawn ahead of time, one per language; English stands in for anything else the browser reports.
+    // One picture per language; English stands in for anything else the browser reports.
     const picture = homeVisual[i18n.language as keyof typeof homeVisual] ?? homeVisual.en;
     const navigate = useNavigate();
     const [teacherFile, setTeacherFile] = useState<File>();
@@ -68,14 +73,13 @@ export function SubmitPage({
     const [busy, setBusy] = useState(false);
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [error, setError] = useState('');
+    const remembered = useRecentProjects();
     const preflightSequence = useRef(0);
     const preflightController = useRef<AbortController | undefined>(undefined);
     const submitController = useRef<AbortController | undefined>(undefined);
     const idempotencyKey = useRef<string | undefined>(undefined);
     const teacherFileInput = useRef<HTMLInputElement>(null);
 
-    // A submission that outlives its form has nobody left to tell: letting it finish would take a teacher who
-    // has since gone elsewhere and drop them on a class set they did not ask to see.
     useEffect(
         () => () => {
             preflightController.current?.abort();
@@ -104,7 +108,7 @@ export function SubmitPage({
         setPreflightBusy(true);
         const controller = new AbortController();
         preflightController.current = controller;
-        void preflightTeacherArchive(candidate, controller.signal)
+        void preflightTeacherInput(candidate, controller.signal)
             .then((result) => {
                 if (preflightSequence.current === sequence) setTeacherPreflight(result);
             })
@@ -197,9 +201,6 @@ export function SubmitPage({
     const teacherArchiveEnabled = featureEnabled(features, 'teacher-archive');
     const studioEnabled = featureEnabled(features, 'studio');
     const questionsEnabled = featureEnabled(features, 'qlc');
-    const injectionEnabled = featureEnabled(features, 'fault-injection');
-    // The page is not only the class set, so a service offering only one of the other two workflows still
-    // has something to put here. The same predicate decides the menu entry in App.
     const workflowEnabled =
         mode === 'single-project' ? singleProjectEnabled : teacherWorkflowEnabled(features);
     const canSubmitBatch =
@@ -211,11 +212,6 @@ export function SubmitPage({
         );
     const submittingStudio = !teacherFile && Boolean(studioId);
     const studioProjects = studioProjectCount(studioPreflight);
-    /**
-     * Either kind of set is confirmed only once it is large enough that the run is a commitment rather than a
-     * moment. A studio whose size could not be read counts as large, since the alternative is finding out from a
-     * progress bar.
-     */
     const confirmLargeSet = submittingStudio
         ? studioProjects === undefined ||
           studioProjects === null ||
@@ -227,8 +223,6 @@ export function SubmitPage({
     const onSubmitBatch = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         if (!canSubmitBatch) return;
-        // A class set runs until it is done and no single project can be taken back out of it. This is the last
-        // cheap moment to notice that the wrong archive was picked, or that the studio is somebody's whole year.
         if (confirmLargeSet) {
             setConfirmOpen(true);
             return;
@@ -255,9 +249,6 @@ export function SubmitPage({
                     ? await submitFile(teacherFile, options)
                     : await submitStudio(studioId ?? '', options);
             if (!accepted.token) throw new Error(t('submissionTokenMissing'));
-            // Remembered here rather than on the result page, because this is the only place that knows what the
-            // set was called. A class set has no project name to fall back on, and a teacher who closed the tab
-            // had no way back to a thirty-project run at all.
             rememberProject({
                 token: accepted.token,
                 name: teacherFile?.name ?? '',
@@ -265,17 +256,12 @@ export function SubmitPage({
             });
             openSubmission(accepted.token);
         } catch (failure) {
-            // Us dropping the request is not the service failing to answer it.
             if (!isAbortError(failure)) setError(t('submitErrorBody'));
         } finally {
             setBusy(false);
         }
     };
 
-    /**
-     * The dialog names the size whenever the size is known. Where it is not, it says so instead of implying that
-     * nobody could have looked.
-     */
     const studioConfirmation = (projects: number | null | undefined) =>
         typeof projects === 'number'
             ? t('largeSetConfirmStudioCounted', {
@@ -284,7 +270,6 @@ export function SubmitPage({
               })
             : t('largeSetConfirmStudio');
 
-    /** The studio's own answer, in the place the archive puts the contents of a ZIP. */
     const renderStudioPreflight = (preflight: StudioPreflight) => {
         if (preflight.status === 'idle') return null;
         if (preflight.status === 'checking')
@@ -297,7 +282,6 @@ export function SubmitPage({
         if (!readable) return <p role="alert">{t('studioPreflightPrivate')}</p>;
         if (projects === null) return <p role="status">{t('studioPreflightUncounted')}</p>;
         if (projects === 0) return <p role="alert">{t('studioPreflightEmpty')}</p>;
-        // Naming the studio catches the mistake a number never could: the right count in the wrong studio.
         return (
             <p role="status">
                 {title
@@ -345,7 +329,6 @@ export function SubmitPage({
             {page === 'home' ? (
                 <section className="home-introduction" aria-labelledby={headingId}>
                     <div className="hero home-hero">
-                        {/* The banner wordmark is the page title, as on the legacy page. */}
                         <h1 id={headingId} className="visually-hidden">
                             {pageTitle}
                         </h1>
@@ -353,12 +336,9 @@ export function SubmitPage({
                         <p className="hint">{t('homeHint')}</p>
                     </div>
                     <div className="home-programming-visual">
-                        {/* An illustration of what the site is about, not evidence anybody has to read: it keeps
-                            its accessible name and loses the caption and the transcript that went with it.
-
-                            The same four blocks every visit, so they are drawn once by scripts/home-visual.mjs
-                            and checked in. Drawing them here instead meant every home visitor fetched the block
-                            renderer and its dictionaries — 167 kB — for a picture that never varies. */}
+                        {/* The same four blocks every visit, drawn once by scripts/home-visual.mjs and checked
+                            in, rather than rendered live — the live renderer and its dictionaries cost 167 kB
+                            for a picture that never varies. */}
                         <img
                             src={picture.source}
                             alt={t('homeVisualLabel')}
@@ -381,159 +361,198 @@ export function SubmitPage({
                         submitLabel={t('submit')}
                         onAccepted={openSubmission}
                     />
-                    {/* The way back to what this browser already had analysed. Nothing is added to the form
-                        itself; the list is only there once there is something in it. */}
                     <RecentResults kinds={['issues', 'questions']} />
                 </>
             )}
-            {mode === 'teacher' && (teacherArchiveEnabled || studioEnabled) && (
-                <form className="submit-form" onSubmit={(event) => void onSubmitBatch(event)}>
-                    <fieldset className="analysis-choice-group analysis-choice-group-secondary">
-                        {/* The section is named for what it does rather than for the page it is on, so the
-                            page's own lead does not need repeating word for word underneath it. */}
-                        <legend>{t('teacherSubmissionChoices')}</legend>
-                        <div className="analysis-choice-grid">
-                            {teacherArchiveEnabled && (
-                                <div className="batch-choice-card">
-                                    <FormField
-                                        label={t('teacherUploadLabel')}
-                                        labelFor="teacher-archive"
-                                    >
-                                        <input
-                                            ref={teacherFileInput}
-                                            id="teacher-archive"
-                                            type="file"
-                                            accept=".zip,application/zip"
-                                            disabled={busy}
-                                            aria-describedby="teacher-archive-hint"
-                                            onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                                                chooseTeacherFile(event.target.files?.[0])
-                                            }
-                                        />
-                                        <p id="teacher-archive-hint" className="hint">
-                                            {t('teacherUploadHint')}
-                                        </p>
-                                        {renderTeacherPreflight(teacherPreflight)}
-                                        {teacherPreflight?.childErrors && (
-                                            <ul
-                                                className="preflight-errors"
-                                                aria-label={t('teacherChildErrors')}
-                                            >
-                                                {teacherPreflight.childErrors.map((child) => (
-                                                    <li key={child.name}>
-                                                        <strong>{child.name}:</strong>{' '}
-                                                        {t(preflightMessageKey(child.reason))}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        )}
-                                    </FormField>
-                                </div>
-                            )}
-                            {studioEnabled && (
-                                <div className="batch-choice-card">
-                                    <FormField label={t('studioLabel')} labelFor="studio-id">
-                                        <input
-                                            id="studio-id"
-                                            type="text"
-                                            inputMode="numeric"
-                                            value={studio}
-                                            disabled={busy}
-                                            aria-invalid={studio.trim() !== '' && !studioId}
-                                            aria-describedby="studio-id-hint"
-                                            onChange={(event) => chooseStudio(event.target.value)}
-                                            placeholder="12345"
-                                        />
-                                        <p id="studio-id-hint" className="hint">
-                                            {t('studioHint')}
-                                        </p>
-                                        {renderStudioPreflight(studioPreflight)}
-                                    </FormField>
-                                </div>
-                            )}
-                        </div>
-                    </fieldset>
-                    {error && (
-                        <Alert tone="error">
-                            <p>
-                                {t('submitError')}: {error}
-                            </p>
-                        </Alert>
-                    )}
-                    <button
-                        className="submit-analysis-button"
-                        type="submit"
-                        disabled={!canSubmitBatch}
-                        aria-busy={busy}
-                    >
-                        {busy
-                            ? t('submitting')
-                            : error
-                              ? t('retry')
-                              : teacherFile
-                                ? t('submitBatch')
-                                : t('submitStudio')}
-                    </button>
-                    <Dialog
-                        open={confirmOpen}
-                        title={t('largeSetConfirmTitle')}
-                        closeLabel={t('largeSetConfirmBack')}
-                        onClose={() => setConfirmOpen(false)}
-                    >
-                        <p>
-                            {submittingStudio
-                                ? studioConfirmation(studioProjects)
-                                : t('largeSetConfirmArchive', {
-                                      count: teacherUsableProjects,
-                                      formatted: formatNumber(teacherUsableProjects),
-                                  })}
-                        </p>
-                        <div className="dialog-actions">
-                            <button type="button" onClick={() => setConfirmOpen(false)}>
-                                {t('largeSetConfirmBack')}
-                            </button>
-                            {/* The same words the form's own button used, so pressing this is plainly the
-                                thing that was already asked for. */}
-                            <button type="button" onClick={() => void startBatch()}>
-                                {submittingStudio ? t('submitStudio') : t('submitBatch')}
-                            </button>
-                        </div>
-                    </Dialog>
-                </form>
+            {mode === 'teacher' && singleProjectEnabled && (
+                <section className="teacher-workflow">
+                    <ProjectSubmissionForm
+                        idPrefix="teacher-task-analysis-project"
+                        className="teacher-task-analysis-entry"
+                        legend={t('teacherTaskAnalysisChoiceTitle')}
+                        description={t('teacherTaskAnalysisChoiceDescription')}
+                        submitLabel={t('taskAnalysisAction')}
+                        onAccepted={(token) =>
+                            navigate(`/submissions/${encodeURIComponent(token)}`, {
+                                state: { continueTo: TASK_ANALYSIS_PATH },
+                            })
+                        }
+                    />
+                    <TaskRecentAnalyses
+                        headingId="teacher-task-recent-analyses-heading"
+                        headingText={t('teacherRecentTaskProjectsHeading')}
+                    />
+                </section>
             )}
-            {/* The way back to a class set already sent. A run over thirty projects is not something to repeat
-                because the tab was closed, and its link would otherwise be only in the teacher's own history. */}
-            {mode === 'teacher' && (
-                <RecentResults kinds={['batch']} headingId="recent-class-sets-heading" />
-            )}
-            {/* A batch tells a teacher what a class got wrong; the question set tells them what they can ask. It is
-                one project and the same two ways in, so it is asked for here rather than behind a link to a page
-                that would hold nothing but this form. */}
             {mode === 'teacher' && questionsEnabled && (
-                <QuestionSubmissionForm
-                    variant="teacher"
-                    idPrefix="teacher-questions-project"
-                    className="teacher-questions-entry"
-                    legend={t('teacherQuestionsChoiceTitle')}
-                    description={t('teacherQuestionsChoiceDescription')}
-                />
+                <section className="teacher-workflow">
+                    <QuestionSubmissionForm
+                        variant="teacher"
+                        idPrefix="teacher-questions-project"
+                        className="teacher-questions-entry"
+                        legend={t('teacherQuestionsChoiceTitle')}
+                        description={t('teacherQuestionsChoiceDescription')}
+                    />
+                    <QuizRecentAnalyses
+                        headingId="teacher-quiz-recent-analyses-heading"
+                        headingText={t('teacherRecentQuizProjectsHeading')}
+                        locale={localeFrom(i18n.language)}
+                        onReused={(token) =>
+                            navigate(`/teacher/questions/${encodeURIComponent(token)}`)
+                        }
+                    />
+                    <RecentResults
+                        kinds={['questions']}
+                        headingId="teacher-recent-question-sets-heading"
+                        headingText={t('teacherRecentQuestionSetsHeading')}
+                        questionsPath="/teacher/questions"
+                        detailLabelKeys={{ questions: 'recentResultQuestionSet' }}
+                        footer={false}
+                    />
+                    {remembered.some((project) => QUIZ_HISTORY_KINDS.includes(project.kind)) && (
+                        <RecentAnalysesFooter
+                            kinds={QUIZ_HISTORY_KINDS}
+                            className="recent-results quiz-recent-history-footer"
+                        />
+                    )}
+                </section>
             )}
-            {/* Injecting a fault does not read a project, it makes another one: a copy with a known bug in it, for a
-                class to find. That is lesson preparation, not analysis, so it is asked for here rather than beside
-                the measurements and graphs of the advanced workspace. */}
-            {mode === 'teacher' && injectionEnabled && (
-                <ProjectSubmissionForm
-                    idPrefix="teacher-modification-project"
-                    className="teacher-modification-entry"
-                    legend={t('teacherModificationChoiceTitle')}
-                    description={t('teacherModificationChoiceDescription')}
-                    submitLabel={t('modificationAction')}
-                    onAccepted={(token) =>
-                        navigate(`/submissions/${encodeURIComponent(token)}`, {
-                            state: { continueTo: MODIFICATION_PATH },
-                        })
-                    }
-                />
+            {mode === 'teacher' && (
+                <section className="teacher-workflow">
+                    {(teacherArchiveEnabled || studioEnabled) && (
+                        <form
+                            className="submit-form"
+                            onSubmit={(event) => void onSubmitBatch(event)}
+                        >
+                            <fieldset className="analysis-choice-group analysis-choice-group-secondary">
+                                <legend>{t('teacherSubmissionChoices')}</legend>
+                                <p className="choice-description">
+                                    {t('teacherClassSetChoiceDescription')}
+                                </p>
+                                <div className="analysis-choice-grid">
+                                    {teacherArchiveEnabled && (
+                                        <div className="batch-choice-card">
+                                            <FormField
+                                                label={t('teacherUploadLabel')}
+                                                labelFor="teacher-archive"
+                                            >
+                                                <input
+                                                    ref={teacherFileInput}
+                                                    id="teacher-archive"
+                                                    type="file"
+                                                    accept=".zip,.txt,application/zip,text/plain"
+                                                    disabled={busy}
+                                                    aria-describedby="teacher-archive-hint"
+                                                    onChange={(
+                                                        event: ChangeEvent<HTMLInputElement>,
+                                                    ) => chooseTeacherFile(event.target.files?.[0])}
+                                                />
+                                                <p id="teacher-archive-hint" className="hint">
+                                                    {t('teacherUploadHint')}
+                                                </p>
+                                                {renderTeacherPreflight(teacherPreflight)}
+                                                {teacherPreflight?.childErrors && (
+                                                    <ul
+                                                        className="preflight-errors"
+                                                        aria-label={t('teacherChildErrors')}
+                                                    >
+                                                        {teacherPreflight.childErrors.map(
+                                                            (child) => (
+                                                                <li key={child.name}>
+                                                                    <strong>{child.name}:</strong>{' '}
+                                                                    {t(
+                                                                        preflightMessageKey(
+                                                                            child.reason,
+                                                                        ),
+                                                                    )}
+                                                                </li>
+                                                            ),
+                                                        )}
+                                                    </ul>
+                                                )}
+                                            </FormField>
+                                        </div>
+                                    )}
+                                    {studioEnabled && (
+                                        <div className="batch-choice-card">
+                                            <FormField
+                                                label={t('studioLabel')}
+                                                labelFor="studio-id"
+                                            >
+                                                <input
+                                                    id="studio-id"
+                                                    type="text"
+                                                    inputMode="numeric"
+                                                    value={studio}
+                                                    disabled={busy}
+                                                    aria-invalid={studio.trim() !== '' && !studioId}
+                                                    aria-describedby="studio-id-hint"
+                                                    onChange={(event) =>
+                                                        chooseStudio(event.target.value)
+                                                    }
+                                                    placeholder="12345"
+                                                />
+                                                <p id="studio-id-hint" className="hint">
+                                                    {t('studioHint')}
+                                                </p>
+                                                {renderStudioPreflight(studioPreflight)}
+                                            </FormField>
+                                        </div>
+                                    )}
+                                </div>
+                            </fieldset>
+                            {error && (
+                                <Alert tone="error">
+                                    <p>
+                                        {t('submitError')}: {error}
+                                    </p>
+                                </Alert>
+                            )}
+                            <button
+                                className="submit-analysis-button"
+                                type="submit"
+                                disabled={!canSubmitBatch}
+                                aria-busy={busy}
+                            >
+                                {busy
+                                    ? t('submitting')
+                                    : error
+                                      ? t('retry')
+                                      : teacherFile
+                                        ? t('submitBatch')
+                                        : t('submitStudio')}
+                            </button>
+                            <Dialog
+                                open={confirmOpen}
+                                title={t('largeSetConfirmTitle')}
+                                closeLabel={t('largeSetConfirmBack')}
+                                onClose={() => setConfirmOpen(false)}
+                            >
+                                <p>
+                                    {submittingStudio
+                                        ? studioConfirmation(studioProjects)
+                                        : t('largeSetConfirmArchive', {
+                                              count: teacherUsableProjects,
+                                              formatted: formatNumber(teacherUsableProjects),
+                                          })}
+                                </p>
+                                <div className="dialog-actions">
+                                    <button type="button" onClick={() => setConfirmOpen(false)}>
+                                        {t('largeSetConfirmBack')}
+                                    </button>
+                                    <button type="button" onClick={() => void startBatch()}>
+                                        {submittingStudio ? t('submitStudio') : t('submitBatch')}
+                                    </button>
+                                </div>
+                            </Dialog>
+                        </form>
+                    )}
+                    <RecentResults
+                        kinds={['batch']}
+                        headingId="recent-class-sets-heading"
+                        headingText={t('teacherRecentClassSetsHeading')}
+                    />
+                </section>
             )}
         </PageMain>
     );

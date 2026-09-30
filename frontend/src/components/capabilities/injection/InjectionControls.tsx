@@ -73,6 +73,12 @@ function EligibleInjectionControls({
         () => new Map(injectors.map((injector, index) => [injector.injectorId, index])),
         [injectors],
     );
+    // The preview answers in injector IDs, which name nothing a teacher reading the result would recognise; the
+    // catalogue this same request already loaded is where the human name for each one lives.
+    const injectorNames = useMemo(
+        () => new Map(injectors.map((injector) => [injector.injectorId, injector.name])),
+        [injectors],
+    );
     const { selectedInjectorIds, selectionMode, selectedCount, explicitLimit } = selection;
 
     const renderInjector = (injector: InjectorViewDto) => {
@@ -328,6 +334,7 @@ function EligibleInjectionControls({
                         {preview && (
                             <InjectionPreview
                                 preview={preview}
+                                injectorNames={injectorNames}
                                 locale={locale}
                                 downloading={
                                     state.status === 'downloading' ? state.target : undefined

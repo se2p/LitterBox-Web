@@ -18,10 +18,21 @@ export type RichHintNode =
     | { kind: 'lineBreak' }
     | { kind: 'format'; format: RichHintFormat; children: RichHintNode[]; color?: string }
     | { kind: 'inline'; inlineKind: RichHintInlineKind; source?: string }
-    /** A whole script rather than a single block, so it is drawn on its own lines. */
     | { kind: 'script'; source: string }
     | { kind: 'variablesBadge' }
     | { kind: 'term'; term: 'true' | 'false' };
+
+export const richHintFormatTag: Record<
+    RichHintFormat,
+    'strong' | 'em' | 'u' | 's' | 'code' | 'span'
+> = {
+    strong: 'strong',
+    italic: 'em',
+    underline: 'u',
+    strike: 's',
+    code: 'code',
+    color: 'span',
+};
 
 const pairedTags = {
     b: 'strong',
@@ -82,6 +93,17 @@ const findClosing = (
     return -1;
 };
 
+const lineBreakLength = (input: string, cursor: number): number =>
+    input[cursor] === '\r' && input[cursor + 1] === '\n' ? 2 : 1;
+
+const nextStop = (input: string, from: number, end: number): number => {
+    for (let cursor = from; cursor < end; cursor += 1) {
+        const char = input[cursor];
+        if (char === '[' || char === '\n' || char === '\r') return cursor;
+    }
+    return end;
+};
+
 const inlineNode = (inlineKind: RichHintInlineKind, source?: string): RichHintNode => ({
     kind: 'inline',
     inlineKind,
@@ -93,9 +115,16 @@ const parseRange = (input: string, start: number, end: number): RichHintNode[] =
     let cursor = start;
 
     while (cursor < end) {
-        if (input[cursor] !== '[') {
-            const nextMarker = input.indexOf('[', cursor);
-            const textEnd = nextMarker < 0 || nextMarker >= end ? end : nextMarker;
+        const char = input[cursor];
+
+        if (char === '\n' || char === '\r') {
+            nodes.push({ kind: 'lineBreak' });
+            cursor += lineBreakLength(input, cursor);
+            continue;
+        }
+
+        if (char !== '[') {
+            const textEnd = nextStop(input, cursor, end);
             appendText(nodes, input.slice(cursor, textEnd));
             cursor = textEnd;
             continue;
@@ -185,8 +214,6 @@ const parseRange = (input: string, start: number, end: number): RichHintNode[] =
             continue;
         }
 
-        // Checked before the inline marker: question choices carry whole scripts, and printing the marker as text
-        // is how the reader would otherwise see those choices.
         const scriptMarker = '[scratchblocks]';
         if (remaining.startsWith(scriptMarker)) {
             const close = findClosing(

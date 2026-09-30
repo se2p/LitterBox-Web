@@ -10,7 +10,7 @@ import { issueFamily } from './issue-family';
 import { IssueCard, type IssueCardLabels } from './IssueCard';
 import { namedSprites, type FindingGroup as Group } from './finding-groups';
 import { RichHint } from './RichHint';
-import { ScratchblocksPreview } from './ScratchblocksPreview';
+import { CatalogueExampleList } from './CatalogueExampleList';
 import { spriteDisplayName } from './sprite-name';
 
 /** How many sprites the heading names before it starts counting the rest instead. */
@@ -148,20 +148,11 @@ export function FindingGroup({
                 {examples.length > 0 && (
                     <section aria-labelledby={`${headingId}-examples`}>
                         <h5 id={`${headingId}-examples`}>{t('catalogueExamples')}</h5>
-                        <ul className="catalogue-examples">
-                            {examples.map((example, index) => (
-                                <li key={`${example.label}-${index}`}>
-                                    <p className="catalogue-example-label">{example.label}</p>
-                                    <ScratchblocksPreview
-                                        source={example.scratchblocks}
-                                        locale={entryLocale}
-                                        label={example.label}
-                                        textAlternativeLabel={labels.textAlternative}
-                                        showLabel={false}
-                                    />
-                                </li>
-                            ))}
-                        </ul>
+                        <CatalogueExampleList
+                            examples={examples}
+                            locale={entryLocale}
+                            textAlternativeLabel={labels.textAlternative}
+                        />
                     </section>
                 )}
             </details>

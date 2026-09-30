@@ -1,17 +1,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 // SPDX-FileCopyrightText: 2026 LitterBox-Web contributors
 
-/**
- * What a first visit has to download before anything can be shown, held to a ceiling.
- *
- * A first visit is the home page, so the entry chunk is not the whole bill: whatever index.html links or preloads
- * arrives with it, and a chunk the landing page imports on sight is downloaded as surely as the entry itself. Both
- * are measured here. Everything reached only by a dynamic import that a *press* triggers — the pattern catalogue,
- * the teacher's workflows, the researcher's workspace, Graphviz, the zip reader — is fetched when it is first
- * asked for, and a school connection should not pay for a page nobody opened.
- *
- * Raise a ceiling deliberately, in a commit that says why, or split the thing that pushed it over.
- */
+/** Keep the entry chunk and assets referenced by index.html within first-paint limits. */
 import { readdir, readFile, stat } from 'node:fs/promises';
 import { gzipSync } from 'node:zlib';
 import { join } from 'node:path';
@@ -19,23 +9,10 @@ import { join } from 'node:path';
 const DIST = new URL('../dist/', import.meta.url).pathname;
 const ASSETS = join(DIST, 'assets');
 
-/** Room to move without a fortnightly argument, but not room for another workflow to slip in. */
 const ENTRY_BUDGET_BYTES = 540 * 1024;
 const ENTRY_BUDGET_GZIP_BYTES = 165 * 1024;
 
-/**
- * Everything index.html tells the browser to fetch before it can run a line of our code: the entry, the stylesheet
- * and any chunk Vite chose to preload beside them. Held separately, because a chunk split out of the first route
- * leaves the entry looking smaller while a visitor downloads exactly as much.
- *
- * It does not cover what the home page then asks for itself — the block renderer it draws its illustration with is
- * fetched when the browser is next idle. That is a dynamic import like any other, and the rule for those is the
- * one above: load it on demand, and keep the demand real.
- *
- * Nor does it cover the German, Spanish and Dutch translations, for the same reason and with the same caveat: the
- * application carries English, and a reader who has chosen one of the others pays one file for it before anything
- * is drawn. That is a real saving for the English reader and a real cost for everyone else, not an accounting one.
- */
+/** Include every script and stylesheet referenced by index.html, including preloads. */
 const FIRST_PAINT_BUDGET_BYTES = 620 * 1024;
 const FIRST_PAINT_BUDGET_GZIP_BYTES = 180 * 1024;
 

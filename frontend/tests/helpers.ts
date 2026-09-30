@@ -1,25 +1,13 @@
 // SPDX-License-Identifier: EUPL-1.2
 // SPDX-FileCopyrightText: 2026 LitterBox-Web contributors
 
-/**
- * What every test needs before it can say anything of its own: a service that answers, and a finding to put in
- * front of the reader. One copy of each, so a change to the shape of a response is one edit rather than one per
- * test file, and so no file quietly disagrees with another about fields it is making no point about.
- *
- * Nothing here draws anything, so a test about a pure function does not pull the whole application in behind it.
- * Mounting the application lives next door, in render.tsx.
- */
-
+import { vi } from 'vitest';
 import type { SupportedLocale } from '../src/api/capabilities';
 import type { AnalysisIssue } from '../src/api/submissions';
 import { loadPack, type TranslationPack } from '../src/i18n/locales';
 
 export const SUPPORTED_LOCALES: readonly SupportedLocale[] = ['de', 'en', 'es', 'nl'];
 
-/**
- * Every language at once, which is what a test about the copy is asking about. The application fetches one pack at
- * a time; a test that reads all four says so by awaiting them.
- */
 export const allLocalePacks = async (): Promise<Record<SupportedLocale, TranslationPack>> =>
     Object.fromEntries(
         await Promise.all(
@@ -27,7 +15,6 @@ export const allLocalePacks = async (): Promise<Record<SupportedLocale, Translat
         ),
     ) as Record<SupportedLocale, TranslationPack>;
 
-/** A JSON reply, or a bodiless one where the body is left out; the service answers in nothing else. */
 export const response = (body: unknown, status = 200): Response =>
     new Response(body === undefined ? null : JSON.stringify(body), {
         status,
@@ -38,12 +25,9 @@ export interface CapabilitiesOverrides {
     schemaVersion?: number;
     litterboxVersion?: string | null;
     supportedLocales?: readonly string[];
+    assessmentLimits?: unknown;
 }
 
-/**
- * What the service says it offers. Only the feature list is ever the point of a test, so that is the argument;
- * everything else is the same everywhere and is named here once.
- */
 export const capabilitiesResponse = (
     enabledFeatures: readonly string[] = [],
     overrides: CapabilitiesOverrides = {},
@@ -56,10 +40,40 @@ export const capabilitiesResponse = (
         enabledFeatures: [...enabledFeatures],
     });
 
+type FetchInput = Parameters<typeof fetch>[0];
+type FetchInit = Parameters<typeof fetch>[1];
+
+export interface MockFetchRoute {
+    /** Tried in the order given; the first route a request matches answers it. */
+    when: (url: string, init: FetchInit) => boolean;
+    respond: () => Response | Promise<Response>;
+}
+
 /**
- * One finding, complete. A test names only the fields it is making a point about; the other seventeen exist
- * because the response carries them, not because any test cares what is in them.
+ * The fetch mock almost every test in this file starts from: `/capabilities` answered from a feature list, a
+ * handful of URL-matched routes tried in order, and a fallback for whatever none of them claimed. That plumbing
+ * never varies between scenarios — only the features, the routes, and what a request outside them gets back — so
+ * a call here states just the difference instead of the whole routing table.
  */
+export const mockFetchRoutes = ({
+    features = [],
+    capabilitiesOverrides,
+    routes = [],
+    fallback = () => response({}, 404),
+}: {
+    features?: readonly string[];
+    capabilitiesOverrides?: CapabilitiesOverrides;
+    routes?: readonly MockFetchRoute[];
+    fallback?: () => Response | Promise<Response>;
+} = {}) =>
+    vi.spyOn(globalThis, 'fetch').mockImplementation((input: FetchInput, init?: FetchInit) => {
+        const url = String(input);
+        if (url.includes('/capabilities'))
+            return Promise.resolve(capabilitiesResponse(features, capabilitiesOverrides));
+        const route = routes.find((candidate) => candidate.when(url, init));
+        return Promise.resolve(route ? route.respond() : fallback());
+    });
+
 export const issue = (overrides: Partial<AnalysisIssue> & { id: number }): AnalysisIssue =>
     ({
         finderId: 'uninitialised-variable',

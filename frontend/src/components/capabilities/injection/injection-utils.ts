@@ -2,7 +2,11 @@
 // SPDX-FileCopyrightText: 2026 LitterBox-Web contributors
 
 import type { SupportedLocale } from '../../../api/capabilities';
-import type { InjectionPreviewDto, InjectorViewDto } from '../../../api/generated';
+import type {
+    InjectionPreviewDto,
+    InjectionResultViewDto,
+    InjectorViewDto,
+} from '../../../api/generated';
 import { isInjectionSourceFormat, type InjectionErrorCategory } from '../../../api/injections';
 import type { TranslationKey } from '../../../i18n/locales';
 import {
@@ -57,6 +61,33 @@ export const resultKey = (injectorId: string, resultIndex: number): string =>
 
 export const resultForKey = (preview: InjectionPreviewDto | undefined, key: string | undefined) =>
     preview?.results.find((result) => resultKey(result.injectorId, result.resultIndex) === key);
+
+/**
+ * Where a result sits among the others the same injector produced for the same sprite, and how many there are in
+ * total. Two mutations of different scripts on one sprite could be told apart by the script IDs the service
+ * returns for each, but those name nothing a Scratch user has ever seen, so this is what tells such results apart
+ * instead, without ever showing a reader one.
+ */
+export const resultOrdinals = (
+    results: readonly InjectionResultViewDto[],
+): Map<string, { position: number; count: number }> => {
+    const groups = new Map<string, InjectionResultViewDto[]>();
+    for (const result of results) {
+        const groupKey = JSON.stringify([result.injectorId, result.spriteName]);
+        const group = groups.get(groupKey);
+        if (group) group.push(result);
+        else groups.set(groupKey, [result]);
+    }
+    const ordinals = new Map<string, { position: number; count: number }>();
+    for (const group of groups.values())
+        group.forEach((result, index) =>
+            ordinals.set(resultKey(result.injectorId, result.resultIndex), {
+                position: index + 1,
+                count: group.length,
+            }),
+        );
+    return ordinals;
+};
 
 const normalizeSearchText = (value: string, locale: SupportedLocale): string =>
     value.normalize('NFKC').toLocaleLowerCase(locale).replace(/\s+/gu, ' ').trim();

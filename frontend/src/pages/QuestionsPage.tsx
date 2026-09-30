@@ -4,7 +4,10 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useParams } from 'react-router';
+import type { AssessmentLimits } from '../api/capabilities';
+import { fetchExportTargets } from '../api/exports';
 import type { CapabilityState } from '../lib/capabilities';
+import { assessmentLimits, capabilityEnabled } from '../lib/features';
 import { Alert } from '../components/Alert';
 import { Card } from '../components/Card';
 import { Dialog } from '../components/Dialog';
@@ -21,9 +24,15 @@ import {
 } from '../components/questions/QuestionSubmissionForm';
 import {
     cancelSubmission,
+    sendQuizAnswer,
+    SubmissionApiError,
     type BatchAnalysis,
     type SubmissionStatusResponse,
 } from '../api/submissions';
+import {
+    QuizAnswerAuthorizationError,
+    type SubmitQuizAnswer,
+} from '../components/questions/quiz-answer';
 import {
     TERMINAL_STATUSES,
     statusLabel,
@@ -41,8 +50,8 @@ import { exportEligible } from '../lib/export-eligibility';
 import { localeFrom } from '../lib/project-submission';
 import { analysisCandidates, analysisIsCompleted } from './submission-utils';
 
-const QUESTION_SOURCES = new Set(['QUESTION_UPLOAD', 'QUESTION_SCRATCH_URL']);
 const MAX_QUESTIONS = 10;
+const QUESTION_SOURCES = new Set(['QUESTION_UPLOAD', 'QUESTION_SCRATCH_URL']);
 
 const questionSource = (value: SubmissionStatusResponse): boolean =>
     QUESTION_SOURCES.has(value.sourceType);
@@ -54,6 +63,21 @@ const quizQuestions = (analysis: BatchAnalysis | undefined): QuizQuestion[] =>
     (Array.isArray(analysis?.quiz) ? analysis.quiz : [])
         .map(normalizeQuizQuestion)
         .filter((question): question is QuizQuestion => question !== undefined);
+
+const submitToSubmissionQuiz = (token: string, analysisId: number): SubmitQuizAnswer => {
+    return async (questionId, answer, signal) => {
+        try {
+            return await sendQuizAnswer(token, analysisId, { questionId, answer }, signal);
+        } catch (error) {
+            if (
+                error instanceof SubmissionApiError &&
+                (error.status === 401 || error.status === 403)
+            )
+                throw new QuizAnswerAuthorizationError();
+            throw error;
+        }
+    };
+};
 
 function QuestionsUnavailable({ onRetry }: { onRetry: () => void }) {
     const { t } = useTranslation();
@@ -88,8 +112,6 @@ function InvalidQuestionToken({ onRetry }: { onRetry: () => void }) {
 function QuestionsEntryPage({ variant }: { variant: QuestionsVariant }) {
     const { t, i18n } = useTranslation();
     const navigate = useNavigate();
-    // Only what this device did last, and only as one press: the page a child arrives at gains a shortcut, not a
-    // second way of doing things.
     const [recent] = useState(latestProject);
     return (
         <PageMain className="questions-page">
@@ -160,15 +182,11 @@ function QuestionsStatusBanner({
                     <span className="status-dot" aria-hidden="true" />
                     <span>{statusLabel(value.status, t)}</span>
                 </div>
-                {/* Not a token to keep somewhere — there is nowhere to type one in. What this page hands back
-                    is its own address. */}
                 {value.token && (
                     <ResultLink
                         path={`${variant === 'teacher' ? 'teacher/questions' : 'questions'}/${encodeURIComponent(value.token)}`}
                     />
                 )}
-                {/* Asking about a project that had already been checked made a second result; this is the way
-                    back to the first one, which is otherwise only in the reader's history. */}
                 {value.token && <OriginResultLink token={value.token} />}
                 {!terminal && (
                     <button
@@ -195,23 +213,22 @@ function QuestionResult({
     token,
     variant,
     exportEnabled,
+    assessmentsEnabled,
+    limits,
 }: {
     value: SubmissionStatusResponse;
     token: string;
     variant: QuestionsVariant;
-    /** Whether the deployment advertises the capability that can hand the project's scripts back. */
     exportEnabled: boolean;
+    assessmentsEnabled: boolean;
+    limits: AssessmentLimits;
 }) {
     const { t, i18n } = useTranslation();
     const running = !TERMINAL_STATUSES.has(value.status.toLowerCase());
     const analysis = questionAnalysis(value);
     const allQuestions = quizQuestions(analysis);
-    // The analysis carries every question it could generate. A teacher wants all of them; a learner wants a handful
-    // that still spans the block model, and only of a kind whose marking can be trusted.
     const questions =
         variant === 'teacher' ? allQuestions : learnerQuizQuestions(allQuestions, MAX_QUESTIONS);
-    // Questions were generated, but none of them can be put to a learner. Saying nothing was generated would be
-    // untrue, and it is not the teacher's view that is short of anything.
     const noneForLearner =
         variant === 'learner' && allQuestions.length > 0 && questions.length === 0;
     const failed = String(value.status).toLowerCase() === 'failed';
@@ -251,10 +268,14 @@ function QuestionResult({
                 questions.length > 0 &&
                 variant === 'teacher' && (
                     <TeacherQuestionOverview
+                        key={`${token}-${analysisId}`}
                         questions={questions}
                         analysisId={analysisId}
                         token={token}
                         locale={locale}
+                        projectName={analysis?.name?.trim() || token}
+                        assessmentsEnabled={assessmentsEnabled}
+                        limits={limits}
                     />
                 )}
             {!running &&
@@ -265,14 +286,13 @@ function QuestionResult({
                 variant === 'learner' && (
                     <LearnerQuiz
                         questions={questions}
-                        analysisId={analysisId}
-                        token={token}
                         locale={locale}
-                        showProjectCode={exportEligible(
-                            exportEnabled,
-                            analysisId,
-                            analysis?.inputFormat,
-                        )}
+                        submitAnswer={submitToSubmissionQuiz(token, analysisId)}
+                        loadProjectCode={
+                            exportEligible(exportEnabled, analysisId, analysis?.inputFormat)
+                                ? () => fetchExportTargets(token, analysisId)
+                                : undefined
+                        }
                     />
                 )}
             {!running && !failed && !cancelled && (!canAnswer || questions.length === 0) && (
@@ -295,10 +315,14 @@ function QuestionResultPage({
     token,
     variant,
     exportEnabled,
+    assessmentsEnabled,
+    limits,
 }: {
     token: string;
     variant: QuestionsVariant;
     exportEnabled: boolean;
+    assessmentsEnabled: boolean;
+    limits: AssessmentLimits;
 }) {
     const { t } = useTranslation();
     const { state, sseState, load } = useSubmission(token, true);
@@ -308,7 +332,6 @@ function QuestionResultPage({
     const terminal =
         state.status === 'ready' && TERMINAL_STATUSES.has(state.value.status.toLowerCase());
 
-    // Nothing left to cancel once the analysis has finished, so the dialogue and its failure go with it.
     const [wasTerminal, setWasTerminal] = useState(terminal);
     if (wasTerminal !== terminal) {
         setWasTerminal(terminal);
@@ -318,7 +341,6 @@ function QuestionResultPage({
         }
     }
 
-    // Remembered on this device, so the reader can come back to these questions without keeping the link.
     useEffect(() => {
         if (!terminal || state.status !== 'ready') return;
         const analysis = questionAnalysis(state.value);
@@ -417,6 +439,8 @@ function QuestionResultPage({
                 token={token}
                 variant={variant}
                 exportEnabled={exportEnabled}
+                assessmentsEnabled={assessmentsEnabled}
+                limits={limits}
             />
             <Dialog
                 open={cancelOpen}
@@ -460,14 +484,10 @@ export function QuestionsPage({
 }) {
     const { t } = useTranslation();
     const { token } = useParams();
-    const questionsEnabled =
-        capabilityState.status === 'ready' && capabilityState.value.enabledFeatures.includes('qlc');
-    const exportEnabled =
-        capabilityState.status === 'ready' &&
-        capabilityState.value.enabledFeatures.includes('program-export');
+    const questionsEnabled = capabilityEnabled(capabilityState, 'qlc');
+    const exportEnabled = capabilityEnabled(capabilityState, 'program-export');
+    const assessmentsEnabled = capabilityEnabled(capabilityState, 'assessments');
     const hasToken = typeof token === 'string' && token.trim().length > 0;
-    // The teacher's question set lives under /teacher/questions, which is no menu entry of its own; it belongs to
-    // the class-set page the form that made it sits on.
     useDeclaredNavigation(variant === 'teacher' ? '/teacher' : undefined);
 
     if (capabilityState.status === 'loading' || capabilityState.status === 'idle')
@@ -486,7 +506,15 @@ export function QuestionsPage({
 
     if (!questionsEnabled) return <QuestionsUnavailable onRetry={onCapabilityRetry} />;
     if (hasToken)
-        return <QuestionResultPage token={token} variant={variant} exportEnabled={exportEnabled} />;
+        return (
+            <QuestionResultPage
+                token={token}
+                variant={variant}
+                exportEnabled={exportEnabled}
+                assessmentsEnabled={assessmentsEnabled}
+                limits={assessmentLimits(capabilityState)}
+            />
+        );
     if (token !== undefined) return <InvalidQuestionToken onRetry={onCapabilityRetry} />;
     return <QuestionsEntryPage variant={variant} />;
 }

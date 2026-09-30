@@ -29,10 +29,10 @@ export function installScratchblocksStyles(documentObject: Document, css: string
 /**
  * Strips inline styles off a rendered drawing, moving a transform onto the SVG attribute where one is readable.
  *
- * This used to be how the drawing got its scale, on the belief that a style the policy refuses is still readable
- * on the attribute. That is true of Chromium and false of Firefox, which empties the value — so the scale was
- * silently dropped on the assembled site, and only there, and only in that browser. The renderer is patched to
- * set the attribute itself now, and nothing depends on reading a refused style back.
+ * The renderer sets the attribute itself, so nothing depends on reading a refused style back to get the drawing's
+ * scale. Relying on that instead — on the belief that a style the policy refuses is still readable on the
+ * attribute — works in Chromium but not in Firefox, which empties the value, so the scale would be silently
+ * dropped on the assembled site, and only there, and only in that browser.
  *
  * What is left is the cleanup: an inline style the policy would refuse anyway should not stay on the drawing.
  * Recovering a transform from one is kept for anything the renderer might yet emit, but a value that arrives

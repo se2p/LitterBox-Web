@@ -13,10 +13,12 @@ import {
     boundedNonblankString as isBoundedNonblankString,
     hasExactKeys,
     isContentEncoded,
+    MAX_PROBLEM_RESPONSE_BYTES,
     positiveSafeInteger as isPositiveSafeInteger,
     isProblemJsonContentType,
     problemCodeFrom,
     readBoundedBytes,
+    readBoundedText,
 } from './validation';
 
 export const MAX_EXPORT_RESPONSE_BYTES = 10 * 1024 * 1024;
@@ -25,7 +27,6 @@ export const MAX_EXPORT_TOKEN_LENGTH = 128;
 export const MAX_EXPORT_TARGET_ACTORS = 1_000;
 export const MAX_EXPORT_TARGET_SCRIPTS = 10_000;
 export const MAX_EXPORT_SCRIPT_PREVIEW_BYTES = 256 * 1024;
-const MAX_PROBLEM_RESPONSE_BYTES = 16 * 1024;
 
 export const EXPORT_FORMATS = ['scratchblocks', 'goboscript', 'pystage'] as const;
 export type ExportFormat = (typeof EXPORT_FORMATS)[number];
@@ -183,35 +184,13 @@ const safeProblemCode = (value: unknown): value is ExportErrorCategory =>
 const readProblemCode = async (response: Response): Promise<ExportErrorCategory | undefined> => {
     if (!isProblemJsonContentType(response.headers.get('Content-Type'))) return undefined;
     try {
-        if (!response.body) {
-            const text = await response.text();
-            if (new TextEncoder().encode(text).byteLength > MAX_PROBLEM_RESPONSE_BYTES) return;
-            return problemCodeFrom(text, safeProblemCode);
-        }
-        const reader = response.body.getReader();
-        const chunks: Uint8Array[] = [];
-        let byteLength = 0;
-        try {
-            while (true) {
-                const chunk = await reader.read();
-                if (chunk.done) break;
-                byteLength += chunk.value.byteLength;
-                if (byteLength > MAX_PROBLEM_RESPONSE_BYTES) {
-                    await reader.cancel();
-                    return undefined;
-                }
-                chunks.push(chunk.value);
-            }
-        } finally {
-            reader.releaseLock();
-        }
-        const bytes = new Uint8Array(byteLength);
-        let offset = 0;
-        for (const chunk of chunks) {
-            bytes.set(chunk, offset);
-            offset += chunk.byteLength;
-        }
-        return problemCodeFrom(new TextDecoder().decode(bytes), safeProblemCode);
+        // A body over the ceiling, or one that is not UTF-8, carries no code this client can act on; the catch
+        // below turns either into "no code" rather than into a failure of its own. An abort still propagates.
+        const text = await readBoundedText(response, MAX_PROBLEM_RESPONSE_BYTES, {
+            tooLarge: () => new ExportApiError('capability_limit_exceeded', response.status),
+            malformed: () => new ExportApiError('malformed_response', response.status),
+        });
+        return problemCodeFrom(text, safeProblemCode);
     } catch (error) {
         if (isAbortError(error)) throw new ExportApiError('canceled', response.status);
         return undefined;

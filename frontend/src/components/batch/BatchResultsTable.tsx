@@ -3,9 +3,11 @@
 
 import { useTranslation } from 'react-i18next';
 import { formatNumber } from '../../i18n';
+import { SortableColumnHeader } from '../Table';
 import { FAMILY_LABEL_KEYS, type IssueFamily } from '../single-project/issue-family';
 import type { OverviewMetric } from '../../lib/overview-metrics';
 import {
+    batchProjectName,
     STATUS_LABEL_KEYS,
     type BatchFilters,
     type BatchRow,
@@ -13,13 +15,6 @@ import {
     type BatchSortColumn,
 } from './batch-summary';
 
-/**
- * One row per analysis: the project, where its analysis got to, and what it reported.
- *
- * A class set was a list of cards, one under another, each saying only how many findings there were in total. Thirty
- * of them is a scroll with nothing to compare down: no way to see which project reported the most, and no way to see
- * what the class has in common. A table is the shape this data has always had.
- */
 export function BatchResultsTable({
     rows,
     families,
@@ -33,11 +28,10 @@ export function BatchResultsTable({
     onFilter,
     onSort,
     onReset,
+    onClearProjectSet,
 }: {
     rows: BatchRow[];
-    /** The finding families this set has anything to say about. */
     families: readonly IssueFamily[];
-    /** The measurements at least one analysis in this set reported. */
     measurements: readonly OverviewMetric[];
     statuses: readonly string[];
     finders: readonly { finderId: string; finderName: string }[];
@@ -48,6 +42,7 @@ export function BatchResultsTable({
     onFilter: (changes: Partial<BatchFilters>) => void;
     onSort: (column: BatchSortColumn) => void;
     onReset: () => void;
+    onClearProjectSet: () => void;
 }) {
     const { t } = useTranslation();
 
@@ -56,23 +51,16 @@ export function BatchResultsTable({
         return key ? t(key) : status;
     };
 
-    // Filtering by the only status there is narrows nothing.
     const showStatusFilter = statuses.length > 1;
 
     const columnHeader = (column: BatchSortColumn, label: string, numeric: boolean) => (
-        <th
+        <SortableColumnHeader
             key={column}
-            scope="col"
+            label={label}
             className={numeric ? 'batch-table-numeric' : undefined}
-            aria-sort={sort?.column === column ? sort.direction : 'none'}
-        >
-            <button type="button" className="batch-sort" onClick={() => onSort(column)}>
-                {label}
-                <span aria-hidden="true" className="batch-sort-mark">
-                    {sort?.column === column ? (sort.direction === 'ascending' ? '▲' : '▼') : '↕'}
-                </span>
-            </button>
-        </th>
+            direction={sort?.column === column ? sort.direction : undefined}
+            onSort={() => onSort(column)}
+        />
     );
 
     return (
@@ -124,11 +112,25 @@ export function BatchResultsTable({
                         ))}
                     </select>
                 </label>
+                {filters.projectSet && (
+                    <p className="batch-active-filter-chip">
+                        <span className="batch-active-filter-chip-text" role="status">
+                            {t('batchActiveProjectFilter', { label: filters.projectSet.label })}
+                        </span>
+                        <button
+                            type="button"
+                            className="batch-table-action"
+                            onClick={onClearProjectSet}
+                        >
+                            <span className="visually-hidden">{filters.projectSet.label}</span>{' '}
+                            {t('batchShowAllProjects')}
+                        </button>
+                    </p>
+                )}
                 <button type="button" onClick={onReset}>
                     {t('issueFilterReset')}
                 </button>
             </div>
-            {/* Its own scroll region, so a narrow window scrolls the table rather than the page. */}
             <div className="batch-table-scroll">
                 <table className="batch-table">
                     <caption className="visually-hidden">{t('batchResultsTitle')}</caption>
@@ -139,14 +141,9 @@ export function BatchResultsTable({
                                 columnHeader(family, t(FAMILY_LABEL_KEYS[family]), true),
                             )}
                             {columnHeader('total', t('batchTotalFindings'), true)}
-                            {/* What the projects are, beside what was found in them. A row of finding counts
-                                says nothing about whether the project it came from is ten blocks or a
-                                thousand. */}
                             {measurements.map((metric) =>
                                 columnHeader(
                                     metric,
-                                    // Short where a column heading has to fit; the full name is in the file a
-                                    // teacher downloads, which is read away from this table.
                                     t(metric === 'metricCtScore' ? 'metricCtScoreShort' : metric),
                                     true,
                                 ),
@@ -159,11 +156,6 @@ export function BatchResultsTable({
                                 key={row.id}
                                 className={selectedId === row.id ? 'batch-row-selected' : undefined}
                             >
-                                {/* The project's own name is what opens it. A column of its own, headed with
-                                    nothing and holding "View project result" on every row, was the widest thing
-                                    in the table after the names themselves, and it was what pushed the table
-                                    past the edge of its scroll region. What the press does is still said, for
-                                    anyone who is hearing the row rather than looking at it. */}
                                 <th scope="row" className="batch-table-project">
                                     {row.completed ? (
                                         <button
@@ -172,7 +164,7 @@ export function BatchResultsTable({
                                             aria-pressed={selectedId === row.id}
                                             onClick={() => onSelect(row.id)}
                                         >
-                                            {row.name ?? `${t('batchProject')} ${row.index + 1}`}
+                                            {batchProjectName(row, t)}
                                             <span className="visually-hidden">
                                                 {' '}
                                                 {selectedId === row.id
@@ -181,14 +173,8 @@ export function BatchResultsTable({
                                             </span>
                                         </button>
                                     ) : (
-                                        (row.name ?? `${t('batchProject')} ${row.index + 1}`)
+                                        batchProjectName(row, t)
                                     )}
-                                    {/* Where the analysis got to, for the rows where that is not "finished". A
-                                        column of its own said "Analysis complete" down almost every row and
-                                        carried the failure reasons as well, which is a sentence rather than a
-                                        figure: it took more width than every count in the table together and
-                                        left the names three lines deep. The reasons are gathered under the
-                                        table, where a sentence has the width of the card to be read in. */}
                                     {!row.completed && (
                                         <span className={`batch-status batch-status-${row.status}`}>
                                             {statusLabel(row.status)}
@@ -201,8 +187,6 @@ export function BatchResultsTable({
                                         className="batch-table-numeric"
                                         data-label={t(FAMILY_LABEL_KEYS[family])}
                                     >
-                                        {/* An unfinished analysis has no findings yet, and a failed one never
-                                            will. Nought would say it reported none. */}
                                         {row.completed ? formatNumber(row.counts[family]) : '—'}
                                     </td>
                                 ))}
@@ -220,8 +204,6 @@ export function BatchResultsTable({
                                             className="batch-table-numeric"
                                             data-label={t(metric)}
                                         >
-                                            {/* A measurement this report did not carry is absent, not nought:
-                                                nought blocks is a claim about the project. */}
                                             {value === undefined ? '—' : formatNumber(value)}
                                         </td>
                                     );

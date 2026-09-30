@@ -1,16 +1,9 @@
 // SPDX-License-Identifier: EUPL-1.2
 // SPDX-FileCopyrightText: 2025 LitterBox-Web contributors
 
-/**
- * The canonical key set, and the English text for every one of them. A key exists because it is written here; the
- * other packs may only say the same things differently.
- */
 export const translationKeys = {
     appName: 'LitterBox',
-    // "Home" said where the page sits in the site; a child needs to be told what it does.
     navHome: 'Check my project',
-    // Named after the person, unlike the items beside it. The page holds three unrelated jobs now — the class set,
-    // the question set and the modified project — and "Class set" had stopped covering any two of them.
     navTeacher: 'For teachers',
     navTools: 'Advanced analysis',
     navQuestions: 'Ask me',
@@ -19,8 +12,6 @@ export const translationKeys = {
     toolsModifiedProjectTitle: 'Create a modified project',
     toolsCapabilitiesLoading: 'Checking whether advanced tools are available…',
     toolsCapabilitiesError: 'Advanced tool availability could not be checked.',
-    // The report LitterBox itself writes, and has written all along: every finding placed in the code it came
-    // from, in one page. Nothing linked it, so nobody could reach it.
     reportDownloadTitle: 'The full report',
     reportDownloadLead:
         "LitterBox's own report for this project: every finding shown in the code it came from, as one page to keep, print or send on.",
@@ -48,25 +39,27 @@ export const translationKeys = {
     advancedComparisonTitle: 'Compare this result',
     advancedComparisonLead: 'Compare this completed result with another project or result.',
     advancedComparisonAction: 'Compare results',
-    // Injecting a fault is not a reading of a project, it makes another one, so it is named for what comes out of
-    // it rather than for the machinery that produces it.
-    modificationTitle: 'Make a modified project',
-    modificationLead:
-        'Put a known bug into a project and download the result, so a class can practise finding it.',
-    modificationAction: 'Prepare a modified project',
-    modificationLoading: 'Loading the analysed project…',
-    modificationRecoveryBody:
-        'Choose a completed project result to modify. This result can no longer be opened here.',
-    modificationEntryTitle: 'Choose a project',
-    modificationEntryLead:
-        'Upload a project or paste its Scratch link. It is analysed first, then the faults that can be put into it are offered.',
-    modificationUnavailableTitle: 'This project cannot be modified',
-    modificationUnavailableBody:
-        'A modified project can only be made from a completed analysis of an .sb3 or .mblock file.',
-    modificationBackToTeacher: 'Back to the teacher pages',
-    teacherModificationChoiceTitle: 'Create buggy versions of a project',
-    teacherModificationChoiceDescription:
-        'Put a known bug into one project and download the result, for a class to find it in.',
+    taskAnalysisTitle: 'Analyse a task',
+    taskAnalysisLead:
+        'Upload your model solution or starter project to see what LitterBox would find in it, before a class does.',
+    taskAnalysisAction: 'Analyse this task',
+    taskAnalysisLoading: 'Loading the analysed task…',
+    taskAnalysisRecoveryBody:
+        'Choose a completed project result to analyse as a task. This result can no longer be opened here.',
+    taskAnalysisEntryTitle: 'Choose a project',
+    taskAnalysisEntryLead:
+        'Upload a project or paste its Scratch link. It is analysed first, then this page opens for it.',
+    reuseTaskAnalysisNamed: 'Look at {{project}} as a task',
+    taskAnalysisSectionMenu: 'Task analysis sections',
+    teacherTaskAnalysisChoiceTitle: 'Analyse a task',
+    teacherTaskAnalysisChoiceDescription:
+        'Upload your own model solution or starter project to see what LitterBox finds in it, and which good practices it rewards, before you set it for a class.',
+    teacherRecentTaskProjectsHeading: 'Projects analysed on this device',
+    taskAnalysisNotReported: 'Not reported',
+    taskProjectCodeNav: 'Project code and structure',
+    taskProjectCodeTitle: 'The code of this task',
+    taskProjectCodeLead:
+        'The scripts this task is made of, sprite by sprite — what every finding above was found in.',
     navigationLabel: 'Main navigation',
     navMenuToggle: 'Menu',
     homeTitle: 'LitterBox',
@@ -86,8 +79,6 @@ export const translationKeys = {
     homeHint:
         'Upload a project or use its canonical Scratch URL to find bugs, smells, and good programming practices.',
     homeVisualLabel: 'A small Scratch program',
-    // The same script the legacy site opened with, written in each language's own block vocabulary so the renderer
-    // draws real blocks rather than the red "obsolete" shape it falls back to for words it cannot match.
     homeVisualSource:
         "when I receive [check program v]\ngo to [Litterbox v]\nask [What's wrong with my project?] and wait\nswitch backdrop to [error analysis v]",
     navCatalogue: 'Catalogue',
@@ -155,15 +146,6 @@ export const translationKeys = {
     statisticsOccurrences: 'Occurrences',
     statisticsPrevalenceAccessible:
         '{{name}}: {{percentage}} of projects, {{projects}} projects with this pattern, {{occurrences}} occurrences.',
-    statisticsBlockCategoryMotion: 'Motion',
-    statisticsBlockCategoryLooks: 'Looks',
-    statisticsBlockCategorySound: 'Sound',
-    statisticsBlockCategoryEvents: 'Events',
-    statisticsBlockCategoryControl: 'Control',
-    statisticsBlockCategorySensing: 'Sensing',
-    statisticsBlockCategoryOperators: 'Operators',
-    statisticsBlockCategoryVariables: 'Variables',
-    statisticsBlockCategoryMyBlocks: 'My Blocks',
     statisticsBlockCategoryOther: 'Other block family',
     statisticsCompositionHeading: 'Block-family composition',
     statisticsCompositionLead:
@@ -178,13 +160,17 @@ export const translationKeys = {
     submitLead: 'Upload a complete project archive or enter a numeric Scratch project URL.',
     teacherTitle: 'For teachers',
     teacherLead:
-        'Everything this site offers a teacher: check a whole class at once, generate questions about a project, and make a modified copy for a class to find the bug in.',
+        'This page offers three things: analyse a task to see what LitterBox finds in it, generate the question set to ask a class about it, or check a whole class set of submissions at once.',
     teacherSubmissionChoices: 'Check a class set',
+    teacherClassSetChoiceDescription:
+        "Upload an archive of your class's projects, or point to the Scratch studio they were submitted to, and every project in it is analysed at once.",
+    teacherRecentClassSetsHeading: 'Class sets analysed on this device',
     primaryAnalysisChoices: 'Analyse one project',
     uploadLabel: 'Your project file',
     uploadHint: 'An .sb3 or .mblock file from your computer.',
-    teacherUploadLabel: 'Teacher batch archive (.zip)',
-    teacherUploadHint: 'The archive must contain valid .sb3 or .mblock project archives.',
+    teacherUploadLabel: 'Class set file (.zip or .txt)',
+    teacherUploadHint:
+        'Use a ZIP containing .sb3 or .mblock projects, or a text file with one public Scratch project URL per line (100 projects maximum).',
     teacherPreflightReady_one: '{{count}} project is ready to analyse.',
     teacherPreflightReady_other: '{{count}} projects are ready to analyse.',
     teacherPreflightMixed:
@@ -195,8 +181,6 @@ export const translationKeys = {
     urlError: 'The link has to end with your project number.',
     studioLabel: 'Scratch studio ID or URL',
     studioHint: 'Enter a numeric studio ID or a canonical Scratch studio URL.',
-    // What the studio itself says, read before anything is sent. Naming the studio catches the mistake a count
-    // cannot: the right number of projects in the wrong studio.
     studioPreflightChecking: 'Looking up the studio…',
     studioPreflightReady_one: '{{formatted}} project is ready to analyse.',
     studioPreflightReady_other: '{{formatted}} projects are ready to analyse.',
@@ -219,6 +203,11 @@ export const translationKeys = {
     preflighttoo_large: 'The archive is too large (50 MB maximum).',
     preflightunsupported_type: 'Use a .sb3 or .mblock archive.',
     preflightinvalid_archive: 'The selected file is not a valid ZIP archive.',
+    preflightunsupported_batch_type: 'Use a .zip archive or .txt Scratch URL list.',
+    preflighturl_list_too_large: 'The Scratch URL list is too large (64 KB maximum).',
+    preflightinvalid_url_list: 'Each non-empty line must contain one public Scratch project URL.',
+    preflightempty_url_list: 'The Scratch URL list contains no project URLs.',
+    preflighttoo_many_projects: 'A class set can contain at most 100 projects.',
     preflightmissing_project_json:
         'Each project archive must contain exactly one project.json file.',
     preflightunsafe_entry: 'The archive contains an unsafe path or nested archive.',
@@ -226,8 +215,6 @@ export const translationKeys = {
         'Put all the projects in one place: either loose in the archive, or all in the same folder.',
     preflighttoo_many_entries: 'The archive contains too many files or projects.',
     preflighttoo_large_uncompressed: 'The archive expands beyond the allowed size.',
-    // Every button that starts an analysis says what that analysis is called in the menu, so pressing it and
-    // arriving somewhere are described by the same words.
     submit: 'Check my project',
     submitting: 'Submitting…',
     submitError: 'Submission failed',
@@ -239,12 +226,7 @@ export const translationKeys = {
     submissionCapabilitiesError:
         'Submission workflows are temporarily unavailable. Try checking service readiness again.',
     submissionFeatureUnavailable: 'No compatible submission workflow is enabled by the service.',
-    // The same words as the menu entry that leads here, and as the button that starts it. "Questions" was a
-    // fourth name for one thing, and named the output rather than what a child came to do.
     questionsTitle: 'Ask me',
-    // Said how the page works, not what it is for. A child who can already run their project has no reason to
-    // want a set of questions generated; they do have a reason to find out whether they could explain the thing
-    // they built. Getting it working and understanding why it works are not the same, and this is the gap.
     questionsLead:
         'Your project works — but do you know why? Answer a few questions about your own blocks and see how much of it you can already explain.',
     questionsInputChoices: 'Choose a project source',
@@ -253,14 +235,10 @@ export const translationKeys = {
     questionsUrlHint: 'The link to your project on Scratch, or just its number.',
     questionsUrlError: 'Use a link ending in the project number, or the number on its own.',
     questionsSubmit: 'Ask me about this project',
-    // The teacher's form makes the whole set at once, against the block model, rather than putting a reader through
-    // a handful of them. Sharing the learner's label made it sound like the teacher was about to be quizzed.
-    teacherQuestionsSubmit: 'Generate all questions for this project',
+    teacherQuestionsSubmit: 'Build a quiz from this project',
     questionsSubmitError: 'Your project could not be sent. Try again.',
     questionsUnavailable: 'This service cannot ask you about a project.',
     questionsCapabilitiesLoading: 'Checking whether this service can ask you about a project…',
-    // The heading of every state of the result page, so a child who has been sent away and come back sees the
-    // same name they set out from.
     questionsStatusTitle: 'Ask me',
     questionsPreparingTitle: 'Making your questions',
     questionsProcessing:
@@ -268,15 +246,11 @@ export const translationKeys = {
     questionsFailed: 'The questions could not be made, so there are none to answer.',
     questionsCancelled: 'Question generation was cancelled before it completed.',
     questionsPartial: 'Question generation completed only partly.',
-    // Not "generated questions": how the questions came about is the machine's business, and a reader who is
-    // about to answer them only needs to know what they are about.
     questionsGeneratedTitle: 'Questions about this project',
     questionsGeneratedLead:
         'One question at a time. Send an answer to see how it went, then move on to the next.',
     questionsEmptyTitle: 'No questions for this project',
     questionsEmptyBody: 'No questions could be made from this project.',
-    // Questions were generated. None of them is of a kind that can be marked here, which is a different thing
-    // from generation having failed.
     questionsNoneCheckableTitle: 'No questions to answer here',
     questionsNoneCheckableBody:
         'LitterBox generated questions for this project, but none of a kind whose answers can be checked automatically. The full set is on the class-set view of this result.',
@@ -414,7 +388,8 @@ export const translationKeys = {
     statusFailed: 'Analysis failed',
     statusPartial: 'Analysis partly complete',
     statusCancelled: 'Analysis cancelled',
-    batchCountsTitle: 'Batch progress',
+    batchCountsTitle: 'Class set progress',
+    batchSummaryTitle: 'Class set summary',
     batchExpected: 'Expected',
     analysisContextTitle: 'Analysis context',
     analysisContextLead: 'What produced this result, as the analysis itself recorded it.',
@@ -434,54 +409,211 @@ export const translationKeys = {
     analysisStatusCancelled: 'Analysis cancelled',
     batchAnalysisStatus: 'Analysis status',
     batchTotalFindings: 'All findings',
+    batchConcerns: 'Bugs and smells together',
+    batchFindings_one: '{{formatted}} finding reported.',
+    batchFindings_other: '{{formatted}} findings reported.',
     batchStillProcessing: 'Still processing',
     batchNotAnalysed: 'Not analysed',
     batchWithoutFindings: 'Completed with no findings',
-    batchFrequentFindings: 'Frequently reported findings',
-    batchFinderOccurrences_one: '{{formatted}} occurrence',
-    batchFinderOccurrences_other: '{{formatted}} occurrences',
-    batchFinderAnalyses_one: 'in {{formatted}} analysis',
-    batchFinderAnalyses_other: 'in {{formatted}} analyses',
-    batchShowAllFinders: 'Show all {{formatted}}',
     batchFilters: 'Filter analyses',
     batchFilterStatus: 'Filter by analysis status',
     batchFilterAllStatuses: 'Any status',
     batchNoMatchingRows: 'No analysis matches these filters.',
-    // What went wrong, gathered above the table. A reason is a sentence, and a sentence beside every row is the
-    // widest column in the table; here it has the width of the card and is read as a short list to act on.
     batchFailuresTitle_one: '{{formatted}} analysis did not finish',
     batchFailuresTitle_other: '{{formatted}} analyses did not finish',
     batchFailuresLead:
         'These projects reported no findings because they could not be analysed. Everything else in the set was analysed as usual.',
-    // The table is already in the browser, so the file is built there too: a class's project names have no reason
-    // to make a second trip to a service that has already seen them.
-    batchCsvTitle: 'Download as a table',
     batchCsvLead:
-        'A CSV file of these results, made in this browser. Nothing is sent anywhere to produce it.',
-    batchCsvInclude: 'What to include',
-    batchCsvFamilies: 'Findings by family, and the total',
-    batchCsvMeasurements: 'Sprites, scripts, blocks and the computational thinking score',
-    batchCsvFinders: 'One column per frequently reported finding',
-    batchCsvRowsHint:
-        'One row per project, in the order the table is showing them. A cell is empty where the analysis has nothing to report yet.',
+        'Choose one table as CSV, or all three as ZIP. Files are prepared in this browser.',
     batchCsvDownload: 'Download CSV',
+    batchCsvDownloadZip: 'Download ZIP',
+    batchCsvDatasets: 'Data to download',
+    batchCsvMatrixDataset: 'Feature matrix',
+    batchCsvWideDataset: 'Project summary',
+    batchCsvFindingDataset: 'Finding profile',
+    batchCsvAllDatasets: 'All tables (ZIP)',
+    batchCsvMatrixHint:
+        'One row per completed project, with the columns selected in Metrics and feature matrix.',
+    batchCsvWideHint: 'One row per project, with analysis status and selected summary columns.',
+    batchCsvFindingHint: 'One row per finding type in each completed project.',
+    batchCsvAllHint: 'A ZIP containing the feature matrix, project summary and finding profile.',
+    batchCsvPreparing: 'Preparing the download…',
+    batchCsvError: 'The download could not be prepared. Please try again.',
+    batchFinderId: 'Finder ID',
+    batchFindingFamily: 'Finding family',
+    batchWorkspaceTitle: 'Class set analysis',
+    batchWorkspaceLead:
+        'Move from class-wide patterns to the projects worth reviewing individually. Each section uses every completed report unless it says otherwise.',
+    batchWorkspaceNavigation: 'Class set sections',
+    batchWorkspaceOverview: 'Class overview',
+    batchWorkspaceProjects: 'Review projects',
+    batchWorkspaceExport: 'Export data',
+    batchCommonFindings: 'Findings across the class',
+    batchCommonFindingsHint:
+        'Every reported finding type is ranked by affected projects, then by occurrences. The first six in each family are shown initially. Bugs and smells are concerns to inspect; perfumes are positive practices worth recognising.',
+    batchAnalyticsScope:
+        'Class set analysis uses all completed project reports. The filters below only change the report list.',
+    batchFinder: 'Finder',
+    batchFinderTypes_one: '{{formatted}} finder type',
+    batchFinderTypes_other: '{{formatted}} finder types',
+    batchOccurrences: 'Occurrences',
+    batchPrevalence: 'Affected projects',
+    batchPrevalenceValue: '{{count}} / {{total}} ({{rate}}%)',
+    batchIssueDensity: 'Finding rate (per 1,000 blocks)',
+    batchIssueDensityBase: 'Projects with a block count',
+    batchFindingAction: 'Project filter',
+    batchFindingExplain: 'What is this?',
+    batchFindingExplainShort: '?',
+    batchFindingExplainFor: 'What is this: {{finder}}?',
+    batchFindingNoCatalogue: 'No catalogue entry is available for this finder.',
+    batchFindingCatalogueLink: 'Open the full catalogue',
+    batchShowAffectedProjects: 'Show projects',
+    batchShowAllProjects: 'Clear filter',
+    batchActiveProjectFilter: 'Showing: {{label}}',
+    batchProjectSetFilterLabel: '{{primary}} · {{secondary}}',
+    batchIssueDensityHint:
+        'Density is descriptive and uses only completed projects reporting a positive block count; it is not evidence that project size caused a finding.',
+    batchConceptCoverageTitle: 'Programming concepts across the class',
+    batchConceptCoverageHint:
+        'How many completed project reports contain each concept or report none of it.',
+    batchConceptColumnName: 'Concept',
+    batchConceptColumnPresent: 'Contains it',
+    batchConceptColumnZero: 'Reported none',
+    batchConceptPresentValue: '{{present}} of {{total}}',
+    batchNotReportedByClass: 'Not reported by any analysis in this class.',
+    batchCtProfileTitle: 'Computational thinking across the class',
+    batchCtProfileHint:
+        'How completed project reports are distributed across the Dr. Scratch computational-thinking score and each dimension.',
+    batchCtOverallTitle: 'Overall score distribution (out of 21)',
+    batchCtOverallCoverage:
+        'Overall scores are available for {{measured}} of {{total}} completed reports ({{missing}} not measured).',
+    batchCtOverallDistribution:
+        'Overall scores: minimum {{min}}, lower quartile {{q1}}, median {{median}}, upper quartile {{q3}}, maximum {{max}}.',
+    batchCtLevelColumn: 'Level {{level}}',
+    batchCtUnreportedColumn: 'Not measured',
+    batchCtMedianColumn: 'Median level',
+    batchReferenceTitle: 'Compare with the task',
+    batchReferenceLead:
+        'Compare what LitterBox measured in one analysed task against what it measured across this class set.',
+    batchReferenceScopeNote:
+        'This is not a mark scheme. A project that does not contain a concept the task uses has not necessarily done anything wrong here — the task may have been open-ended.',
+    batchReferenceChooseLabel: 'Reference task',
+    batchReferenceChoosePlaceholder: 'Choose an analysed task',
+    batchReferenceEmptyBody:
+        'This comparison uses a task analysed on this device. Analyse a task first, then return here to compare it with this class set.',
+    batchReferenceEmptyLink: 'Analyse a task',
+    batchReferenceLoading: 'Loading the reference task…',
+    batchReferenceLoadError:
+        'This reference task could not be loaded. It may have expired, or the request may have failed.',
+    batchReferenceConceptGapTitle: 'Concepts the task uses that projects in the class do not',
+    batchReferenceConceptGap:
+        'The task uses {{concept}}; {{count}} of {{total}} projects contain none.',
+    batchReferenceConceptGapUnreported: '{{count}} not measured for this concept.',
+    batchReferenceConceptNeverMeasured:
+        'The task uses {{concept}}, which no analysis in this class measures.',
+    batchReferenceConceptGapNone: 'The class set reports every concept the task uses.',
+    batchReferenceConceptNone:
+        'The task and this class set report the same concepts as either present or absent.',
+    batchReferenceConceptExtraTitle: 'Concepts projects in the class use that the task does not',
+    batchReferenceConceptExtra:
+        '{{count}} of {{total}} projects use {{concept}}; the task does not.',
+    batchReferenceCtTitle: 'Computational thinking: task against class',
+    batchReferenceCtTaskColumn: 'Task level',
+    batchReferenceCtClassColumn: 'Class median level',
+    batchReferenceSizeTitle: 'Size: task against class',
+    batchReferenceSizeTaskColumn: 'Task',
+    batchReferenceSizeClassColumn: 'Class median',
+    batchReferenceSizeNone: 'No size measurement is available to compare.',
+    batchCohortEmpty: 'No completed analyses match the current filters.',
+    batchMetricCoverage: 'Metric distributions and coverage',
+    batchMetricsWorkspace: 'Metrics and feature matrix',
+    batchMetricsShown: 'Metrics shown in the summary and matrix',
+    batchMetricSelectionHint:
+        'The selected metrics are used in both views and in the feature-matrix download.',
+    batchGoToExport: 'Download these selected metrics in Export data',
+    batchMetricViews: 'Metric view',
+    batchMetricSearch: 'Find a metric',
+    batchMetricSearchPlaceholder: 'Search metric names',
+    batchMetricChoiceCount: '{{shown}} of {{total}} metrics shown.',
+    batchMetricSearchEmpty: 'No metric matches this search.',
+    batchMetricsCore: 'Core metrics',
+    batchMetricsAll: 'Select all',
+    batchMetricsNone: 'Clear',
+    batchMetricsNoneSelected: 'Choose at least one metric to draw the summary or matrix.',
+    batchMatrixFindingColumns_one: 'Include the finding column in the matrix',
+    batchMatrixFindingColumns_other: 'Include all {{formatted}} finding columns in the matrix',
+    batchMetricCoverageLabel: '{{present}} of {{total}} projects report this metric.',
+    batchMetricCoverageCompact:
+        '{{present}}/{{total}} present · {{missing}} missing · {{zero}} reported zero',
+    batchMetricDistributionLabel:
+        'Median {{median}}; middle half {{q1}} to {{q3}}; range {{min}} to {{max}}.',
+    batchMetricShowLowest: 'Show lowest {{count}}',
+    batchMetricShowHighest: 'Show highest {{count}}',
+    batchMetricShowTypical: 'Show typical {{count}}',
+    batchMetricExtremeLowLabel: 'lowest',
+    batchMetricExtremeHighLabel: 'highest',
+    batchMetricExtremeTypicalLabel: 'typical',
+    batchMetricExtremesExcluded_one:
+        '{{formatted}} project that does not report this metric is left out of both ends.',
+    batchMetricExtremesExcluded_other:
+        '{{formatted}} projects that do not report this metric are left out of both ends.',
+    batchConcernRatePerThousandBlocks: 'Bugs and smells per 1,000 blocks',
+    batchTriageTitle: 'Projects worth a closer look',
+    batchTriageLead:
+        'Up to two projects with the most bugs, two with the most code smells, and the smallest and largest projects by block count. Projects can have several reasons for review.',
+    batchTriageReasonBugs: 'Bugs to check',
+    batchTriageReasonSmells: 'Code smells',
+    batchTriageReasonSmall: 'Smallest project',
+    batchTriageReasonLarge: 'Largest project',
+    batchTriageReasonsLabel: 'Reasons for closer review',
+    batchTriageBugs_one: '{{formatted}} bug',
+    batchTriageBugs_other: '{{formatted}} bugs',
+    batchTriageSmells_one: '{{formatted}} code smell',
+    batchTriageSmells_other: '{{formatted}} code smells',
+    batchTriageBlocks_one: '{{formatted}} block',
+    batchTriageBlocks_other: '{{formatted}} blocks',
+    batchTriageBlocksMissing: 'block count unavailable',
+    batchTriageShowProjects_one: 'Show this project',
+    batchTriageShowProjects_other: 'Show these {{formatted}} projects',
+    batchTriageUnsized_one:
+        '{{formatted}} completed project has no block count; its findings are still included.',
+    batchTriageUnsized_other:
+        '{{formatted}} completed projects have no block count; their findings are still included.',
+    batchCommonFindingSingleton: 'Reported in one completed project',
+    batchInspectProject: 'Inspect report',
+    batchShowAllIssues_one: 'Show the one finding type',
+    batchShowAllIssues_other: 'Show all {{formatted}} finding types',
+    batchShowFewerIssues: 'Show fewer finding types',
+    batchFeatureMatrix: 'Full feature matrix',
+    batchFeatureMatrixHint:
+        'Showing {{shown}} of {{total}} completed projects; export includes them all. A dash means the report did not carry that metric. Zero is a reported zero.',
+    batchFeatureMatrixHintFiltered:
+        'Showing {{shown}} of {{matching}} projects matching your search, out of {{total}} completed; the export holds all {{total}}. A dash means the report did not carry that metric. Zero is a reported zero.',
+    batchMatrixSearch: 'Find a project',
+    batchMatrixSearchPlaceholder: 'Search project names',
+    batchMatrixSearchEmpty: 'No project matches this search.',
+    batchProjectsHint: 'Filter, sort, and select a project to inspect its report.',
     batchResultsTitle: 'Project results',
+    batchAllProjects: 'All project reports',
+    batchProjectCount_one: '{{formatted}} shown',
+    batchProjectCount_other: '{{formatted}} shown',
+    batchAllProjectsHint:
+        'Use the filters to narrow the class set. Choose a project name to open its full report in the project inspector.',
     batchProject: 'Project',
-    batchFindings_one: '{{formatted}} finding reported.',
-    batchFindings_other: '{{formatted}} findings reported.',
     batchProgressSummary: '{{finished}} of {{expected}} projects have finished processing.',
-    batchProgressMeter: 'Batch processing progress',
-    batchSelectionHint: 'Select an analysis to inspect its reported findings.',
+    batchProgressMeter: 'Class set processing progress',
+    batchBackToOverview: '← Back to the class set',
+    batchProjectReport: 'Project report',
+    batchChooseProjectReport: 'Switch project report',
+    batchProjectCodeTitle: 'View project code',
+    batchProjectCodeLead: 'Open the scripts for this report without leaving the class set.',
     batchSelectProject: 'View project result',
     batchSelectedProject: 'Showing this project result',
-    // "Completed" is where the analysis got to, not where the project or the learner got to.
     batchEmptyTitle: 'No completed analyses yet',
     batchEmptyBody: 'No analysis in this collection has finished processing.',
     batchAllFailedTitle: 'All analyses failed',
     batchAllFailedBody:
         'No analysis in this collection produced a result. You can submit the input again.',
-    // A class set is sent once and runs for as long as it runs; there is no way to take one project back out of
-    // it. Naming the size before it starts is the last cheap moment to notice a wrong archive.
     largeSetConfirmTitle: 'Send this class set?',
     largeSetConfirmArchive_one:
         '{{formatted}} project will be analysed, one after another. A set this size can take a long time to finish.',
@@ -491,7 +623,6 @@ export const translationKeys = {
         '{{formatted}} project is fetched from the studio and analysed. A set this size can take a long time to finish.',
     largeSetConfirmStudioCounted_other:
         '{{formatted}} projects are fetched from the studio and analysed, one after another. A set this size can take a long time to finish.',
-    // Only for a studio whose size could not be read: too large to count beforehand, or a lookup that failed.
     largeSetConfirmStudio:
         'The studio is fetched and then analysed project by project. How many projects it holds could not be established beforehand, and a large studio can take a long time to finish.',
     largeSetConfirmBack: 'Go back',
@@ -530,13 +661,7 @@ export const translationKeys = {
     metricVariables: 'Variables',
     metricVariableUses: 'Variable uses',
     metricCtScore: 'Computational thinking score',
-    // What a column heading can afford. "Computational thinking score" is four words wide in a table of one-word
-    // columns, and it pushed the button that opens a project off the edge of the scroll region.
     metricCtScoreShort: 'CT score',
-    // Where the value falls among the projects analysed here, and nothing more. "Upper third" is the statistician's
-    // word for it and a child has no way to read it; these say the same thing about quantity without saying anything
-    // about the project, and the line underneath still names what the comparison is against.
-    // "Lower" rather than "fewer", because the same three words label a score as well as a count.
     metricBandLowerThird: 'lower than most',
     metricBandMiddleThird: 'around the middle',
     metricBandUpperThird: 'higher than most',
@@ -545,6 +670,145 @@ export const translationKeys = {
     metricComparisonNote:
         'This says where each value falls among those projects. It is not a rating of the project.',
     metricAverageLineWidth: 'Average line width',
+
+    taskSizeTitle: 'Size and complexity of this task',
+    taskSizeNav: 'Size and complexity',
+    taskSizeLead:
+        'How big and how tangled this task is next to the other projects analysed by this service, for judging whether it fits the audience you have in mind.',
+    taskSizeColumnMeasurement: 'Measurement',
+    taskSizeColumnComparison: 'Compared to other projects',
+    taskSizeLongestScript: 'Longest script',
+    taskSizeMaxNesting: 'Deepest nesting',
+    taskSizeMostComplexScript: 'Most complex script',
+    taskSizeWeightedMethodCount: 'Weighted method count',
+    taskSizeCyclomaticComplexity: 'Cyclomatic complexity',
+    taskSizeMarkerWithinRange: 'The value for this task, {{value}}, falls within this range.',
+    taskSizeMarkerBelowRange:
+        'The value for this task, {{value}}, is lower than every project compared here; the marker is drawn at the low end of the plot.',
+    taskSizeMarkerAboveRange:
+        'The value for this task, {{value}}, is higher than every project compared here; the marker is drawn at the high end of the plot.',
+
+    programConceptMotion: 'Motion',
+    programConceptLooks: 'Looks',
+    programConceptSound: 'Sound',
+    programConceptEvents: 'Events',
+    programConceptEventTriggers: 'Event-triggered scripts',
+    programConceptControl: 'Control',
+    programConceptSensing: 'Sensing',
+    programConceptOperators: 'Operators',
+    programConceptVariables: 'Variables',
+    programConceptLists: 'Lists',
+    programConceptCustomBlocks: 'Custom blocks',
+    programConceptBooleanLogic: 'Boolean operators',
+    programConceptPen: 'Pen',
+    programConceptMusic: 'Music',
+    programConceptTextToSpeech: 'Text to speech',
+    programConceptTranslate: 'Translate',
+    programConceptSequences: 'Sequences',
+    programConceptLoops: 'Loops',
+    programConceptConditionals: 'Conditionals',
+    programConceptBroadcasts: 'Messages',
+    programConceptClones: 'Clones',
+    ctDimensionFlowControl: 'Flow control',
+    ctDimensionFlowControlDescription: 'How scripts order and repeat actions.',
+    ctDimensionLogic: 'Logic',
+    ctDimensionLogicDescription: 'How conditions decide which actions run.',
+    ctDimensionDataRepresentation: 'Data representation',
+    ctDimensionDataRepresentationDescription:
+        'How sprites, variables and lists represent changing information.',
+    ctDimensionAbstraction: 'Abstraction',
+    ctDimensionAbstractionDescription:
+        'How code is divided into sprites, scripts, custom blocks and clones.',
+    ctDimensionSynchronization: 'Synchronisation',
+    ctDimensionSynchronizationDescription: 'How scripts coordinate their timing and messages.',
+    ctDimensionParallelism: 'Parallelism',
+    ctDimensionParallelismDescription: 'How several scripts run at the same time.',
+    ctDimensionUserInteractivity: 'User interactivity',
+    ctDimensionUserInteractivityDescription: 'How the project responds to users and sensor input.',
+    ctLevelNotShown: 'Not shown in this project.',
+    ctLevelFlowControl1: 'Runs a sequence of blocks, one after another.',
+    ctLevelFlowControl2: 'Repeats blocks with repeat or forever.',
+    ctLevelFlowControl3: 'Repeats blocks with repeat until.',
+    ctLevelLogic1: 'Uses an if block.',
+    ctLevelLogic2: 'Uses an if/else block.',
+    ctLevelLogic3: 'Combines conditions with and, or or not.',
+    ctLevelDataRepresentation1: 'Changes a sprite property, such as size or costume.',
+    ctLevelDataRepresentation2: 'Stores values in variables.',
+    ctLevelDataRepresentation3: 'Stores values in lists.',
+    ctLevelAbstraction1: 'Splits the project across several sprites, each with several scripts.',
+    ctLevelAbstraction2: 'Defines custom blocks.',
+    ctLevelAbstraction3: 'Creates clones of a sprite with the clone block.',
+    ctLevelSynchronization1: 'Uses wait to hold a script back.',
+    ctLevelSynchronization2: 'Coordinates scripts with broadcast, when I receive or stop.',
+    ctLevelSynchronization3:
+        'Coordinates scripts with wait until, when backdrop switches to, or broadcast and wait.',
+    ctLevelParallelism1: 'Runs two scripts together from the green flag.',
+    ctLevelParallelism2: 'Runs two scripts together from the same key press or click.',
+    ctLevelParallelism3:
+        'Runs two scripts together from the same message, backdrop change or sensor event.',
+    ctLevelUserInteractivity1: 'Starts from the green flag.',
+    ctLevelUserInteractivity2: 'Responds to keys, clicks, ask and wait, or the mouse.',
+    ctLevelUserInteractivity3: 'Responds to loudness or video.',
+    ctLevelBarLabel: 'Level {{level}} of {{max}}',
+    ctProfileLevelReachedLabel: 'Reached',
+
+    ctProfileTitle: 'Computational thinking in this task',
+    ctProfileNav: 'Computational thinking',
+    ctProfileLead:
+        'This is the Dr. Scratch computational-thinking rubric, applied to this project. It describes what the project contains, not anyone who built it: a low level in a dimension means the task does not currently exercise that pattern, not that the task is a poor one.',
+    ctProfileDimensionLink: 'Examples at Dr. Scratch',
+    ctProfileOverall: 'Overall result',
+    ctProfileColumnDimension: 'Dimension',
+    ctProfileColumnLevel: 'Level reached',
+    ctProfileColumnMeaning: 'What this level means',
+    ctProfileTotal: '{{score}} of {{max}}',
+    ctProfileTotalNotReported: 'Not reported for this project.',
+    ctTotalBandNarrow:
+        'This total falls in the 0–7 band: the task currently exercises only a narrow slice of the seven dimensions.',
+    ctTotalBandModerate:
+        'This total falls in the 8–14 band: the task exercises about half of the seven dimensions, or reaches partway through several of them.',
+    ctTotalBandBroad:
+        'This total falls in the 15–21 band: the task exercises most of the seven dimensions, several of them at their highest level.',
+    ctTotalBandNote:
+        'A low band is not a verdict on the task — it can still be a perfectly good, deliberately narrow exercise that only ever needed a slice of this rubric.',
+    conceptCoverageTitle: 'Programming concepts and blocks in this task',
+    conceptCoverageNav: 'Concepts and blocks',
+    conceptCoverageLead:
+        'Zero means none were found; “Not reported” means this analysis contains no measurement for that item.',
+
+    blockCategoriesTitle: 'Block categories',
+    blockCategoriesLead:
+        "Scratch's nine block categories, coloured as in the editor and sized by their share of the blocks counted in this project.",
+    blockCategoriesTreemapLabel:
+        'Block categories, drawn as areas in proportion to the blocks counted in each, and labelled with the count and share wherever a tile has room for them.',
+    blockCategoriesTableCaption: 'Blocks counted in each category',
+    blockCategoriesColumnCategory: 'Category',
+    blockCategoriesColumnBlocks: 'Blocks',
+    blockCategoriesColumnShare: 'Share',
+    blockCategoriesShareValue: '{{percent}}%',
+    blockCategoriesFigures: '{{count}} ({{share}})',
+    blockCategoriesUnnamed: 'Not spelled out in the drawing:',
+    blockCategoriesNoneCounted:
+        'No analyser attached to this service reported a block count for any category in this task, so there is nothing to draw here.',
+    blockCategoriesShareNote:
+        'A share is of the blocks counted across the categories above, not of every block in the project: a category nobody measured is left out of the drawing and out of the total it is taken against.',
+    programmingConceptsTitle: 'Programming concepts',
+    programmingConceptsLead:
+        'Programming structures counted in this project. Boolean operators are and, or and not. Variables and custom blocks also appear below as block categories.',
+    programmingConceptsContextTitle: 'Teaching context',
+    programmingConceptsContextBody:
+        'Curricula commonly progress from sequences and events to repetition and decisions, then data, abstraction and coordination. Use the concepts above to compare this task with what a class has been taught; the concept mix alone does not determine a suitable age.',
+    programmingConceptsCreativeComputingLink: 'Creative Computing curriculum',
+    programmingConceptsGermanyLink: 'German curriculum example (Bavaria)',
+    programmingConceptsEnglandLink: 'England computing curriculum',
+    programmingConceptsFoundationTitle: 'Sequence and events',
+    programmingConceptsControlTitle: 'Repetition and decisions',
+    programmingConceptsDataTitle: 'Data and abstraction',
+    programmingConceptsCoordinationTitle: 'Coordination between scripts',
+    programmingConceptsUnmeasuredTitle: 'Not reported in this analysis ({{count}})',
+    programmingConceptsUnmeasuredHint:
+        'This analysis has no measurement for these concepts. Analyse the task again to obtain measurements available in the current version.',
+
     metricsGraphsTitle: 'Program graphs',
     metricsGraphsLead: 'Choose one graph to request and render on demand.',
     metricsGraphViewControls: 'Graph view controls',
@@ -656,8 +920,6 @@ export const translationKeys = {
     diffNewIssues: 'New findings',
     diffPersisting: 'Still there',
     diffRemoved: 'Gone',
-    // Both totals said as the sums they are, so a list of every finding underneath is what the reader expects
-    // rather than a sign that nothing was filtered.
     diffCountsBeforeExplained:
         '{{total}} findings before: {{fixed}} fixed, {{removed}} gone, {{persisting}} still there.',
     diffCountsAfterExplained:
@@ -682,8 +944,6 @@ export const translationKeys = {
     diffStructureEmpty: 'No script or actor structure changed.',
     diffIdenticalTitle: 'Identical project state',
     diffIdenticalBody: 'The compared analyses contain no issue or structural changes.',
-    // The word the Scratch editor uses for the stage. The analyser names that actor "Stage" in every locale,
-    // because that is the project file's own identifier rather than a word chosen for a reader.
     stageName: 'Stage',
     diffStage: 'Stage',
     diffChangeAdded: 'Added script',
@@ -709,9 +969,10 @@ export const translationKeys = {
     graphTdgDescription: 'type-dependence graph',
     graphPdgLabel: 'PDG',
     graphPdgDescription: 'program-dependence graph',
-    // What a submission hands back is the address of its result; there is nowhere on this site to type a code in.
     resultLinkLabel: 'Link to this result',
     resultLinkHint: 'Keep this link to come back to this result later.',
+    resultLinkBatchHint:
+        'Anyone with this link can open the whole class set: every project name and every report in it. Keep it, and pass it on only to people who should see the work of this class.',
     copyLink: 'Copy link',
     copiedLink: 'Link copied.',
     recentResultsTitle: 'Your recent results',
@@ -719,29 +980,50 @@ export const translationKeys = {
     recentResultsForget: 'Forget these',
     recentResultIssues: 'Check',
     recentResultQuestions: 'Ask me',
+    recentResultQuestionSet: 'Question set',
     recentResultBatch: 'Class set',
     recentResultBatchProjects_one: '{{formatted}} project',
     recentResultBatchProjects_other: '{{formatted}} projects',
-    // A class set opened from a link somebody sent has no name on it: the archive it was made of never reached
-    // this device. What it is is still worth offering.
     recentResultUnnamed: 'Unnamed result',
-    // Offered to a child who has just read what LitterBox found. That it need not be uploaded again is the least
-    // of it: the reason to press this is to find out whether the project they can see the findings for is one
-    // they could also explain.
     reuseQuestionsLead:
         'You have seen what LitterBox found here. Now find out how much of this project you could explain yourself — it is already uploaded, so answering can start straight away.',
     reuseQuestionsAction: 'Ask me about this project',
     reuseQuestionsNamed: 'Ask me about {{project}}',
+    reuseQuizNamed: 'Build a quiz from {{project}}',
     reuseOpenQuestions: 'Open the questions for {{project}}',
     reuseAdvancedNamed: 'Open advanced analysis for {{project}}',
-    reuseModificationNamed: 'Make a modified copy of {{project}}',
     reuseBusy: 'Setting that up…',
     reuseError: 'That project could not be used again. Upload it once more.',
     reuseGone: 'That project is no longer kept here. Upload it once more.',
-    // The second analysis of a project has its own link, so the first one needs a way back to it.
     originIssues: 'Back to the check of {{project}}',
     originQuestions: 'Back to the questions about {{project}}',
     analysedProject: 'Analysed project',
+    taskFindingsNav: 'Findings and feedback',
+    taskFindingsTitle: 'What LitterBox found in this task',
+    taskFindingsLead:
+        'The bugs, smells and good practices LitterBox reported for this project, one row per pattern it found.',
+    taskFindingsByFamilyLabel: 'Findings by family',
+    taskFindingsTopFindersTitle: 'Findings by finder',
+    taskFindingsReviewLead:
+        'Check these against your own model solution before teaching from this task.',
+    taskFindingsStrengthsTitle: 'What this task demonstrates',
+    taskFindingsStrengthsLead:
+        'LitterBox reports these as good practice already present in this task.',
+    taskFindingsColumnFinder: 'Finder',
+    taskFindingsColumnFamily: 'Family',
+    taskFindingsColumnSeverity: 'Severity',
+    taskFindingsColumnOccurrences: 'Occurrences',
+    taskFindingsColumnSprites: 'Sprites',
+    taskFindingsSortAscending: 'Sorted ascending',
+    taskFindingsSortDescending: 'Sorted descending',
+    taskFindingsFinderWhatLabel: 'What this is',
+    taskFindingsFinderDoLabel: 'What to do',
+    taskFindingsFinderNoCatalogue:
+        'LitterBox has no further explanation on record for this finder.',
+    taskFindingsFinderReportLink: 'See this finding in the full report',
+    taskFindingsFinderReportHint: 'Opens in a new tab.',
+    taskFindingsEmpty: 'LitterBox reported nothing for this project.',
+    taskFindingsViewFull: 'View the full result for this task',
     issuesTitle: 'Findings',
     issueSummaryTitle: 'This project at a glance',
     issueSummaryTitleFor: '{{project}} at a glance',
@@ -784,8 +1066,6 @@ export const translationKeys = {
     findingAffectedSprites: 'in {{sprites}}',
     findingMoreSprites_one: 'and {{formatted}} more',
     findingMoreSprites_other: 'and {{formatted}} more',
-    // What the word means, which is a fact about LitterBox's vocabulary. Not what the child meant or got right,
-    // which LitterBox never said and cannot know.
     issueFamilyBugsExplainer: 'Code patterns LitterBox reports as likely mistakes.',
     issueFamilySmellsExplainer:
         'Patterns that work, but that LitterBox reports as harder to read or to change later on.',
@@ -919,9 +1199,9 @@ export const translationKeys = {
     injectionPreviewReady: 'Mutation previews ready',
     injectionPreviewSource: 'Source project',
     injectionSpriteName: 'Sprite name',
-    injectionOriginalScript: 'Original script ID',
-    injectionMutatedScript: 'Mutated script ID',
-    injectionScriptUnnamed: 'Changed in place',
+    injectionOriginalScript: 'The script as it was',
+    injectionMutatedScript: 'The script with the fault in it',
+    injectionResultOrdinal: 'Mutation {{position}} of {{count}}',
     injectionPartialFailure: 'Some selected injectors did not produce a result.',
     injectionNoApplicable: 'No selected injector produced an applicable mutation.',
     injectionNoApplicableBody:
@@ -984,6 +1264,7 @@ export const translationKeys = {
     projectCodeLoading: 'Fetching the code…',
     projectCodeError: 'Could not fetch the code.',
     projectCodeEmpty: 'The analysis reported no sprites for this project.',
+    projectCodeUnavailable: "The code isn't available for this quiz.",
     quizBackToSummary: 'Back to summary',
     quizReviewUnanswered: 'Not answered',
     quizRecordedWithoutVerdict_one: '{{formatted}} answer was recorded without being marked.',
@@ -993,8 +1274,12 @@ export const translationKeys = {
     quizSaving: 'Saving answer…',
     quizSaved: 'Answer recorded.',
     quizError: 'Could not record the answer.',
-    quizAnswerTooLong: 'Answers can contain at most 255 characters.',
+    quizAnswerTooLong: 'Answers can contain at most {{count}} characters.',
+    quizAttemptsExhausted:
+        'This quiz has been opened as many times as it can be. Your answer is still here, but it cannot be sent. Ask your teacher.',
     quizAuthorizationError: 'Your authorization for this answer is no longer valid.',
+    quizClosed:
+        'This quiz is not open right now, so your answer could not be sent. It is still here — ask your teacher whether the quiz will open again.',
     quizCodeContext: 'The code this question is about',
     quizChooseSeveral: 'Choose {{count}} answers',
     quizCorrect: 'Correct!',
@@ -1003,20 +1288,71 @@ export const translationKeys = {
     quizYourScore: 'Your score',
     quizScoreSummary: '{{correct}} of {{total}} correct.',
     quizRecorded: 'Your answers were recorded.',
-    teacherQuestionsTitle: 'All questions',
+    assessmentQuizTitle: 'Quiz',
+    assessmentUnavailable: 'Hosted quizzes are not available on this deployment.',
+    assessmentQuizLoading: 'Getting your quiz ready…',
+    assessmentQuizQuestionsTitle: 'Answer the questions',
+    assessmentQuizQuestionsLead:
+        'One question at a time. Send your answer to see how it went, then move on to the next.',
+    assessmentQuizNotFoundBody:
+        'The link may be mistyped, or this quiz is no longer available. Check the address you were given.',
+    assessmentQuizGoneBody:
+        'This quiz has closed, or the date it was open until has passed. Ask whoever set it whether there is a new link.',
+    assessmentQuizAttemptRestarted:
+        'This quiz had to be started again, so your earlier answers were not kept. Please answer those questions again.',
+    assessmentResultsTitle: 'Quiz results',
+    assessmentResultsLoading: 'Loading results…',
+    assessmentResultsPrivacyNote:
+        'This shows totals only: how many attempts there were, and how many answers to each question were correct. It never shows names, which learner sent an answer, or the words anyone typed — a free-text answer might contain a name a child chose to type, so answer text is never sent back here.',
+    assessmentResultsInvalidBody:
+        'The link may be mistyped, or its token is no longer valid. Check the address you were given when you published the quiz.',
+    assessmentResultsTotalAttempts_one: '{{formatted}} attempt recorded.',
+    assessmentResultsTotalAttempts_other: '{{formatted}} attempts recorded.',
+    assessmentResultsAnswered: 'Answered',
+    assessmentResultsCorrect: 'Correct',
+    assessmentResultsIncorrect: 'Incorrect',
+    assessmentResultsNotMarkable: 'Not markable',
+    assessmentResultsEmpty: 'Nobody has attempted this quiz yet.',
+    assessmentResultsNoQuestions: 'This quiz has no questions in it.',
+    assessmentResultsQuestion: 'Question',
+    assessmentResultsQuizName: 'Quiz',
+    assessmentResultsRefresh: 'Check for new answers',
+    assessmentLifecycleTitle: 'This quiz',
+    assessmentLifecycleOpen: 'Open — the link still takes answers.',
+    assessmentLifecycleClosed:
+        'Closed — the link no longer takes answers. These results stay here.',
+    assessmentLifecycleExpires:
+        'Stops taking answers on {{date}}, and is removed with its answers after that.',
+    assessmentLifecycleClose: 'Close this quiz',
+    assessmentLifecycleReopen: 'Reopen this quiz',
+    assessmentLifecycleLapsed:
+        'Finished — it reached the date below, so the link no longer takes answers. These results stay here until it is removed.',
+    assessmentLifecycleExpired:
+        'Stopped taking answers on {{date}}, and is removed with its answers soon after.',
+    assessmentLifecycleDeleting: 'Deleting…',
+    assessmentLifecycleDelete: 'Delete this quiz',
+    assessmentLifecycleDeleteConfirmTitle: 'Delete this quiz and everything answered?',
+    assessmentLifecycleDeleteConfirmBody:
+        'The quiz stops working for anyone holding the link, and every answer your class gave is removed along with it. These results go too. This cannot be undone — close the quiz instead if you only want it to stop taking answers.',
+    assessmentLifecycleDeleteConfirmBack: 'Keep it',
+    assessmentLifecycleDeleted: 'This quiz and every answer to it have been deleted.',
+    assessmentLifecycleError: 'That could not be changed just now. You can try again.',
+    teacherQuestionsTitle: 'Quiz builder',
     teacherQuestionsLead:
-        'Every question this project yields, grouped by the block model, so you can see what it covers and pick what to use in class.',
+        'Every question this project yields, grouped by the block model, so you can see what it covers, pick what to use in class, and publish the set as a quiz.',
     teacherQuestionsNavLabel: 'All questions',
-    teacherQuestionsChoiceTitle: 'Generate all questions',
+    teacherQuestionsChoiceTitle: 'Quiz builder',
     teacherQuestionsChoiceDescription:
-        'Upload one project to see the full question set with its block-model coverage.',
-    teacherQuestionsCoverage: 'Block model coverage',
+        'Upload one project to see every question it yields with its block-model coverage, adapt them, add your own, and publish the set as a quiz your class can answer.',
+    teacherRecentQuizProjectsHeading: 'Projects analysed on this device',
+    teacherRecentQuestionSetsHeading: 'Question sets built on this device',
+    teacherQuestionsCoverage: 'Filter by block model',
     teacherQuestionsCount_one: '{{count}} question',
     teacherQuestionsCount_other: '{{count}} questions',
     teacherQuestionsCell: '{{dimension}} / {{scope}}',
     teacherQuestionsUncategorised: 'Without a block-model cell',
     teacherQuestionsAnswerNote:
-        'Answers are checked as you send them, the same way a learner sees them; they are not listed up front.',
+        'The teacher copy prints the correct answer for a generated question alongside any marking guidance you add here.',
     teacherQuestionsCoverageHint:
         'Pick a row, a column or a single cell to show only the questions in it. Picking it again shows everything.',
     teacherQuestionsFilterCell_one: '{{dimension}} and {{scope}}, {{count}} question',
@@ -1166,6 +1502,9 @@ export const translationKeys = {
     privacyUploadHeading: 'Your responsibility',
     privacyUploadBody:
         'Do not upload personal data. A Scratch project may carry names, photographs or recordings; remove them before you submit it.',
+    privacyAssessmentHeading: 'Hosting a quiz for your class',
+    privacyAssessmentBody:
+        'Publishing a quiz stores its title, instructions and question text, together with the two links you are given: one for learners to open the quiz, one for you to see the results. An answer a learner submits is stored only to be counted towards the results — how many were correct, incorrect, or could not be marked — and never together with anything that identifies who sent it: no name, no device, nothing that connects it to any other submission on this site. A published quiz and its answers are kept for as long as the analysis it was built from, and are removed together with it.',
     privacyControllerHeading: 'Data controller',
     privacyControllerBody:
         'The University of Passau is a public body pursuant to Art. 11 sec. 1 Bavarian Higher Education Act (BayHSchG) and is legally represented by its President, Professor Jan Schumann, Chairperson of the University Executive.',

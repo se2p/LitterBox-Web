@@ -4,7 +4,7 @@
 import { useTranslation } from 'react-i18next';
 import type { SupportedLocale } from '../../api/capabilities';
 import { formatNumber } from '../../i18n';
-import { tercile } from '../capabilities/metrics/metric-utils';
+import { BAND_LABEL_KEYS, tercile } from '../capabilities/metrics/metric-utils';
 import { useMetricReference } from '../../lib/use-metric-reference';
 import {
     metricValue,
@@ -58,11 +58,7 @@ export function BasicStatistics({
             qualifier:
                 item.band === undefined
                     ? undefined
-                    : {
-                          lower: t('metricBandLowerThird'),
-                          middle: t('metricBandMiddleThird'),
-                          upper: t('metricBandUpperThird'),
-                      }[tercile(item.value, item.band)],
+                    : t(BAND_LABEL_KEYS[tercile(item.value, item.band)]),
         }));
 
     // Every qualifier on the line was drawn from the same query, so they rest on the same number of projects; the

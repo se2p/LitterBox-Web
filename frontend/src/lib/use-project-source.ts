@@ -31,10 +31,10 @@ export interface ProjectSource {
  * before a byte of it goes anywhere.
  *
  * Shared because the same three questions come up wherever a project can be started — which of the two ways in was
- * used, whether the archive is one we can send, and what happens to a request whose form is no longer on screen —
- * and each was answered separately, in near-identical code, on the pages that ask them. What differs between those
- * pages is which endpoint is called, what makes a link acceptable, and what is said afterwards; none of that is
- * here.
+ * used, whether the archive is one we can send, and what happens to a request whose form is no longer on screen.
+ * Answered separately on each page that asks them, they would be near-identical code repeated needlessly. What
+ * differs between those pages is which endpoint is called, what makes a link acceptable, and what is said
+ * afterwards; none of that is here.
  */
 export function useProjectSource(): ProjectSource {
     const { i18n } = useTranslation();

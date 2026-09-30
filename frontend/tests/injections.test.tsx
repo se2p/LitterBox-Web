@@ -5,6 +5,7 @@ import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { InjectionControls } from '../src/components/capabilities/injection/InjectionControls';
+import { InjectionPreview } from '../src/components/capabilities/injection/InjectionPreview';
 import {
     fetchInjectionArchive,
     fetchAllInjectionPreviews,
@@ -294,8 +295,7 @@ describe('injection API wrapper', () => {
 
     it('keeps a mutation that renamed no script, and names the ceiling it was a preview too large for', async () => {
         const fetchMock = vi.spyOn(globalThis, 'fetch');
-        // Several injectors rewrite a script where it stands, so the answer carries no new name for it. Insisting
-        // on one threw away the other seventy-odd mutations that came back in the same answer.
+        // Several injectors rewrite a script where it stands, so the answer carries no new name for it.
         fetchMock.mockResolvedValueOnce(
             jsonResponse(
                 preview([
@@ -310,7 +310,6 @@ describe('injection API wrapper', () => {
             'mutated-injector-a-1',
         ]);
 
-        // Too much to show and unreadable are different complaints, and only the first tells a reader what to do.
         fetchMock.mockResolvedValueOnce(
             jsonResponse(
                 preview(
@@ -517,7 +516,6 @@ describe('injection controls', () => {
         });
         expect(anchorClick).not.toHaveBeenCalled();
 
-        // Saving a mutation is one press on the mutation, not a selection, a tick box and two more buttons.
         await user.click(screen.getByRole('button', { name: 'Download this project' }));
         await screen.findByRole('heading', { name: 'Saved to your downloads' });
         expect(fetchMock).toHaveBeenCalledTimes(3);
@@ -560,7 +558,6 @@ describe('injection controls', () => {
             .mockImplementation(() => {});
 
         renderControls();
-        // The button says what it is about to do: the jump from a hand-picked few to the whole catalogue.
         await screen.findByRole('button', { name: 'Select all 2' });
         await user.click(screen.getByRole('button', { name: 'Select all 2' }));
         await user.click(screen.getByRole('button', { name: 'Request mutation previews' }));
@@ -569,7 +566,6 @@ describe('injection controls', () => {
         await user.click(screen.getByRole('button', { name: 'Download all 3 projects' }));
         await screen.findByRole('heading', { name: 'Saved to your downloads' });
         expect(String(fetchMock.mock.calls[2]?.[0])).toContain('/injections/download-all');
-        // Whatever the previews were asked for is what the archive is asked for, so the two agree.
         expect(JSON.parse(String(fetchMock.mock.calls[2]?.[1]?.body))).toEqual({
             injectorIds: [],
             all: true,
@@ -625,7 +621,6 @@ describe('injection controls', () => {
         await screen.findByRole('button', { name: 'Select all 10' });
         await user.click(screen.getByRole('button', { name: 'Select all 10' }));
         expect(screen.getByText(/All 10 injectors are chosen/)).toBeVisible();
-        // With everything chosen, clearing the selection and choosing a subset were the same act under two names.
         expect(screen.getByRole('button', { name: 'Choose custom subset' })).toBeVisible();
         expect(screen.queryByRole('button', { name: 'Clear selection' })).not.toBeInTheDocument();
         expect(
@@ -908,7 +903,11 @@ describe('injection controls', () => {
         await screen.findByText('<script>alert(1)</script>');
         await user.click(screen.getByRole('checkbox'));
         await user.click(screen.getByRole('button', { name: 'Request mutation previews' }));
-        await screen.findByText('<script>original</script>');
+        // The injector's own hostile name doubles as the result heading now that it no longer reads by ID, and
+        // the hostile sprite name sits beside it; both have to render as inert text rather than markup.
+        const heading = await screen.findByRole('heading', { level: 4 });
+        expect(heading).toHaveTextContent('<script>alert(1)</script>');
+        expect(heading).toHaveTextContent('Sprite name: <img src=x>');
         expect(document.querySelector('script')).toBeNull();
         expect(document.querySelector('img')).toBeNull();
         expect(screen.getAllByTestId('safe-scratchblocks')).toHaveLength(2);
@@ -937,7 +936,6 @@ describe('injection controls', () => {
         expect(document.querySelector('.script-diff-after pre')).toHaveTextContent(
             'say [goodbye] :: #28a745',
         );
-        // The blocks that survived the mutation are left in their own colours.
         expect(document.querySelector('.script-diff-after pre')).not.toHaveTextContent(
             'move (10) steps :: ',
         );
@@ -1122,5 +1120,70 @@ describe('injection controls', () => {
 
         expect(screen.queryByRole('heading', { name: 'Fault injection' })).toBeNull();
         expect(revokeObjectURL).toHaveBeenCalledWith('blob:synthetic-derived');
+    });
+});
+
+describe('injection preview labelling', () => {
+    beforeEach(async () => {
+        await i18n.changeLanguage('en');
+    });
+
+    afterEach(() => {
+        cleanup();
+    });
+
+    const render_ = (
+        results: ReturnType<typeof result>[],
+        injectorNames: ReadonlyMap<string, string> = new Map([
+            ['injector-a', 'Off-by-one loop bound'],
+        ]),
+    ) =>
+        render(
+            <InjectionPreview
+                preview={preview(results)}
+                injectorNames={injectorNames}
+                locale="en"
+                downloading={undefined}
+                onDownloadResult={() => {}}
+                onDownloadAll={() => {}}
+                headingRef={{ current: null }}
+            />,
+        );
+
+    it('names a result by the catalogue name for its injector, and drops the script identifiers entirely', () => {
+        render_([result('injector-a'), result('injector-b')]);
+
+        const headings = screen.getAllByRole('heading', { level: 4 });
+        expect(headings[0]).toHaveTextContent('Off-by-one loop bound');
+        expect(headings[1]).toHaveTextContent('injector-b');
+
+        expect(screen.queryByText('Original script ID')).not.toBeInTheDocument();
+        expect(screen.queryByText('Mutated script ID')).not.toBeInTheDocument();
+        expect(screen.queryByText(/original-injector-a-0/)).not.toBeInTheDocument();
+        expect(screen.queryByText(/mutated-injector-a-0/)).not.toBeInTheDocument();
+        // The finder id is left in place: it names a stable bug pattern, not an internal record.
+        expect(screen.getAllByText('Finder ID')).toHaveLength(2);
+    });
+
+    it('labels the diff panels for what they are, not by script identifier', () => {
+        render_([result('injector-a')]);
+
+        const panels = screen.getAllByTestId('safe-scratchblocks');
+        expect(panels[0]).toHaveTextContent('The script as it was');
+        expect(panels[1]).toHaveTextContent('The script with the fault in it');
+    });
+
+    it('still tells two results by the same injector on the same sprite apart once neither shows a script id', () => {
+        render_([result('injector-a', 0), result('injector-a', 1)]);
+
+        const headings = screen.getAllByRole('heading', { level: 4 });
+        expect(headings[0]).toHaveTextContent('Mutation 1 of 2');
+        expect(headings[1]).toHaveTextContent('Mutation 2 of 2');
+    });
+
+    it('adds no ordinal when a sprite has only one result from an injector', () => {
+        render_([result('injector-a', 0)]);
+
+        expect(screen.getByRole('heading', { level: 4 })).not.toHaveTextContent('Mutation');
     });
 });

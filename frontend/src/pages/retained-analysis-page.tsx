@@ -66,7 +66,7 @@ export function useRetainedAnalysis(selection: RetainedAnalysisSelection | undef
         },
         [selection],
         { enabled: selection !== undefined },
-    ).state;
+    );
 }
 
 export type RetainedAnalysisGate =
@@ -74,7 +74,7 @@ export type RetainedAnalysisGate =
 
 interface RetainedAnalysisGateOptions extends Omit<RetainedAnalysisEntryProps, 'recovering'> {
     selection: RetainedAnalysisSelection | undefined;
-    state: ReturnType<typeof useRetainedAnalysis>;
+    state: ReturnType<typeof useRetainedAnalysis>['state'];
     capabilityState: CapabilityState;
     onCapabilityRetry: () => void;
     t: TFunction;

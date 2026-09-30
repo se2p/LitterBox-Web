@@ -18,6 +18,7 @@ import {
     isContentEncoded,
     isJsonContentType,
     isObject,
+    MAX_PROBLEM_RESPONSE_BYTES,
     nonnegativeSafeInteger as isNonnegativeSafeInteger,
     positiveSafeInteger as isPositiveSafeInteger,
     isProblemJsonContentType,
@@ -33,7 +34,6 @@ export const MAX_INJECTOR_COUNT = 200;
 export const MAX_INJECTION_RESULT_COUNT = 200;
 export const MAX_INJECTION_RESPONSE_BYTES = 8 * 1024 * 1024;
 
-const MAX_PROBLEM_RESPONSE_BYTES = 16 * 1024;
 const MAX_FINDER_ID_LENGTH = 128;
 const MAX_INJECTOR_NAME_LENGTH = 512;
 const MAX_INJECTOR_DESCRIPTION_LENGTH = 4096;

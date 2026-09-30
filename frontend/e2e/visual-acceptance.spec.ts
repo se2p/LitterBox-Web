@@ -295,10 +295,6 @@ async function mockSyntheticApis(page: Page, options: SyntheticOptions) {
             body: JSON.stringify(catalogueEntries(options.locale)),
         }),
     );
-    // What is usual across the projects analysed here. Without it the measurements render as bare numbers, so a
-    // fixture that leaves it out never draws the qualifier beside them — which is the part long enough to decide
-    // whether the line still fits a narrow window. The service answers this; a page test that does not is only
-    // checking the half of the line that was never in question.
     await page.route('**/api/v1/metrics/reference', async (route) =>
         route.fulfill({
             status: 200,
@@ -492,7 +488,6 @@ test('focused header and keyboard navigation', async ({ page }) => {
         .getByRole('navigation', { name: 'Main navigation' })
         .getByRole('link', { name: 'Catalogue' });
     await expectVisibleFocus(catalogueLink);
-    // One banner, and the focused link belongs to the navigation inside it rather than to a second header.
     await expect(page.locator('.site-header')).toHaveCount(1);
     await expect(page.getByRole('banner')).toHaveCount(1);
     await expect(page.locator('.site-header').getByRole('link', { name: 'Catalogue' })).toHaveCount(
@@ -532,7 +527,6 @@ test('focused paired single-project choices', async ({ page }) => {
     const choices = page.locator('.analysis-choice-group-primary');
     await expect(choices.getByLabel('Your project file')).toBeVisible();
     await expect(choices.getByLabel('Project link')).toBeVisible();
-    // The two ways in are offered side by side, as one choice rather than one form after another.
     const columns = await choices
         .locator('.analysis-choice-grid')
         .evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(' ').length);
@@ -548,7 +542,6 @@ test('focused issue-family grouping', async ({ page }) => {
     await expect(groups.getByRole('heading', { name: 'Bugs' })).toBeVisible();
     await expect(groups.getByRole('heading', { name: 'Smells' })).toBeVisible();
     await expect(groups.getByRole('heading', { name: 'Perfumes' })).toBeVisible();
-    // Bugs before smells before perfumes: the worst news first, whatever order the service sent.
     expect(
         await groups
             .locator('.issue-family-heading h3')
@@ -557,9 +550,6 @@ test('focused issue-family grouping', async ({ page }) => {
     expect(unapprovedRequests).toEqual([]);
 });
 
-// Everywhere else the reference endpoint is left unmocked on purpose, because that is what a deployment with no
-// history behind it answers and the pages have to read properly without a word of comparison. This is the other
-// case: the service knows what a project usually comes to, and says so on the numbers.
 test('focused project measurements against the reference distribution', async ({ page }) => {
     const unapprovedRequests = await preparePage(page, 'desktop', { locale: 'en' });
     await page.route('**/api/v1/metrics/reference', async (route) =>
@@ -583,7 +573,6 @@ test('focused project measurements against the reference distribution', async ({
     await expect(
         measurements.getByText(/Compared with 512 projects analysed here before\./),
     ).toBeVisible();
-    // The comparison says where the value sits, and says in the same breath that this is not a mark.
     await expect(measurements.getByText(/It is not a rating of the project\./)).toBeVisible();
     expect(unapprovedRequests).toEqual([]);
 });
@@ -626,7 +615,6 @@ test('focused footer and University identity', async ({ page }) => {
     await page.goto('./contact');
     const footer = page.locator('.site-footer');
     await expect(footer.getByRole('img', { name: 'University of Passau' })).toBeVisible();
-    // The identity is the University's own asset, not our own wording standing in for it.
     await expect(footer.getByRole('img', { name: 'University of Passau' })).toHaveAttribute(
         'src',
         /uniPassauLogoSmall\.png$/,
@@ -697,8 +685,7 @@ for (const [viewportName, viewport] of Object.entries(viewports) as [
         );
         await page.goto('./submissions/synthetic-result');
         await page.getByRole('link', { name: 'Open advanced analysis' }).click();
-        // The graphs are a fold of the advanced workspace; they are opened before they can be rendered.
-        await page.locator('.advanced-section-title', { hasText: 'Program graphs' }).click();
+        await page.locator('.fold-section-title', { hasText: 'Program graphs' }).click();
         await page.getByRole('button', { name: 'Render selected graph' }).click();
         await expect(page.locator('.metrics-graph-viewport > svg')).toBeVisible();
         if (viewportName === 'mobile') {
@@ -741,9 +728,8 @@ for (const [viewportName, viewport] of Object.entries(viewports) as [
             });
             await page.goto('./submissions/synthetic-partial');
             await expectLocale(page, locale);
-            await expect(
-                page.getByRole('heading', { name: headings.result[locale] }),
-            ).toBeVisible();
+            // A class set opens on its overview; a project's own report waits until one is inspected.
+            await page.locator('#batch-all-projects > summary').click();
             await expect(page.locator('.batch-result-select').first()).toBeVisible();
             await waitForScratchblocks(page);
             if (viewportName === 'mobile') {
@@ -761,10 +747,13 @@ for (const [viewportName, viewport] of Object.entries(viewports) as [
             });
             await page.goto('./submissions/synthetic-batch-completed');
             await expectLocale(page, locale);
+            // A class set opens on its overview; a project's own report waits until one is inspected.
+            await page.locator('#batch-all-projects > summary').click();
             await expect(
-                page.getByRole('heading', { name: headings.result[locale] }),
+                page.locator('.batch-result-select', {
+                    hasText: `synthetic-${locale}-second-project.sb3`,
+                }),
             ).toBeVisible();
-            await expect(page.getByText(`synthetic-${locale}-second-project.sb3`)).toBeVisible();
             await waitForScratchblocks(page);
             if (viewportName === 'mobile') {
                 await expectNarrowReflow(page, viewport.height);

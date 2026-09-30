@@ -5,39 +5,36 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatNumber } from '../../i18n';
 import { QuizCard, type Verdict } from '../single-project/QuizCard';
-import { ProjectCode } from './ProjectCode';
+import { ProjectCode, type LoadProjectCode } from './ProjectCode';
+import type { SubmitQuizAnswer } from './quiz-answer';
 import type { QuizQuestion } from './quiz-question';
 
-/**
- * The reader's own way through a generated question set: one question, then what the service said about it, then the
- * next one. One at a time means the reply to the first question arrives before the second is read, which is the only
- * arrangement in which a wrong answer can teach anything.
- *
- * Every card stays mounted and the ones that are not current are `hidden`, which takes them out of the accessibility
- * tree and out of the tab order. That is what makes going back show the answer that was given rather than an empty
- * question, without this component having to own each card's draft.
- */
 export function LearnerQuiz({
     questions,
-    analysisId,
-    token,
     locale,
-    showProjectCode = false,
+    submitAnswer,
+    loadProjectCode,
+    initialAnswers,
+    heading,
+    lead,
+    maxAnswerLength,
 }: {
     questions: QuizQuestion[];
-    analysisId: number;
-    token: string;
     locale: string;
-    /** Whether the deployment can hand back the project's scripts for the reader to look at while answering. */
-    showProjectCode?: boolean;
+    submitAnswer: SubmitQuizAnswer;
+    loadProjectCode?: LoadProjectCode;
+    initialAnswers?: Record<string, Verdict | undefined>;
+    maxAnswerLength?: number;
+    heading?: string;
+    lead?: string;
 }) {
     const { t } = useTranslation();
     const [current, setCurrent] = useState(0);
     const [summary, setSummary] = useState(false);
-    /** Whether the summary has been reached at all, which is what makes going straight back to it meaningful. */
     const [reachedSummary, setReachedSummary] = useState(false);
-    /** What came back for each question. A key with `undefined` was recorded without a verdict. */
-    const [settled, setSettled] = useState<Record<string, Verdict | undefined>>({});
+    const [settled, setSettled] = useState<Record<string, Verdict | undefined>>(
+        () => initialAnswers ?? {},
+    );
 
     const question = questions[current];
     const isSettled = question !== undefined && question.questionId in settled;
@@ -46,8 +43,6 @@ export function LearnerQuiz({
     const show = (index: number) => {
         setSummary(false);
         setCurrent(index);
-        // The heading, not the card: a reader who has just moved needs to hear where they are before they hear the
-        // question again. Deferred because the card it belongs to is only unhidden on this render.
         requestAnimationFrame(() =>
             document.getElementById(`quiz-${questions[index]?.questionId}`)?.focus(),
         );
@@ -58,7 +53,6 @@ export function LearnerQuiz({
         setSummary(true);
     };
 
-    /** What the review list says about a question, which is exactly what the service said about it and no more. */
     const outcome = (
         one: QuizQuestion,
     ): { key: 'correct' | 'incorrect' | 'recorded' | 'unanswered'; label: string } => {
@@ -84,18 +78,23 @@ export function LearnerQuiz({
             className="questions-results learner-quiz"
             aria-labelledby="questions-results-heading"
         >
-            <h2 id="questions-results-heading">{t('questionsGeneratedTitle')}</h2>
-            <p className="hint">{t('questionsGeneratedLead')}</p>
+            <h2 id="questions-results-heading">{heading ?? t('questionsGeneratedTitle')}</h2>
+            <p className="hint">{lead ?? t('questionsGeneratedLead')}</p>
 
             {questions.map((one, index) => (
                 <div key={one.questionId} hidden={summary || index !== current}>
                     <QuizCard
-                        analysisId={analysisId}
-                        token={token}
                         question={one}
                         questionNumber={index + 1}
                         questionCount={questions.length}
                         locale={locale}
+                        submitAnswer={submitAnswer}
+                        maxAnswerLength={maxAnswerLength}
+                        resumedAnswer={
+                            initialAnswers && one.questionId in initialAnswers
+                                ? { verdict: initialAnswers[one.questionId] }
+                                : undefined
+                        }
                         onSettled={(questionId, verdict) =>
                             setSettled((known) => ({ ...known, [questionId]: verdict }))
                         }
@@ -113,15 +112,11 @@ export function LearnerQuiz({
                         {t('quizPreviousQuestion')}
                     </button>
                     <div className="learner-quiz-forward">
-                        {/* Reading a question again is one press from the summary, not as many presses as there
-                            are questions left. Only once there is a summary to go back to. */}
                         {reachedSummary && (
                             <button type="button" onClick={openSummary}>
                                 {t('quizBackToSummary')}
                             </button>
                         )}
-                        {/* Only once this question has been answered: the point of the arrangement is that the
-                            reply arrives before the next question does. */}
                         <button
                             type="button"
                             className="primary-action"
@@ -134,12 +129,9 @@ export function LearnerQuiz({
                 </div>
             )}
 
-            {/* Under the question and its navigation, where a reader who cannot answer from the question alone
-                will look next, and open on whichever question they are on. Hidden rather than unmounted on the
-                summary, so a trip through it does not close the code or fetch it again. */}
-            {showProjectCode && (
+            {loadProjectCode && (
                 <div hidden={summary}>
-                    <ProjectCode token={token} analysisId={analysisId} locale={locale} />
+                    <ProjectCode loadCode={loadProjectCode} locale={locale} />
                 </div>
             )}
 
@@ -151,8 +143,6 @@ export function LearnerQuiz({
                             <p className="questions-score-value">
                                 {formatNumber(correct.length)}/{formatNumber(verdicts.length)}
                             </p>
-                            {/* Out of the answers that came back with a verdict, not out of everything the
-                                analysis generated: the rest were never marked. */}
                             <p className="questions-score-detail">
                                 {t('quizScoreSummary', {
                                     correct: formatNumber(correct.length),
@@ -171,8 +161,6 @@ export function LearnerQuiz({
                             })}
                         </p>
                     )}
-                    {/* How each question went, on the list of them. A row of identical buttons would say only
-                        that ten questions had been asked. */}
                     <ol className="learner-quiz-review">
                         {questions.map((one, index) => {
                             const { key, label } = outcome(one);
@@ -182,9 +170,6 @@ export function LearnerQuiz({
                                         <span className="learner-quiz-review-question">
                                             {t('quizReviewQuestion', { number: index + 1 })}
                                         </span>
-                                        {/* The mark is a shape as well as a colour, so it survives being
-                                            printed, read aloud, or looked at by someone who cannot tell red
-                                            from green. */}
                                         <span
                                             className="learner-quiz-review-mark"
                                             aria-hidden="true"

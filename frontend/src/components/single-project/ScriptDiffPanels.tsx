@@ -12,6 +12,8 @@ interface ScriptDiffPanelsProps {
     locale: string;
     beforeLabel: string;
     afterLabel: string;
+    beforeHeading?: string;
+    afterHeading?: string;
     /** Set where the two sides arrive already marked up, as the comparison capability's own reports do. */
     annotatedBefore?: string | null;
     annotatedAfter?: string | null;
@@ -28,6 +30,8 @@ export function ScriptDiffPanels({
     locale,
     beforeLabel,
     afterLabel,
+    beforeHeading,
+    afterHeading,
     annotatedBefore,
     annotatedAfter,
 }: ScriptDiffPanelsProps) {
@@ -45,7 +49,7 @@ export function ScriptDiffPanels({
                 <div className="script-diff-panel script-diff-before">
                     {/* The strip over a panel says which side of the change it is; which script it is belongs to
                         the region's name, where it is read once rather than set in small capitals. */}
-                    <p className="script-diff-heading">{t('diffBefore')}</p>
+                    <p className="script-diff-heading">{beforeHeading ?? t('diffBefore')}</p>
                     {/* The colour markers exist for the drawing; whoever reads the source instead wants the
                         script as the analysis reported it, without them. */}
                     <ScratchblocksPreview
@@ -60,7 +64,7 @@ export function ScriptDiffPanels({
             )}
             {hasAfter && (
                 <div className="script-diff-panel script-diff-after">
-                    <p className="script-diff-heading">{t('diffAfter')}</p>
+                    <p className="script-diff-heading">{afterHeading ?? t('diffAfter')}</p>
                     <ScratchblocksPreview
                         source={afterSource}
                         alternativeSource={after}

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 // SPDX-FileCopyrightText: 2026 LitterBox-Web contributors
 
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -673,5 +673,52 @@ describe('export controls', () => {
             </MemoryRouter>,
         );
         expect(await screen.findByRole('heading', { name: 'Export program' })).toBeInTheDocument();
+    });
+
+    it('keeps only one advanced section open at a time, and the menu switches which one', async () => {
+        // Two sections this time, not one: with only a single one available the page opens it automatically and
+        // there is nothing left for a menu to switch between.
+        const user = userEvent.setup();
+        const submissionResponse = () =>
+            new Response(
+                JSON.stringify({
+                    ...completedSubmission('mblock'),
+                    analysis: {
+                        ...completedSubmission('mblock').analysis,
+                        metrics: { block_count: 10 },
+                    },
+                }),
+                { status: 200, headers: { 'Content-Type': 'application/json' } },
+            );
+        vi.spyOn(globalThis, 'fetch').mockImplementation(() =>
+            Promise.resolve(submissionResponse()),
+        );
+
+        render(
+            <MemoryRouter
+                initialEntries={[
+                    {
+                        pathname: '/advanced',
+                        state: {
+                            retainedAnalysis: { submissionToken: 'synthetic-token', analysisId: 7 },
+                        },
+                    },
+                ]}
+            >
+                <AdvancedAnalysisPage capabilityState={capabilityState(['program-export'])} />
+            </MemoryRouter>,
+        );
+
+        await waitFor(() =>
+            expect(document.getElementById('advanced-metrics')).toBeInTheDocument(),
+        );
+        expect(document.getElementById('advanced-metrics')).toHaveAttribute('open');
+        expect(document.getElementById('advanced-export')).not.toHaveAttribute('open');
+
+        const menu = screen.getByRole('navigation', { name: 'Sections on this page' });
+        await user.click(within(menu).getByRole('button', { name: 'Export program' }));
+
+        expect(document.getElementById('advanced-export')).toHaveAttribute('open');
+        expect(document.getElementById('advanced-metrics')).not.toHaveAttribute('open');
     });
 });

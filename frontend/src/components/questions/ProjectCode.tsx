@@ -3,51 +3,54 @@
 
 import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { fetchExportTargets, type ExportTargets } from '../../api/exports';
+import type { ExportTargets } from '../../api/exports';
+import { useAsync } from '../../lib/useAsync';
 import { ScratchblocksPreview } from '../single-project/ScratchblocksPreview';
 import { spriteDisplayName } from '../single-project/sprite-name';
 
-type CodeState =
-    | { status: 'idle' }
-    | { status: 'loading' }
-    | { status: 'ready'; targets: ExportTargets }
-    | { status: 'error' };
+export type LoadProjectCode = () => Promise<ExportTargets | undefined>;
 
-/**
- * The project's own scripts, sprite by sprite, beside the questions about them.
- *
- * "How many scripts does Stage have?" is not a question anyone can answer from memory, and half the generated set is
- * of that kind: they ask about the program as a whole, so unlike the questions about one script they arrive with no
- * blocks attached. Without the code a reader is guessing, and a guess marked wrong teaches nothing.
- *
- * A fold rather than a modal window. The question is what the code is being read for, and a modal would cover it.
- *
- * The sprite shown is never chosen from the question being asked. Several of the questions are about which sprite a
- * script belongs to, and opening this on the answer would give it away.
- */
 export function ProjectCode({
-    token,
-    analysisId,
+    loadCode,
+    locale,
+    title,
+    lead,
+}: {
+    loadCode: LoadProjectCode;
+    locale: string;
+    title?: string;
+    lead?: string;
+}) {
+    const { t } = useTranslation();
+    const [opened, setOpened] = useState(false);
+    return (
+        <details
+            className="project-code"
+            onToggle={(event) => {
+                if (event.currentTarget.open) setOpened(true);
+            }}
+        >
+            <summary>{title ?? t('projectCodeTitle')}</summary>
+            <p className="hint">{lead ?? t('projectCodeLead')}</p>
+            {opened && <ProjectCodeViewer loadCode={loadCode} locale={locale} />}
+        </details>
+    );
+}
+
+export function ProjectCodeViewer({
+    loadCode,
     locale,
 }: {
-    token: string;
-    analysisId: number;
+    loadCode: LoadProjectCode;
     locale: string;
 }) {
     const { t } = useTranslation();
     const selectId = useId();
-    const [state, setState] = useState<CodeState>({ status: 'idle' });
+    const { state, reload } = useAsync(() => loadCode(), [], { toError: () => undefined });
     const [chosen, setChosen] = useState<string>();
 
-    const load = () => {
-        if (state.status === 'loading' || state.status === 'ready') return;
-        setState({ status: 'loading' });
-        fetchExportTargets(token, analysisId)
-            .then((targets) => setState({ status: 'ready', targets }))
-            .catch(() => setState({ status: 'error' }));
-    };
-
-    const targets = state.status === 'ready' ? state.targets : undefined;
+    const targets = state.status === 'ready' ? state.value : undefined;
+    const unavailable = state.status === 'ready' && state.value === undefined;
     const sprites = targets?.sprites ?? [];
     const selected = sprites.find((sprite) => sprite.name === chosen) ?? sprites[0];
     const scripts = (targets?.scripts ?? []).filter(
@@ -55,25 +58,17 @@ export function ProjectCode({
     );
 
     return (
-        <details
-            className="project-code"
-            onToggle={(event) => {
-                if (event.currentTarget.open) load();
-            }}
-        >
-            <summary>{t('projectCodeTitle')}</summary>
-            <p className="hint">{t('projectCodeLead')}</p>
-
+        <div className="project-code-viewer">
             {state.status === 'loading' && <p role="status">{t('projectCodeLoading')}</p>}
             {state.status === 'error' && (
                 <p role="alert">
                     {t('projectCodeError')}{' '}
-                    {/* The fold is already open, so nothing else is going to ask for the code again. */}
-                    <button type="button" onClick={load}>
+                    <button type="button" onClick={reload}>
                         {t('retry')}
                     </button>
                 </p>
             )}
+            {unavailable && <p role="status">{t('projectCodeUnavailable')}</p>}
 
             {targets !== undefined && sprites.length === 0 && (
                 <p role="status">{t('projectCodeEmpty')}</p>
@@ -95,12 +90,8 @@ export function ProjectCode({
                             ))}
                         </select>
                     </label>
-                    {/* Its own scroll, so a sprite with twenty scripts does not push the question it is being
-                        read for off the top of the screen. */}
                     <div className="project-code-scripts">
                         {scripts.length === 0 ? (
-                            /* Not "no code": that this sprite has no scripts is one of the things the questions
-                               ask about, and it is as much an answer as any other number. */
                             <p role="status">
                                 {t('projectCodeNoScripts', {
                                     sprite: spriteDisplayName(selected.name, t('stageName')),
@@ -125,6 +116,6 @@ export function ProjectCode({
                     </div>
                 </>
             )}
-        </details>
+        </div>
     );
 }

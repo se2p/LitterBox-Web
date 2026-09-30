@@ -6,6 +6,7 @@ import {
     QUESTION_SUBMISSIONS_URL,
     SUBMISSIONS_URL,
     fetchCatalogue,
+    fetchQuizAnswerKey,
     fetchSubmission,
     sendFeedback,
     sendQuizAnswer,
@@ -16,13 +17,14 @@ import {
     submitFile,
     type QuizAnswerPayload,
 } from '../src/api/submissions';
+import { BASE_URL } from '../src/lib/base-url';
 import {
     isNumericScratchProjectUrl,
     MAX_ARCHIVE_BYTES,
     MAX_MANIFEST_BYTES,
     MAX_ARCHIVE_ENTRIES,
     preflightArchive,
-    preflightTeacherArchive,
+    preflightTeacherInput,
     parseScratchStudioId,
     type ArchivePreflightReason,
 } from '../src/lib/archive-preflight';
@@ -46,7 +48,6 @@ describe('single-project submission helpers', () => {
 
     it('refuses a catalogue that is not a list, and holds a bad entry to the shape', async () => {
         const fetchMock = vi.spyOn(globalThis, 'fetch');
-        // The page reads the whole answer with .filter, and each entry's locale with .toLowerCase.
         fetchMock.mockResolvedValueOnce(jsonResponse({ entries: [] }));
         await expect(fetchCatalogue('en')).rejects.toThrow('Response was not a catalogue');
 
@@ -56,8 +57,6 @@ describe('single-project submission helpers', () => {
                 'not an entry',
             ]),
         );
-        // The entry that is merely wrong survives as something that can be drawn; the one that is not an
-        // entry at all does not become one.
         await expect(fetchCatalogue('en')).resolves.toEqual([
             expect.objectContaining({ id: '', title: '', locale: '', examples: [] }),
         ]);
@@ -94,11 +93,31 @@ describe('single-project submission helpers', () => {
         );
         await expect(fetchSubmission('t-1')).rejects.toThrow('Response was not valid JSON');
 
-        // Every page reads the state off the status without checking for it first, because a result that cannot
-        // say where it has got to is not a result. Caught here rather than as a crash halfway down a render.
         fetchMock.mockResolvedValueOnce(jsonResponse({ token: 't-1', analyses: [] }));
         await expect(fetchSubmission('t-1')).rejects.toThrow('Response was not a submission');
 
+        fetchMock.mockRestore();
+    });
+
+    it('normalizes malformed finding severities before pages sort them', async () => {
+        const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+            jsonResponse({
+                token: 't-1',
+                status: 'completed',
+                analysis: {
+                    issues: [
+                        { finderId: 'a', finderName: 'A', type: 'bug', severity: 7 },
+                        { finderId: 'b', finderName: 'B', type: 'bug', severity: -1 },
+                        { finderId: 'c', finderName: 'C', type: 'bug', severity: 'high' },
+                        { finderId: 'd', finderName: 'D', type: 'bug', severity: 101 },
+                    ],
+                },
+                analyses: [],
+            }),
+        );
+
+        const result = await fetchSubmission('t-1');
+        expect(result.analysis?.issues.map((issue) => issue.severity)).toEqual([7, 0, 0, 0]);
         fetchMock.mockRestore();
     });
 
@@ -248,6 +267,60 @@ describe('single-project submission helpers', () => {
         fetchMock.mockRestore();
     });
 
+    it("reads a teacher copy's answer key with the submission token as bearer authorization", async () => {
+        const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+            jsonResponse({
+                schemaVersion: 1,
+                questions: [{ questionId: '7', correctAnswers: ['B'] }],
+            }),
+        );
+        await expect(fetchQuizAnswerKey('teacher-submission-token', 88)).resolves.toEqual({
+            schemaVersion: 1,
+            questions: [{ questionId: '7', correctAnswers: ['B'] }],
+        });
+        expect(fetchMock).toHaveBeenCalledWith(
+            `${BASE_URL}api/v1/analyses/88/quiz-answer-key`,
+            expect.objectContaining({
+                headers: expect.objectContaining({
+                    Authorization: 'Bearer teacher-submission-token',
+                }),
+            }),
+        );
+        fetchMock.mockRestore();
+    });
+
+    it('rejects a quiz answer key request the service refused', async () => {
+        const fetchMock = vi
+            .spyOn(globalThis, 'fetch')
+            .mockResolvedValue(new Response(null, { status: 404 }));
+        await expect(fetchQuizAnswerKey('teacher-submission-token', 88)).rejects.toThrow(
+            'Request failed (404)',
+        );
+        fetchMock.mockRestore();
+    });
+
+    it('refuses a quiz answer key that does not match the contract instead of reading it partway', async () => {
+        const fetchMock = vi.spyOn(globalThis, 'fetch');
+        for (const body of [
+            { schemaVersion: 2, questions: [] },
+            { schemaVersion: 1, questions: [{ correctAnswers: ['B'] }] },
+            // A blank id — nothing an export's own `sourceQuestionId` could ever equal.
+            { schemaVersion: 1, questions: [{ questionId: '', correctAnswers: [] }] },
+            { schemaVersion: 1, questions: [{ questionId: '7', correctAnswers: [1] }] },
+            {
+                schemaVersion: 1,
+                questions: [{ questionId: '7', correctAnswers: ['B'], note: 'unexpected' }],
+            },
+            { schemaVersion: 1 },
+        ]) {
+            fetchMock.mockResolvedValueOnce(jsonResponse(body));
+            await expect(fetchQuizAnswerKey('teacher-submission-token', 88)).rejects.toThrow(
+                'Response did not match the quiz answer key format',
+            );
+        }
+        fetchMock.mockRestore();
+    });
+
     it('performs bounded archive preflight without reading beyond the file', async () => {
         const zip = new JSZip();
         zip.file('project.json', '{}');
@@ -316,10 +389,31 @@ describe('single-project submission helpers', () => {
             [asBlobPart(await teacherArchive.generateAsync({ type: 'uint8array' }))],
             'teacher.zip',
         );
-        await expect(preflightTeacherArchive(file)).resolves.toMatchObject({
+        await expect(preflightTeacherInput(file)).resolves.toMatchObject({
             valid: false,
             projects: 2,
             childErrors: [{ name: 'missing.mblock', reason: 'missing-project-json' }],
+        });
+    });
+
+    it('preflights a text file containing one Scratch project URL per line', async () => {
+        const file = new File(
+            [
+                'https://scratch.mit.edu/projects/123/\n',
+                '\nhttps://www.scratch.mit.edu/projects/456\n',
+                'https://scratch.mit.edu/projects/123/',
+            ],
+            'projects.txt',
+        );
+        await expect(preflightTeacherInput(file)).resolves.toMatchObject({
+            valid: true,
+            projects: 2,
+        });
+
+        const invalid = new File(['https://example.org/projects/123'], 'projects.txt');
+        await expect(preflightTeacherInput(invalid)).resolves.toMatchObject({
+            valid: false,
+            reason: 'invalid-url-list',
         });
     });
 
@@ -341,7 +435,7 @@ describe('single-project submission helpers', () => {
             'teacher.zip',
         );
 
-        await expect(preflightTeacherArchive(file)).resolves.toMatchObject({
+        await expect(preflightTeacherInput(file)).resolves.toMatchObject({
             valid: true,
             projects: 2,
         });
@@ -360,15 +454,13 @@ describe('single-project submission helpers', () => {
             'teacher.zip',
         );
 
-        await expect(preflightTeacherArchive(file)).resolves.toMatchObject({
+        await expect(preflightTeacherInput(file)).resolves.toMatchObject({
             valid: false,
             reason: 'several-folders',
         });
     });
 
     it('gives every rejection reason a message of its own, including a class set in several folders', () => {
-        // The reason a whole class set is refused must not read as "this is not a Scratch archive": the archive is
-        // fine, its shape is not.
         expect(preflightMessageKey('several-folders')).toBe('preflightseveral_folders');
         const reasons: readonly ArchivePreflightReason[] = [
             'too-large',
@@ -382,6 +474,11 @@ describe('single-project submission helpers', () => {
             'too-large-manifest',
             'too-deep',
             'several-folders',
+            'unsupported-batch-type',
+            'url-list-too-large',
+            'invalid-url-list',
+            'empty-url-list',
+            'too-many-projects',
         ];
         for (const reason of reasons) {
             const key = preflightMessageKey(reason);

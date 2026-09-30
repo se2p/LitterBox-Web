@@ -173,16 +173,16 @@ test('previews and prepares a synthetic derived archive only after explicit acti
         });
     });
 
-    // Making a modified project is the teacher's tool, not a reading of the analysis, so it is reached from the
-    // teacher's pages. The result page is opened first only so this device remembers the analysed project, which
-    // is what the entry page offers to work from.
+    // Making a modified project is another thing to do with an analysis already in hand, so it is a section of the
+    // advanced workspace. The old address still leads there. The result page is opened first only so this device
+    // remembers the analysed project, which is what the entry page offers to work from.
     await page.goto(`./submissions/${token}`);
     await expect(page.getByText('Analysis complete')).toBeVisible();
     await page.goto('./teacher/modify');
     await page
-        .getByRole('link', { name: 'Make a modified copy of synthetic-retained-original.sb3' })
+        .getByRole('link', { name: 'Open advanced analysis for synthetic-retained-original.sb3' })
         .click();
-    await expect(page.getByRole('heading', { name: 'Fault injection' })).toBeVisible();
+    await expect(page.locator('#advanced-injection')).toHaveAttribute('open', '');
     await expect(page.getByText('First synthetic injector')).toBeVisible();
     expect(injectorRequests).toBeGreaterThanOrEqual(1);
     expect(injectorRequests).toBeLessThanOrEqual(2);
@@ -198,10 +198,10 @@ test('previews and prepares a synthetic derived archive only after explicit acti
     expect(downloadRequests).toBe(0);
     expect(browserDownloads).toBe(0);
 
-    // One press on the mutation itself, where four were needed to say the same thing.
     const downloadPromise = page.waitForEvent('download');
     await page
-        .locator('.injection-result', { hasText: 'injector-first' })
+        // The result names its injector the way the catalogue does, not by the id the preview answered with.
+        .locator('.injection-result', { hasText: 'First synthetic injector' })
         .getByRole('button', { name: 'Download this project' })
         .click();
     const download = await downloadPromise;
@@ -218,6 +218,5 @@ test('previews and prepares a synthetic derived archive only after explicit acti
         scrollWidth: document.documentElement.scrollWidth,
     }));
     expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.clientWidth + 1);
-    // The result is what the reader came for, and it stays whole at the narrowest width we support.
     await expect(page.getByRole('heading', { name: 'Saved to your downloads' })).toBeVisible();
 });

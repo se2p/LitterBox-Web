@@ -367,9 +367,9 @@
     font-size: 0.85rem;
 }
 
-/* The second thing a teacher can do with a project. On its own page the questions form takes the wider measure;
-   sitting under the class-set workflows it lines its boxes up with theirs. What sets it off from them is the
-   separator every section of that page shares, in single-project.css. */
+/* The second of the teacher page's three workflows. On its own page the questions form takes the wider measure;
+   sitting between the task-analysis and class-set workflows it lines its boxes up with theirs. What sets it off
+   from them is the separator every section of that page shares, in single-project.css. */
 .questions-form.teacher-questions-entry {
     max-width: 58rem;
 }
@@ -387,15 +387,25 @@
     margin: 0;
 }
 
+.teacher-questions-add {
+    margin: 0 0 var(--space-6);
+}
+
 .teacher-questions-group-count {
     color: var(--color-ink-muted);
     font-size: 0.85rem;
     font-weight: 400;
 }
 
+.block-model-grid-scroll {
+    max-width: 100%;
+    overflow-x: auto;
+}
+
 /* Dimensions down, scopes across: the block model is a grid, so it is shown as one. */
 .block-model-grid {
-    min-width: 0;
+    width: 100%;
+    min-width: 36rem;
     border-collapse: collapse;
     text-align: center;
 }
@@ -419,6 +429,7 @@
     color: inherit;
     font: inherit;
     text-align: inherit;
+    white-space: nowrap;
 }
 
 .block-model-choice:hover:not(:disabled) {

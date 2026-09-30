@@ -1,17 +1,16 @@
 // SPDX-License-Identifier: EUPL-1.2
 // SPDX-FileCopyrightText: 2026 LitterBox-Web contributors
 
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 import { formatNumber, formatRelativeTime } from '../../i18n';
 import type { TranslationKey } from '../../i18n/locales';
 import {
-    forgetProjects,
-    recentProjects,
+    useRecentProjects,
     type RecentAnalysisKind,
     type RecentProject,
 } from '../../lib/recent-projects';
+import { RecentAnalysesSection } from '../RecentAnalysesSection';
 
 const DETAIL_LABEL_KEYS: Record<RecentAnalysisKind, TranslationKey> = {
     issues: 'recentResultIssues',
@@ -26,35 +25,42 @@ const DETAIL_LABEL_KEYS: Record<RecentAnalysisKind, TranslationKey> = {
  *
  * @param kinds which results belong on this page. The class-set page offers class sets; the page a child lands on
  *              offers what a child made. Mixing them put a teacher's thirty-project set in a child's short list.
+ * @param questionsPath where a `questions` entry's link points: the child-facing view or the builder. The token in
+ *                       storage cannot say which asked for this list, so the caller does.
+ * @param detailLabelKeys overrides one or more of `DETAIL_LABEL_KEYS` per row, for a page whose wording for a kind
+ *                         differs from the child-facing one.
+ * @param footer true by default. A caller sitting this list beside another of the same device's history can turn
+ *               it off and draw one shared footer over both.
  */
 export function RecentResults({
     kinds,
     headingId = 'recent-results-heading',
     heading = 'recentResultsTitle',
+    headingText,
     linkTo,
+    questionsPath = '/questions',
+    detailLabelKeys,
+    footer = true,
 }: {
     kinds: readonly RecentAnalysisKind[];
     headingId?: string;
     heading?: TranslationKey;
+    headingText?: string;
     linkTo?: (project: RecentProject) => string;
+    questionsPath?: string;
+    detailLabelKeys?: Partial<Record<RecentAnalysisKind, TranslationKey>>;
+    footer?: boolean;
 }) {
     const { t } = useTranslation();
-    const [forgotten, setForgotten] = useState(false);
-    const [remembered] = useState(recentProjects);
-    const projects = forgotten
-        ? []
-        : remembered
-              .filter((project) => kinds.includes(project.kind))
-              .map((project) => ({
-                  project,
-                  href: linkTo
-                      ? linkTo(project)
-                      : `${project.kind === 'questions' ? '/questions' : '/submissions'}/${encodeURIComponent(project.token)}`,
-              }));
-    if (projects.length === 0) return null;
+    // Subscribed rather than read once: a forget pressed under any list on the page sharing one of these kinds has
+    // to show here at once. Remembering a new project deliberately does not push an update; see
+    // `subscribeToRecentProjects`.
+    const remembered = useRecentProjects();
+    const projects = remembered.filter((project) => kinds.includes(project.kind));
+    const detailLabels = { ...DETAIL_LABEL_KEYS, ...detailLabelKeys };
 
     const detail = (project: RecentProject): string => {
-        const kind: string = t(DETAIL_LABEL_KEYS[project.kind]);
+        const kind: string = t(detailLabels[project.kind]);
         // The name alone is the filename, and the same project put through both workflows gives two entries
         // reading exactly the same. What each one is, how big it was, and when it was last open tells them apart.
         const parts = [kind];
@@ -70,31 +76,27 @@ export function RecentResults({
     };
 
     return (
-        <section className="recent-results" aria-labelledby={headingId}>
-            <h2 id={headingId}>{t(heading)}</h2>
-            <ul className="recent-results-list">
-                {projects.map(({ project, href }) => (
-                    <li key={project.token}>
-                        <Link to={href}>
-                            {/* A class set opened from a shared link arrives with no name on it. What it is is
-                                still worth offering; what it was called is simply not known here. */}
-                            {project.name.trim() || t('recentResultUnnamed')}
-                        </Link>
-                        <span className="recent-result-detail">{detail(project)}</span>
-                    </li>
-                ))}
-            </ul>
-            <p className="hint">{t('recentResultsHint')}</p>
-            <button
-                type="button"
-                className="recent-results-forget"
-                onClick={() => {
-                    forgetProjects();
-                    setForgotten(true);
-                }}
-            >
-                {t('recentResultsForget')}
-            </button>
-        </section>
+        <RecentAnalysesSection
+            projects={projects}
+            headingId={headingId}
+            headingText={headingText ?? t(heading)}
+            forgetKinds={footer ? kinds : undefined}
+            renderEntry={(project) => (
+                <>
+                    <Link
+                        to={
+                            linkTo
+                                ? linkTo(project)
+                                : `${project.kind === 'questions' ? questionsPath : '/submissions'}/${encodeURIComponent(project.token)}`
+                        }
+                    >
+                        {/* A class set opened from a shared link arrives with no name on it. What it is is
+                            still worth offering; what it was called is simply not known here. */}
+                        {project.name.trim() || t('recentResultUnnamed')}
+                    </Link>
+                    <span className="recent-result-detail">{detail(project)}</span>
+                </>
+            )}
+        />
     );
 }

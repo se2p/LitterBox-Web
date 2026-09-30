@@ -20,8 +20,6 @@
     --color-canvas: #ffffff;
     --color-surface: #ffffff;
     --color-surface-muted: #f1f1f1;
-    /* One finding, bounded. Distinct from the muted grey the catalogue aside uses, so a paragraph about this
-       project and a paragraph about the pattern in general do not sit on the same ground. */
     --color-surface-finding: #f7fbfd;
     --color-heading-muted: #666666;
     --color-border: #d7d7d7;
@@ -52,15 +50,17 @@
     --color-backdrop: rgba(49, 59, 72, 0.78);
     --color-dialog-shadow: rgba(32, 41, 51, 0.3);
 
-    --color-scratch-motion: #4c97ff;
-    --color-scratch-looks: #9966ff;
-    --color-scratch-sound: #cf63cf;
-    --color-scratch-events: #ffbf00;
-    --color-scratch-control: #ffab19;
-    --color-scratch-sensing: #5cb1d6;
-    --color-scratch-operators: #59c059;
-    --color-scratch-variables: #ff8c1a;
-    --color-scratch-my-blocks: #ff6680;
+    /* Aliases onto the one Scratch-palette family below, kept under their older names for statistics.css and
+       single-project.css: a block category's fill is one fact, not two to keep in step by hand. */
+    --color-scratch-motion: var(--scratch-motion);
+    --color-scratch-looks: var(--scratch-looks);
+    --color-scratch-sound: var(--scratch-sound);
+    --color-scratch-events: var(--scratch-events);
+    --color-scratch-control: var(--scratch-control);
+    --color-scratch-sensing: var(--scratch-sensing);
+    --color-scratch-operators: var(--scratch-operators);
+    --color-scratch-variables: var(--scratch-variables);
+    --color-scratch-my-blocks: var(--scratch-custom);
 
     --space-1: 0.25rem;
     --space-2: 0.5rem;
@@ -75,10 +75,35 @@
     --radius-sm: 0.2rem;
     --radius-md: 0.35rem;
     --radius-lg: 0.55rem;
-    /* For the few surfaces a child is meant to walk up to and use, where a square corner reads as a form. */
     --radius-friendly: 0.9rem;
     --shadow-overlay: 0 0.1rem 0.35rem rgba(49, 59, 72, 0.18);
     --focus-ring: 3px solid var(--color-focus);
     --focus-shadow: 0 0 0 2px var(--color-surface);
     --content-width: 71.25rem;
+}
+
+/* Ink per fill is chosen by measured contrast against 4.5:1: `--color-ink` (#303030) passes on Events, Control, Operators, Variables, Sensing and Extension; Motion, List and Custom drop to #1a1a1a; Looks and Sound fail outright and take black. Re-measure before changing a fill, since a fill and its ink are one decision. */
+:root {
+    --scratch-motion: #4c97ff;
+    --scratch-motion-ink: #1a1a1a;
+    --scratch-looks: #9966ff;
+    --scratch-looks-ink: #000000;
+    --scratch-sound: #cf63cf;
+    --scratch-sound-ink: #000000;
+    --scratch-events: #ffbf00;
+    --scratch-events-ink: var(--color-ink);
+    --scratch-control: #ffab19;
+    --scratch-control-ink: var(--color-ink);
+    --scratch-sensing: #5cb1d6;
+    --scratch-sensing-ink: var(--color-ink);
+    --scratch-operators: #59c059;
+    --scratch-operators-ink: var(--color-ink);
+    --scratch-variables: #ff8c1a;
+    --scratch-variables-ink: var(--color-ink);
+    --scratch-list: #ff661a;
+    --scratch-list-ink: #1a1a1a;
+    --scratch-custom: #ff6680;
+    --scratch-custom-ink: #1a1a1a;
+    --scratch-extension: #0fbd8c;
+    --scratch-extension-ink: var(--color-ink);
 }
