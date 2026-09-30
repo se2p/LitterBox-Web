@@ -6,6 +6,9 @@ const assembledBaseUrl = process.env.PLAYWRIGHT_BASE_URL;
 
 export default defineConfig({
     testDir: './e2e',
+    globalSetup: './e2e/warm-up.ts',
+    // A CI runner shares its cores between four workers and a freshly started server.
+    expect: { timeout: process.env.CI ? 15_000 : 5_000 },
     ...(assembledBaseUrl
         ? {}
         : {
