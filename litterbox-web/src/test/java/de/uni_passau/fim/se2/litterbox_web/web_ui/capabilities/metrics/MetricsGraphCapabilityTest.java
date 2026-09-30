@@ -11,6 +11,7 @@ package de.uni_passau.fim.se2.litterbox_web.web_ui.capabilities.metrics;
 
 import static de.uni_passau.fim.se2.litterbox_web.web_ui.capabilities.CapabilityAssertions.assertCode;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -318,11 +319,14 @@ class MetricsGraphCapabilityTest {
         assertCode(
             "capability_timeout", () -> capability.graph(TOKEN, ANALYSIS_ID, "cfg").block(Duration.ofSeconds(1))
         );
-        assertThat(streamClosed).isTrue();
-        assertThat(
-            meters.get("litterbox.capabilities.graph.timeouts")
-                .tag("graph_type", "cfg").counter().count()
-        ).isEqualTo(1.0);
+        // The timeout unwinds on the timer thread, so the close and the count may land after block() returns.
+        await().atMost(Duration.ofSeconds(2)).untilAsserted(() -> {
+            assertThat(streamClosed).isTrue();
+            assertThat(
+                meters.get("litterbox.capabilities.graph.timeouts")
+                    .tag("graph_type", "cfg").counter().count()
+            ).isEqualTo(1.0);
+        });
     }
 
     @Test
