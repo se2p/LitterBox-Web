@@ -1,14 +1,23 @@
 // SPDX-License-Identifier: EUPL-1.2
 // SPDX-FileCopyrightText: 2026 LitterBox-Web contributors
 
+import type { ComponentProps } from 'react';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import i18n from '../src/i18n';
 import type { AskAiQuestions } from '../src/api/ask-ai';
-import { QuestionsChooser } from '../src/components/ask-ai/QuestionsChooser';
+import { useCatalogue } from '../src/components/ask-ai/goal-catalogue';
+import { QuestionsChooser as Chooser } from '../src/components/ask-ai/QuestionsChooser';
 import type { ChooserPosition } from '../src/components/ask-ai/trail';
 import type { ConversationScope } from '../src/pages/ask-ai-machine';
+
+function QuestionsChooser({
+    questions,
+    ...props
+}: { questions: AskAiQuestions } & Omit<ComponentProps<typeof Chooser>, 'catalogue'>) {
+    return <Chooser catalogue={useCatalogue(questions)} {...props} />;
+}
 
 const bugLabel =
     '[b]Problem:[/b] [newLine] A loop never ends. [newLine] [newLine] ' +

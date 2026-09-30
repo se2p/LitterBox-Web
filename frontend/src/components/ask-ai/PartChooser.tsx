@@ -6,8 +6,8 @@ import type { AskAiFindingFamily } from '../../api/ask-ai';
 import { FamilyIcon } from '../single-project/FamilyIcon';
 import { ScratchblocksPreview } from '../single-project/ScratchblocksPreview';
 import { Thumbnail } from '../single-project/Thumbnail';
-import { richHintPlainText } from '../single-project/rich-hint';
 import {
+    placeTrigger,
     placesFor,
     questionsFor,
     type AskAiGoal,
@@ -117,7 +117,7 @@ function SpriteCard({ place, families, count, onOpen }: Omit<PlaceCardProps, 'lo
 
 function ScriptCard({ place, families, count, locale, onOpen }: PlaceCardProps) {
     const { t } = useTranslation();
-    const trigger = place.node ? richHintPlainText(place.node.target.label, locale).trim() : '';
+    const trigger = placeTrigger(place, locale);
     const source = place.node?.target.scratchblocks ?? '';
     // Include the visible question count in the accessible name.
     const spoken = `${placeInWords(place, t, locale)}. ${t('askAiTargetQuestionCount', { count })}`;

@@ -2,12 +2,12 @@
 // SPDX-FileCopyrightText: 2026 LitterBox-Web contributors
 
 import type { TranslationKey } from '../../i18n/locales';
-import { richHintPlainText } from '../single-project/rich-hint';
 import type { QuestionIconName } from './QuestionIcon';
 import {
     GOAL_ICONS,
     GOAL_LABEL_KEYS,
     placeOf,
+    placeTrigger,
     placesFor,
     type AskAiGoal,
     type Catalogue,
@@ -38,7 +38,7 @@ type Translate = (key: TranslationKey, options?: Record<string, string | number>
 export const placeInWords = (place: CataloguePlace, t: Translate, locale: string): string => {
     if (place.key === null) return t('askAiPartWholeProject');
     if (place.kind === 'sprite') return place.sprite;
-    const trigger = place.node ? richHintPlainText(place.node.target.label, locale).trim() : '';
+    const trigger = placeTrigger(place, locale);
     const number = place.number ?? 1;
     return trigger
         ? t('askAiScriptSpoken', { sprite: place.sprite, number, trigger })

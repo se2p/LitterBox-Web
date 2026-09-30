@@ -151,13 +151,9 @@ export function useAskAiService({
     const releaseConversation = useCallback(
         (conversationId: string | undefined, unloading = false) => {
             if (!conversationId) return;
-            void closeAskAiConversation(
-                token,
-                analysisId,
-                conversationId,
-                undefined,
-                unloading,
-            ).catch(() => undefined);
+            void closeAskAiConversation(token, analysisId, conversationId, unloading).catch(
+                () => undefined,
+            );
         },
         [token, analysisId],
     );

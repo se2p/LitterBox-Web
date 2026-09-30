@@ -4,8 +4,9 @@
 import { describe, expect, it } from 'vitest';
 import type { AskAiQuestions, AskAiTarget } from '../src/api/ask-ai';
 import {
+    ASK_AI_GOAL_CARDS,
     buildCatalogue,
-    goalsOffered,
+    goalWorthOffering,
     placesFor,
     questionsFor,
     unsureShortlist,
@@ -91,6 +92,9 @@ const project = questions({
         },
     ],
 });
+
+const offered = (catalogue: Parameters<typeof goalWorthOffering>[0]) =>
+    ASK_AI_GOAL_CARDS.filter((goal) => goalWorthOffering(catalogue, goal));
 
 describe('the catalogue behind the goals', () => {
     const catalogue = catalogueOf(project);
@@ -243,14 +247,14 @@ describe('the catalogue behind the goals', () => {
             targets: [target({ key: 'p', kind: 'program', intents: ['SUMMARISE'] })],
         });
         const only = catalogueOf(bare);
-        expect(goalsOffered(only)).toEqual(['understand', 'problems', 'unsure']);
+        expect(offered(only)).toEqual(['understand', 'problems']);
         expect(questionsFor(only, 'problems')).toEqual([]);
         expect(questionsFor(only, 'improve')).toEqual([]);
     });
 
     it('says nothing about problems until there is a project to say it about', () => {
         const empty = catalogueOf(questions({}));
-        expect(goalsOffered(empty)).toEqual([]);
+        expect(offered(empty)).toEqual([]);
         expect(placesFor(empty, 'understand')).toEqual([]);
     });
 

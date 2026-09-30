@@ -11,14 +11,13 @@ import {
 } from '../../api/ask-ai';
 import type { TranslationKey } from '../../i18n/locales';
 import type { ConversationScope } from '../../pages/ask-ai-machine';
-import { richHintLead } from '../single-project/rich-hint';
+import { richHintLead, richHintPlainText } from '../single-project/rich-hint';
 import { spriteDisplayName } from '../single-project/sprite-name';
 import { inquiryTheme, type InquiryTheme } from './inquiry-theme';
 import type { QuestionIconName } from './QuestionIcon';
 import { buildProjectTree, type ProjectTree, type TargetNode } from './project-targets';
 
-export const ASK_AI_GOALS = ['understand', 'problems', 'add', 'improve', 'unsure'] as const;
-export type AskAiGoal = (typeof ASK_AI_GOALS)[number];
+export type AskAiGoal = 'understand' | 'problems' | 'add' | 'improve' | 'unsure';
 
 export type QuestionGoal = Exclude<AskAiGoal, 'unsure'>;
 
@@ -47,11 +46,11 @@ export const GOAL_ICONS: Record<AskAiGoal, QuestionIconName> = {
     unsure: 'other',
 };
 
-const GOAL_OF_INTENT: Record<AskAiGeneralIntent, QuestionGoal[]> = {
-    SUMMARISE: ['understand'],
-    EXPLAIN: ['understand'],
-    SUGGEST_EXTENSION: ['add'],
-    PROVIDE_FEEDBACK: ['improve'],
+const GOAL_OF_INTENT: Record<AskAiGeneralIntent, QuestionGoal> = {
+    SUMMARISE: 'understand',
+    EXPLAIN: 'understand',
+    SUGGEST_EXTENSION: 'add',
+    PROVIDE_FEEDBACK: 'improve',
 };
 
 type PlaceKind = 'program' | 'sprite' | 'script';
@@ -82,22 +81,22 @@ export const INTENT_ICONS: Record<AskAiGeneralIntent, QuestionIconName> = {
     PROVIDE_FEEDBACK: 'sparkle',
 };
 
-const GOAL_OF_FAMILY: Record<AskAiFindingFamily, QuestionGoal[]> = {
-    bug: ['problems'],
-    smell: ['problems'],
-    perfume: ['improve'],
-    other: ['problems'],
+const GOAL_OF_FAMILY: Record<AskAiFindingFamily, QuestionGoal> = {
+    bug: 'problems',
+    smell: 'problems',
+    perfume: 'improve',
+    other: 'problems',
 };
 
-const GOAL_OF_INQUIRY_KIND: Readonly<Record<string, QuestionGoal[]>> = {
-    'score-idea': ['add'],
-    'smooth-motion': ['improve'],
+const GOAL_OF_INQUIRY_KIND: Readonly<Record<string, QuestionGoal>> = {
+    'score-idea': 'add',
+    'smooth-motion': 'improve',
 };
 
-const EXPLAINS: QuestionGoal[] = ['understand'];
+const EXPLAINS: QuestionGoal = 'understand';
 
 // Unmapped inquiry kinds default to understanding.
-const goalsOfInquiry = (kind: string): QuestionGoal[] => GOAL_OF_INQUIRY_KIND[kind] ?? EXPLAINS;
+const goalOfInquiry = (kind: string): QuestionGoal => GOAL_OF_INQUIRY_KIND[kind] ?? EXPLAINS;
 
 const CONNECTION_THEMES: InquiryTheme[] = ['messages', 'sensing', 'moving'];
 
@@ -111,7 +110,7 @@ export interface CataloguePlace {
 }
 
 export interface CatalogueQuestion {
-    goals: QuestionGoal[];
+    goal: QuestionGoal;
     place: string | null;
     scope: ConversationScope;
     text: string;
@@ -153,7 +152,7 @@ export const buildCatalogue = (
             if (!key) continue;
             const label = naming.general(key, place.sprite);
             catalogued.push({
-                goals: GOAL_OF_INTENT[intent],
+                goal: GOAL_OF_INTENT[intent],
                 place: place.key,
                 scope: {
                     kind: 'common',
@@ -171,7 +170,7 @@ export const buildCatalogue = (
     const addFound = (node: TargetNode, place: CataloguePlace) => {
         for (const inquiry of node.inquiries) {
             catalogued.push({
-                goals: goalsOfInquiry(inquiry.kind),
+                goal: goalOfInquiry(inquiry.kind),
                 place: place.key,
                 // The opaque selector does not identify the inquiry kind needed by follow-up policy.
                 scope: {
@@ -188,7 +187,7 @@ export const buildCatalogue = (
         }
         for (const finding of node.findings) {
             catalogued.push({
-                goals: GOAL_OF_FAMILY[finding.family],
+                goal: GOAL_OF_FAMILY[finding.family],
                 place: place.key,
                 scope: { kind: 'finding', selector: finding.selector, label: finding.label },
                 text: richHintLead(finding.label),
@@ -290,7 +289,7 @@ export const unsureShortlist = (catalogue: Catalogue): CatalogueQuestion[] => {
             question.source === 'inquiry' && somewhereNew(question) && somethingElse(question),
     );
     takeBest(
-        (question) => question.source === 'finding' && question.goals.includes('improve'),
+        (question) => question.source === 'finding' && question.goal === 'improve',
         (question) => question.intent === 'PROVIDE_FEEDBACK',
     );
     take((question) => question.intent === 'SUGGEST_EXTENSION');
@@ -309,15 +308,14 @@ export const questionsFor = (
         ? unsureShortlist(catalogue)
         : catalogue.questions.filter(
               (question) =>
-                  question.goals.includes(goal) &&
-                  (place === undefined || question.place === place),
+                  question.goal === goal && (place === undefined || question.place === place),
           );
 
 export const placesFor = (catalogue: Catalogue, goal: AskAiGoal): CataloguePlace[] => {
     if (goal === 'unsure') return catalogue.places.filter((place) => place.key === null);
     const asked = new Set(
         catalogue.questions
-            .filter((question) => question.goals.includes(goal))
+            .filter((question) => question.goal === goal)
             .map((question) => question.place),
     );
     return catalogue.places.filter((place) => asked.has(place.key));
@@ -330,8 +328,9 @@ export const goalWorthOffering = (catalogue: Catalogue, goal: AskAiGoal): boolea
     questionsFor(catalogue, goal).length > 0 ||
     (goal === 'problems' && catalogue.places.length > 0);
 
-export const goalsOffered = (catalogue: Catalogue): AskAiGoal[] =>
-    ASK_AI_GOALS.filter((goal) => goalWorthOffering(catalogue, goal));
+/** The text of a script's opening block, or empty for a sprite or the whole project. */
+export const placeTrigger = (place: CataloguePlace, locale: string): string =>
+    place.node ? richHintPlainText(place.node.target.label, locale).trim() : '';
 
 export const useCatalogue = (questions: AskAiQuestions | undefined): Catalogue => {
     const { t } = useTranslation();

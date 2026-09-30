@@ -231,8 +231,8 @@ function TranscriptRow({
     entry: TranscriptEntry;
     blocks: AskAiBlock[];
     scopeLabel: string;
-    isFinding?: boolean;
-    aboutAFault?: boolean;
+    isFinding: boolean;
+    aboutAFault: boolean;
     locale: string;
     focusRef?: RefObject<HTMLDivElement | null>;
 }) {
@@ -257,7 +257,7 @@ function TranscriptRow({
                             />
                         )
                     ) : (
-                        t(followUpLabelKey(entry.followUp, aboutAFault === true))
+                        t(followUpLabelKey(entry.followUp, aboutAFault))
                     )}
                 </p>
             </div>
@@ -305,6 +305,13 @@ export function Conversation({
 
     const handOverFocus = () => {
         shouldMoveFocus.current = true;
+    };
+
+    const errorActionLabel = canRetry ? 'retry' : 'askAiChooseAnotherQuestion';
+    const runErrorAction = () => {
+        if (!canRetry) return onChangeScope();
+        handOverFocus();
+        onRetry();
     };
 
     useEffect(() => {
@@ -402,19 +409,8 @@ export function Conversation({
             {conversation.phase === 'error' && conversation.errorCategory && (
                 <Alert tone="error">
                     <p>{t(ERROR_MESSAGE_KEYS[conversation.errorCategory])}</p>
-                    <button
-                        type="button"
-                        ref={errorActionRef}
-                        onClick={() => {
-                            if (!canRetry) {
-                                onChangeScope();
-                            } else {
-                                handOverFocus();
-                                onRetry();
-                            }
-                        }}
-                    >
-                        {t(canRetry ? 'retry' : 'askAiChooseAnotherQuestion')}
+                    <button type="button" ref={errorActionRef} onClick={runErrorAction}>
+                        {t(errorActionLabel)}
                     </button>
                 </Alert>
             )}

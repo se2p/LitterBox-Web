@@ -3,13 +3,12 @@
 
 import { useTranslation } from 'react-i18next';
 import { Thumbnail } from '../single-project/Thumbnail';
-import { richHintPlainText } from '../single-project/rich-hint';
-import type { CataloguePlace } from './goal-catalogue';
+import { placeTrigger, type CataloguePlace } from './goal-catalogue';
 
 export function PlaceChip({ place, locale }: { place: CataloguePlace; locale: string }) {
     const { t } = useTranslation();
     if (place.key === null) return null;
-    const trigger = place.node ? richHintPlainText(place.node.target.label, locale).trim() : '';
+    const trigger = placeTrigger(place, locale);
     return (
         <span className="ask-ai-place-chip">
             {place.node?.target.thumbnail && (

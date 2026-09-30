@@ -493,19 +493,19 @@ const CODED_CATEGORIES = [
     'invalid_model_response',
     'idempotency_conflict',
     'turn_in_progress',
-] as const;
-const PROBLEM_CODE_PREFIX = 'ask_ai_';
-type AskAiProblemCode = `${typeof PROBLEM_CODE_PREFIX}${(typeof CODED_CATEGORIES)[number]}`;
+] as const satisfies readonly AskAiErrorCategory[];
 
-const isKnownAskAiProblemCode = oneOf(
-    CODED_CATEGORIES.map((category): AskAiProblemCode => `${PROBLEM_CODE_PREFIX}${category}`),
-);
+const categoryOfCode = (code: unknown): AskAiErrorCategory | undefined =>
+    CODED_CATEGORIES.find((category) => `ask_ai_${category}` === code);
+
+const isKnownAskAiProblemCode = (code: unknown): code is string =>
+    categoryOfCode(code) !== undefined;
 
 const categoryForConversationStatus = (
     status: number,
-    code?: AskAiProblemCode,
+    codedCategory?: AskAiErrorCategory,
 ): AskAiErrorCategory => {
-    if (code) return code.slice(PROBLEM_CODE_PREFIX.length) as AskAiErrorCategory;
+    if (codedCategory) return codedCategory;
     if (status === 403) return 'network_denied';
     if (status === 404) return 'context_not_found';
     // Without a problem code the answer is a proxy's or a gateway's, not Ask AI's, so it never ends the
@@ -517,18 +517,23 @@ const categoryForConversationStatus = (
 
 /** The error a failed response stands for; unknown or oversized problem details count as absent. */
 const failureOf = async (response: Response): Promise<AskAiApiError> => {
-    let code: AskAiProblemCode | undefined;
+    let category: AskAiErrorCategory | undefined;
     if (isProblemJsonContentType(response.headers.get('Content-Type'))) {
         try {
-            code = problemCodeFrom(
-                await readAskAiResponseText(response, MAX_PROBLEM_RESPONSE_BYTES),
-                isKnownAskAiProblemCode,
+            category = categoryOfCode(
+                problemCodeFrom(
+                    await readAskAiResponseText(response, MAX_PROBLEM_RESPONSE_BYTES),
+                    isKnownAskAiProblemCode,
+                ),
             );
         } catch (error) {
             if (error instanceof AskAiApiError && error.category === 'canceled') return error;
         }
     }
-    return new AskAiApiError(categoryForConversationStatus(response.status, code), response.status);
+    return new AskAiApiError(
+        categoryForConversationStatus(response.status, category),
+        response.status,
+    );
 };
 
 const requestAskAi = async (url: string, init: RequestInit): Promise<Response> => {
@@ -631,7 +636,6 @@ export async function closeAskAiConversation(
     token: string,
     analysisId: number,
     conversationId: string,
-    signal?: AbortSignal,
     keepalive = false,
 ): Promise<void> {
     const response = await requestAskAi(
@@ -639,7 +643,6 @@ export async function closeAskAiConversation(
         {
             method: 'POST',
             headers: { Authorization: `Bearer ${token}` },
-            signal,
             keepalive,
         },
     );

@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: EUPL-1.2
 // SPDX-FileCopyrightText: 2026 LitterBox-Web contributors
 
-import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { AskAiQuestions } from '../../api/ask-ai';
 import type { ConversationScope } from '../../pages/ask-ai-machine';
 import { FamilyIcon } from '../single-project/FamilyIcon';
 import { RichHint } from '../single-project/RichHint';
@@ -17,7 +16,6 @@ import {
     placeOf,
     placesFor,
     questionsFor,
-    useCatalogue,
     ASK_AI_GOAL_CARDS,
     GOAL_ICONS,
     GOAL_LABEL_KEYS,
@@ -145,9 +143,7 @@ const wasBeyondTheFirstFew = (
     restoreFocusTo: string | undefined,
 ): boolean => {
     if (restoreFocusTo === undefined || openAt?.goal === undefined) return false;
-    const places = placesFor(catalogue, openAt.goal);
-    const place =
-        openAt.place !== undefined ? openAt.place : places.length === 1 ? places[0].key : undefined;
+    const place = effectivePlace(catalogue, openAt.goal, openAt.place);
     if (place === undefined) return false;
     const { asked, found } = splitQuestions(questionsFor(catalogue, openAt.goal, place));
     return [asked, found].some(
@@ -162,6 +158,13 @@ const onlyPlaceFor = (catalogue: Catalogue, goal: AskAiGoal): CataloguePlace | u
     return places.length === 1 ? places[0] : undefined;
 };
 
+/** The place a goal is asked about: the one chosen, else the only one there is. */
+const effectivePlace = (
+    catalogue: Catalogue,
+    goal: AskAiGoal,
+    place: string | null | undefined,
+): string | null | undefined => (place !== undefined ? place : onlyPlaceFor(catalogue, goal)?.key);
+
 const soleQuestionFor = (
     catalogue: Catalogue,
     goal: AskAiGoal,
@@ -174,14 +177,13 @@ const soleQuestionFor = (
 const normalisePosition = (catalogue: Catalogue, position: ChooserPosition): ChooserPosition => {
     const goal = position.goal;
     if (goal === undefined) return position;
-    const onlyPlace = onlyPlaceFor(catalogue, goal);
-    const place = position.place !== undefined ? position.place : onlyPlace?.key;
+    const place = effectivePlace(catalogue, goal, position.place);
     if (place === undefined || !soleQuestionFor(catalogue, goal, place)) return position;
-    return onlyPlace ? {} : { goal };
+    return onlyPlaceFor(catalogue, goal) ? {} : { goal };
 };
 
 export function QuestionsChooser({
-    questions,
+    catalogue,
     project,
     locale,
     onSelect,
@@ -189,7 +191,7 @@ export function QuestionsChooser({
     restoreFocusTo,
     openAt,
 }: {
-    questions: AskAiQuestions;
+    catalogue: Catalogue;
     project: string;
     locale: string;
     onSelect: (
@@ -202,7 +204,6 @@ export function QuestionsChooser({
     openAt?: ChooserPosition;
 }) {
     const { t } = useTranslation();
-    const catalogue = useCatalogue(questions);
     const [position, setPosition] = useState<ChooserPosition>(() =>
         normalisePosition(catalogue, openAt ?? {}),
     );
@@ -216,7 +217,10 @@ export function QuestionsChooser({
     const cameOutOf = useRef<string | undefined>(undefined);
 
     const goal = position.goal;
-    const places = goal === undefined ? [] : placesFor(catalogue, goal);
+    const places = useMemo(
+        () => (goal === undefined ? [] : placesFor(catalogue, goal)),
+        [catalogue, goal],
+    );
     const onlyPlace = places.length === 1 ? places[0] : undefined;
     const chosen =
         goal === undefined
@@ -224,7 +228,10 @@ export function QuestionsChooser({
             : (onlyPlace ??
               (position.place === undefined ? undefined : placeOf(catalogue, position.place)));
     const here: ChooserPosition = { goal, place: chosen?.key };
-    const nothingToAsk = goal !== undefined && questionsFor(catalogue, goal).length === 0;
+    const nothingToAsk = useMemo(
+        () => goal !== undefined && questionsFor(catalogue, goal).length === 0,
+        [catalogue, goal],
+    );
     const screen: 'goal' | 'part' | 'question' | 'nothing' =
         goal === undefined
             ? 'goal'
@@ -272,7 +279,11 @@ export function QuestionsChooser({
     const openSoleQuestion = (goal: AskAiGoal, place: CataloguePlace, sole: CatalogueQuestion) =>
         onSelect(sole.scope, { goal, place: place.key }, placeOf(catalogue, sole.place));
 
-    const steps = chooserSteps(catalogue, here, chooserLabels(t, locale));
+    const chosenKey = chosen?.key;
+    const steps = useMemo(
+        () => chooserSteps(catalogue, { goal, place: chosenKey }, chooserLabels(t, locale)),
+        [catalogue, goal, chosenKey, t, locale],
+    );
 
     const cardOfStep = (index: number): string | undefined => {
         const next = steps[index + 1];
@@ -309,8 +320,11 @@ export function QuestionsChooser({
         };
     });
 
-    const asking = goal === undefined ? [] : questionsFor(catalogue, goal, chosen?.key ?? null);
-    const { asked, found } = splitQuestions(asking);
+    const asking = useMemo(
+        () => (goal === undefined ? [] : questionsFor(catalogue, goal, chosenKey ?? null)),
+        [catalogue, goal, chosenKey],
+    );
+    const { asked, found } = useMemo(() => splitQuestions(asking), [asking]);
     const shownCount = showAll
         ? asking.length
         : Math.min(asked.length, QUESTIONS_AT_ONCE) + Math.min(found.length, QUESTIONS_AT_ONCE);
@@ -323,8 +337,9 @@ export function QuestionsChooser({
                 ? t('askAiQuestionsShownOf', { shown: shownCount, total: asking.length })
                 : t('askAiQuestionsAvailable', { count: asking.length });
 
-    const offered = ASK_AI_GOAL_CARDS.filter((candidate) =>
-        goalWorthOffering(catalogue, candidate),
+    const offered = useMemo(
+        () => ASK_AI_GOAL_CARDS.filter((candidate) => goalWorthOffering(catalogue, candidate)),
+        [catalogue],
     );
 
     return (
@@ -470,6 +485,8 @@ function QuestionScreen({
     const { t } = useTranslation();
     const code = place.kind === 'script' ? place.node : place.code;
     const shown = <T,>(list: T[]) => (showAll ? list : list.slice(0, QUESTIONS_AT_ONCE));
+    const numberedAsked = useMemo(() => numbered(asked), [asked]);
+    const numberedFound = useMemo(() => numbered(found), [found]);
     const hasMore = asked.length > QUESTIONS_AT_ONCE || found.length > QUESTIONS_AT_ONCE;
     const button = (entry: ReturnType<typeof numbered>[number]) => (
         <QuestionButton
@@ -499,7 +516,7 @@ function QuestionScreen({
                 <div className="ask-ai-question-lists">
                     {asked.length > 0 && (
                         <div className="ask-ai-question-grid">
-                            {shown(numbered(asked)).map(button)}
+                            {shown(numberedAsked).map(button)}
                         </div>
                     )}
                     {found.length > 0 && (
@@ -507,7 +524,7 @@ function QuestionScreen({
                             <h3>{t('askAiFindingsHereTitle')}</h3>
                             <p className="hint">{t('askAiFindingsHereLead')}</p>
                             <div className="ask-ai-question-grid">
-                                {shown(numbered(found)).map(button)}
+                                {shown(numberedFound).map(button)}
                             </div>
                         </div>
                     )}
