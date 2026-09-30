@@ -64,19 +64,8 @@ public final class AskAiConversationsController {
         @RequestBody final AskAiCreateConversationRequest request
     ) {
         authorize(token, authorization);
-        final String locale = request.locale();
-        final AskAiCreateConversationRequest.Scope scope = request.scope();
-        final String kind;
-        final String selector;
-        if (scope == null) {
-            kind = null;
-            selector = null;
-        }
-        else {
-            kind = scope.kind();
-            selector = scope.selector();
-        }
-        return service.createConversation(token, analysisId, locale, kind, selector)
+        return service
+            .createConversation(token, analysisId, request.locale(), request.scopeKind(), request.scopeSelector())
             .map(SubmissionBearer::jsonResponse);
     }
 

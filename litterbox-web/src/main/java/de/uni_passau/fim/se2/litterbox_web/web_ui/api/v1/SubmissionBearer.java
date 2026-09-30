@@ -25,8 +25,8 @@ final class SubmissionBearer {
         // utility class, intentionally empty
     }
 
-    /** Rejects a request whose {@code Authorization} header is missing, malformed, or does not name this submission. */
-    static void requireMatching(final String submissionToken, final String authorization) {
+    /** The token an {@code Authorization: Bearer} header carries; a missing, malformed or empty one is refused. */
+    static String parse(final String authorization) {
         if (authorization == null || !authorization.regionMatches(true, 0, "Bearer ", 0, 7)) {
             throw CapabilityException.authorizationRequired();
         }
@@ -34,6 +34,12 @@ final class SubmissionBearer {
         if (bearer.isEmpty()) {
             throw CapabilityException.authorizationRequired();
         }
+        return bearer;
+    }
+
+    /** Rejects a request whose {@code Authorization} header is missing, malformed, or does not name this submission. */
+    static void requireMatching(final String submissionToken, final String authorization) {
+        final String bearer = parse(authorization);
         if (
             !MessageDigest.isEqual(
                 submissionToken.getBytes(StandardCharsets.UTF_8), bearer.getBytes(StandardCharsets.UTF_8)

@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.server.ResponseStatusException;
 
+import de.uni_passau.fim.se2.litterbox_web.web_ui.capabilities.CapabilityException;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.single_project.ReportDownload;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.single_project.SingleProjectApplicationService;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.single_project.SingleProjectDtos;
@@ -314,14 +315,12 @@ public class SingleProjectController {
     }
 
     private String bearerToken(final String authorization) {
-        if (authorization == null || !authorization.regionMatches(true, 0, "Bearer ", 0, 7)) {
+        try {
+            return SubmissionBearer.parse(authorization);
+        }
+        catch (CapabilityException exception) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Submission token required");
         }
-        final String token = authorization.substring(7).trim();
-        if (token.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Submission token required");
-        }
-        return token;
     }
 
     public record ProjectUrlRequest(String projectUrl, String studioId) {

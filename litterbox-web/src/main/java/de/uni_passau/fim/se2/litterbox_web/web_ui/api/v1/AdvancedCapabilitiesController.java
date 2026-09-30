@@ -75,15 +75,6 @@ public final class AdvancedCapabilitiesController {
         this.injectionCapability = injectionCapability;
     }
 
-    /**
-     * Returns the requested analysis graph when graph capabilities are enabled.
-     *
-     * @param submissionToken The submission token.
-     * @param analysisId      The analysis identifier.
-     * @param graphType       The requested graph type.
-     * @param authorization   The optional authorization header.
-     * @return The graph response.
-     */
     @GetMapping(
         value = "/submissions/{submissionToken}/analyses/{analysisId}/graphs/{graphType}",
         produces = GRAPH_MEDIA_TYPE
@@ -110,12 +101,6 @@ public final class AdvancedCapabilitiesController {
         return operation.graph(submissionToken, analysisId, normalizedType).map(this::graphResponse);
     }
 
-    /**
-     * Compares two analyses when semantic-diff capabilities are enabled.
-     *
-     * @param request The analysis references to compare.
-     * @return The semantic difference.
-     */
     @PostMapping(
         value = "/diffs",
         consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -125,31 +110,14 @@ public final class AdvancedCapabilitiesController {
         @RequestBody final AdvancedCapabilityDtos.DiffRequest request
     ) {
         requireEnabled(configuration.getSemanticDiff().isEnabled());
-        final AdvancedCapabilityDtos.AnalysisReference before;
-        if (request == null) {
-            before = null;
-        }
-        else {
-            before = request.before();
-        }
-        requireReference(before);
+        requireReference(request == null ? null : request.before());
         requireReference(request.after());
         final SemanticDiffCapability operation = diffCapability.getIfAvailable();
-        if (operation == null) {
-            return Mono.error(CapabilityException.unavailable());
-        }
-        return operation.compare(request);
+        return operation == null
+            ? Mono.error(CapabilityException.unavailable())
+            : operation.compare(request);
     }
 
-    /**
-     * Exports the selected analysis target in the requested format.
-     *
-     * @param submissionToken The submission token.
-     * @param analysisId      The analysis identifier.
-     * @param authorization   The optional authorization header.
-     * @param request         The export request.
-     * @return The exported content.
-     */
     @PostMapping(
         value = "/submissions/{submissionToken}/analyses/{analysisId}/exports",
         consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -179,14 +147,6 @@ public final class AdvancedCapabilitiesController {
             );
     }
 
-    /**
-     * Lists the export targets available for an analysis.
-     *
-     * @param submissionToken The submission token.
-     * @param analysisId      The analysis identifier.
-     * @param authorization   The optional authorization header.
-     * @return The available export targets.
-     */
     @GetMapping(
         value = "/submissions/{submissionToken}/analyses/{analysisId}/export-targets",
         produces = MediaType.APPLICATION_JSON_VALUE
@@ -214,15 +174,6 @@ public final class AdvancedCapabilitiesController {
         );
     }
 
-    /**
-     * Lists the fault injectors available for an analysis.
-     *
-     * @param submissionToken The submission token.
-     * @param analysisId      The analysis identifier.
-     * @param authorization   The optional authorization header.
-     * @param locale          The requested locale.
-     * @return The available injectors.
-     */
     @GetMapping(
         value = "/submissions/{submissionToken}/analyses/{analysisId}/injectors",
         produces = MediaType.APPLICATION_JSON_VALUE
@@ -242,21 +193,11 @@ public final class AdvancedCapabilitiesController {
             return Mono.error(new IllegalArgumentException("Unsupported locale"));
         }
         final FaultInjectionCapability operation = injectionCapability.getIfAvailable();
-        if (operation == null) {
-            return Mono.error(CapabilityException.unavailable());
-        }
-        return operation.injectors(submissionToken, analysisId, locale);
+        return operation == null
+            ? Mono.error(CapabilityException.unavailable())
+            : operation.injectors(submissionToken, analysisId, locale);
     }
 
-    /**
-     * Returns the localized fault-injector catalogue for an analysis.
-     *
-     * @param submissionToken The submission token.
-     * @param analysisId      The analysis identifier.
-     * @param authorization   The optional authorization header.
-     * @param locale          The requested locale.
-     * @return The injector catalogue.
-     */
     @GetMapping(
         value = "/submissions/{submissionToken}/analyses/{analysisId}/injector-catalogue",
         produces = MediaType.APPLICATION_JSON_VALUE
@@ -288,15 +229,6 @@ public final class AdvancedCapabilitiesController {
         );
     }
 
-    /**
-     * Previews the selected fault injection without applying it.
-     *
-     * @param submissionToken The submission token.
-     * @param analysisId      The analysis identifier.
-     * @param authorization   The optional authorization header.
-     * @param request         The injection request.
-     * @return The bounded injection preview.
-     */
     @PostMapping(
         value = "/submissions/{submissionToken}/analyses/{analysisId}/injections",
         consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -315,10 +247,9 @@ public final class AdvancedCapabilitiesController {
         SubmissionBearer.requireMatching(submissionToken, authorization);
         requireValidInjectorSelection(request);
         final FaultInjectionCapability operation = injectionCapability.getIfAvailable();
-        if (operation == null) {
-            return Mono.error(CapabilityException.unavailable());
-        }
-        return operation.preview(submissionToken, analysisId, request).map(this::boundedPreview);
+        return operation == null
+            ? Mono.error(CapabilityException.unavailable())
+            : operation.preview(submissionToken, analysisId, request).map(this::boundedPreview);
     }
 
     /** The preview and the complete download take the same selection, and must refuse the same ones. */
@@ -352,15 +283,6 @@ public final class AdvancedCapabilitiesController {
         return new HashSet<>(request.injectorIds()).size() != request.injectorIds().size();
     }
 
-    /**
-     * Downloads the result of one selected fault injection.
-     *
-     * @param submissionToken The submission token.
-     * @param analysisId      The analysis identifier.
-     * @param authorization   The optional authorization header.
-     * @param request         The injection download request.
-     * @return The generated archive.
-     */
     @PostMapping(
         value = "/submissions/{submissionToken}/analyses/{analysisId}/injections/download",
         consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -390,15 +312,6 @@ public final class AdvancedCapabilitiesController {
         return operation.download(submissionToken, analysisId, request).map(this::archiveAttachment);
     }
 
-    /**
-     * Downloads all results for a selected set of fault injectors.
-     *
-     * @param submissionToken The submission token.
-     * @param analysisId      The analysis identifier.
-     * @param authorization   The optional authorization header.
-     * @param request         The injection request.
-     * @return The generated archive.
-     */
     @PostMapping(
         value = "/submissions/{submissionToken}/analyses/{analysisId}/injections/download-all",
         consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -417,10 +330,9 @@ public final class AdvancedCapabilitiesController {
         SubmissionBearer.requireMatching(submissionToken, authorization);
         requireValidInjectorSelection(request);
         final FaultInjectionCapability operation = injectionCapability.getIfAvailable();
-        if (operation == null) {
-            return Mono.error(CapabilityException.unavailable());
-        }
-        return operation.downloadAll(submissionToken, analysisId, request).map(this::bundleAttachment);
+        return operation == null
+            ? Mono.error(CapabilityException.unavailable())
+            : operation.downloadAll(submissionToken, analysisId, request).map(this::bundleAttachment);
     }
 
     private ResponseEntity<String> graphResponse(final GraphCapability.GraphResult graph) {

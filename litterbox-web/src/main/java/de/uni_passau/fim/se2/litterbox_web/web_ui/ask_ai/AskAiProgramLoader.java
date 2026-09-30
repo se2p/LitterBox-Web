@@ -9,7 +9,6 @@
  */
 package de.uni_passau.fim.se2.litterbox_web.web_ui.ask_ai;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -81,11 +80,11 @@ public final class AskAiProgramLoader {
         if (submissionToken == null || submissionToken.isBlank() || submissionToken.length() > 128 || analysisId < 1) {
             return Mono.error(AskAiProblemException.contextNotFound());
         }
-        return submissions.findByToken(submissionToken)
-            .filter(this::isRetainedSubmission)
-            .flatMap(
-                owner -> analyses.findById(analysisId).flatMap(analysis -> authorizedAnalysis(owner, analysis))
-            )
+        return Mono.zip(
+            submissions.findByToken(submissionToken).filter(this::isRetainedSubmission),
+            analyses.findById(analysisId)
+        )
+            .flatMap(pair -> authorizedAnalysis(pair.getT1(), pair.getT2()))
             .switchIfEmpty(Mono.error(AskAiProblemException.contextNotFound()));
     }
 
@@ -186,23 +185,14 @@ public final class AskAiProgramLoader {
     }
 
     private byte[] readAndVerify(final SourceArtifact artifact, final InputStream stream) throws IOException {
-        final ByteArrayOutputStream output = new ByteArrayOutputStream((int) artifact.byteSize());
-        final MessageDigest digest = Digests.sha256();
-        final byte[] buffer = new byte[8192];
-        long size = 0;
-        int read;
-        while ((read = stream.read(buffer)) > 0) {
-            size += read;
-            if (size > MAX_INPUT_BYTES) {
-                throw AskAiProblemException.contextNotFound();
-            }
-            digest.update(buffer, 0, read);
-            output.write(buffer, 0, read);
-        }
-        if (size != artifact.byteSize() || !MessageDigest.isEqual(digest.digest(), artifact.sha256())) {
+        final byte[] bytes = stream.readNBytes((int) MAX_INPUT_BYTES + 1);
+        if (
+            bytes.length > MAX_INPUT_BYTES || bytes.length != artifact.byteSize()
+                || !MessageDigest.isEqual(Digests.sha256().digest(bytes), artifact.sha256())
+        ) {
             throw AskAiProblemException.contextNotFound();
         }
-        return output.toByteArray();
+        return bytes;
     }
 
     private boolean metadataMatches(final SourceArtifact artifact, final SourceArtifactMetadata metadata) {

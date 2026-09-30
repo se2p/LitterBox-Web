@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import tools.jackson.databind.json.JsonMapper;
 
@@ -51,9 +52,9 @@ final class AskAiListingBounds {
         }
         final List<AskAiQuestionsView.Target> bare = view.targets().stream().map(target -> withoutPreview(target))
             .toList();
-        final int baseBytes = serializedBytes(withTargets(view, bare, true, view.truncated()));
+        final int baseBytes = serializedBytes(withTargets(view, bare, view.truncated()));
         if (baseBytes > maxBytes) {
-            return fewerScripts(withTargets(view, bare, true, true), maxBytes);
+            return fewerScripts(withTargets(view, bare, true), maxBytes);
         }
         final List<AskAiQuestionsView.Target> kept = new ArrayList<>(view.targets().size());
         int spent = baseBytes;
@@ -67,7 +68,7 @@ final class AskAiListingBounds {
                 kept.add(withoutPreview(target));
             }
         }
-        return withTargets(view, kept, true, view.truncated());
+        return withTargets(view, kept, view.truncated());
     }
 
     /**
@@ -81,12 +82,13 @@ final class AskAiListingBounds {
         final Set<String> asked = new HashSet<>();
         bare.inquiries().forEach(inquiry -> asked.add(inquiry.target()));
         bare.findings().forEach(finding -> asked.add(finding.target()));
-        final List<AskAiQuestionsView.Target> essential = bare.targets().stream()
-            .filter(target -> !isScript(target) || asked.contains(target.key())).toList();
+        final Predicate<AskAiQuestionsView.Target> essential = target -> !isScript(target)
+            || asked.contains(target.key());
+        final List<AskAiQuestionsView.Target> essentialTargets = bare.targets().stream().filter(essential).toList();
         final List<AskAiQuestionsView.Target> kept = new ArrayList<>(bare.targets().size());
-        int spent = serializedBytes(withTargets(bare, essential, true, true));
+        int spent = serializedBytes(withTargets(bare, essentialTargets, true));
         for (final AskAiQuestionsView.Target target : bare.targets()) {
-            if (!isScript(target) || asked.contains(target.key())) {
+            if (essential.test(target)) {
                 kept.add(target);
                 continue;
             }
@@ -96,7 +98,7 @@ final class AskAiListingBounds {
                 kept.add(target);
             }
         }
-        return withTargets(bare, kept, true, true);
+        return withTargets(bare, kept, true);
     }
 
     private static boolean isScript(final AskAiQuestionsView.Target target) {
@@ -131,10 +133,10 @@ final class AskAiListingBounds {
 
     private static AskAiQuestionsView withTargets(
         final AskAiQuestionsView view, final List<AskAiQuestionsView.Target> targets,
-        final boolean previewsTruncated, final boolean truncated
+        final boolean truncated
     ) {
         return new AskAiQuestionsView(
-            view.schemaVersion(), view.inquiries(), view.findings(), targets, truncated, previewsTruncated
+            view.schemaVersion(), view.inquiries(), view.findings(), targets, truncated, true
         );
     }
 }

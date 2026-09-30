@@ -11,6 +11,14 @@ package de.uni_passau.fim.se2.litterbox_web.web_ui.api.v1;
 
 public record AskAiCreateConversationRequest(String locale, Scope scope) {
 
+    String scopeKind() {
+        return scope == null ? null : scope.kind();
+    }
+
+    String scopeSelector() {
+        return scope == null ? null : scope.selector();
+    }
+
     public record Scope(String kind, String selector) {
     }
 }
