@@ -54,6 +54,7 @@ When running locally, you can view the available REST endpoints at http://localh
 The machine-readable specification of the API is available at http://localhost:8080/v3/api-docs.
 You can import this in link:https://www.postman.com/[Postman], link:https://github.com/usebruno/bruno/[Bruno], or other similar API testing tools.
 
+When running locally, you can view the frontend at http://localhost:8080/litterbox.
 
 == Running the application
 

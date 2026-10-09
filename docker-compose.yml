@@ -24,6 +24,22 @@ services:
     # only required when debugging from the host
     # ports:
     #   - 127.0.0.1:3001:3001
+  mariadb:
+    image: docker.io/library/mariadb:11.8
+    networks:
+      - litterbox-web
+    environment:
+      MARIADB_DATABASE: litterbox
+      MARIADB_USER: litterbox
+      MARIADB_PASSWORD: litterbox
+      MARIADB_ROOT_PASSWORD: root
+    volumes:
+      - db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
   litterbox-web:
     build:
       context: .
@@ -32,10 +48,22 @@ services:
       - litterbox-web
     ports:
       - 127.0.0.1:8080:8080
+    depends_on:
+      mariadb:
+        condition: service_healthy
     environment:
-      SPRING_PROFILES_ACTIVE: code-readability
+      SPRING_PROFILES_ACTIVE: code-readability,public-web
       LITTERBOXWEB_SCREENSHOT_URL: http://screenshot:3001/
       LITTERBOXWEB_CODEREADABILITY_URL: http://code-readability:8000/
+      LITTERBOX_DB_URL: jdbc:mariadb://mariadb:3306/litterbox
+      LITTERBOX_DB_USER: litterbox
+      LITTERBOX_DB_PASSWORD: litterbox
+      LITTERBOX_SOURCE_STORAGE_ROOT: /app/storage
+    volumes:
+      - storage:/app/storage
 networks:
   litterbox-web:
+volumes:
+  db-data:
+  storage:
 ...
