@@ -35,6 +35,8 @@ from docker.io/library/eclipse-temurin:25-alpine
 run : \
     && addgroup -S spring \
     && adduser -S spring -G spring \
+    && mkdir -p /app/storage \
+    && chown spring:spring /app/storage \
     && :
 
 user spring:spring
