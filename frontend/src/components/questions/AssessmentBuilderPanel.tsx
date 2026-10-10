@@ -66,6 +66,7 @@ export function AssessmentBuilderPanel({
                 )}
             </div>
             {selectionEmpty && <p className="hint">{t('selectionRequired')}</p>}
+            {!publish && <p className="hint">{t('publishingUnavailable')}</p>}
             <div className="assessment-export-actions" role="group" aria-label={t('exportLabel')}>
                 <button
                     type="button"
@@ -129,9 +130,11 @@ export function AssessmentBuilderPanel({
                     <p role="alert">
                         {exportImport.importResult.reason === 'too-large'
                             ? t('importTooLarge')
-                            : exportImport.importResult.reason === 'over-limit'
-                              ? t('importOverLimit')
-                              : t('importError')}
+                            : exportImport.importResult.reason === 'wrong-project'
+                              ? t('importWrongProject')
+                              : exportImport.importResult.reason === 'over-limit'
+                                ? t('importOverLimit')
+                                : t('importError')}
                     </p>
                 )}
             </div>

@@ -6,6 +6,9 @@ export const assessmentKeys = {
     title: 'Build a quiz from these questions',
     lead: 'Select generated questions, adapt them for your class, or add your own. Filters change only what you see; the selected set stays intact until you change it.',
     defaultTitle: '{{project}} quiz',
+    draftSavedOnDevice: 'Your quiz draft is saved automatically on this device.',
+    draftSaveError:
+        'This device cannot save your draft. Download the editable JSON before leaving.',
     untitledProject: 'Project',
     name: 'Quiz title',
     instructions: 'Instructions for learners',
@@ -25,9 +28,12 @@ export const assessmentKeys = {
     exportError: 'The quiz download could not be prepared. Try again.',
     selectionRequired: 'Select at least one question before you can export or publish.',
     importLabel: 'Import from JSON',
-    importSuccess_one: 'Loaded {{count}} question from the file. This replaced the current draft.',
+    importSuccess_one:
+        'Loaded {{count}} question into your quiz. The question bank is still available.',
     importSuccess_other:
-        'Loaded {{count}} questions from the file. This replaced the current draft.',
+        'Loaded {{count}} questions into your quiz. The question bank is still available.',
+    importWrongProject:
+        'This quiz is not for the current project. Open its source project’s question set and import it there.',
     importError:
         'This file could not be read as a LitterBox quiz. Choose a JSON file exported from here.',
     importOverLimit:
@@ -113,6 +119,8 @@ export const assessmentKeys = {
     no: 'No',
     generatedBy: 'Prepared with LitterBox',
     publishAction: 'Publish for learners to open',
+    publishingUnavailable:
+        'Online publishing is disabled on this site. You can download a printable quiz instead.',
     publishing: 'Publishing…',
     publishError: 'The quiz could not be published. Try again.',
     publishEditedConfirmTitle: 'Some questions will not be marked automatically',

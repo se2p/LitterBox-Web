@@ -8,6 +8,9 @@ export const pack: Partial<AssessmentPack> = {
     title: 'Aus diesen Fragen ein Quiz erstellen',
     lead: 'Wähle erzeugte Fragen aus, passe sie für deine Klasse an oder ergänze eigene. Filter ändern nur die Ansicht; die Auswahl bleibt erhalten, bis du sie änderst.',
     defaultTitle: 'Quiz zu {{project}}',
+    draftSavedOnDevice: 'Dein Quizentwurf wird automatisch auf diesem Gerät gespeichert.',
+    draftSaveError:
+        'Dieses Gerät kann deinen Entwurf nicht speichern. Lade vor dem Verlassen das bearbeitbare JSON herunter.',
     untitledProject: 'Projekt',
     name: 'Titel des Quiz',
     instructions: 'Anweisungen für Lernende',
@@ -22,17 +25,17 @@ export const pack: Partial<AssessmentPack> = {
     selectShown: 'Angezeigte Fragen auswählen',
     deselectShown: 'Angezeigte Fragen abwählen',
     exportLabel: 'Quiz exportieren',
-    exportStudent: 'Druckbares Quiz herunterladen',
-    exportTeacher: 'Lehrkraftfassung herunterladen',
-    exportJson: 'Bearbeitbares JSON herunterladen',
+    exportStudent: 'Quiz herunterladen',
+    exportTeacher: 'Lehrkraftkopie herunterladen',
+    exportJson: 'JSON herunterladen',
     exportError: 'Der Download konnte nicht vorbereitet werden. Versuche es erneut.',
     selectionRequired:
         'Wähle mindestens eine Frage aus, bevor du exportieren oder veröffentlichen kannst.',
     importLabel: 'Aus JSON importieren',
-    importSuccess_one:
-        '{{count}} Frage aus der Datei geladen. Der aktuelle Entwurf wurde dadurch ersetzt.',
-    importSuccess_other:
-        '{{count}} Fragen aus der Datei geladen. Der aktuelle Entwurf wurde dadurch ersetzt.',
+    importSuccess_one: '{{count}} Frage ins Quiz geladen. Die Fragenbank bleibt verfügbar.',
+    importSuccess_other: '{{count}} Fragen ins Quiz geladen. Die Fragenbank bleibt verfügbar.',
+    importWrongProject:
+        'Dieses Quiz gehört nicht zum aktuellen Projekt. Öffne den Fragensatz des ursprünglichen Projekts und importiere es dort.',
     importError:
         'Diese Datei konnte nicht als LitterBox-Quiz gelesen werden. Wähle eine hier exportierte JSON-Datei.',
     importOverLimit:
@@ -121,7 +124,9 @@ export const pack: Partial<AssessmentPack> = {
     yes: 'Ja',
     no: 'Nein',
     generatedBy: 'Mit LitterBox erstellt',
-    publishAction: 'Für Lernende veröffentlichen',
+    publishAction: 'Quiz veröffentlichen',
+    publishingUnavailable:
+        'Online-Veröffentlichungen sind auf dieser Website deaktiviert. Du kannst stattdessen ein Quiz zum Ausdrucken herunterladen.',
     publishing: 'Wird veröffentlicht …',
     publishError: 'Das Quiz konnte nicht veröffentlicht werden. Versuche es erneut.',
     publishEditedConfirmTitle: 'Einige Fragen werden nicht automatisch bewertet',

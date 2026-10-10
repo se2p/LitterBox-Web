@@ -153,6 +153,7 @@ export const pack: Partial<TranslationPack> = {
     submitTitle: 'Analiza un proyecto de Scratch',
     submitLead: 'Sube un archivo completo o introduce una URL numérica de Scratch.',
     teacherTitle: 'Para docentes',
+    backToTeacher: '← Volver a las herramientas para docentes',
     teacherLead:
         'Esta página ofrece tres cosas: analizar una tarea para ver qué encuentra LitterBox en ella, generar el conjunto de preguntas para plantearlo a una clase, o revisar una clase entera a la vez.',
     teacherSubmissionChoices: 'Revisar una clase entera',

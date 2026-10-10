@@ -116,6 +116,11 @@ function QuestionsEntryPage({ variant }: { variant: QuestionsVariant }) {
     return (
         <PageMain className="questions-page">
             <section className="hero" aria-labelledby="questions-heading">
+                {variant === 'teacher' && (
+                    <p>
+                        <Link to="/teacher">{t('backToTeacher')}</Link>
+                    </p>
+                )}
                 <h1 id="questions-heading">
                     {variant === 'teacher' ? t('teacherQuestionsTitle') : t('questionsTitle')}
                 </h1>
@@ -172,6 +177,11 @@ function QuestionsStatusBanner({
     return (
         <>
             <section className="hero analysis-identity" aria-labelledby="questions-status-heading">
+                {variant === 'teacher' && (
+                    <p>
+                        <Link to="/teacher">{t('backToTeacher')}</Link>
+                    </p>
+                )}
                 <h1 id="questions-status-heading">{t('questionsStatusTitle')}</h1>
                 {value.analysis?.name && (
                     <p className="analysis-project-name">
@@ -380,6 +390,11 @@ function QuestionResultPage({
     if (state.status === 'error')
         return (
             <PageMain>
+                {variant === 'teacher' && (
+                    <p>
+                        <Link to="/teacher">{t('backToTeacher')}</Link>
+                    </p>
+                )}
                 <ErrorState
                     heading={t('questionsStatusTitle')}
                     message={state.tokenInvalid ? t('invalidToken') : t('statusError')}

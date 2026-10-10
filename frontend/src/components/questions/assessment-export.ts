@@ -437,6 +437,7 @@ export type AssessmentImportFailureReason =
     | 'invalid-json'
     | 'wrong-kind'
     | 'unsupported-schema'
+    | 'wrong-project'
     | 'invalid-shape'
     | 'over-limit';
 
@@ -548,6 +549,17 @@ const importedAssessment = (
     for (const candidate of parsed.questions) {
         const question = importedQuestion(candidate, bounds, limits);
         if (!question) return { ok: false, reason: 'invalid-shape' };
+        if (
+            questions.some(
+                (existing) =>
+                    existing.id === question.id ||
+                    (question.source === 'generated' &&
+                        question.sourceQuestionId &&
+                        existing.source === 'generated' &&
+                        existing.sourceQuestionId === question.sourceQuestionId),
+            )
+        )
+            return { ok: false, reason: 'invalid-shape' };
         questions.push(question);
     }
     return { ok: true, title, instructions, questions };
@@ -556,6 +568,8 @@ const importedAssessment = (
 export const parseAssessmentImport = (
     text: string,
     limits: AssessmentLimits,
+    projectName?: string,
+    analysisId?: number,
 ): AssessmentImportResult => {
     const bounds = assessmentBounds(limits);
     let parsed: unknown;
@@ -569,6 +583,14 @@ export const parseAssessmentImport = (
     }
     if (parsed.schemaVersion !== 1) {
         return { ok: false, reason: 'unsupported-schema' };
+    }
+    if (
+        (projectName !== undefined || analysisId !== undefined) &&
+        (!isObject(parsed.source) ||
+            (projectName !== undefined && parsed.source.project !== projectName) ||
+            (analysisId !== undefined && parsed.source.analysisId !== analysisId))
+    ) {
+        return { ok: false, reason: 'wrong-project' };
     }
     try {
         return importedAssessment(parsed, bounds, limits);

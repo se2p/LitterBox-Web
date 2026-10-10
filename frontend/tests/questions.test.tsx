@@ -9,6 +9,9 @@ import { cwd } from 'node:process';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { QuizCard } from '../src/components/single-project/QuizCard';
 import { questionSummaryText } from '../src/components/questions/question-summary';
+import { ASSESSMENT_SHORT_TEXT_LENGTH } from '../src/api/assessments';
+import { DEFAULT_ASSESSMENT_LIMITS } from '../src/api/capabilities';
+import { parseAssessmentImport } from '../src/components/questions/assessment-export';
 import i18n from '../src/i18n';
 import { response, capabilitiesResponse, mockFetchRoutes } from './helpers';
 import { renderAt } from './render';
@@ -101,6 +104,7 @@ describe('Questions workflow', () => {
     beforeEach(async () => {
         await i18n.changeLanguage('en');
         vi.restoreAllMocks();
+        window.localStorage.clear();
         vi.stubGlobal('EventSource', undefined);
         // jsdom has no layout, so it never implements scrolling; a fresh spy each test is what lets a test
         // that adds a question assert it was carried into view rather than merely not crashing.
@@ -909,6 +913,18 @@ describe('Questions workflow', () => {
 
         renderAt('/teacher/questions/question-token');
         expect(await screen.findByText('Build a quiz from these questions')).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: '← Back to teacher tools' })).toHaveAttribute(
+            'href',
+            '/teacher',
+        );
+        expect(
+            screen.getByText(
+                'Online publishing is disabled on this site. You can download a printable quiz instead.',
+            ),
+        ).toBeInTheDocument();
+        expect(
+            screen.queryByRole('button', { name: 'Publish for learners to open' }),
+        ).not.toBeInTheDocument();
         expect(
             screen.getByText('0 of 12 block-model cells covered by the selected questions.'),
         ).toBeInTheDocument();
@@ -1002,6 +1018,211 @@ describe('Questions workflow', () => {
         expect(screen.getByRole('heading', { name: 'Question bank' })).toBeInTheDocument();
         expect(screen.getByRole('heading', { name: 'Name and publish' })).toBeInTheDocument();
     });
+
+    it('keeps quiz selection, order, edits and teacher questions when reopened from device history', async () => {
+        const user = userEvent.setup();
+        mockFetchRoutes({
+            features: ['qlc', 'teacher-archive'],
+            fallback: () =>
+                result({
+                    quiz: [
+                        { questionId: 'q-first', question: 'What starts the script?', options: [] },
+                        { questionId: 'q-second', question: 'Why does it repeat?', options: [] },
+                    ],
+                }),
+        });
+
+        const view = renderAt('/teacher/questions/question-token');
+        await screen.findByText('Build a quiz from these questions');
+        await user.click(screen.getByRole('button', { name: 'Select shown questions' }));
+        await user.click(screen.getByRole('button', { name: 'Move question 2 earlier' }));
+        await user.click(screen.getByRole('button', { name: /Question 1 details/ }));
+        await user.click(screen.getByRole('button', { name: 'Edit question 1' }));
+        await user.clear(screen.getByRole('textbox', { name: 'Question text' }));
+        await user.type(
+            screen.getByRole('textbox', { name: 'Question text' }),
+            'Explain the repeat.',
+        );
+        await user.click(screen.getByRole('button', { name: 'Close editor' }));
+        await user.click(screen.getByRole('button', { name: 'Add your own question' }));
+        await user.clear(screen.getByRole('textbox', { name: 'Question text' }));
+        await user.type(
+            screen.getByRole('textbox', { name: 'Question text' }),
+            'Describe a change.',
+        );
+        await user.type(screen.getByRole('textbox', { name: 'Accepted answers' }), 'more repeats');
+        await user.tab();
+        await user.clear(screen.getByRole('textbox', { name: 'Quiz title' }));
+        await user.type(screen.getByRole('textbox', { name: 'Quiz title' }), 'My draft quiz');
+        await user.type(
+            screen.getByRole('textbox', { name: 'Instructions for learners' }),
+            'Explain each answer.',
+        );
+
+        await user.click(screen.getByRole('link', { name: '← Back to teacher tools' }));
+        await screen.findByRole('heading', { name: 'Question sets built on this device' });
+        await user.click(screen.getByRole('link', { name: 'synthetic-question-project.sb3' }));
+        await screen.findByText('Build a quiz from these questions');
+
+        const assertDraft = () => {
+            expect(screen.getByText('3 of 3 selected.')).toBeInTheDocument();
+            expect(screen.getByRole('textbox', { name: 'Quiz title' })).toHaveValue(
+                'My draft quiz',
+            );
+            expect(screen.getByRole('textbox', { name: 'Instructions for learners' })).toHaveValue(
+                'Explain each answer.',
+            );
+            expect(screen.getByRole('button', { name: /Question 1 details/ })).toHaveTextContent(
+                'Explain the repeat.',
+            );
+            expect(screen.getByRole('button', { name: /Question 2 details/ })).toHaveTextContent(
+                'What starts the script?',
+            );
+            expect(screen.getByRole('button', { name: /Question 3 details/ })).toHaveTextContent(
+                'Describe a change.',
+            );
+        };
+        assertDraft();
+        view.unmount();
+        renderAt('/teacher/questions/question-token');
+        await screen.findByText('Build a quiz from these questions');
+        assertDraft();
+        await user.click(screen.getByRole('button', { name: /Question 3 details/ }));
+        await user.click(screen.getByRole('button', { name: 'Edit question 3' }));
+        expect(screen.getByRole('textbox', { name: 'Accepted answers' })).toHaveValue(
+            'more repeats',
+        );
+        await user.click(screen.getByRole('button', { name: 'Close editor' }));
+        await user.click(screen.getByRole('button', { name: 'Add your own question' }));
+        expect(screen.getByText('4 of 4 selected.')).toBeInTheDocument();
+    });
+
+    it('warns when device storage cannot save a quiz draft', async () => {
+        mockFetchRoutes({ features: ['qlc', 'teacher-archive'], fallback: () => result() });
+        vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+            throw new Error('Storage full');
+        });
+        renderAt('/teacher/questions/question-token');
+        expect(
+            await screen.findByText(
+                'This device cannot save your draft. Download the editable JSON before leaving.',
+            ),
+        ).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Select shown questions' })).toBeEnabled();
+    });
+
+    it.each([
+        ['FREE_TEXT', 'Accepted answers'],
+        ['MULTIPLE_CHOICE', 'Answer choices'],
+    ])('saves unfinished %s textarea input without waiting for blur', async (type, label) => {
+        const user = userEvent.setup();
+        mockFetchRoutes({ features: ['qlc', 'teacher-archive'], fallback: () => result() });
+        const view = renderAt('/teacher/questions/question-token');
+        await screen.findByText('Build a quiz from these questions');
+        await user.click(screen.getByRole('button', { name: 'Add your own question' }));
+        await user.selectOptions(screen.getByRole('combobox', { name: 'Answer type' }), type);
+        const input = screen.getByRole('textbox', { name: label });
+        await user.click(input);
+        await user.type(input, 'first answer\nsecond answer\n ');
+        if (type === 'MULTIPLE_CHOICE') {
+            await user.tab();
+            await user.click(screen.getByRole('checkbox', { name: 'first answer' }));
+            await user.clear(input);
+            await user.type(input, 'changed answer\nsecond answer\n ');
+        }
+        const firstAnswer = type === 'MULTIPLE_CHOICE' ? 'changed answer' : 'first answer';
+        expect(input).toHaveFocus();
+        view.unmount();
+        renderAt('/teacher/questions/question-token');
+        await screen.findByText('Build a quiz from these questions');
+        const { written } = captureDownloads();
+        await user.click(screen.getByRole('button', { name: 'Download editable JSON' }));
+        await waitFor(() => expect(written).toHaveLength(1));
+        expect(parseAssessmentImport(written[0]!, DEFAULT_ASSESSMENT_LIMITS).ok).toBe(true);
+        await user.click(screen.getByRole('button', { name: /Question 1 details/ }));
+        await user.click(screen.getByRole('button', { name: 'Edit question 1' }));
+        expect(screen.getByRole('textbox', { name: label })).toHaveValue(
+            `${firstAnswer}\nsecond answer\n `,
+        );
+        await user.click(screen.getByRole('textbox', { name: label }));
+        await user.tab();
+        expect(screen.getByRole('textbox', { name: label })).toHaveValue(
+            `${firstAnswer}\nsecond answer`,
+        );
+    });
+
+    it.each([
+        ['ordinary', 'legacy-question'],
+        ['maximum-length', 'x'.repeat(ASSESSMENT_SHORT_TEXT_LENGTH - 'teacher-imported-1-'.length)],
+        ['unprefixed-maximum-length', 'x'.repeat(ASSESSMENT_SHORT_TEXT_LENGTH)],
+    ])(
+        'keeps %s colliding identities stable through import, reload and export',
+        async (_length, legacyId) => {
+            const user = userEvent.setup();
+            mockFetchRoutes({ features: ['qlc', 'teacher-archive'], fallback: () => result() });
+            const view = renderAt('/teacher/questions/question-token');
+            await screen.findByText('Build a quiz from these questions');
+            const base = `teacher-imported-1-${legacyId}`.slice(0, ASSESSMENT_SHORT_TEXT_LENGTH);
+            const payload = JSON.stringify({
+                kind: 'litterbox-assessment',
+                schemaVersion: 1,
+                title: 'Collision quiz',
+                instructions: '',
+                source: { project: 'synthetic-question-project.sb3', analysisId: 88 },
+                questions: [
+                    base,
+                    legacyId,
+                    `${base.slice(0, ASSESSMENT_SHORT_TEXT_LENGTH - 2)}-2`,
+                ].map((id, index) => ({
+                    id,
+                    source: 'teacher',
+                    question: `Imported question ${index + 1}`,
+                    questionType: 'FREE_TEXT',
+                    options: [],
+                    expectedAnswers: 1,
+                })),
+            });
+            const file = new File([payload], 'collision.json', { type: 'application/json' });
+            await user.upload(screen.getByLabelText('Import from JSON'), file);
+            expect(await screen.findByText('3 of 4 selected.')).toBeInTheDocument();
+            const selectedIds = () =>
+                Array.from(
+                    document.querySelectorAll('.assessment-question-selected h3'),
+                    (el) => el.id,
+                );
+            const ids = selectedIds();
+            expect(new Set(ids).size).toBe(3);
+            await user.click(screen.getByRole('checkbox', { name: 'Include question 1 in quiz' }));
+            expect(screen.getByText('2 of 4 selected.')).toBeInTheDocument();
+            await user.upload(screen.getByLabelText('Import from JSON'), file);
+            expect(await screen.findByText('3 of 4 selected.')).toBeInTheDocument();
+            expect(selectedIds()).toEqual(ids);
+            view.unmount();
+            renderAt('/teacher/questions/question-token');
+            expect(await screen.findByText('3 of 4 selected.')).toBeInTheDocument();
+            expect(selectedIds()).toEqual(ids);
+            for (let number = 1; number <= 3; number++) {
+                expect(
+                    screen.getByRole('button', { name: new RegExp(`Question ${number} details`) }),
+                ).toHaveTextContent(`Imported question ${number}`);
+            }
+            const { written } = captureDownloads();
+            await user.click(screen.getByRole('button', { name: 'Download editable JSON' }));
+            await waitFor(() => expect(written).toHaveLength(1));
+            expect(parseAssessmentImport(written[0]!, DEFAULT_ASSESSMENT_LIMITS).ok).toBe(true);
+            expect(
+                JSON.parse(written[0]!).questions.every(
+                    (q: { id: string }) => q.id.length <= ASSESSMENT_SHORT_TEXT_LENGTH,
+                ),
+            ).toBe(true);
+            await user.upload(
+                screen.getByLabelText('Import from JSON'),
+                new File([written[0]!], 'saved.json', { type: 'application/json' }),
+            );
+            expect(await screen.findByText('3 of 4 selected.')).toBeInTheDocument();
+            expect(selectedIds()).toEqual(ids);
+        },
+    );
 
     it('opens with an empty quiz and every generated question waiting in the bank', async () => {
         mockFetchRoutes({
@@ -1720,7 +1941,7 @@ describe('Questions workflow', () => {
         expect(guidePreview!.textContent).toContain('One mark for naming the counter.');
     });
 
-    it('imports a previously exported JSON file, replacing the current draft and keeping restore where the source still matches', async () => {
+    it('imports the selected quiz while keeping the bank and restore actions', async () => {
         const user = userEvent.setup();
         mockFetchRoutes({
             features: ['qlc', 'teacher-archive'],
@@ -1736,6 +1957,13 @@ describe('Questions workflow', () => {
                             scopeOfFocus: 'ATOM',
                             expectedAnswers: 1,
                         },
+                        {
+                            questionId: 'q-unused',
+                            question: 'How many sprites are there?',
+                            options: [],
+                            questionType: 'NUMBER',
+                            expectedAnswers: 1,
+                        },
                     ],
                 }),
         });
@@ -1743,11 +1971,13 @@ describe('Questions workflow', () => {
         renderAt('/teacher/questions/question-token');
         await screen.findByText('Build a quiz from these questions');
 
+        await user.click(screen.getByRole('button', { name: 'Select shown questions' }));
         const payload = JSON.stringify({
             kind: 'litterbox-assessment',
             schemaVersion: 1,
             title: 'Imported title',
             instructions: 'Imported instructions',
+            source: { project: 'synthetic-question-project.sb3', analysisId: 88 },
             questions: [
                 {
                     id: 'generated-0-q-first',
@@ -1775,17 +2005,40 @@ describe('Questions workflow', () => {
 
         expect(
             await screen.findByText(
-                'Loaded 2 questions from the file. This replaced the current draft.',
+                'Loaded 2 questions into your quiz. The question bank is still available.',
             ),
         ).toBeInTheDocument();
         expect(screen.getByDisplayValue('Imported title')).toBeInTheDocument();
         expect(screen.getByText('What starts the script (edited)?')).toBeInTheDocument();
         expect(screen.getByText('A brand new teacher question.')).toBeInTheDocument();
+        expect(screen.getByText('2 of 3 selected.')).toBeInTheDocument();
+        const bank = document.getElementById('assessment-bank')!;
+        expect(within(bank).getByText('How many sprites are there?')).toBeInTheDocument();
+        expect(within(bank).queryByText('What starts the script?')).not.toBeInTheDocument();
         await user.click(screen.getByRole('button', { name: /Question 1 details/ }));
         await user.click(screen.getByRole('button', { name: /Question 2 details/ }));
         expect(screen.getAllByRole('button', { name: 'Restore generated question' })).toHaveLength(
             1,
         );
+        const { written } = captureDownloads();
+        await user.click(within(bank).getByRole('button', { name: /Add .*How many sprites/ }));
+        await user.click(screen.getByRole('button', { name: 'Download editable JSON' }));
+        await waitFor(() => expect(written).toHaveLength(1));
+        const exported = JSON.parse(written[0]!);
+        expect(
+            exported.questions.map((question: { question: string }) => question.question),
+        ).toEqual([
+            'What starts the script (edited)?',
+            'A brand new teacher question.',
+            'How many sprites are there?',
+        ]);
+        await user.click(screen.getByRole('checkbox', { name: 'Include question 1 in quiz' }));
+        await user.upload(
+            screen.getByLabelText('Import from JSON'),
+            new File([written[0]!], 'saved.json', { type: 'application/json' }),
+        );
+        expect(await screen.findByText('3 of 3 selected.')).toBeInTheDocument();
+        expect(screen.getByDisplayValue('Imported instructions')).toBeInTheDocument();
     });
 
     it('imports a file with every one of its questions already selected, unlike a freshly generated bank', async () => {
@@ -1818,6 +2071,7 @@ describe('Questions workflow', () => {
             schemaVersion: 1,
             title: 'Imported title',
             instructions: 'Imported instructions',
+            source: { project: 'synthetic-question-project.sb3', analysisId: 88 },
             questions: [
                 {
                     id: 'teacher-1',
@@ -1838,19 +2092,43 @@ describe('Questions workflow', () => {
             ],
         });
         const file = new File([payload], 'assessment.json', { type: 'application/json' });
+        const foreignFile = new File(
+            [
+                JSON.stringify({
+                    ...JSON.parse(payload),
+                    source: { project: 'synthetic-question-project.sb3', analysisId: 99 },
+                }),
+            ],
+            'other.json',
+            { type: 'application/json' },
+        );
+        await user.upload(screen.getByLabelText('Import from JSON'), foreignFile);
+        expect(
+            await screen.findByText(
+                'This quiz is not for the current project. Open its source project’s question set and import it there.',
+            ),
+        ).toBeInTheDocument();
+        expect(screen.getByText('0 of 1 selected.')).toBeInTheDocument();
+        expect(screen.queryByDisplayValue('Imported title')).not.toBeInTheDocument();
         await user.upload(screen.getByLabelText('Import from JSON'), file);
 
         expect(
             await screen.findByText(
-                'Loaded 2 questions from the file. This replaced the current draft.',
+                'Loaded 2 questions into your quiz. The question bank is still available.',
             ),
         ).toBeInTheDocument();
         expect(
             screen.getByText('0 of 12 block-model cells covered by the selected questions.'),
         ).toBeInTheDocument();
-        expect(screen.getByText('2 of 2 selected.')).toBeInTheDocument();
+        expect(screen.getByText('2 of 3 selected.')).toBeInTheDocument();
         expect(screen.getByRole('heading', { name: 'Question 1' })).toBeInTheDocument();
         expect(screen.getByRole('heading', { name: 'Question 2' })).toBeInTheDocument();
+        await user.click(screen.getByRole('checkbox', { name: 'Include question 1 in quiz' }));
+        await user.upload(screen.getByLabelText('Import from JSON'), file);
+        expect(await screen.findByText('2 of 3 selected.')).toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'Add your own question' }));
+        expect(screen.getByText('3 of 4 selected.')).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Question 3' })).toBeInTheDocument();
     });
 
     it('shows a clear message and leaves the draft untouched when an imported file is not a LitterBox assessment', async () => {

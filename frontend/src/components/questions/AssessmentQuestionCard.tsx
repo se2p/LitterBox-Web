@@ -13,6 +13,7 @@ import { questionSummaryText } from './question-summary';
 import {
     answerLines,
     carriedCorrectAnswers,
+    reconcileChoiceAnswers,
     selectedYesNo,
     YES_NO_TOKENS,
 } from './correct-answer-rules';
@@ -35,15 +36,11 @@ export interface AssessmentQuestionDraft extends QuizQuestion {
     selected: boolean;
     answerGuide: string;
     correctAnswers: string[];
+    optionsText?: string;
+    acceptedAnswersText?: string;
 }
 
 const ROW_LABEL_LENGTH = 56;
-
-const useBlurBuffer = (fromDraft: string): [text: string, setText: (text: string) => void] => {
-    const [edit, setEdit] = useState<{ from: string; text: string }>();
-    const text = edit?.from === fromDraft ? edit.text : fromDraft;
-    return [text, (next) => setEdit({ from: fromDraft, text: next })];
-};
 
 function RichTextField({
     label,
@@ -127,8 +124,8 @@ export function AssessmentQuestionCard({
     const { t: ta } = useTranslation('assessment');
     const [expanded, setExpanded] = useState(startEditing);
     const [editing, setEditing] = useState(startEditing);
-    const [optionsText, setOptionsText] = useBlurBuffer(draft.options.join('\n'));
-    const [acceptedText, setAcceptedText] = useBlurBuffer(draft.correctAnswers.join('\n'));
+    const optionsText = draft.optionsText ?? draft.options.join('\n');
+    const acceptedText = draft.acceptedAnswersText ?? draft.correctAnswers.join('\n');
     const headingId = `assessment-question-${draft.draftId}`;
     const detailsId = `${headingId}-details`;
     const articleRef = useRef<HTMLElement>(null);
@@ -148,6 +145,8 @@ export function AssessmentQuestionCard({
             typeDeclared: true,
             ...(questionType === 'MULTIPLE_CHOICE' ? {} : { expectedAnswers: 1, options }),
             correctAnswers: carriedCorrectAnswers(questionType, options, draft.correctAnswers),
+            optionsText: undefined,
+            acceptedAnswersText: undefined,
         });
     };
 
@@ -362,20 +361,20 @@ export function AssessmentQuestionCard({
                                             value={optionsText}
                                             rows={Math.max(3, Math.min(8, draft.options.length))}
                                             placeholder={ta('optionsHint')}
-                                            onChange={(event) => setOptionsText(event.target.value)}
-                                            onBlur={() => {
+                                            onChange={(event) => {
+                                                const optionsText = event.target.value;
                                                 const options = answerLines(optionsText);
                                                 onChange({
+                                                    optionsText,
                                                     options,
-                                                    correctAnswers: draft.correctAnswers.filter(
-                                                        (answer) => options.includes(answer),
-                                                    ),
-                                                    expectedAnswers: Math.min(
-                                                        draft.expectedAnswers,
-                                                        Math.max(1, options.length),
-                                                    ),
                                                 });
                                             }}
+                                            onBlur={() =>
+                                                onChange({
+                                                    optionsText: undefined,
+                                                    ...reconcileChoiceAnswers(draft),
+                                                })
+                                            }
                                         />
                                     </label>
                                     {limitAlerts(breaches.tooManyOptions, breaches.optionTooLong)}
@@ -515,10 +514,13 @@ export function AssessmentQuestionCard({
                                             )}
                                             placeholder={ta('correctAnswerFreeTextPlaceholder')}
                                             onChange={(event) =>
-                                                setAcceptedText(event.target.value)
+                                                onChange({
+                                                    acceptedAnswersText: event.target.value,
+                                                    correctAnswers: answerLines(event.target.value),
+                                                })
                                             }
                                             onBlur={() =>
-                                                setCorrectAnswers(answerLines(acceptedText))
+                                                onChange({ acceptedAnswersText: undefined })
                                             }
                                         />
                                     </label>

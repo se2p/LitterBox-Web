@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: 2026 LitterBox-Web contributors
 
 import { useSyncExternalStore } from 'react';
+import { forgetAssessmentDrafts } from '../components/questions/assessment-draft-store';
 import { readRaw, readValidatedList, storage, storedTimestamp, writeList } from './device-store';
 
 export type RecentAnalysisKind = 'issues' | 'questions' | 'batch';
@@ -106,6 +107,7 @@ export const rememberProject = (entry: RecentProject): void => {
 };
 
 export const forgetProjects = (kinds?: readonly RecentAnalysisKind[]): void => {
+    if (kinds === undefined || kinds.includes('questions')) forgetAssessmentDrafts();
     const store = storage();
     if (!store) return;
     try {

@@ -4,7 +4,7 @@
 import { useMemo } from 'react';
 import { useIdSet } from '../lib/useIdSet';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
+import { Link, useLocation } from 'react-router';
 import type { CapabilityState } from '../lib/capabilities';
 import { PageMain } from '../components/Page';
 import { FoldSection } from '../components/FoldSection';
@@ -63,6 +63,7 @@ export function TaskAnalysisPage({
         continueTo: TASK_ANALYSIS_PATH,
         destination: (selection) => retainedAnalysisDestination(TASK_ANALYSIS_PATH, selection),
         entryExtra: <TaskRecentAnalyses />,
+        backLink: <Link to="/teacher">{t('backToTeacher')}</Link>,
         copy: {
             title: t('taskAnalysisTitle'),
             lead: t('taskAnalysisLead'),
@@ -149,6 +150,9 @@ export function TaskAnalysisPage({
     return (
         <PageMain className="task-analysis-page">
             <section className="hero" aria-labelledby="task-analysis-title">
+                <p>
+                    <Link to="/teacher">{t('backToTeacher')}</Link>
+                </p>
                 <h1 id="task-analysis-title">{t('taskAnalysisTitle')}</h1>
                 <p className="lead">{t('taskAnalysisLead')}</p>
                 {analysis.name && (

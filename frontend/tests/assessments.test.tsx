@@ -775,6 +775,7 @@ describe('hosted quiz workflow', () => {
         expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 
         expect(await screen.findByText('Quiz published')).toBeInTheDocument();
+        expect(screen.queryByText(/Online publishing is disabled/)).not.toBeInTheDocument();
         expect(screen.getByText(/Link for learners/)).toBeInTheDocument();
         expect(screen.getByText(/Link for you — keep this one/)).toBeInTheDocument();
         expect(screen.getByText(/only time this link is shown/)).toBeInTheDocument();
@@ -1222,6 +1223,7 @@ describe('hosted quiz workflow', () => {
                     schemaVersion: 1,
                     title: 'Quiz',
                     instructions: '',
+                    source: { project: 'synthetic-question-project.sb3', analysisId: 88 },
                     questions: [
                         {
                             id: 'teacher-long',
@@ -1666,6 +1668,26 @@ describe('hosted quiz workflow', () => {
             ]);
             expect(screen.getByRole('textbox', { name: 'Accepted answers' })).toHaveValue('4');
         });
+    });
+
+    it('uses concise German labels for the four quiz actions', async () => {
+        await i18n.changeLanguage('de');
+        mockFetchRoutes({
+            features: ['qlc', 'teacher-archive', 'assessments'],
+            fallback: () => twoGeneratedQuestions(),
+        });
+        renderAt('/teacher/questions/question-token');
+        const actions = await screen.findByRole('group', { name: 'Quiz exportieren' });
+        expect(
+            within(actions)
+                .getAllByRole('button')
+                .map((button) => button.textContent),
+        ).toEqual([
+            'Quiz herunterladen',
+            'Lehrkraftkopie herunterladen',
+            'JSON herunterladen',
+            'Quiz veröffentlichen',
+        ]);
     });
 
     it('hides publishing entirely when the capability is off, leaving the exports untouched', async () => {

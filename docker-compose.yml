@@ -53,6 +53,7 @@ services:
         condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: code-readability,public-web
+      LITTERBOX_CAPABILITIES_ASSESSMENTS_ENABLED: "true"
       LITTERBOXWEB_SCREENSHOT_URL: http://screenshot:3001/
       LITTERBOXWEB_CODEREADABILITY_URL: http://code-readability:8000/
       LITTERBOX_DB_URL: jdbc:mariadb://mariadb:3306/litterbox

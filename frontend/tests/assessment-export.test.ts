@@ -604,6 +604,53 @@ const importFile = (questions: unknown[], overrides: Record<string, unknown> = {
     });
 
 describe('assessment import', () => {
+    it('checks the source project when importing into a question bank', () => {
+        const file = assessmentJson(assessment);
+        expect(parseImportWithLimits(file, DEFAULT_ASSESSMENT_LIMITS, assessment.project).ok).toBe(
+            true,
+        );
+        expect(parseImportWithLimits(file, DEFAULT_ASSESSMENT_LIMITS, 'other-project.sb3')).toEqual(
+            { ok: false, reason: 'wrong-project' },
+        );
+        const withoutSource = JSON.parse(file);
+        delete withoutSource.source;
+        expect(
+            parseImportWithLimits(
+                JSON.stringify(withoutSource),
+                DEFAULT_ASSESSMENT_LIMITS,
+                assessment.project,
+            ),
+        ).toEqual({ ok: false, reason: 'wrong-project' });
+    });
+
+    it('rejects another analysis with the same project filename or a missing analysis ID', () => {
+        const file = assessmentJson(assessment);
+        expect(
+            parseImportWithLimits(file, DEFAULT_ASSESSMENT_LIMITS, assessment.project, 88).ok,
+        ).toBe(true);
+        expect(
+            parseImportWithLimits(file, DEFAULT_ASSESSMENT_LIMITS, assessment.project, 99),
+        ).toEqual({ ok: false, reason: 'wrong-project' });
+        const withoutAnalysis = JSON.parse(file);
+        delete withoutAnalysis.source.analysisId;
+        expect(
+            parseImportWithLimits(
+                JSON.stringify(withoutAnalysis),
+                DEFAULT_ASSESSMENT_LIMITS,
+                assessment.project,
+                88,
+            ),
+        ).toEqual({ ok: false, reason: 'wrong-project' });
+    });
+
+    it('rejects duplicate question IDs or generated source references', () => {
+        const first = assessment.questions[0];
+        for (const duplicate of [first, { ...first, id: 'different-id' }]) {
+            const file = assessmentJson({ ...assessment, questions: [first, duplicate] });
+            expect(parseAssessmentImport(file)).toEqual({ ok: false, reason: 'invalid-shape' });
+        }
+    });
+
     it('round-trips an exported assessment back into the same questions', () => {
         const result = parseAssessmentImport(assessmentJson(assessment));
 

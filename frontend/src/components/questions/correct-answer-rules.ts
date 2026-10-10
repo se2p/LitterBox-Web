@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 // SPDX-FileCopyrightText: 2026 LitterBox-Web contributors
 
-import type { QuizQuestionType } from './quiz-question';
+import type { QuizQuestion, QuizQuestionType } from './quiz-question';
 
 export const normalizedChoice = (value: string): string =>
     value.trim().replaceAll(/\s+/g, ' ').toLowerCase();
@@ -78,6 +78,11 @@ export const canonicalCorrectAnswers = (
     const carried = carriedCorrectAnswers(type, options, correctAnswers);
     return carried.length === correctAnswers.length ? carried : undefined;
 };
+
+export const reconcileChoiceAnswers = (draft: QuizQuestion & { correctAnswers: string[] }) => ({
+    correctAnswers: carriedCorrectAnswers('MULTIPLE_CHOICE', draft.options, draft.correctAnswers),
+    expectedAnswers: Math.min(draft.expectedAnswers, Math.max(1, draft.options.length)),
+});
 
 export const selectedYesNo = (correctAnswers: readonly string[]): YesNoToken | undefined =>
     correctAnswers.length === 1 ? yesNoToken(correctAnswers[0]) : undefined;

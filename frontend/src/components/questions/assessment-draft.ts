@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 // SPDX-FileCopyrightText: 2026 LitterBox-Web contributors
 
-import type { AssessmentQuestionInput } from '../../api/assessments';
+import { ASSESSMENT_SHORT_TEXT_LENGTH, type AssessmentQuestionInput } from '../../api/assessments';
 import type { AssessmentLimits } from '../../api/capabilities';
 import type { AssessmentQuestionDraft } from './AssessmentQuestionCard';
 import type { AssessmentExportQuestion } from './assessment-export';
@@ -49,11 +49,17 @@ export const importedDraft = (
     index: number,
     originalsByQuestionId: ReadonlyMap<string, AssessmentQuestionDraft>,
 ): AssessmentQuestionDraft => {
-    const matched = question.sourceQuestionId
-        ? originalsByQuestionId.get(question.sourceQuestionId)
-        : undefined;
+    const matched =
+        question.source === 'generated' && question.sourceQuestionId
+            ? originalsByQuestionId.get(question.sourceQuestionId)
+            : undefined;
     return {
-        draftId: matched ? matched.draftId : `imported-${index}-${question.id}`,
+        draftId: matched
+            ? matched.draftId
+            : (question.id.startsWith('teacher-')
+                  ? question.id
+                  : `teacher-imported-${index}-${question.id}`
+              ).slice(0, ASSESSMENT_SHORT_TEXT_LENGTH),
         questionId: matched ? matched.questionId : (question.sourceQuestionId ?? question.id),
         source: matched ? 'generated' : 'teacher',
         selected: true,

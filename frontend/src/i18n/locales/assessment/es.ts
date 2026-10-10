@@ -8,6 +8,10 @@ export const pack: Partial<AssessmentPack> = {
     title: 'Crear un cuestionario con estas preguntas',
     lead: 'Selecciona preguntas generadas, adáptalas a tu clase o añade las tuyas. Los filtros solo cambian lo que ves; la selección se conserva hasta que la cambies.',
     defaultTitle: 'Cuestionario de {{project}}',
+    draftSavedOnDevice:
+        'El borrador del cuestionario se guarda automáticamente en este dispositivo.',
+    draftSaveError:
+        'Este dispositivo no puede guardar el borrador. Descarga el JSON editable antes de salir.',
     untitledProject: 'Proyecto',
     name: 'Título del cuestionario',
     instructions: 'Instrucciones para el alumnado',
@@ -29,9 +33,11 @@ export const pack: Partial<AssessmentPack> = {
     selectionRequired: 'Selecciona al menos una pregunta antes de poder exportar o publicar.',
     importLabel: 'Importar desde JSON',
     importSuccess_one:
-        'Se cargó {{count}} pregunta del archivo. Esto sustituyó el borrador actual.',
+        'Se cargó {{count}} pregunta en tu cuestionario. El banco de preguntas sigue disponible.',
     importSuccess_other:
-        'Se cargaron {{count}} preguntas del archivo. Esto sustituyó el borrador actual.',
+        'Se cargaron {{count}} preguntas en tu cuestionario. El banco de preguntas sigue disponible.',
+    importWrongProject:
+        'Este cuestionario no corresponde al proyecto actual. Abre las preguntas de su proyecto de origen e impórtalo allí.',
     importError:
         'No se pudo leer este archivo como un cuestionario de LitterBox. Elige un archivo JSON exportado desde aquí.',
     importOverLimit:
@@ -120,6 +126,8 @@ export const pack: Partial<AssessmentPack> = {
     no: 'No',
     generatedBy: 'Preparado con LitterBox',
     publishAction: 'Publicar para que el alumnado la abra',
+    publishingUnavailable:
+        'La publicación online está desactivada en este sitio. Puedes descargar un cuestionario para imprimir.',
     publishing: 'Publicando…',
     publishError: 'No se pudo publicar el cuestionario. Inténtalo de nuevo.',
     publishEditedConfirmTitle: 'Algunas preguntas no se corregirán automáticamente',

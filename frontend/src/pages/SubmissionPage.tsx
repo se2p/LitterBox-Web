@@ -3,7 +3,7 @@
 
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useNavigate, useParams } from 'react-router';
+import { Link, useLocation, useNavigate, useParams } from 'react-router';
 import { formatNumber } from '../i18n';
 import type { CapabilityState } from '../lib/capabilities';
 import { ErrorState, LoadingState } from '../components/States';
@@ -591,6 +591,11 @@ export function SubmissionPage({
 
     return (
         <PageMain>
+            {isBatchSubmission(state.value) && (
+                <p>
+                    <Link to="/teacher">{t('backToTeacher')}</Link>
+                </p>
+            )}
             <SubmissionStatusBanner
                 value={state.value}
                 sseState={sseState}

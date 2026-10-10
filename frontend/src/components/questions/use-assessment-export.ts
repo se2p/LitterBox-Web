@@ -139,7 +139,7 @@ export function useAssessmentExport({
     };
 
     const applyImportedText = (text: string) => {
-        const result = parseAssessmentImport(text, limits);
+        const result = parseAssessmentImport(text, limits, projectName, analysisId);
         if (!result.ok) {
             setImportResult(result);
             return;

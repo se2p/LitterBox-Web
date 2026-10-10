@@ -185,6 +185,10 @@ describe('analysing a task', () => {
             screen.getByRole('heading', { name: 'Analyse a task', level: 1 }),
         ).toBeInTheDocument();
         expect(screen.getByText('model-solution.sb3')).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: '← Back to teacher tools' })).toHaveAttribute(
+            'href',
+            '/teacher',
+        );
 
         const missingInitRow = screen
             .getByText('Missing initialisation')
@@ -423,6 +427,10 @@ describe('analysing a task', () => {
             await screen.findByRole('heading', { name: 'Analyse a task', level: 1 }),
         ).toBeInTheDocument();
         expect(screen.getByLabelText('Your project file')).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: '← Back to teacher tools' })).toHaveAttribute(
+            'href',
+            '/teacher',
+        );
     });
 
     it('offers nothing extra on the entry when this browser has analysed nothing yet', async () => {

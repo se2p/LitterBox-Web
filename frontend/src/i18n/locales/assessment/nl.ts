@@ -8,6 +8,9 @@ export const pack: Partial<AssessmentPack> = {
     title: 'Maak van deze vragen een quiz',
     lead: 'Selecteer gegenereerde vragen, pas ze aan voor je klas of voeg eigen vragen toe. Filters veranderen alleen wat je ziet; de selectie blijft staan tot je die wijzigt.',
     defaultTitle: 'Quiz over {{project}}',
+    draftSavedOnDevice: 'Je quizconcept wordt automatisch op dit apparaat opgeslagen.',
+    draftSaveError:
+        'Dit apparaat kan je concept niet opslaan. Download de bewerkbare JSON voordat je weggaat.',
     untitledProject: 'Project',
     name: 'Titel van de quiz',
     instructions: 'Instructies voor leerlingen',
@@ -27,9 +30,10 @@ export const pack: Partial<AssessmentPack> = {
     exportError: 'De download kon niet worden voorbereid. Probeer het opnieuw.',
     selectionRequired: 'Selecteer minstens één vraag voordat je kunt exporteren of publiceren.',
     importLabel: 'Importeren vanuit JSON',
-    importSuccess_one: '{{count}} vraag geladen uit het bestand. Dit verving het huidige concept.',
-    importSuccess_other:
-        '{{count}} vragen geladen uit het bestand. Dit verving het huidige concept.',
+    importSuccess_one: '{{count}} vraag in je quiz geladen. De vragenbank blijft beschikbaar.',
+    importSuccess_other: '{{count}} vragen in je quiz geladen. De vragenbank blijft beschikbaar.',
+    importWrongProject:
+        'Deze quiz hoort niet bij het huidige project. Open de vragenset van het oorspronkelijke project en importeer hem daar.',
     importError:
         'Dit bestand kon niet als LitterBox-quiz worden gelezen. Kies een hier geëxporteerd JSON-bestand.',
     importOverLimit:
@@ -118,6 +122,8 @@ export const pack: Partial<AssessmentPack> = {
     no: 'Nee',
     generatedBy: 'Voorbereid met LitterBox',
     publishAction: 'Publiceren zodat leerlingen hem kunnen openen',
+    publishingUnavailable:
+        'Online publiceren is uitgeschakeld op deze site. Je kunt in plaats daarvan een quiz downloaden om af te drukken.',
     publishing: 'Bezig met publiceren…',
     publishError: 'De quiz kon niet worden gepubliceerd. Probeer het opnieuw.',
     publishEditedConfirmTitle: 'Sommige vragen worden niet automatisch nagekeken',

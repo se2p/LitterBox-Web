@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 // SPDX-FileCopyrightText: 2026 LitterBox-Web contributors
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import '../../styles/pages/assessment.css';
 import { AssessmentBuilderPanel } from './AssessmentBuilderPanel';
@@ -11,6 +11,7 @@ import { SectionCard, SectionNav } from '../SectionCard';
 import { TeacherQuestionCoverage } from './TeacherQuestionCoverage';
 import { TeacherQuestionTypeFilter } from './TeacherQuestionTypeFilter';
 import { useAssessmentDrafts } from './use-assessment-drafts';
+import { readAssessmentDraft, saveAssessmentDraft } from './assessment-draft-store';
 import { useAssessmentExport } from './use-assessment-export';
 import { useAssessmentPublish } from './use-assessment-publish';
 import { useQuestionFilters } from './use-question-filters';
@@ -36,12 +37,22 @@ export function TeacherQuestionOverview({
 }) {
     const { t } = useTranslation();
     const { t: ta } = useTranslation('assessment');
-    const drafts = useAssessmentDrafts(questions, limits);
+    const [savedDraft] = useState(() => readAssessmentDraft(token, analysisId));
+    const drafts = useAssessmentDrafts(questions, limits, savedDraft?.drafts);
     const filters = useQuestionFilters(drafts.drafts, t);
-    const [title, setTitle] = useState(() =>
-        ta('defaultTitle', { project: projectName || ta('untitledProject') }),
+    const [title, setTitle] = useState(
+        () =>
+            savedDraft?.title ??
+            ta('defaultTitle', { project: projectName || ta('untitledProject') }),
     );
-    const [instructions, setInstructions] = useState('');
+    const [instructions, setInstructions] = useState(savedDraft?.instructions ?? '');
+    const [draftSaveFailed, setDraftSaveFailed] = useState(false);
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- report localStorage write failures.
+        setDraftSaveFailed(
+            !saveAssessmentDraft(token, analysisId, { title, instructions, drafts: drafts.drafts }),
+        );
+    }, [token, analysisId, title, instructions, drafts.drafts]);
 
     const exportImport = useAssessmentExport({
         token,
@@ -55,7 +66,7 @@ export function TeacherQuestionOverview({
         onImport: (result) => {
             setTitle(result.title);
             setInstructions(result.instructions);
-            drafts.replaceFromImport(result.questions);
+            drafts.loadFromImport(result.questions);
             filters.resetFilters();
         },
     });
@@ -120,6 +131,9 @@ export function TeacherQuestionOverview({
                     </div>
                 </div>
                 <p className="lead">{ta('lead')}</p>
+                <p className="hint" role={draftSaveFailed ? 'alert' : undefined}>
+                    {ta(draftSaveFailed ? 'draftSaveError' : 'draftSavedOnDevice')}
+                </p>
                 <p className="visually-hidden" role="status" aria-live="polite">
                     {drafts.announcement}
                 </p>

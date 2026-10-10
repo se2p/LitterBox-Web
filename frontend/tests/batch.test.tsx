@@ -754,6 +754,10 @@ describe('batch workflows', () => {
         renderAt('/submissions/batch-token');
 
         const summary = await screen.findByRole('heading', { name: 'Class set summary' });
+        expect(screen.getByRole('link', { name: '← Back to teacher tools' })).toHaveAttribute(
+            'href',
+            '/teacher',
+        );
         const summaryCard = summary.closest('.card');
         expect(summaryCard).not.toBeNull();
         expect(within(summaryCard as HTMLElement).getByText('Not analysed')).toBeInTheDocument();

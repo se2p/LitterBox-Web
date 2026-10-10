@@ -159,6 +159,7 @@ export const translationKeys = {
     submitTitle: 'Analyse one Scratch project',
     submitLead: 'Upload a complete project archive or enter a numeric Scratch project URL.',
     teacherTitle: 'For teachers',
+    backToTeacher: '← Back to teacher tools',
     teacherLead:
         'This page offers three things: analyse a task to see what LitterBox finds in it, generate the question set to ask a class about it, or check a whole class set of submissions at once.',
     teacherSubmissionChoices: 'Check a class set',

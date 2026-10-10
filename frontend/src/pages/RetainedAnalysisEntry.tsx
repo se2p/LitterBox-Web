@@ -24,6 +24,7 @@ export interface RetainedAnalysisEntryProps {
     continueTo: string;
     destination: (selection: RetainedAnalysisSelection) => RetainedAnalysisDestination<string>;
     copy: RetainedAnalysisCopy;
+    backLink?: ReactNode;
     /**
      * Content a caller wants beside the entry form rather than instead of it — a list of everything this device
      * could pick up again, say, next to the single quick offer above that only ever names the latest one. Absent
@@ -44,6 +45,7 @@ export function RetainedAnalysisEntry({
     continueTo,
     destination,
     copy,
+    backLink,
     entryExtra,
 }: RetainedAnalysisEntryProps) {
     const { i18n } = useTranslation();
@@ -60,6 +62,7 @@ export function RetainedAnalysisEntry({
     return (
         <>
             <section className={heroClassName} aria-labelledby={titleId}>
+                {backLink && <p>{backLink}</p>}
                 <h1 id={titleId}>{copy.title}</h1>
                 <p className="lead">{copy.lead}</p>
             </section>

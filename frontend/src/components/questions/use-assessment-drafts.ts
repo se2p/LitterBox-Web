@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import type { AssessmentQuestionDraft } from './AssessmentQuestionCard';
 import type { AssessmentExportQuestion } from './assessment-export';
 import type { AssessmentLimits } from '../../api/capabilities';
+import { ASSESSMENT_SHORT_TEXT_LENGTH } from '../../api/assessments';
 import {
     draftLimitBreaches,
     generatedDrafts,
@@ -31,7 +32,7 @@ export interface UseAssessmentDraftsResult {
     restoreDraft: (id: string) => void;
     removeDraft: (id: string) => void;
     addQuestion: () => void;
-    replaceFromImport: (questions: AssessmentExportQuestion[]) => void;
+    loadFromImport: (questions: AssessmentExportQuestion[]) => void;
     setSelectionFor: (ids: ReadonlySet<string>, selected: boolean) => void;
     unmarkedOnPublish: (draft: AssessmentQuestionDraft) => boolean;
     limitBreaches: (draft: AssessmentQuestionDraft) => DraftLimitBreaches;
@@ -46,6 +47,7 @@ export interface UseAssessmentDraftsResult {
 export function useAssessmentDrafts(
     questions: QuizQuestion[],
     limits: AssessmentLimits,
+    savedDrafts?: AssessmentQuestionDraft[],
 ): UseAssessmentDraftsResult {
     const { t } = useTranslation('assessment');
     const initialDrafts = useMemo(() => generatedDrafts(questions), [questions]);
@@ -62,7 +64,7 @@ export function useAssessmentDrafts(
             ),
         [initialDrafts],
     );
-    const [drafts, setDrafts] = useState<AssessmentQuestionDraft[]>(initialDrafts);
+    const [drafts, setDrafts] = useState<AssessmentQuestionDraft[]>(savedDrafts ?? initialDrafts);
     const [newestDraft, setNewestDraft] = useState<string>();
     const [announcement, setAnnouncement] = useState<string>();
     const customSequence = useRef(0);
@@ -85,8 +87,11 @@ export function useAssessmentDrafts(
         setDrafts((current) => current.filter((candidate) => candidate.draftId !== id));
 
     const addQuestion = () => {
-        customSequence.current += 1;
-        const id = `teacher-${customSequence.current}`;
+        let id: string;
+        do {
+            customSequence.current += 1;
+            id = `teacher-${customSequence.current}`;
+        } while (drafts.some((draft) => draft.draftId === id));
         setDrafts((current) => [
             ...current,
             {
@@ -107,12 +112,29 @@ export function useAssessmentDrafts(
         setAnnouncement(t('questionAdded', { number: selected.length + 1 }));
     };
 
-    const replaceFromImport = (questions: AssessmentExportQuestion[]) => {
-        setDrafts(
-            questions.map((question, index) =>
-                importedDraft(question, index, originalsByQuestionId),
-            ),
+    const loadFromImport = (questions: AssessmentExportQuestion[]) => {
+        const imported = questions.map((question, index) =>
+            importedDraft(question, index, originalsByQuestionId),
         );
+        const reservedIds = new Set(imported.map((draft) => draft.draftId));
+        const importedIds = new Set<string>();
+        for (const draft of imported) {
+            const base = draft.draftId;
+            if (importedIds.has(base)) {
+                let suffix = 2;
+                do {
+                    const ending = `-${suffix++}`;
+                    draft.draftId = `${base.slice(0, ASSESSMENT_SHORT_TEXT_LENGTH - ending.length)}${ending}`;
+                } while (reservedIds.has(draft.draftId) || importedIds.has(draft.draftId));
+            }
+            importedIds.add(draft.draftId);
+        }
+        setDrafts((current) => [
+            ...imported,
+            ...current
+                .filter((draft) => !importedIds.has(draft.draftId))
+                .map((draft) => ({ ...draft, selected: false })),
+        ]);
         setNewestDraft(undefined);
     };
 
@@ -180,7 +202,7 @@ export function useAssessmentDrafts(
         restoreDraft,
         removeDraft,
         addQuestion,
-        replaceFromImport,
+        loadFromImport,
         setSelectionFor,
         unmarkedOnPublish: (draft) => unmarkedOnPublishOf(draft, originals),
         limitBreaches: (draft) => draftLimitBreaches(draft, limits, originals),

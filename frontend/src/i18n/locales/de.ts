@@ -154,6 +154,7 @@ export const pack: Partial<TranslationPack> = {
     submitLead:
         'Lade ein vollständiges Projektarchiv hoch oder gib eine numerische Scratch-Projekt-URL ein.',
     teacherTitle: 'Für Lehrkräfte',
+    backToTeacher: '← Zurück zu den Lehrkraft-Werkzeugen',
     teacherLead:
         'Diese Seite bietet drei Dinge: eine Aufgabe analysieren, um zu sehen, was LitterBox darin findet, den Fragensatz erzeugen, mit dem eine Klasse dazu befragt wird, oder einen ganzen Klassensatz auf einmal prüfen.',
     teacherSubmissionChoices: 'Klassensatz prüfen',
@@ -480,7 +481,7 @@ export const pack: Partial<TranslationPack> = {
     batchConceptColumnZero: 'Keines gemeldet',
     batchConceptPresentValue: '{{present}} von {{total}}',
     batchNotReportedByClass: 'Von keiner Analyse in dieser Klasse gemeldet.',
-    batchCtProfileTitle: 'Computationales Denken in der Klasse',
+    batchCtProfileTitle: 'Informatisches Denken in der Klasse',
     batchCtProfileHint:
         'Wie sich die abgeschlossenen Projektberichte auf die Gesamtpunktzahl und die einzelnen Dimensionen der Dr.-Scratch-Bewertungsskala verteilen.',
     batchCtOverallTitle: 'Verteilung der Gesamtpunktzahl (von 21)',
@@ -519,7 +520,7 @@ export const pack: Partial<TranslationPack> = {
         'Konzepte, die Projekte der Klasse verwenden und die Aufgabe nicht',
     batchReferenceConceptExtra:
         '{{count}} von {{total}} Projekten verwenden {{concept}}; die Aufgabe nicht.',
-    batchReferenceCtTitle: 'Computationales Denken: Aufgabe gegen Klasse',
+    batchReferenceCtTitle: 'Informatisches Denken: Aufgabe gegen Klasse',
     batchReferenceCtTaskColumn: 'Stufe der Aufgabe',
     batchReferenceCtClassColumn: 'Median-Stufe der Klasse',
     batchReferenceSizeTitle: 'Größe: Aufgabe gegen Klasse',
@@ -1007,7 +1008,7 @@ export const pack: Partial<TranslationPack> = {
     metricStatements: 'Anweisungen',
     metricVariables: 'Variablen',
     metricVariableUses: 'Variablennutzungen',
-    metricCtScore: 'Computational-Thinking-Wert',
+    metricCtScore: 'Wert für informatisches Denken',
     metricCtScoreShort: 'CT-Wert',
     metricBandLowerThird: 'niedriger als bei den meisten',
     metricBandMiddleThird: 'ungefähr in der Mitte',
@@ -1054,7 +1055,7 @@ export const pack: Partial<TranslationPack> = {
     programConceptTextToSpeech: 'Text-zu-Sprache',
     programConceptTranslate: 'Übersetzen',
     programConceptSequences: 'Sequenzen',
-    programConceptLoops: 'Schleifen',
+    programConceptLoops: 'Wiederholungen',
     programConceptConditionals: 'Bedingungen',
     programConceptBroadcasts: 'Nachrichten',
     programConceptClones: 'Klone',
@@ -1104,10 +1105,10 @@ export const pack: Partial<TranslationPack> = {
     ctLevelBarLabel: 'Stufe {{level}} von {{max}}',
     ctProfileLevelReachedLabel: 'Erreicht',
 
-    ctProfileTitle: 'Computationales Denken in dieser Aufgabe',
-    ctProfileNav: 'Computationales Denken',
+    ctProfileTitle: 'Informatisches Denken in dieser Aufgabe',
+    ctProfileNav: 'Informatisches Denken',
     ctProfileLead:
-        'Dies ist die Dr.-Scratch-Bewertungsskala für computationales Denken, angewendet auf dieses Projekt. Sie beschreibt, was das Projekt enthält, nicht, wer es gebaut hat: Eine niedrige Stufe in einer Dimension bedeutet, dass die Aufgabe dieses Muster derzeit nicht aufgreift, nicht, dass die Aufgabe schlecht ist.',
+        'Dies ist die Dr.-Scratch-Bewertungsskala für informatisches Denken, angewendet auf dieses Projekt. Sie beschreibt, was das Projekt enthält, nicht, wer es gebaut hat: Eine niedrige Stufe in einer Dimension bedeutet, dass die Aufgabe dieses Muster derzeit nicht aufgreift, nicht, dass die Aufgabe schlecht ist.',
     ctProfileDimensionLink: 'Beispiele bei Dr. Scratch',
     ctProfileOverall: 'Gesamtergebnis',
     ctProfileColumnDimension: 'Dimension',
