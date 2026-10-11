@@ -88,7 +88,7 @@ class ProgramExportCapabilityServiceTest {
     void setUp() throws IOException {
         reset(submissions, analyses, sourceArtifacts);
         archive = archive(PROJECT_JSON);
-        installSource(archive, ".sb3");
+        installSource(archive, SB3_EXT);
     }
 
     @Test
@@ -156,7 +156,7 @@ class ProgramExportCapabilityServiceTest {
 
     @Test
     void listsAnEmptyScriptCatalogueWithoutInventingTargets() throws IOException {
-        installSource(archive(emptyProject()), ".sb3");
+        installSource(archive(emptyProject()), SB3_EXT);
 
         final AdvancedCapabilityDtos.ExportTargetsView targets = capability(immediateWork())
             .targets(TOKEN, ANALYSIS_ID).block();
@@ -205,7 +205,7 @@ class ProgramExportCapabilityServiceTest {
             .readTree(PROJECT_JSON);
         final var targets = (tools.jackson.databind.node.ArrayNode) root.get("targets");
         targets.add(targets.get(1).deepCopy());
-        installSource(archive(tools.jackson.databind.json.JsonMapper.shared().writeValueAsString(root)), ".sb3");
+        installSource(archive(tools.jackson.databind.json.JsonMapper.shared().writeValueAsString(root)), SB3_EXT);
 
         assertCode(
             "target_not_found",
@@ -215,19 +215,19 @@ class ProgramExportCapabilityServiceTest {
 
     @Test
     void targetCatalogueUsesTheSharedAuthorizationSourceAndResourceLimits() throws IOException {
-        when(analyses.findById(ANALYSIS_ID)).thenReturn(Mono.just(analysis("FAILED", ".sb3", archive)));
+        when(analyses.findById(ANALYSIS_ID)).thenReturn(Mono.just(analysis("FAILED", SB3_EXT, archive)));
         assertCode(
             "analysis_not_ready",
             () -> capability(immediateWork()).targets(TOKEN, ANALYSIS_ID).block()
         );
 
-        installSource("not-a-zip".getBytes(StandardCharsets.UTF_8), ".sb3");
+        installSource("not-a-zip".getBytes(StandardCharsets.UTF_8), SB3_EXT);
         assertCode(
             "unsupported_source_format",
             () -> capability(immediateWork()).targets(TOKEN, ANALYSIS_ID).block()
         );
 
-        installSource(archive(PROJECT_JSON), ".sb3");
+        installSource(archive(PROJECT_JSON), SB3_EXT);
         configuration.getProgramExport().setMaxOutputBytes(1);
         assertCode(
             "capability_limit_exceeded",
@@ -293,7 +293,7 @@ class ProgramExportCapabilityServiceTest {
         final var targets = (tools.jackson.databind.node.ArrayNode) root.get("targets");
         final String duplicatedSpriteName = targets.get(1).path("name").textValue();
         targets.add(targets.get(1).deepCopy());
-        installSource(archive(tools.jackson.databind.json.JsonMapper.shared().writeValueAsString(root)), ".sb3");
+        installSource(archive(tools.jackson.databind.json.JsonMapper.shared().writeValueAsString(root)), SB3_EXT);
 
         assertCode(
             "target_not_found",
@@ -348,7 +348,7 @@ class ProgramExportCapabilityServiceTest {
         when(submissions.findByToken(TOKEN)).thenReturn(
             Mono.just(new Submission(SUBMISSION_ID, TOKEN, "SINGLE_PROJECT", LANG_EN, "COMPLETED", "ACTIVE", 1, 1, 0))
         );
-        when(analyses.findById(ANALYSIS_ID)).thenReturn(Mono.just(analysis("FAILED", ".sb3", archive)));
+        when(analyses.findById(ANALYSIS_ID)).thenReturn(Mono.just(analysis("FAILED", SB3_EXT, archive)));
         assertCode(
             "analysis_not_ready", () -> capability(immediateWork()).export(TOKEN, ANALYSIS_ID, programRequest()).block()
         );
@@ -370,12 +370,12 @@ class ProgramExportCapabilityServiceTest {
 
         when(sourceArtifacts.findMetadataById(ARTIFACT_ID)).thenReturn(Mono.just(metadata()));
         when(analyses.findById(ANALYSIS_ID))
-            .thenReturn(Mono.just(analysis("DONE", ".sb3", "different".getBytes(StandardCharsets.UTF_8))));
+            .thenReturn(Mono.just(analysis("DONE", SB3_EXT, "different".getBytes(StandardCharsets.UTF_8))));
         assertCode(
             ANALYSIS_NOT_FOUND, () -> capability(immediateWork()).export(TOKEN, ANALYSIS_ID, programRequest()).block()
         );
 
-        when(analyses.findById(ANALYSIS_ID)).thenReturn(Mono.just(analysis("DONE", ".sb3", archive)));
+        when(analyses.findById(ANALYSIS_ID)).thenReturn(Mono.just(analysis("DONE", SB3_EXT, archive)));
         when(sourceArtifacts.open(any(byte[].class)))
             .thenReturn(Mono.just(new ByteArrayInputStream(new byte[] { 1, 2, 3 })));
         assertCode(
@@ -385,13 +385,13 @@ class ProgramExportCapabilityServiceTest {
 
     @Test
     void mapsMalformedNonProjectAndUnsupportedInputsToBoundedErrors() throws IOException {
-        installSource("not-a-zip".getBytes(StandardCharsets.UTF_8), ".sb3");
+        installSource("not-a-zip".getBytes(StandardCharsets.UTF_8), SB3_EXT);
         assertCode(
             "unsupported_source_format",
             () -> capability(immediateWork()).export(TOKEN, ANALYSIS_ID, programRequest()).block()
         );
 
-        installSource(archive("{\"notTargets\":true}", "not-project.json"), ".sb3");
+        installSource(archive("{\"notTargets\":true}", "not-project.json"), SB3_EXT);
         assertCode(
             "unsupported_source_format",
             () -> capability(immediateWork()).export(TOKEN, ANALYSIS_ID, programRequest()).block()

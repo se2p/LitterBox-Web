@@ -70,7 +70,7 @@ class AssessmentRetentionTest {
     @Test
     void sweepsAgainOnTheNextTickOnceTheFirstHasFinished() {
         final Sinks.One<Integer> firstSweep = Sinks.one();
-        when(assessments.removeExpired()).thenReturn(firstSweep.asMono(), Mono.just(1));
+        when(assessments.removeExpired()).thenReturn(firstSweep.asMono()).thenReturn(Mono.just(1));
 
         retention.removeExpired();
         firstSweep.tryEmitValue(2);
@@ -83,7 +83,7 @@ class AssessmentRetentionTest {
     @Test
     void sweepsAgainAfterOneThatFailed() {
         when(assessments.removeExpired())
-            .thenReturn(Mono.error(new IllegalStateException("no database")), Mono.just(1));
+            .thenReturn(Mono.error(new IllegalStateException("no database"))).thenReturn(Mono.just(1));
 
         retention.removeExpired();
         retention.removeExpired();
