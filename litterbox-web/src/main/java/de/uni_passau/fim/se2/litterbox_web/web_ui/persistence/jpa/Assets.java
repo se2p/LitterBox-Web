@@ -34,6 +34,13 @@ public interface Assets extends Repository<AssetEntity, byte[]> {
     /**
      * The same picture arrives again and again, from different projects and sometimes with a name attached and
      * sometimes not. Whatever is known about it is kept and nothing known is lost.
+     *
+     * @param sha256     asset digest
+     * @param scratchMd5 Scratch MD5, when present
+     * @param extension  file extension
+     * @param mediaType  media type
+     * @param byteSize   content size
+     * @param content    asset content
      */
     @Modifying
     @Transactional
@@ -58,6 +65,10 @@ public interface Assets extends Repository<AssetEntity, byte[]> {
     /**
      * An asset is only shown to somebody holding a token for a submission that led to it. The join is the permission
      * check, so it belongs in the same statement as the read rather than beside it.
+     *
+     * @param token  submission token
+     * @param sha256 asset digest
+     * @return matching asset, if any
      */
     @Query(
         value = "SELECT asset.* FROM asset "

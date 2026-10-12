@@ -104,7 +104,7 @@ public final class LocalContentAddressedSourceArtifactStore implements SourceArt
         @Override
         public StoredSourceArtifact promote() throws IOException {
             final Path destination = pathFor(sha256);
-            Files.createDirectories(destination.getParent());
+            Files.createDirectories(Objects.requireNonNull(destination.getParent(), "artifact parent"));
             // These bytes hash to a file that is already stored, so this copy is the redundant one.
             if (Files.exists(destination)) {
                 Files.deleteIfExists(temporary);

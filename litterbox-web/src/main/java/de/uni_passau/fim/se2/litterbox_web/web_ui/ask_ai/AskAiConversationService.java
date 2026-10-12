@@ -204,11 +204,14 @@ public final class AskAiConversationService {
         if (clientMessageId == null || clientMessageId.isBlank() || clientMessageId.length() > 64) {
             throw new IllegalArgumentException("clientMessageId is required");
         }
+        if (action == null) {
+            throw new IllegalArgumentException("action must be ASK or FOLLOW_UP");
+        }
         final Action parsedAction;
         try {
             parsedAction = Action.valueOf(action);
         }
-        catch (IllegalArgumentException | NullPointerException invalid) {
+        catch (IllegalArgumentException invalid) {
             throw new IllegalArgumentException("action must be ASK or FOLLOW_UP");
         }
         if (parsedAction == Action.ASK) {
@@ -469,12 +472,16 @@ public final class AskAiConversationService {
         final boolean aboutAFault = request instanceof AskAiRequest.Finding
             || request instanceof AskAiRequest.SelectedInquiry inquiry
                 && inquiry.inquiry().kind() == InquiryKind.STARTUP;
-        if (
-            response.status() != AskAiResponseStatus.ANSWER || aboutAFault
-                || request.followUp() == AskAiFollowUp.SHOW_THE_FIX
-                || !AskAiFollowUp.offeredFor(request, context).contains(AskAiFollowUp.SHOW_THE_FIX)
-                || response.followUps().contains(AskAiFollowUp.SHOW_THE_FIX)
-        ) {
+        if (response.status() != AskAiResponseStatus.ANSWER || aboutAFault) {
+            return response;
+        }
+        if (request.followUp() == AskAiFollowUp.SHOW_THE_FIX) {
+            return response;
+        }
+        if (!AskAiFollowUp.offeredFor(request, context).contains(AskAiFollowUp.SHOW_THE_FIX)) {
+            return response;
+        }
+        if (response.followUps().contains(AskAiFollowUp.SHOW_THE_FIX)) {
             return response;
         }
         final List<AskAiFollowUp> followUps = new ArrayList<>();

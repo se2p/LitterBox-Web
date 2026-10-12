@@ -29,7 +29,7 @@ import reactor.core.publisher.Mono;
 
 /** Expires conversations, reclaims abandoned turns, and deletes retained transcripts in bounded batches. */
 @Component
-public class AskAiRetentionSweep {
+public final class AskAiRetentionSweep {
 
     private static final String SWEPT_COUNTER = "litterbox.ask.ai.swept";
 

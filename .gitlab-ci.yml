@@ -239,19 +239,54 @@ check-formatting:
 checkstyle:
   <<: *java-lint-template
   script:
-    - mvn checkstyle:check || true
+    - mvn checkstyle:check
+  after_script:
+    - cd $CI_PROJECT_DIR/litterbox-web
     - cat target/checkstyle-result.xml | $CI_PROJECT_DIR/scripts/checkstyle_report.sh "litterbox-web" > checkstyle-report.json
   rules:
-    - when: on_success
+    - if: '$CI_MERGE_REQUEST_TITLE =~ /^(Draft|WIP):/'
       allow_failure: true
       changes:
         paths:
           - litterbox-web/**/*
+          - config/checkstyle/**/*
+          - .gitlab-ci.yml
+    - when: on_success
+      allow_failure: false
+      changes:
+        paths:
+          - litterbox-web/**/*
+          - config/checkstyle/**/*
+          - .gitlab-ci.yml
   artifacts:
     when: always
     reports:
       codequality:
         - litterbox-web/checkstyle-report.json
+
+spotbugs:
+  <<: *java-lint-template
+  script:
+    - mvn -Pstatic-analysis compile spotbugs:check -Dfrontend.build.skip=true
+  rules:
+    - if: '$CI_MERGE_REQUEST_TITLE =~ /^(Draft|WIP):/'
+      allow_failure: true
+      changes:
+        paths:
+          - litterbox-web/**/*
+          - config/spotbugs/**/*
+          - .gitlab-ci.yml
+    - when: on_success
+      allow_failure: false
+      changes:
+        paths:
+          - litterbox-web/**/*
+          - config/spotbugs/**/*
+          - .gitlab-ci.yml
+  artifacts:
+    when: always
+    paths:
+      - litterbox-web/target/spotbugsXml.xml
 
 python-lint:
   <<: *python-lint-template

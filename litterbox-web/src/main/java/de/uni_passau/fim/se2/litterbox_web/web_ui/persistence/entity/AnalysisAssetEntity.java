@@ -53,7 +53,7 @@ public class AnalysisAssetEntity {
 
         public Key(final long analysisId, final byte[] assetSha256, final String role) {
             this.analysisId = analysisId;
-            this.assetSha256 = assetSha256;
+            this.assetSha256 = assetSha256 == null ? null : assetSha256.clone();
             this.role = role;
         }
 

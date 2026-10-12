@@ -25,6 +25,10 @@ public sealed interface AskAiBlockView permits AskAiBlockView.Text, AskAiBlockVi
     @JsonInclude(JsonInclude.Include.NON_NULL)
     record Text(String kind, String text, List<Part> parts) implements AskAiBlockView {
 
+        public Text {
+            parts = parts == null ? null : List.copyOf(parts);
+        }
+
         public Text(final String text) {
             this("text", text, parts(text));
         }

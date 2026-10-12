@@ -27,7 +27,7 @@ import reactor.core.publisher.Mono;
 import tools.jackson.databind.json.JsonMapper;
 
 @Service
-public class SingleProjectSubmissionService {
+public final class SingleProjectSubmissionService {
 
     private static final String JSON_SUFFIX = ".json";
     private static final String TEACHER_BATCH_SCOPE = "teacher-batch";
@@ -68,6 +68,15 @@ public class SingleProjectSubmissionService {
         this.scratchStats = Objects.requireNonNull(scratchStats, "scratchStats");
     }
 
+    /**
+     * Creates a teacher batch ingestion request.
+     *
+     * @param outerSource    batch archive bytes
+     * @param outerFilename  submitted archive filename
+     * @param locale         response locale
+     * @param idempotencyKey request idempotency key
+     * @return created batch request
+     */
     public Mono<CreatedBatchRequest> createTeacherRequest(
         final InputStream outerSource,
         final String outerFilename,
@@ -309,6 +318,14 @@ public class SingleProjectSubmissionService {
         return submissions.cancelEverything(submissionId).then();
     }
 
+    /**
+     * Creates a studio ingestion request.
+     *
+     * @param studioId       studio identifier
+     * @param locale         response locale
+     * @param idempotencyKey request idempotency key
+     * @return created studio request
+     */
     public Mono<CreatedStudio> createStudioRequest(
         final String studioId, final String locale, final String idempotencyKey
     ) {
@@ -326,6 +343,15 @@ public class SingleProjectSubmissionService {
         );
     }
 
+    /**
+     * Adds one named project to an existing batch submission.
+     *
+     * @param submissionId             batch submission identifier
+     * @param child                    project to add
+     * @param locale                   response locale
+     * @param litterboxArtifactVersion artifact format version
+     * @return project analysis
+     */
     public Mono<ProjectAnalysis> addBatchProject(
         final long submissionId,
         final BatchProject child,
@@ -381,6 +407,13 @@ public class SingleProjectSubmissionService {
             });
     }
 
+    /**
+     * Finds a project analysis belonging to a studio submission.
+     *
+     * @param submissionId studio submission identifier
+     * @param projectId    project identifier
+     * @return matching analysis
+     */
     public Mono<Analysis> findStudioProject(final long submissionId, final String projectId) {
         Objects.requireNonNull(projectId, "projectId");
         return analyses.findBySubmissionAndProjectName(submissionId, "scratch-" + projectId + ".sb3")
@@ -442,6 +475,20 @@ public class SingleProjectSubmissionService {
         return filename.toLowerCase(Locale.ROOT).endsWith(JSON_SUFFIX) ? "json" : extension(filename);
     }
 
+    /**
+     * Creates or resumes a single-project submission.
+     *
+     * @param source                   project bytes
+     * @param sourceType               source type
+     * @param locale                   response locale
+     * @param mediaType                source media type
+     * @param originalFilename         submitted filename
+     * @param inputFormat              input format
+     * @param litterboxArtifactVersion artifact format version
+     * @param idempotencyScope         idempotency scope
+     * @param idempotencyKey           request idempotency key
+     * @return created submission
+     */
     public Mono<CreatedSubmission> create(
         final InputStream source,
         final String sourceType,

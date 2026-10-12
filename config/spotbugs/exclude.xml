@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-License-Identifier: CC0-1.0
+
+SPDX-FileCopyrightText: 2024-2026 LitterBox-Web contributors
+-->
+<FindBugsFilter>
+    <!-- Scratch ASTs are passed through analysis and transport objects by identity; copying a Program changes ownership and analysis semantics. -->
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.code_completion.CodeCompletionRequestDto" />
+        <Field name="program" type="de.uni_passau.fim.se2.litterbox.ast.model.Program" />
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.linter.LinterRequest" />
+        <Field name="program" type="de.uni_passau.fim.se2.litterbox.ast.model.Program" />
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.llm.LlmController$LlmIssueFixResponse" />
+        <Field name="fixedProgram" type="de.uni_passau.fim.se2.litterbox.ast.model.Program" />
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.llm.LlmController$LlmIssueRequest" />
+        <Field name="program" type="de.uni_passau.fim.se2.litterbox.ast.model.Program" />
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.llm.LlmController$QuestionRequest" />
+        <Field name="program" type="de.uni_passau.fim.se2.litterbox.ast.model.Program" />
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.llm.LlmController$TutorialHintRequest" />
+        <Field name="program" type="de.uni_passau.fim.se2.litterbox.ast.model.Program" />
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.ml_preprocessing.tokenizer.MaskedTokenizationRequest" />
+        <Field name="program" type="de.uni_passau.fim.se2.litterbox.ast.model.Program" />
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.qlc.QlcRequest" />
+        <Field name="program" type="de.uni_passau.fim.se2.litterbox.ast.model.Program" />
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.ask_ai.AskAiProgramLoader$LoadedProject" />
+        <Field name="program" type="de.uni_passau.fim.se2.litterbox.ast.model.Program" />
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.capabilities.injection.InjectionService$Injection" />
+        <Field name="mutatedProgram" type="de.uni_passau.fim.se2.litterbox.ast.model.Program" />
+    </Match>
+    <!-- The legacy connector JSON property is scratchblocks; the assessment API separately uses scratchBlocks. Renaming either accessor would change an existing contract. -->
+    <Match>
+        <Bug pattern="NM_CONFUSING" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.code_readability.CodeReadabilityService$CodeReadabilityRequest" />
+        <Method name="scratchblocks" />
+    </Match>
+    <!-- The core parser can throw NullPointerException for malformed Scratch JSON. These boundary methods translate that failure into the existing parse error or HTTP 400 response. -->
+    <Match>
+        <Bug pattern="DCN_NULLPOINTER_EXCEPTION" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.shared.Scratch3ParserService" />
+        <Method name="~parseFrom(File|String)" />
+    </Match>
+    <Match>
+        <Bug pattern="DCN_NULLPOINTER_EXCEPTION" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.shared.ScratchProgramConverter$DeserializeConverter" />
+        <Method name="convert" />
+    </Match>
+    <!-- These record constructors snapshot collections into unmodifiable values. SpotBugs cannot prove immutability through nullable branches or copy helpers; the accessors safely return the stored snapshots. -->
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.code_readability.CodeReadabilityService$CodeReadabilityRequest" />
+        <Method name="tokens" />
+        <Field name="tokens" />
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.qlc.QlcRequest" />
+        <Method name="~dimensions|scopes" />
+        <Field name="~dimensions|scopes" />
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.qlc.QuestionDTO" />
+        <Method name="~choices|correctAnswers" />
+        <Field name="~choices|correctAnswers" />
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.assessment.AssessmentDtos$QuestionInput" />
+        <Method name="~options|correctAnswers" />
+        <Field name="~options|correctAnswers" />
+    </Match>
+    <!-- Spring collaborators are shared beans, not privately owned value objects. Limit this exception to reviewed constructor fields. -->
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.code_completion.CodeCompletionService" />
+        <Method name="&lt;init&gt;" />
+        <Field name="codeCompletionModelConfig" />
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.code_readability.CodeReadabilityService" />
+        <Method name="&lt;init&gt;" />
+        <Field name="codeReadabilityConfig" />
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.configuration.LitterBoxWebCorsConfiguration" />
+        <Method name="&lt;init&gt;" />
+        <Field name="configProps" />
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.llm.LlmConfiguration" />
+        <Method name="&lt;init&gt;" />
+        <Field name="env" />
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.llm.RawLlmService" />
+        <Method name="&lt;init&gt;" />
+        <Field name="config" />
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.screenshot.ScreenshotService" />
+        <Method name="&lt;init&gt;" />
+        <Field name="screenshotConfig" />
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.api.v1.AdvancedCapabilitiesController" />
+        <Method name="&lt;init&gt;" />
+        <Field name="configuration" />
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.api.v1.AskAiConversationsController" />
+        <Method name="&lt;init&gt;" />
+        <Field name="configuration" />
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.api.v1.AskAiEligibilityController" />
+        <Method name="&lt;init&gt;" />
+        <Field name="configuration" />
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.api.v1.AskAiQuestionsController" />
+        <Method name="&lt;init&gt;" />
+        <Field name="configuration" />
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.api.v1.AssessmentController" />
+        <Method name="&lt;init&gt;" />
+        <Field name="service" />
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.assessment.AssessmentRetention" />
+        <Method name="&lt;init&gt;" />
+        <Field name="assessments" />
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.assessment.AssessmentRetention" />
+        <Method name="&lt;init&gt;" />
+        <Field name="metrics" />
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.configuration.SyntheticStatisticsInitializer" />
+        <Method name="&lt;init&gt;" />
+        <Field name="database" />
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.single_project.AnalysisJobCoordinator" />
+        <Method name="&lt;init&gt;" />
+        <Field name="jobs" />
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.single_project.AnalysisJobCoordinator" />
+        <Method name="&lt;init&gt;" />
+        <Field name="metrics" />
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.single_project.SingleProjectApplicationService" />
+        <Method name="&lt;init&gt;" />
+        <Field name="scratch" />
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.single_project.SubmissionAnalysisAuthorizer" />
+        <Method name="&lt;init&gt;" />
+        <Field name="analyses" />
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP2" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.single_project.TeacherBatchArchiveInspector" />
+        <Method name="&lt;init&gt;" />
+        <Field name="projects" />
+    </Match>
+    <!-- Nested configuration getters expose the binding targets intentionally; collection setters snapshot inputs and are checked normally. -->
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.ask_ai.AskAiConfigurationProperties" />
+        <Method name="~get(Conversation|Listing|Provider|Sweep)" />
+        <Field name="~conversation|listing|provider|sweep" />
+    </Match>
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.capabilities.AdvancedCapabilitiesConfiguration" />
+        <Method name="~get(FaultInjection|MetricsGraphs|ProgramExport|SemanticDiff)" />
+        <Field name="~faultInjection|metricsGraphs|programExport|semanticDiff" />
+    </Match>
+    <!-- These reviewed repository and transactional bean constructors need Spring subclass proxies, so their classes cannot be final. Validation remains fail-fast. The finalizer-attack exception assumes trusted application classes; no untrusted Java subclasses are loaded. Match only the existing constructor signatures. -->
+    <Match>
+        <Bug pattern="CT_CONSTRUCTOR_THROW" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.configuration.SyntheticStatisticsInitializer" />
+        <Method name="&lt;init&gt;" params="org.springframework.jdbc.core.JdbcTemplate,int" returns="void" />
+    </Match>
+    <Match>
+        <Bug pattern="CT_CONSTRUCTOR_THROW" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.AnalysisJobRepository" />
+        <Method name="&lt;init&gt;" params="de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.AnalysisJobs,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.Analyses,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.Submissions,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.SubmissionEvents,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.DatabaseWork,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.ReadCommittedTransactions" returns="void" />
+    </Match>
+    <Match>
+        <Bug pattern="CT_CONSTRUCTOR_THROW" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.AnalysisRepository" />
+        <Method name="&lt;init&gt;" params="de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.Analyses,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.AnalysisMetrics,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.AnalysisJobs,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.Submissions,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.SubmissionEvents,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.DatabaseWork,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.ReadCommittedTransactions" returns="void" />
+    </Match>
+    <Match>
+        <Bug pattern="CT_CONSTRUCTOR_THROW" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.AskAiConversationRepository" />
+        <Method name="&lt;init&gt;" params="de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.AskAiConversations,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.AskAiMessages,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.DatabaseWork,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.ReadCommittedTransactions" returns="void" />
+    </Match>
+    <Match>
+        <Bug pattern="CT_CONSTRUCTOR_THROW" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.AssessmentRepository" />
+        <Method name="&lt;init&gt;" params="de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.Assessments,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.AssessmentAttempts,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.AssessmentAnswers,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.Analyses,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.DatabaseWork,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.ReadCommittedTransactions" returns="void" />
+    </Match>
+    <Match>
+        <Bug pattern="CT_CONSTRUCTOR_THROW" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.AssetRepository" />
+        <Method name="&lt;init&gt;" params="de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.Assets,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.AnalysisAssets,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.DatabaseWork" returns="void" />
+    </Match>
+    <Match>
+        <Bug pattern="CT_CONSTRUCTOR_THROW" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.IdempotencyKeyRepository" />
+        <Method name="&lt;init&gt;" params="de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.IdempotencyKeys,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.DatabaseWork" returns="void" />
+    </Match>
+    <Match>
+        <Bug pattern="CT_CONSTRUCTOR_THROW" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.IssueFeedbackRepository" />
+        <Method name="&lt;init&gt;" params="de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.IssueFeedbacks,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.DatabaseWork" returns="void" />
+    </Match>
+    <Match>
+        <Bug pattern="CT_CONSTRUCTOR_THROW" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.MetricReferenceRepository" />
+        <Method name="&lt;init&gt;" params="de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.AnalysisMetrics,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.DatabaseWork" returns="void" />
+    </Match>
+    <Match>
+        <Bug pattern="CT_CONSTRUCTOR_THROW" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.QuizAnswerRepository" />
+        <Method name="&lt;init&gt;" params="de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.QuizAnswers,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.DatabaseWork" returns="void" />
+    </Match>
+    <Match>
+        <Bug pattern="CT_CONSTRUCTOR_THROW" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.ScratchProjectStatsRepository" />
+        <Method name="&lt;init&gt;" params="de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.ScratchProjectStatistics,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.DatabaseWork" returns="void" />
+    </Match>
+    <Match>
+        <Bug pattern="CT_CONSTRUCTOR_THROW" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.SourceArtifactRepository" />
+        <Method name="&lt;init&gt;" params="de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.SourceArtifacts,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.DatabaseWork,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.StorageWork,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.SourceArtifactStore" returns="void" />
+    </Match>
+    <Match>
+        <Bug pattern="CT_CONSTRUCTOR_THROW" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.SubmissionArtifactRepository" />
+        <Method name="&lt;init&gt;" params="de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.SubmissionArtifacts,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.Analyses,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.DatabaseWork,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.ReadCommittedTransactions" returns="void" />
+    </Match>
+    <Match>
+        <Bug pattern="CT_CONSTRUCTOR_THROW" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.SubmissionEventRepository" />
+        <Method name="&lt;init&gt;" params="de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.SubmissionEvents,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.DatabaseWork" returns="void" />
+    </Match>
+    <Match>
+        <Bug pattern="CT_CONSTRUCTOR_THROW" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.SubmissionRepository" />
+        <Method name="&lt;init&gt;" params="de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.Submissions,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.SubmissionEvents,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.AnalysisJobs,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.Analyses,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.DatabaseWork,de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.ReadCommittedTransactions" returns="void" />
+    </Match>
+    <Match>
+        <Bug pattern="CT_CONSTRUCTOR_THROW" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.statistics.StatisticsRepository" />
+        <Method name="&lt;init&gt;" params="jakarta.persistence.EntityManager" returns="void" />
+    </Match>
+    <!-- LLM prompts use portable LF text rather than native-console line endings; keep the readable text block. -->
+    <Match>
+        <Bug pattern="VA_FORMAT_STRING_USES_NEWLINE" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.llm.TutorialHintService" />
+        <Method name="stream" params="de.uni_passau.fim.se2.litterbox.ast.model.Program,java.lang.String,java.lang.String,java.util.Locale" />
+    </Match>
+    <!-- The constructor stores a sorted unmodifiable snapshot; the accessor may safely return it without copying again. -->
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.Analysis" />
+        <Method name="metrics" />
+        <Field name="metrics" />
+    </Match>
+    <!-- This internal entity accessor is used only by AssetRepository, whose Asset constructor copies the payload. -->
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP" />
+        <Class name="de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.entity.AssetEntity" />
+        <Method name="getContent" />
+        <Field name="content" />
+    </Match>
+</FindBugsFilter>

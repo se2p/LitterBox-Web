@@ -122,6 +122,20 @@ class AssessmentQuestionResolverTest {
     }
 
     @Test
+    void rejectsAGeneratedQuestionWithoutAnId() {
+        final List<AssessmentDtos.QuestionInput> inputs = List.of(
+            new AssessmentDtos.QuestionInput(AssessmentDtos.SOURCE_GENERATED, null, null, null, null, null, null)
+        );
+
+        assertThatThrownBy(
+            () -> AssessmentQuestionResolver.resolve(
+                inputs, List.of(GENERATED_QUESTION), List.of(), new AssessmentCapabilitiesConfiguration()
+            )
+        ).isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("question id");
+    }
+
+    @Test
     void rejectsQuestionTextLongerThanTheConfiguredCeiling() {
         final AssessmentCapabilitiesConfiguration limits = new AssessmentCapabilitiesConfiguration();
         limits.setMaxQuestionTextLength(5);

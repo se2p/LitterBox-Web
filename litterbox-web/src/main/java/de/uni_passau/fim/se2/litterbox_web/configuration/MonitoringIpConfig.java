@@ -11,6 +11,7 @@ package de.uni_passau.fim.se2.litterbox_web.configuration;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -31,7 +32,9 @@ public final class MonitoringIpConfig {
     private List<String> monitoringIps = Collections.emptyList();
 
     public void setMonitoringIps(final List<String> monitoringIps) {
-        this.monitoringIps = monitoringIps;
+        this.monitoringIps = monitoringIps == null
+            ? null
+            : Collections.unmodifiableList(new ArrayList<>(monitoringIps));
     }
 
     public Set<InetAddress> getIps() {

@@ -106,6 +106,9 @@ public class SubmissionRepository {
     /**
      * Says how many projects a submission is now expected to produce.
      *
+     * @param submissionId  submission identifier
+     * @param expectedCount expected project count
+     * @return completion signal
      * @see Submissions#prepareBatch
      */
     public Mono<Void> prepareBatch(final long submissionId, final int expectedCount) {
@@ -118,6 +121,14 @@ public class SubmissionRepository {
         });
     }
 
+    /**
+     * Marks a batch ingestion failure when the caller still owns the job lease.
+     *
+     * @param submissionId submission identifier
+     * @param jobId        job identifier
+     * @param workerId     lease owner
+     * @return whether the lease was owned and whether the failure changed progress
+     */
     public Mono<OwnedBatchFailure> failBatchIngestionIfOwned(
         final long submissionId,
         final long jobId,
@@ -170,6 +181,7 @@ public class SubmissionRepository {
      * earlier attempt did not get to. Only the event depends on the state having changed, and it is written in the
      * transaction that changed it.
      *
+     * @param submissionId submission identifier
      * @return whether this call is the one that cancelled the submission
      */
     public Mono<Boolean> cancelEverything(final long submissionId) {

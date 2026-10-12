@@ -22,6 +22,10 @@ public interface IssueFeedbacks extends JpaRepository<IssueFeedbackEntity, Issue
     /**
      * A reaction replaces whatever the same reader said before. Reading first and then choosing between an insert and
      * an update is two decisions where the database offers one.
+     *
+     * @param analysisId analysis identifier
+     * @param finder     finder name
+     * @param reaction   submitted reaction
      */
     @Modifying
     @Transactional

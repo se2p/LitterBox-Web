@@ -45,7 +45,7 @@ import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
 @Service
-public class ScratchProjectClient {
+public final class ScratchProjectClient {
 
     private static final int MAX_RESPONSE_BYTES = 10 * 1024 * 1024;
     private static final int MAX_ASSETS = 2_000;
@@ -145,6 +145,12 @@ public class ScratchProjectClient {
         this.studioProjectCeiling = studioProjectCeiling;
     }
 
+    /**
+     * Downloads a Scratch project and returns it as a LitterBox bundle.
+     *
+     * @param projectId the numeric Scratch project identifier
+     * @return the downloaded project bundle
+     */
     public Mono<byte[]> download(final String projectId) {
         if (projectId == null || !projectId.matches("[1-9][0-9]{0,17}")) {
             return Mono.error(new IllegalArgumentException("Scratch project id must be numeric"));
@@ -164,6 +170,12 @@ public class ScratchProjectClient {
     public record StudioSummary(String studioId, String title, boolean readable, Integer projects) {
     }
 
+    /**
+     * Reads a Scratch studio's metadata and estimates the number of projects available to a run.
+     *
+     * @param studioId the numeric Scratch studio identifier
+     * @return the studio summary
+     */
     public Mono<StudioSummary> studioSummary(final String studioId) {
         if (studioId == null || !studioId.matches("[1-9][0-9]{0,17}")) {
             return Mono.error(new IllegalArgumentException("Scratch studio id must be numeric"));
@@ -201,10 +213,10 @@ public class ScratchProjectClient {
 
     private String studioTitle(final JsonNode root) {
         final JsonNode title = root.get("title");
-        if (title == null || !title.isTextual()) {
+        if (title == null || !title.isString()) {
             return null;
         }
-        final String value = title.textValue().strip();
+        final String value = title.stringValue().strip();
         if (value.isEmpty()) {
             return null;
         }
@@ -214,7 +226,7 @@ public class ScratchProjectClient {
     /** A studio that Scratch hides is one the service cannot list either, whatever its stated size. */
     private boolean readableStudio(final JsonNode root) {
         final JsonNode visibility = root.get("visibility");
-        if (visibility != null && visibility.isTextual() && !"visible".equalsIgnoreCase(visibility.textValue())) {
+        if (visibility != null && visibility.isString() && !"visible".equalsIgnoreCase(visibility.stringValue())) {
             return false;
         }
         final JsonNode published = root.get("public");
@@ -404,7 +416,7 @@ public class ScratchProjectClient {
             if (md5extNode == null) {
                 continue;
             }
-            if (!md5extNode.isTextual()) {
+            if (!md5extNode.isString()) {
                 throw new IllegalArgumentException("Scratch project contains an invalid asset identifier");
             }
             final String name = md5extNode.asString();
@@ -495,14 +507,14 @@ public class ScratchProjectClient {
 
     private String authorUsername(final JsonNode metadata) {
         final JsonNode username = metadata.get("username");
-        if (username != null && username.isTextual()) {
-            return validatedUsername(username.textValue());
+        if (username != null && username.isString()) {
+            return validatedUsername(username.stringValue());
         }
         final JsonNode author = metadata.get("author");
         if (author != null && author.isObject()) {
             final JsonNode authorUsername = author.get("username");
-            if (authorUsername != null && authorUsername.isTextual()) {
-                return validatedUsername(authorUsername.textValue());
+            if (authorUsername != null && authorUsername.isString()) {
+                return validatedUsername(authorUsername.stringValue());
             }
         }
         return null;
@@ -560,7 +572,7 @@ public class ScratchProjectClient {
 
     private static void addTimestamp(final Map<String, String> timestamps, final String name, final JsonNode value) {
         if (value != null && !value.isNull()) {
-            timestamps.put(name, value.isTextual() ? value.textValue() : value.toString());
+            timestamps.put(name, value.isString() ? value.stringValue() : value.toString());
         }
     }
 
@@ -569,10 +581,10 @@ public class ScratchProjectClient {
             throw new IllegalArgumentException("Scratch metadata for " + projectId + " is not an object");
         }
         final JsonNode token = root.get("project_token");
-        if (token == null || !token.isTextual() || token.textValue().isBlank() || token.textValue().length() > 512) {
+        if (token == null || !token.isString() || token.stringValue().isBlank() || token.stringValue().length() > 512) {
             throw new IllegalArgumentException("Scratch metadata for " + projectId + " has no project token");
         }
-        return token.textValue();
+        return token.stringValue();
     }
 
     private Mono<byte[]> get(final Endpoint endpoint, final String template, final Object... variables) {

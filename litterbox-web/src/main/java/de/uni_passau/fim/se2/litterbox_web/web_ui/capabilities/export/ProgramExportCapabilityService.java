@@ -93,20 +93,24 @@ final class ProgramExportCapabilityService implements ProgramExportCapability {
     private final AdvancedCapabilitiesConfiguration configuration;
     private final MeterRegistry meterRegistry;
     /** Least recently used first, so a full cache drops the one catalogue nobody has asked for longest. */
-    private final Map<Long, Mono<AdvancedCapabilityDtos.ExportTargetsView>> catalogues = Collections.synchronizedMap(
-        new LinkedHashMap<>(CATALOGUE_CACHE_ENTRIES, 0.75f, true) {
+    private final Map<Long, Mono<AdvancedCapabilityDtos.ExportTargetsView>> catalogues = newCatalogueCache();
 
-            @Serial
-            private static final long serialVersionUID = 1L;
+    private static Map<Long, Mono<AdvancedCapabilityDtos.ExportTargetsView>> newCatalogueCache() {
+        return Collections.synchronizedMap(
+            new LinkedHashMap<>(CATALOGUE_CACHE_ENTRIES, 0.75f, true) {
 
-            @Override
-            protected boolean removeEldestEntry(
-                final Map.Entry<Long, Mono<AdvancedCapabilityDtos.ExportTargetsView>> eldest
-            ) {
-                return size() > CATALOGUE_CACHE_ENTRIES;
+                @Serial
+                private static final long serialVersionUID = 1L;
+
+                @Override
+                protected boolean removeEldestEntry(
+                    final Map.Entry<Long, Mono<AdvancedCapabilityDtos.ExportTargetsView>> eldest
+                ) {
+                    return size() > CATALOGUE_CACHE_ENTRIES;
+                }
             }
-        }
-    );
+        );
+    }
 
     ProgramExportCapabilityService(
         final SubmissionRepository submissions,

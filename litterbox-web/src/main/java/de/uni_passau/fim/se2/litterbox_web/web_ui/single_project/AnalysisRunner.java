@@ -612,10 +612,10 @@ class AnalysisRunner {
         final String fallback,
         final int maximumLength
     ) {
-        if (value == null || !value.isTextual() || value.textValue().isBlank()) {
+        if (value == null || !value.isString() || value.stringValue().isBlank()) {
             return fallback;
         }
-        return value.textValue().substring(0, Math.min(value.textValue().length(), maximumLength));
+        return value.stringValue().substring(0, Math.min(value.stringValue().length(), maximumLength));
     }
 
     private Mono<Void> completeSuccess(
@@ -638,9 +638,8 @@ class AnalysisRunner {
 
     private Mono<Boolean> terminalResult(final Analysis analysis) {
         return switch (analysis.status()) {
-            case "DONE" -> Mono.just(false);
+            case "DONE", "CANCELLED" -> Mono.just(false);
             case "FAILED" -> Mono.just(true);
-            case "CANCELLED" -> Mono.just(false);
             default -> Mono.empty();
         };
     }

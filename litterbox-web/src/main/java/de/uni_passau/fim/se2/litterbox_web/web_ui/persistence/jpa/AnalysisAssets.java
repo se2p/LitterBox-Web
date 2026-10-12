@@ -27,6 +27,10 @@ public interface AnalysisAssets extends JpaRepository<AnalysisAssetEntity, Analy
      * An {@code INSERT IGNORE} would have covered an asset that was never stored as well, leaving the caller to believe
      * a link exists to something that does not. A condition asking whether the row is already there would read the
      * table this inserts into, which is what {@link SubmissionArtifacts#link} explains the cost of.
+     *
+     * @param analysisId analysis identifier
+     * @param sha256     asset digest
+     * @param role       asset role within the analysis
      */
     @Modifying
     @Transactional

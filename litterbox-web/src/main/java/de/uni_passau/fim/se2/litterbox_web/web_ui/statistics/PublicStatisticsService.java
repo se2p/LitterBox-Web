@@ -33,7 +33,7 @@ import reactor.core.publisher.Mono;
 
 /** Reads only the anonymous projection and applies public sample suppression before data leaves the server. */
 @Service
-public class PublicStatisticsService {
+public final class PublicStatisticsService {
 
     public static final int DEFAULT_MINIMUM_SAMPLE_SIZE = 50;
     public static final Duration CACHE_TTL = Duration.ofMinutes(10);
@@ -73,6 +73,12 @@ public class PublicStatisticsService {
         this.minimumSampleSize = minimumSampleSize;
     }
 
+    /**
+     * Returns cached public statistics for the requested language.
+     *
+     * @param locale requested language
+     * @return cached public statistics
+     */
     public synchronized Mono<PublicStatistics> statistics(final Locale locale) {
         final Locale requestedLocale = Objects.requireNonNull(locale, "locale");
         final CachedResponses current = currentCache();
@@ -214,19 +220,31 @@ public class PublicStatisticsService {
             .map(position -> density(visibleValues, visibleSampleSize, position, bandwidth))
             .toList();
         final double maximum = densities.stream().mapToDouble(Double::doubleValue).max().orElse(0.0);
-        return IntStream.range(0, positions.size()).mapToObj(index -> {
-            final double value;
-            if (index == 0) {
-                value = minimum;
-            }
-            else if (index == positions.size() - 1) {
-                value = displayMaximum;
-            }
-            else {
-                value = Math.max(0.0, Math.expm1(positions.get(index)));
-            }
-            return new CurvePoint(value, maximum == 0.0 ? 0.0 : densities.get(index) / maximum);
-        }).toList();
+        return IntStream.range(0, positions.size())
+            .mapToObj(index -> curvePoint(index, positions, densities, minimum, displayMaximum, maximum))
+            .toList();
+    }
+
+    private static CurvePoint curvePoint(
+        final int index,
+        final List<Double> positions,
+        final List<Double> densities,
+        final long minimum,
+        final long displayMaximum,
+        final double maximum
+    ) {
+        final double value;
+        if (index == 0) {
+            value = minimum;
+        }
+        else if (index == positions.size() - 1) {
+            value = displayMaximum;
+        }
+        else {
+            value = Math.max(0.0, Math.expm1(positions.get(index)));
+        }
+        final double relativeDensity = maximum == 0.0 ? 0.0 : densities.get(index) / maximum;
+        return new CurvePoint(value, relativeDensity);
     }
 
     private static double bandwidth(final List<StatisticsRepository.DistributionRow> values, final long sampleSize) {
@@ -260,26 +278,31 @@ public class PublicStatisticsService {
         return rows.stream()
             .filter(row -> StatisticsProjector.ISSUE_TYPES.contains(row.issueType()))
             .collect(Collectors.groupingBy(StatisticsRepository.FindingRow::issueType)).entrySet().stream()
-            .sorted(Map.Entry.comparingByKey()).map(
-                entry -> new FindingGroup(
-                    entry.getKey(), entry.getValue().stream()
-                        .sorted(
-                            Comparator.comparingLong(StatisticsRepository.FindingRow::projectsAffected).reversed()
-                                .thenComparing(
-                                    Comparator.comparingLong(StatisticsRepository.FindingRow::occurrences).reversed()
-                                )
-                                .thenComparing(StatisticsRepository.FindingRow::finderId)
-                        )
-                        .limit(MAX_FINDINGS_PER_TYPE)
-                        .map(
-                            row -> new Finding(
-                                row.finderId(), finderName(row.finderId(), locale), row.projectsAffected(),
-                                row.occurrences(),
-                                prevalence(row.projectsAffected(), projects)
-                            )
-                        ).toList()
+            .sorted(Map.Entry.comparingByKey())
+            .map(entry -> findingGroup(entry, projects, locale))
+            .toList();
+    }
+
+    private FindingGroup findingGroup(
+        final Map.Entry<String, List<StatisticsRepository.FindingRow>> entry,
+        final long projects,
+        final Locale locale
+    ) {
+        final List<Finding> findings = entry.getValue().stream()
+            .sorted(
+                Comparator.comparingLong(StatisticsRepository.FindingRow::projectsAffected).reversed()
+                    .thenComparing(Comparator.comparingLong(StatisticsRepository.FindingRow::occurrences).reversed())
+                    .thenComparing(StatisticsRepository.FindingRow::finderId)
+            )
+            .limit(MAX_FINDINGS_PER_TYPE)
+            .map(
+                row -> new Finding(
+                    row.finderId(), finderName(row.finderId(), locale), row.projectsAffected(), row.occurrences(),
+                    prevalence(row.projectsAffected(), projects)
                 )
-            ).toList();
+            )
+            .toList();
+        return new FindingGroup(entry.getKey(), findings);
     }
 
     private List<BlockCategory> categories(
@@ -325,6 +348,13 @@ public class PublicStatisticsService {
         List<FindingGroup> findingGroups,
         List<BlockCategory> blockCategories
     ) {
+
+        public PublicStatistics {
+            distributions = List.copyOf(distributions);
+            findingGroups = List.copyOf(findingGroups);
+            blockCategories = List.copyOf(blockCategories);
+        }
+
     }
 
     public record Totals(long projects, long blocks, long scripts, long sprites) {
@@ -343,6 +373,11 @@ public class PublicStatisticsService {
         double zeroPrevalence,
         List<CurvePoint> points
     ) {
+
+        public Distribution {
+            points = List.copyOf(points);
+        }
+
     }
 
     /** A normalized density value on the chart's raw-count x axis. */
@@ -350,6 +385,11 @@ public class PublicStatisticsService {
     }
 
     public record FindingGroup(String type, List<Finding> findings) {
+
+        public FindingGroup {
+            findings = List.copyOf(findings);
+        }
+
     }
 
     public record Finding(String finderId, String name, long projectsAffected, long occurrences, double prevalence) {

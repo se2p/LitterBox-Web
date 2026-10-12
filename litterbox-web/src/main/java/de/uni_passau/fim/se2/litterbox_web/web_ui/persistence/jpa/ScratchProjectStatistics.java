@@ -24,6 +24,16 @@ public interface ScratchProjectStatistics extends JpaRepository<ScratchProjectSt
     /**
      * Fetching what Scratch says about a project can happen more than once for the same analysis, and the newest answer
      * is the one to keep.
+     *
+     * @param analysisId       analysis owning the statistics
+     * @param views            view count
+     * @param loves            love count
+     * @param favorites        favorite count
+     * @param remixes          remix count
+     * @param author           author name
+     * @param usernameSource   source of the username
+     * @param scratchCreatedAt Scratch creation time
+     * @param fetchedAt        retrieval time
      */
     @Modifying
     @Transactional

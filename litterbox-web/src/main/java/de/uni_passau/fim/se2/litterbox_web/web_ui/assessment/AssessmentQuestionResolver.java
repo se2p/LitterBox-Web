@@ -81,12 +81,13 @@ final class AssessmentQuestionResolver {
         final AssessmentCapabilitiesConfiguration limits,
         final String assessmentQuestionId
     ) {
-        if (input.questionId() == null || input.questionId().isBlank()) {
+        final String questionId = input.questionId();
+        if (questionId == null || questionId.isBlank()) {
             throw new IllegalArgumentException("A generated question must reference a question id");
         }
-        final SingleProjectDtos.QuizView question = generatedQuestions.get(input.questionId());
+        final SingleProjectDtos.QuizView question = generatedQuestions.get(questionId);
         if (question == null) {
-            throw new IllegalArgumentException("Unknown generated question: " + input.questionId());
+            throw new IllegalArgumentException("Unknown generated question: " + questionId);
         }
         requireAnswerCanBeSent(question.options(), question.expectedAnswers(), limits);
         final List<String> correctAnswers = generatedAnswerKeys.get(question.questionId());

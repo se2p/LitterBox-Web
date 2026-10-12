@@ -27,6 +27,12 @@ public enum IssueFeedbackReaction {
         this.wireValue = wireValue;
     }
 
+    /**
+     * Parses the stable wire representation used by the API.
+     *
+     * @param value wire representation
+     * @return matching reaction
+     */
     public static IssueFeedbackReaction fromWireValue(final String value) {
         for (IssueFeedbackReaction reaction : values()) {
             if (reaction.wireValue.equals(value)) {

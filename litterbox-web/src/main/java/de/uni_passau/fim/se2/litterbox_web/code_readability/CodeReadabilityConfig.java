@@ -39,8 +39,8 @@ public class CodeReadabilityConfig {
     }
 
     public double getZoomLevel() {
-        Objects.requireNonNull(zoomLevel);
-        assert zoomLevel > 0;
-        return zoomLevel;
+        final double zoom = Objects.requireNonNull(zoomLevel);
+        assert zoom > 0;
+        return zoom;
     }
 }

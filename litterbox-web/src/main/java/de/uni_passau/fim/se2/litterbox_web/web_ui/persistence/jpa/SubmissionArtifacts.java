@@ -65,7 +65,13 @@ public interface SubmissionArtifacts
         @Param("submissionId") long submissionId, @Param("artifactId") long artifactId
     );
 
-    /** The artifact a submission was made from under the given role, if one has been recorded for it yet. */
+    /**
+     * The artifact a submission was made from under the given role, if one has been recorded for it yet.
+     *
+     * @param submissionId submission identifier
+     * @param role         artifact role
+     * @return artifact identifier, if present
+     */
     @Query(
         value = "SELECT artifact_id FROM submission_artifact WHERE submission_id = :submissionId AND role = :role "
             + "ORDER BY artifact_id LIMIT 1",

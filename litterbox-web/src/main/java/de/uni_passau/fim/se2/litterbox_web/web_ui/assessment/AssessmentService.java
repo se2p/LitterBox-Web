@@ -301,10 +301,11 @@ public final class AssessmentService {
     }
 
     private String requestedStatus(final AssessmentDtos.UpdateAssessmentRequest request) {
-        if (request.status() == null || request.status().isBlank()) {
+        final String requested = request.status();
+        if (requested == null || requested.isBlank()) {
             return null;
         }
-        final String status = request.status().trim().toUpperCase(Locale.ROOT);
+        final String status = requested.trim().toUpperCase(Locale.ROOT);
         if (!AssessmentDtos.STATUS_OPEN.equals(status) && !AssessmentDtos.STATUS_CLOSED.equals(status)) {
             throw new IllegalArgumentException("A quiz is either OPEN or CLOSED");
         }
@@ -312,10 +313,11 @@ public final class AssessmentService {
     }
 
     private Instant requestedExpiry(final AssessmentDtos.UpdateAssessmentRequest request) {
-        if (request.extendByDays() == null) {
+        final Integer requestedDays = request.extendByDays();
+        if (requestedDays == null) {
             return null;
         }
-        final int days = request.extendByDays();
+        final int days = requestedDays;
         if (days < 1 || days > configuration.getMaxRetentionDays()) {
             throw new IllegalArgumentException("A quiz cannot be extended that far");
         }

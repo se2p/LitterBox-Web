@@ -47,6 +47,9 @@ public class SourceArtifactRepository {
      * <p>
      * Reading the manifest of a bundle fetched from Scratch means opening the stored file and walking the archive, so
      * it happens on a storage thread: a slow store must not hold database capacity for as long as that takes.
+     *
+     * @param artifact artifact to register
+     * @return registered artifact
      */
     public Mono<SourceArtifact> register(final SourceArtifactWrite artifact) {
         Objects.requireNonNull(artifact, "artifact");
@@ -126,7 +129,12 @@ public class SourceArtifactRepository {
         throw new IllegalArgumentException("Scratch source bundle has no manifest");
     }
 
-    /** The artifact an earlier request stored these exact bytes as, if there is one. */
+    /**
+     * The artifact an earlier request stored these exact bytes as, if there is one.
+     *
+     * @param sha256 artifact digest
+     * @return matching artifact, or {@code null} when no artifact has that digest
+     */
     public Mono<SourceArtifact> findBySha256(final byte[] sha256) {
         Objects.requireNonNull(sha256, "sha256");
         return databaseWork.submit(
@@ -140,6 +148,12 @@ public class SourceArtifactRepository {
         );
     }
 
+    /**
+     * Finds the stored source metadata without opening its content.
+     *
+     * @param id artifact identifier
+     * @return metadata, or {@code null} when the artifact is absent
+     */
     public Mono<SourceArtifactMetadata> findMetadataById(final long id) {
         return databaseWork.submit(
             () -> artifacts.findById(id)

@@ -297,22 +297,9 @@ class LitterboxThreadPoolTest {
         final AtomicBoolean interrupted = new AtomicBoolean();
 
         try {
-            final Disposable subscription = executor.submit(() -> {
-                running.countDown();
-                try {
-                    release.await();
-                }
-                catch (InterruptedException interruption) {
-                    interrupted.set(true);
-                }
-                // Reads and clears, so an interrupt raised outside the wait is caught too and the pool thread is not
-                // left interrupted for whatever runs on it next.
-                if (Thread.interrupted()) {
-                    interrupted.set(true);
-                }
-                finished.countDown();
-                return "ran to the end";
-            }).subscribe();
+            final Disposable subscription = executor.submit(
+                () -> runUntilReleased(running, release, finished, interrupted)
+            ).subscribe();
 
             assertThat(running.await(TIMEOUT.toSeconds(), TimeUnit.SECONDS)).isTrue();
             // The callable is inside the wait, or about to enter it. Either way an interrupt raised here is seen: a
@@ -331,6 +318,28 @@ class LitterboxThreadPoolTest {
             release.countDown();
             executor.shutdown();
         }
+    }
+
+    private String runUntilReleased(
+        final CountDownLatch running,
+        final CountDownLatch release,
+        final CountDownLatch finished,
+        final AtomicBoolean interrupted
+    ) {
+        running.countDown();
+        try {
+            release.await();
+        }
+        catch (InterruptedException interruption) {
+            interrupted.set(true);
+        }
+        // Reads and clears, so an interrupt raised outside the wait is caught too and the pool thread is not left
+        // interrupted for whatever runs on it next.
+        if (Thread.interrupted()) {
+            interrupted.set(true);
+        }
+        finished.countDown();
+        return "ran to the end";
     }
 
     @Test

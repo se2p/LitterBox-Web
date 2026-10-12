@@ -97,8 +97,17 @@ public class AnalysisEntity {
     /**
      * An analysis that has been recorded but not yet run, which is the only shape anything creates one in.
      *
-     * @param projectName the name the project came in under, or {@code null} for a submission of a single project,
-     *                    where there is no name to tell it apart from
+     * @param projectName              the name the project came in under, or {@code null} for a submission of a single
+     *                                 project, where there is no name to tell it apart from
+     * @param submissionId             owning submission
+     * @param sourceArtifactId         source artifact
+     * @param provenance               source provenance
+     * @param reportSchemaVersion      report schema version
+     * @param litterboxArtifactVersion analyzer artifact version
+     * @param locale                   analysis locale
+     * @param inputSha256              source digest
+     * @param inputFormat              source format
+     * @return a queued analysis entity
      */
     @SuppressWarnings("checkstyle:ParameterNumber")
     public static AnalysisEntity queued(
@@ -203,11 +212,11 @@ public class AnalysisEntity {
     }
 
     public byte[] getInputSha256() {
-        return inputSha256;
+        return inputSha256 == null ? null : inputSha256.clone();
     }
 
     public void setInputSha256(final byte[] inputSha256) {
-        this.inputSha256 = inputSha256;
+        this.inputSha256 = inputSha256 == null ? null : inputSha256.clone();
     }
 
     public String getInputFormat() {

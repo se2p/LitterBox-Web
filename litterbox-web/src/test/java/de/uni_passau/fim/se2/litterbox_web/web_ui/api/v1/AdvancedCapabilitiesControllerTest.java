@@ -77,6 +77,7 @@ class AdvancedCapabilitiesControllerTest {
 
         assertCode(CAPABILITY_DISABLED, () -> controller.graph(TOKEN, 1, "ast", AUTHORIZATION).block());
         assertCode(CAPABILITY_DISABLED, () -> controller.diff(diffRequest).block());
+        assertCode(CAPABILITY_DISABLED, () -> controller.diff(null).block());
         assertCode(
             CAPABILITY_DISABLED, () -> controller.export(TOKEN, 1, AUTHORIZATION, exportRequest).block()
         );
@@ -209,6 +210,9 @@ class AdvancedCapabilitiesControllerTest {
         );
 
         assertThat(controller.diff(request).block()).isEqualTo(expected);
+        assertThatThrownBy(() -> controller.diff(null))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("A valid analysis reference is required");
     }
 
     @Test

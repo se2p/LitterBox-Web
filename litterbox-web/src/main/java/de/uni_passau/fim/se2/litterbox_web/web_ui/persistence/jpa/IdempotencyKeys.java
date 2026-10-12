@@ -31,6 +31,11 @@ public interface IdempotencyKeys extends JpaRepository<IdempotencyKeyEntity, Ide
      * supplied by the caller, so Hibernate cannot tell a new row from a stored one and looks first — and on finding the
      * row a request already bound, it writes over it. A second request would then quietly take a key that was not its
      * own, and the digest that says whether the two requests were even the same would be replaced along with it.
+     *
+     * @param scope        idempotency scope
+     * @param key          idempotency key
+     * @param fingerprint  request fingerprint
+     * @param submissionId submission identifier
      */
     @Modifying(clearAutomatically = true)
     @Transactional

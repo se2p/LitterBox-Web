@@ -18,7 +18,11 @@ public enum FinderBlockSet {
     QSCRATCH,
     MBLOCK;
 
-    /** Stable lowercase value used by the public catalogue contract. */
+    /**
+     * Stable lowercase value used by the public catalogue contract.
+     *
+     * @return lowercase wire value
+     */
     public String wireName() {
         return name().toLowerCase(Locale.ROOT);
     }

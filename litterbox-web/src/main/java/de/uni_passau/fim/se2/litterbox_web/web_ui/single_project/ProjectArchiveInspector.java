@@ -44,6 +44,13 @@ public class ProjectArchiveInspector {
 
     private final JsonMapper mapper = JsonMapper.shared();
 
+    /**
+     * Validates a Scratch project archive and extracts its project JSON and previewable assets.
+     *
+     * @param archive the compressed Scratch project archive
+     * @return the validated project data and extracted assets
+     * @throws IOException if the archive cannot be read
+     */
     public Inspection inspect(final byte[] archive) throws IOException {
         if (archive == null || archive.length == 0) {
             throw new IllegalArgumentException("Project archive must not be empty");
@@ -186,7 +193,7 @@ public class ProjectArchiveInspector {
                 throw new IllegalArgumentException("Scratch target contains an invalid block");
             }
             final JsonNode type = block.getValue().get("opcode");
-            if (type != null && (!type.isTextual() || type.textValue().isBlank())) {
+            if (type != null && (!type.isString() || type.stringValue().isBlank())) {
                 throw new IllegalArgumentException("Scratch target contains a block without an opcode");
             }
         }
@@ -323,10 +330,10 @@ public class ProjectArchiveInspector {
 
     private String costumeIdentifier(final JsonNode costume) {
         final JsonNode md5Node = costume.get("md5ext");
-        if (md5Node == null || !md5Node.isTextual()) {
+        if (md5Node == null || !md5Node.isString()) {
             throw new IllegalArgumentException("Current costume has no Scratch asset identifier");
         }
-        final String md5ext = md5Node.asString();
+        final String md5ext = md5Node.stringValue();
         final int separator = md5ext.lastIndexOf('.');
         if (separator != 32) {
             throw new IllegalArgumentException("Current costume has an invalid Scratch asset identifier");

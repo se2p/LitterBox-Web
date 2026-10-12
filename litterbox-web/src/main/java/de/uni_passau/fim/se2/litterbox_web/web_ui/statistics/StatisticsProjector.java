@@ -50,7 +50,7 @@ import tools.jackson.databind.json.JsonMapper;
     havingValue = "false",
     matchIfMissing = true
 )
-public class StatisticsProjector {
+public final class StatisticsProjector {
 
     private static final Logger log = LoggerFactory.getLogger(StatisticsProjector.class);
     private static final int MAX_FINDER_ID_LENGTH = 160;
@@ -114,7 +114,11 @@ public class StatisticsProjector {
         this.batchSize = batchSize;
     }
 
-    /** A bounded and directly invocable pass, useful to deployments and tests as well as the scheduler. */
+    /**
+     * A bounded and directly invocable pass, useful to deployments and tests as well as the scheduler.
+     *
+     * @return number of analyses projected during this pass
+     */
     public Mono<Integer> project() {
         final LocalDate currentUtcDay = LocalDate.now(clock);
         return databaseWork.submit(() -> projectInDatabase(currentUtcDay));
@@ -207,33 +211,40 @@ public class StatisticsProjector {
         }
         try {
             final JsonNode issues = mapper.readTree(reportJson).path("issues");
-            if (!issues.isArray()) {
-                return FindingDetails.unavailable();
-            }
-            final Map<FindingKey, Long> result = new HashMap<>();
-            final String finderField = legacy ? "finder" : "finderId";
-            for (JsonNode issue : issues) {
-                final JsonNode finder = issue.get(finderField);
-                final JsonNode type = issue.get("type");
-                if (finder == null || !finder.isTextual() || type == null || !type.isTextual()) {
-                    return FindingDetails.unavailable();
-                }
-                final String finderId = finder.asText().strip();
-                final String issueType = type.asText().strip().toLowerCase(Locale.ROOT);
-                if (
-                    finderId.isEmpty() || finderId.length() > MAX_FINDER_ID_LENGTH || !ISSUE_TYPES.contains(issueType)
-                ) {
-                    return FindingDetails.unavailable();
-                }
-                result.merge(new FindingKey(finderId, issueType), 1L, Long::sum);
-            }
-            return new FindingDetails(true, Map.copyOf(result));
+            return issues.isArray() ? parseFindings(issues, legacy) : FindingDetails.unavailable();
         }
         catch (Exception exception) {
             // A malformed historical report must not stop metrics already stored in normalized analysis_metric rows.
             log.warn("Could not read findings from analysis {} for public statistics", analysisId, exception);
             return FindingDetails.unavailable();
         }
+    }
+
+    private static FindingDetails parseFindings(final JsonNode issues, final boolean legacy) {
+        final Map<FindingKey, Long> result = new HashMap<>();
+        final String finderField = legacy ? "finder" : "finderId";
+        for (JsonNode issue : issues) {
+            final FindingKey key = findingKey(issue, finderField);
+            if (key == null) {
+                return FindingDetails.unavailable();
+            }
+            result.merge(key, 1L, Long::sum);
+        }
+        return new FindingDetails(true, Map.copyOf(result));
+    }
+
+    private static FindingKey findingKey(final JsonNode issue, final String finderField) {
+        final JsonNode finder = issue.get(finderField);
+        final JsonNode type = issue.get("type");
+        if (finder == null || !finder.isString() || type == null || !type.isString()) {
+            return null;
+        }
+        final String finderId = finder.asString().strip();
+        final String issueType = type.asString().strip().toLowerCase(Locale.ROOT);
+        if (finderId.isEmpty() || finderId.length() > MAX_FINDER_ID_LENGTH || !ISSUE_TYPES.contains(issueType)) {
+            return null;
+        }
+        return new FindingKey(finderId, issueType);
     }
 
     private static Long burden(

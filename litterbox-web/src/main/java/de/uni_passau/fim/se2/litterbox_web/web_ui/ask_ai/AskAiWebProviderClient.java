@@ -117,7 +117,7 @@ public final class AskAiWebProviderClient implements AskAiProviderClient {
             throw new AskAiReplyCutShortException();
         }
         if (!status.isMissingNode() && !status.isNull() && !isText(status, "completed")) {
-            throw new IllegalStateException("Provider response was not completed: " + status.asText());
+            throw new IllegalStateException("Provider response was not completed: " + status.asString());
         }
     }
 
@@ -160,7 +160,7 @@ public final class AskAiWebProviderClient implements AskAiProviderClient {
             throw new AskAiReplyCutShortException();
         }
         if (!finishReason.isMissingNode() && !finishReason.isNull() && !isText(finishReason, "stop")) {
-            throw new IllegalStateException("Provider did not finish the reply: " + finishReason.asText());
+            throw new IllegalStateException("Provider did not finish the reply: " + finishReason.asString());
         }
         final String content = choices.get(0).path("message").path("content").stringValue(null);
         if (content == null || content.isBlank()) {
@@ -170,7 +170,7 @@ public final class AskAiWebProviderClient implements AskAiProviderClient {
     }
 
     private static boolean isText(final JsonNode node, final String expected) {
-        return node.isTextual() && expected.equals(node.asText());
+        return node.isString() && expected.equals(node.asString());
     }
 
     private JsonNode readObject(final String json) {

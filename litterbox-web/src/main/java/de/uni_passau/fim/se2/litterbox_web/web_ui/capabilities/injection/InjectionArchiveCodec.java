@@ -211,24 +211,25 @@ final class InjectionArchiveCodec {
         final Limits limits,
         final long totalUncompressed
     ) throws IOException {
-        final BoundedOutputStream output = new BoundedOutputStream(limits.maxEntryBytes());
-        final byte[] buffer = new byte[8192];
-        long entrySize = 0;
-        int read;
-        while ((read = zip.read(buffer)) >= 0) {
-            if (read == 0) {
-                continue;
+        try (BoundedOutputStream output = new BoundedOutputStream(limits.maxEntryBytes())) {
+            final byte[] buffer = new byte[8192];
+            long entrySize = 0;
+            int read;
+            while ((read = zip.read(buffer)) >= 0) {
+                if (read == 0) {
+                    continue;
+                }
+                if (
+                    entrySize > limits.maxEntryBytes() - read
+                        || totalUncompressed > limits.maxUncompressedBytes() - entrySize - read
+                ) {
+                    throw new ArchiveLimitExceeded();
+                }
+                entrySize += read;
+                output.write(buffer, 0, read);
             }
-            if (
-                entrySize > limits.maxEntryBytes() - read
-                    || totalUncompressed > limits.maxUncompressedBytes() - entrySize - read
-            ) {
-                throw new ArchiveLimitExceeded();
-            }
-            entrySize += read;
-            output.write(buffer, 0, read);
+            return output.toByteArray();
         }
-        return output.toByteArray();
     }
 
     private static void validateEntryName(final String name) {
@@ -362,10 +363,10 @@ final class InjectionArchiveCodec {
 
     private static String assetName(final JsonNode asset) {
         final JsonNode md5ext = asset.get("md5ext");
-        if (md5ext == null || !md5ext.isTextual()) {
+        if (md5ext == null || !md5ext.isString()) {
             final JsonNode assetId = asset.get("assetId");
             final JsonNode dataFormat = asset.get("dataFormat");
-            if (assetId == null || dataFormat == null || !assetId.isTextual() || !dataFormat.isTextual()) {
+            if (assetId == null || dataFormat == null || !assetId.isString() || !dataFormat.isString()) {
                 throw new ArchiveMalformed();
             }
             return validateAssetIdentifier(assetId.asString() + "." + dataFormat.asString());

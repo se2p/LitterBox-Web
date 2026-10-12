@@ -47,7 +47,9 @@ public final class LitterboxThreadPool {
      * @param name          what this pool is called, in thread names and in the meters it publishes
      * @param threads       how many threads run at once
      * @param queueCapacity how much work may wait for one
+     * @param meterRegistry where this pool's meters are published
      * @param whenFull      what a caller is told when neither a thread nor a place in the queue is free
+     * @return a pool that refuses work when all workers and queue slots are busy
      */
     public static LitterboxThreadPool bounded(
         final String name,
@@ -255,6 +257,7 @@ public final class LitterboxThreadPool {
         return whenFull.get();
     }
 
+    /** Stops accepting work and waits briefly for running tasks before interrupting them. */
     public void shutdown() {
         executor.shutdown();
         try {

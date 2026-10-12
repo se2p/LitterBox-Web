@@ -29,6 +29,9 @@ public interface AnalysisMetrics
     /**
      * One statement. Derived from the method name this would have fetched every measurement of the analysis in order to
      * delete them one at a time, which is a hundred rows read to be told what a single condition already says.
+     *
+     * @param analysisId the analysis whose metrics should be deleted
+     * @return the number of deleted metrics
      */
     @Modifying(clearAutomatically = true)
     @Transactional
@@ -54,6 +57,9 @@ public interface AnalysisMetrics
      * <p>
      * Window functions have no equivalent in JPQL, and rewriting this as one would mean fetching every measurement in
      * the database to sort it in Java. It stays as the database's own arithmetic.
+     *
+     * @param minimumSampleSize minimum number of samples
+     * @return metric distributions
      */
     @Query(
         value = """

@@ -14,6 +14,11 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
     <property name="fileExtensions" value="java, properties, xml"/>
 
     <module name="SuppressWarningsFilter"/>
+    <!-- Repeated fixture values make tests clearer than artificial constant aliases. -->
+    <module name="SuppressionSingleFilter">
+        <property name="files" value="[/\\]src[/\\]test[/\\]java[/\\]"/>
+        <property name="checks" value="MultipleStringLiterals"/>
+    </module>
 
     <module name="NewlineAtEndOfFile"/>
     <module name="FileLength"/>
@@ -37,7 +42,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
 
         <!-- Coding -->
         <module name="AvoidDoubleBraceInitialization"/>
-        <module name="AvoidInlineConditionals"/>
+        <!-- Simple conditional expressions keep null defaults and value selection readable. -->
         <module name="CovariantEquals"/>
         <module name="DefaultComesLast"/>
         <module name="EmptyStatement"/>

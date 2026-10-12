@@ -26,6 +26,12 @@ public class ExceptionTranslator {
 
     private static final URI INVALID_REQUEST_TYPE = URI.create("urn:litterbox:problem:invalid-request");
 
+    /**
+     * Converts invalid request arguments into the API's problem-detail response.
+     *
+     * @param exception invalid request exception
+     * @return problem-detail response
+     */
     @ExceptionHandler
     public ResponseEntity<ProblemDetail> handleInvalidRequest(final IllegalArgumentException exception) {
         final ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, exception.getMessage());

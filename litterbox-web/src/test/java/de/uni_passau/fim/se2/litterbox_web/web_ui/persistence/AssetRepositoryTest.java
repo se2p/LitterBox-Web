@@ -17,13 +17,16 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HexFormat;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.entity.AssetEntity;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.AnalysisAssets;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.persistence.jpa.Assets;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.support.SandboxedSvg;
@@ -110,6 +113,32 @@ class AssetRepositoryTest {
         );
 
         rejects(mislabelled, "SHA-256 does not match");
+    }
+
+    @Test
+    void mapsAssetContentWithoutExposingTheMappedEntityBytes() {
+        final byte[] digest = sha256(svg("<rect width=\"4\" height=\"4\"/>"));
+        final byte[] entityContent = svg("<rect width=\"4\" height=\"4\"/>");
+        final byte[] expectedContent = entityContent.clone();
+        final AssetEntity entity = mock(AssetEntity.class);
+        when(entity.getSha256()).thenReturn(digest);
+        when(entity.getScratchMd5()).thenReturn(null);
+        when(entity.getExtension()).thenReturn("svg");
+        when(entity.getMediaType()).thenReturn(SandboxedSvg.MEDIA_TYPE);
+        when(entity.getByteSize()).thenReturn((long) entityContent.length);
+        when(entity.getContent()).thenReturn(entityContent);
+        when(assets.findForSubmission("token", digest)).thenReturn(Optional.of(entity));
+
+        final Asset mapped = repository.findForSubmission("token", digest).block();
+        assertThat(mapped).isNotNull();
+        entityContent[0] = 'x';
+        assertThat(mapped.content()).containsExactly(expectedContent);
+
+        final byte[] sourceSnapshot = entityContent.clone();
+        final byte[] exposed = mapped.content();
+        exposed[1] = 'x';
+        assertThat(entityContent).containsExactly(sourceSnapshot);
+        assertThat(mapped.content()).containsExactly(expectedContent);
     }
 
     @Test

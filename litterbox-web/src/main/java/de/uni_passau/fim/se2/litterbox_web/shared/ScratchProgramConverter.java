@@ -88,7 +88,7 @@ public class ScratchProgramConverter {
             try {
                 return PARSER.parseString("scratch-program", value);
             }
-            catch (NullPointerException | ParsingException e) {
+            catch (IllegalArgumentException | NullPointerException | ParsingException e) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot parse Scratch program JSON.", e);
             }
         }

@@ -40,6 +40,13 @@ public class TeacherBatchArchiveInspector {
         this.projects = projects;
     }
 
+    /**
+     * Inspects a teacher archive supplied as bytes and returns each contained project archive.
+     *
+     * @param outer the compressed teacher archive
+     * @return the extracted child project archives, including any child-level validation failures
+     * @throws IOException if the archive cannot be read
+     */
     public List<ChildArchive> inspect(final byte[] outer) throws IOException {
         if (outer == null || outer.length == 0) {
             throw new IllegalArgumentException("Teacher archive must not be empty");
@@ -50,6 +57,13 @@ public class TeacherBatchArchiveInspector {
         return inspectOuter(outer);
     }
 
+    /**
+     * Inspects a teacher archive from a stream while enforcing its compressed size limit.
+     *
+     * @param outer the stream containing the compressed teacher archive
+     * @return the extracted child project archives, including any child-level validation failures
+     * @throws IOException if the archive cannot be read
+     */
     public List<ChildArchive> inspect(final InputStream outer) throws IOException {
         if (outer == null) {
             throw new IllegalArgumentException("Teacher archive must not be empty");

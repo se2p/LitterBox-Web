@@ -115,10 +115,10 @@ public class ScratchProjectStatsRepository {
         if (value == null || value.isNull()) {
             return null;
         }
-        if (!value.isTextual()) {
+        if (!value.isString()) {
             throw new IllegalArgumentException(label + " is invalid");
         }
-        return value.textValue();
+        return value.stringValue();
     }
 
     private Long statistic(final JsonNode measurements, final String name) {

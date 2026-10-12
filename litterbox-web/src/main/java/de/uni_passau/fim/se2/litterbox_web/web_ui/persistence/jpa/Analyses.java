@@ -49,6 +49,9 @@ public interface Analyses extends JpaRepository<AnalysisEntity, Long> {
     /**
      * The analysis a submission's creation made of its single project, which the unique key on it guarantees is at most
      * one.
+     *
+     * @param submissionId submission identifier
+     * @return matching creation analysis
      */
     Optional<AnalysisEntity> findFirstBySubmissionIdAndFromCreationIsTrueAndProjectNameIsNullOrderById(
         long submissionId
@@ -61,6 +64,10 @@ public interface Analyses extends JpaRepository<AnalysisEntity, Long> {
      * Asking for the creation and not merely for the name is what lets a project be analysed again: a second run makes
      * a row of its own, and a worker still unpacking the archive must not be handed it as the row it was about to
      * insert.
+     *
+     * @param submissionId submission identifier
+     * @param projectName  project name
+     * @return matching creation analysis
      */
     Optional<AnalysisEntity> findFirstBySubmissionIdAndProjectNameAndFromCreationIsTrueOrderById(
         long submissionId, String projectName
@@ -110,6 +117,16 @@ public interface Analyses extends JpaRepository<AnalysisEntity, Long> {
     /**
      * Records what an analysis came to, but only while it is still waiting or running. A second worker arriving with an
      * answer for work already answered changes nothing, and is told so by the row count.
+     *
+     * @param analysisId        analysis identifier
+     * @param submissionId      submission identifier
+     * @param status            result status
+     * @param reportJson        report JSON
+     * @param failureType       failure type
+     * @param failureMessage    failure message
+     * @param detectorSet       detector set
+     * @param configurationJson configuration JSON
+     * @return number of updated rows
      */
     @Modifying(clearAutomatically = true)
     @Transactional

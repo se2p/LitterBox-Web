@@ -33,6 +33,13 @@ public class StatisticsRepository {
         this.entityManager = Objects.requireNonNull(entityManager, "entityManager");
     }
 
+    /**
+     * Finds completed analyses that have not entered the aggregate projection.
+     *
+     * @param currentUtcDay exclusive completion date boundary
+     * @param limit         maximum number of analyses
+     * @return eligible analysis identifiers
+     */
     @SuppressWarnings("unchecked")
     public List<Long> eligibleAnalysisIds(final LocalDate currentUtcDay, final int limit) {
         return entityManager.createNativeQuery(
@@ -45,7 +52,13 @@ public class StatisticsRepository {
         ).setParameter("currentDay", currentUtcDay).setParameter("limit", limit).getResultList();
     }
 
-    /** Claims an eligible analysis before any aggregate is changed. A transaction rollback releases this claim. */
+    /**
+     * Claims an eligible analysis before any aggregate is changed. A transaction rollback releases this claim.
+     *
+     * @param analysisId    analysis to claim
+     * @param currentUtcDay exclusive completion date boundary
+     * @return whether this call inserted the claim
+     */
     public boolean claim(final long analysisId, final LocalDate currentUtcDay) {
         return entityManager.createNativeQuery(
             "INSERT IGNORE INTO statistics_processed_analysis (analysis_id) "
@@ -55,6 +68,12 @@ public class StatisticsRepository {
         ).setParameter("analysisId", analysisId).setParameter("currentDay", currentUtcDay).executeUpdate() == 1;
     }
 
+    /**
+     * Loads the claimed analysis report and provenance.
+     *
+     * @param analysisId claimed analysis identifier
+     * @return analysis data, or empty when it is unavailable
+     */
     @SuppressWarnings("unchecked")
     public AnalysisRow analysis(final long analysisId) {
         final List<Object[]> rows = entityManager.createNativeQuery(
@@ -67,6 +86,12 @@ public class StatisticsRepository {
         return new AnalysisRow((String) row[0], "LEGACY".equals(row[1]));
     }
 
+    /**
+     * Loads metric values for one claimed analysis.
+     *
+     * @param analysisId claimed analysis identifier
+     * @return metric values by name
+     */
     @SuppressWarnings("unchecked")
     public Map<String, Double> metrics(final long analysisId) {
         final List<Object[]> rows = entityManager.createNativeQuery(
@@ -86,6 +111,15 @@ public class StatisticsRepository {
         return rows.longValue() > 0;
     }
 
+    /**
+     * Adds one analysis to the aggregate totals.
+     *
+     * @param blocks             block count
+     * @param scripts            script count
+     * @param sprites            sprite count
+     * @param hasFindingDetails  whether finding details are available
+     * @param hasBlockCategories whether block categories are available
+     */
     public void addTotals(
         final long blocks,
         final long scripts,
@@ -121,6 +155,13 @@ public class StatisticsRepository {
         ).setParameter("metric", metric).setParameter("blocks", blocks).executeUpdate();
     }
 
+    /**
+     * Adds one analysis's finding counts to the aggregate.
+     *
+     * @param finderId    finder identifier
+     * @param issueType   issue type
+     * @param occurrences occurrence count
+     */
     public void addFinding(final String finderId, final String issueType, final long occurrences) {
         entityManager.createNativeQuery(
             "INSERT INTO statistics_finding (finder_id, issue_type, projects_affected, occurrences) "
@@ -130,6 +171,11 @@ public class StatisticsRepository {
             .setParameter("occurrences", occurrences).executeUpdate();
     }
 
+    /**
+     * Reads the current aggregate snapshot.
+     *
+     * @return current aggregate snapshot
+     */
     @SuppressWarnings("unchecked")
     public Snapshot snapshot() {
         final List<Object[]> totalRows = entityManager.createNativeQuery(
@@ -230,5 +276,12 @@ public class StatisticsRepository {
         Totals totals, List<DistributionRow> distributions, List<FindingRow> findings,
         List<CategoryRow> categories
     ) {
+
+        public Snapshot {
+            distributions = List.copyOf(distributions);
+            findings = List.copyOf(findings);
+            categories = List.copyOf(categories);
+        }
+
     }
 }

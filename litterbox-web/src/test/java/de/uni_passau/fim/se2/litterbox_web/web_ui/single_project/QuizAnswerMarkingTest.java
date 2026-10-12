@@ -19,6 +19,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import de.uni_passau.fim.se2.litterbox.analytics.questions.QuestionType;
+import de.uni_passau.fim.se2.litterbox_web.qlc.QuestionDTO;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.single_project.QuizAnswerMarking.InvalidQuizAnswerException;
 import de.uni_passau.fim.se2.litterbox_web.web_ui.single_project.QuizAnswerMarking.StoredQuizQuestion;
 
@@ -175,5 +176,17 @@ class QuizAnswerMarkingTest {
         // Told only "wrong", a learner has learnt nothing; the answer is disclosed in reply, never with the question.
         assertThat(wrong.correct()).isFalse();
         assertThat(wrong.correctAnswers()).containsExactly("green flag");
+    }
+
+    @Test
+    void buildsAQuizViewWhenTheQuestionHasNoAnswerKey() {
+        final QuestionDTO question = new QuestionDTO(
+            1, QuestionType.FREE_TEXT, "name", "finder", "Question", null, null,
+            null, null, List.of(), null, null
+        );
+
+        final SingleProjectDtos.QuizView view = QuizAnswerMarking.quizView(question);
+
+        assertThat(view.expectedAnswers()).isEqualTo(1);
     }
 }

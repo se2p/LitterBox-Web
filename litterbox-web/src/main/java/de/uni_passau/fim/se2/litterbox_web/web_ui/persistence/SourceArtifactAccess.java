@@ -18,7 +18,7 @@ import reactor.core.publisher.Mono;
 
 /** Combines metadata lookup and private byte retrieval for retained source artifacts. */
 @Service
-public class SourceArtifactAccess {
+public final class SourceArtifactAccess {
 
     private final SourceArtifactRepository repository;
     private final SubmissionArtifactRepository links;
@@ -71,6 +71,12 @@ public class SourceArtifactAccess {
         return links.findOriginalFilename(analysis.submissionId(), analysis.sourceArtifactId());
     }
 
+    /**
+     * Returns retained metadata without opening the stored content.
+     *
+     * @param id artifact identifier
+     * @return retained metadata
+     */
     public Mono<SourceArtifactMetadata> findMetadataById(final long id) {
         return repository.findMetadataById(id);
     }
@@ -81,6 +87,9 @@ public class SourceArtifactAccess {
      * <p>
      * Nothing here holds a connection, and a store that has stopped answering must not be able to exhaust the database
      * pool and have the failure reported as the database running out of capacity.
+     *
+     * @param sha256 digest identifying the stored bytes
+     * @return asynchronous stream over the stored bytes
      */
     public Mono<InputStream> open(final byte[] sha256) {
         Objects.requireNonNull(sha256, "sha256");

@@ -29,6 +29,13 @@ public class IdempotencyKeyRepository {
         this.databaseWork = Objects.requireNonNull(databaseWork, "databaseWork");
     }
 
+    /**
+     * Finds the record currently bound to an idempotency key, if any.
+     *
+     * @param scope idempotency scope
+     * @param key   idempotency key
+     * @return bound record, if any
+     */
     public Mono<IdempotencyRecord> find(final String scope, final String key) {
         Objects.requireNonNull(scope, "scope");
         Objects.requireNonNull(key, "key");
@@ -47,7 +54,11 @@ public class IdempotencyKeyRepository {
      * only one of them can have it. Callers must check what comes back, because the loser is left holding a submission
      * that will never be shown.
      *
-     * @param fingerprint identifies this request; the only thing two requests are compared by
+     * @param fingerprint  identifies this request; the only thing two requests are compared by
+     * @param scope        logical namespace of the key
+     * @param key          client-provided idempotency key
+     * @param submissionId submission bound to this key
+     * @return the record bound by this call or the existing record
      */
     public Mono<IdempotencyRecord> put(
         final String scope, final String key, final byte[] fingerprint, final long submissionId

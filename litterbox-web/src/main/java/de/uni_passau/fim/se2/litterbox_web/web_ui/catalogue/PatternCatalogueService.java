@@ -38,6 +38,12 @@ public final class PatternCatalogueService {
         catalogue = new PatternCatalogueLoader(source).load();
     }
 
+    /**
+     * Returns all active catalogue entries in finder-id order.
+     *
+     * @param locale requested locale
+     * @return active catalogue entries
+     */
     public List<PatternCatalogueEntry> entries(final Locale locale) {
         final Locale requestedLocale = normalizeLocale(locale);
         return catalogue.activeFinders().keySet().stream()
@@ -46,6 +52,13 @@ public final class PatternCatalogueService {
             .toList();
     }
 
+    /**
+     * Returns one active catalogue entry for the requested locale.
+     *
+     * @param finderId finder identifier
+     * @param locale   requested locale
+     * @return active catalogue entry
+     */
     public PatternCatalogueEntry entry(final String finderId, final Locale locale) {
         Objects.requireNonNull(finderId, "finderId");
         if (!catalogue.activeFinders().containsKey(finderId)) {

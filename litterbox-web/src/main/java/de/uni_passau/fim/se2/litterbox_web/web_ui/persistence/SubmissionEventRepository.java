@@ -36,6 +36,13 @@ public class SubmissionEventRepository {
         return databaseWork.submit(() -> appendEvent(submissionId, eventType, payloadJson));
     }
 
+    /**
+     * Returns events for a submission after the supplied sequence number.
+     *
+     * @param submissionId submission identifier
+     * @param sequenceNo   exclusive sequence number boundary
+     * @return matching events
+     */
     public Mono<List<SubmissionEvent>> findAfter(final long submissionId, final long sequenceNo) {
         return databaseWork.submit(
             () -> events.findBySubmissionIdAndSequenceNoGreaterThanOrderBySequenceNo(submissionId, sequenceNo)

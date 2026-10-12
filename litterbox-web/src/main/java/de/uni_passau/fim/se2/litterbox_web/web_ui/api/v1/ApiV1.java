@@ -26,7 +26,12 @@ public final class ApiV1 {
     private ApiV1() {
     }
 
-    /** Falls back to English when the requested locale is unsupported. */
+    /**
+     * Falls back to English when the requested locale is unsupported.
+     *
+     * @param locale requested locale
+     * @return supported language code
+     */
     public static String publicLocale(final Locale locale) {
         if (locale == null) {
             return "en";

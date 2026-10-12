@@ -10,6 +10,8 @@
 package de.uni_passau.fim.se2.litterbox_web.web_ui.api.v1;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /** Anonymous, delayed aggregate statistics suitable for public publication. */
@@ -22,6 +24,18 @@ public record PublicStatisticsDto(
     List<FindingGroup> findingGroups,
     List<BlockCategory> blockCategories
 ) {
+
+    public PublicStatisticsDto {
+        distributions = distributions == null
+            ? null
+            : Collections.unmodifiableList(new ArrayList<>(distributions));
+        findingGroups = findingGroups == null
+            ? null
+            : Collections.unmodifiableList(new ArrayList<>(findingGroups));
+        blockCategories = blockCategories == null
+            ? null
+            : Collections.unmodifiableList(new ArrayList<>(blockCategories));
+    }
 
     public record Totals(long projects, long blocks, long scripts, long sprites) {
     }
@@ -39,12 +53,22 @@ public record PublicStatisticsDto(
         double zeroPrevalence,
         List<CurvePoint> points
     ) {
+
+        public Distribution {
+            points = points == null ? null : Collections.unmodifiableList(new ArrayList<>(points));
+        }
+
     }
 
     public record CurvePoint(double value, double relativeDensity) {
     }
 
     public record FindingGroup(String type, List<Finding> findings) {
+
+        public FindingGroup {
+            findings = findings == null ? null : Collections.unmodifiableList(new ArrayList<>(findings));
+        }
+
     }
 
     public record Finding(String finderId, String name, long projectsAffected, long occurrences, double prevalence) {

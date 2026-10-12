@@ -24,9 +24,9 @@ import org.springframework.context.annotation.Configuration;
 
 import io.netty.channel.unix.DomainSocketAddress;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty("server.unix-socket")
-public class UnixSocketConfiguration {
+public final class UnixSocketConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(UnixSocketConfiguration.class);
 

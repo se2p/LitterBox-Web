@@ -75,6 +75,15 @@ public final class AdvancedCapabilitiesController {
         this.injectionCapability = injectionCapability;
     }
 
+    /**
+     * Returns a bounded graph rendering for an authorized analysis.
+     *
+     * @param submissionToken submission token
+     * @param analysisId      analysis identifier
+     * @param graphType       graph type
+     * @param authorization   authorization header
+     * @return graph response
+     */
     @GetMapping(
         value = "/submissions/{submissionToken}/analyses/{analysisId}/graphs/{graphType}",
         produces = GRAPH_MEDIA_TYPE
@@ -101,6 +110,12 @@ public final class AdvancedCapabilitiesController {
         return operation.graph(submissionToken, analysisId, normalizedType).map(this::graphResponse);
     }
 
+    /**
+     * Compares two authorized analysis references.
+     *
+     * @param request comparison request
+     * @return comparison view
+     */
     @PostMapping(
         value = "/diffs",
         consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -110,7 +125,10 @@ public final class AdvancedCapabilitiesController {
         @RequestBody final AdvancedCapabilityDtos.DiffRequest request
     ) {
         requireEnabled(configuration.getSemanticDiff().isEnabled());
-        requireReference(request == null ? null : request.before());
+        if (request == null) {
+            throw new IllegalArgumentException("A valid analysis reference is required");
+        }
+        requireReference(request.before());
         requireReference(request.after());
         final SemanticDiffCapability operation = diffCapability.getIfAvailable();
         return operation == null
@@ -118,6 +136,15 @@ public final class AdvancedCapabilitiesController {
             : operation.compare(request);
     }
 
+    /**
+     * Exports a selected view of an authorized analysis.
+     *
+     * @param submissionToken submission token
+     * @param analysisId      analysis identifier
+     * @param authorization   authorization header
+     * @param request         export request
+     * @return exported content
+     */
     @PostMapping(
         value = "/submissions/{submissionToken}/analyses/{analysisId}/exports",
         consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -147,6 +174,14 @@ public final class AdvancedCapabilitiesController {
             );
     }
 
+    /**
+     * Lists export targets for an authorized analysis.
+     *
+     * @param submissionToken submission token
+     * @param analysisId      analysis identifier
+     * @param authorization   authorization header
+     * @return export targets
+     */
     @GetMapping(
         value = "/submissions/{submissionToken}/analyses/{analysisId}/export-targets",
         produces = MediaType.APPLICATION_JSON_VALUE
@@ -174,6 +209,15 @@ public final class AdvancedCapabilitiesController {
         );
     }
 
+    /**
+     * Lists enabled fault injectors.
+     *
+     * @param submissionToken submission token
+     * @param analysisId      analysis identifier
+     * @param authorization   authorization header
+     * @param locale          response locale
+     * @return enabled injectors
+     */
     @GetMapping(
         value = "/submissions/{submissionToken}/analyses/{analysisId}/injectors",
         produces = MediaType.APPLICATION_JSON_VALUE
@@ -198,6 +242,15 @@ public final class AdvancedCapabilitiesController {
             : operation.injectors(submissionToken, analysisId, locale);
     }
 
+    /**
+     * Returns the enabled injector catalogue.
+     *
+     * @param submissionToken submission token
+     * @param analysisId      analysis identifier
+     * @param authorization   authorization header
+     * @param locale          response locale
+     * @return injector catalogue
+     */
     @GetMapping(
         value = "/submissions/{submissionToken}/analyses/{analysisId}/injector-catalogue",
         produces = MediaType.APPLICATION_JSON_VALUE
@@ -229,6 +282,15 @@ public final class AdvancedCapabilitiesController {
         );
     }
 
+    /**
+     * Previews selected fault injections.
+     *
+     * @param submissionToken submission token
+     * @param analysisId      analysis identifier
+     * @param authorization   authorization header
+     * @param request         injection request
+     * @return injection preview
+     */
     @PostMapping(
         value = "/submissions/{submissionToken}/analyses/{analysisId}/injections",
         consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -283,6 +345,15 @@ public final class AdvancedCapabilitiesController {
         return new HashSet<>(request.injectorIds()).size() != request.injectorIds().size();
     }
 
+    /**
+     * Downloads one selected injected project.
+     *
+     * @param submissionToken submission token
+     * @param analysisId      analysis identifier
+     * @param authorization   authorization header
+     * @param request         download request
+     * @return injected project archive
+     */
     @PostMapping(
         value = "/submissions/{submissionToken}/analyses/{analysisId}/injections/download",
         consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -312,6 +383,15 @@ public final class AdvancedCapabilitiesController {
         return operation.download(submissionToken, analysisId, request).map(this::archiveAttachment);
     }
 
+    /**
+     * Downloads all selected injected projects as an archive.
+     *
+     * @param submissionToken submission token
+     * @param analysisId      analysis identifier
+     * @param authorization   authorization header
+     * @param request         injection request
+     * @return injected project archive
+     */
     @PostMapping(
         value = "/submissions/{submissionToken}/analyses/{analysisId}/injections/download-all",
         consumes = MediaType.APPLICATION_JSON_VALUE,

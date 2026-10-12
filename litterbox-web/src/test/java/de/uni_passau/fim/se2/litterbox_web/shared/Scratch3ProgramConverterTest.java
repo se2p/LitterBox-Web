@@ -24,4 +24,13 @@ class Scratch3ProgramConverterTest {
             .isInstanceOf(ResponseStatusException.class)
             .hasMessageContaining("parse Scratch program");
     }
+
+    @Test
+    void translateNullConversionInputToHttpError() {
+        final var converter = new ScratchProgramConverter.DeserializeConverter();
+
+        assertThatThrownBy(() -> converter.convert(null))
+            .isInstanceOf(ResponseStatusException.class)
+            .hasMessageContaining("parse Scratch program");
+    }
 }

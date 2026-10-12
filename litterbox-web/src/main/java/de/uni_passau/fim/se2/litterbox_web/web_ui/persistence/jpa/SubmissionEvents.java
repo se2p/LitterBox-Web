@@ -28,6 +28,11 @@ public interface SubmissionEvents extends JpaRepository<SubmissionEventEntity, L
      * The database numbers the event, so this is a single statement and no lock. Working the number out beforehand
      * meant reading the highest so far and writing one more, and nothing but a lock held across both stops two appends
      * from reading the same answer.
+     *
+     * @param submissionId submission identifier
+     * @param eventType    event type
+     * @param payloadJson  event payload
+     * @return persisted event
      */
     default SubmissionEventEntity append(
         final long submissionId, final String eventType, final String payloadJson

@@ -80,6 +80,9 @@ public class SubmissionArtifactRepository {
      * The link is the only durable record of which artifact a submission holds once the request that made it is gone. A
      * submission can hold two artifacts under this role: if creation stopped between linking and analysis, the repeat
      * that finishes it fetches the project from Scratch again and stores different bytes.
+     *
+     * @param submissionId submission identifier
+     * @return original artifact identifier, or {@code null} when none is linked
      */
     public Mono<Long> findOriginalArtifactId(final long submissionId) {
         return databaseWork.submit(() -> links.findArtifactId(submissionId, "ORIGINAL").orElse(null));
@@ -95,6 +98,9 @@ public class SubmissionArtifactRepository {
      * <p>
      * The loser has to look again in a fresh transaction: its own began before the winner committed and so cannot see
      * the row the error is complaining about.
+     *
+     * @param link batch analysis link
+     * @return the linked analysis and whether this call created it
      */
     public Mono<LinkedAnalysis> linkAnalysis(final BatchAnalysisLink link) {
         Objects.requireNonNull(link, "link");

@@ -26,7 +26,7 @@ import reactor.core.publisher.Mono;
  */
 @RestController
 @RequestMapping({ ApiV1.BASE_PATH, ApiV1.WEB_BASE_PATH })
-public class MetricReferenceController {
+public final class MetricReferenceController {
 
     private final MetricReferenceService service;
 

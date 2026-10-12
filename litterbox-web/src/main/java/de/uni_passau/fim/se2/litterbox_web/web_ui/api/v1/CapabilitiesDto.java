@@ -9,6 +9,9 @@
  */
 package de.uni_passau.fim.se2.litterbox_web.web_ui.api.v1;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -28,4 +31,14 @@ public record CapabilitiesDto(
     Set<String> enabledFeatures,
     AssessmentLimitsDto assessmentLimits
 ) {
+
+    public CapabilitiesDto {
+        supportedLocales = supportedLocales == null
+            ? null
+            : Collections.unmodifiableList(new ArrayList<>(supportedLocales));
+        enabledFeatures = enabledFeatures == null
+            ? null
+            : Collections.unmodifiableSet(new LinkedHashSet<>(enabledFeatures));
+    }
+
 }

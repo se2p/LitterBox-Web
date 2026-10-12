@@ -9,6 +9,8 @@
  */
 package de.uni_passau.fim.se2.litterbox_web.qlc;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.jspecify.annotations.Nullable;
@@ -31,6 +33,15 @@ public record QuestionDTO(
     @Nullable List<String> correctAnswers,
     @Nullable String hint
 ) {
+
+    public QuestionDTO {
+        choices = copy(choices);
+        correctAnswers = copy(correctAnswers);
+    }
+
+    private static List<String> copy(final List<String> values) {
+        return values == null ? null : Collections.unmodifiableList(new ArrayList<>(values));
+    }
 
     public QuestionDTO withExplanation(final String explanation) {
         return new QuestionDTO(

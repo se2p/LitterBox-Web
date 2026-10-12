@@ -26,6 +26,9 @@ public interface Submissions extends JpaRepository<SubmissionEntity, Long> {
     /**
      * Reads past Hibernate's cache: the counts are written by statements that bypass the persistence context, so an
      * entity loaded earlier in the same session can hold stale numbers.
+     *
+     * @param submissionId submission identifier
+     * @return current counters
      */
     @Query(
         value = "SELECT state AS state, expected_count AS expected, completed_count AS completed, "
@@ -50,6 +53,9 @@ public interface Submissions extends JpaRepository<SubmissionEntity, Long> {
      * one reads the old counts to compute the state before the counters below add the same deltas.
      *
      * @return 1 if this call counted it, 0 if the submission was already cancelled or already complete
+     * @param submissionId   submission identifier
+     * @param completedDelta completed count delta
+     * @param failedDelta    failed count delta
      */
     @Modifying(clearAutomatically = true)
     @Transactional
@@ -75,6 +81,7 @@ public interface Submissions extends JpaRepository<SubmissionEntity, Long> {
      * cancelled submission is left alone whatever the caller asks for, so a reaper arriving after a cancellation has
      * already committed cannot put it back to failed.
      *
+     * @param submissionId     submission identifier
      * @param onlyWhileRunning whether a submission that has already come to something should be left alone
      * @return 1 if this call recorded it, 0 if it was already accounted for
      */
@@ -98,6 +105,12 @@ public interface Submissions extends JpaRepository<SubmissionEntity, Long> {
         @Param("submissionId") long submissionId, @Param("onlyWhileRunning") boolean onlyWhileRunning
     );
 
+    /**
+     * Marks an active submission as cancelled.
+     *
+     * @param submissionId submission identifier
+     * @return number of updated rows
+     */
     @Modifying(clearAutomatically = true)
     @Transactional
     @Query(
@@ -110,6 +123,8 @@ public interface Submissions extends JpaRepository<SubmissionEntity, Long> {
     /**
      * Only a submission still at {@code STORED} qualifies — anything wider would also catch one a worker is already
      * running and put it back to runnable.
+     *
+     * @param submissionId submission identifier
      */
     @Modifying(clearAutomatically = true)
     @Transactional
@@ -132,6 +147,9 @@ public interface Submissions extends JpaRepository<SubmissionEntity, Long> {
     /**
      * Neither thing this refuses to do — overwriting a cancelled submission, or promising fewer projects than have
      * already been accounted for — needs to be read first.
+     *
+     * @param submissionId  submission identifier
+     * @param expectedCount expected project count
      */
     @Modifying(clearAutomatically = true)
     @Transactional

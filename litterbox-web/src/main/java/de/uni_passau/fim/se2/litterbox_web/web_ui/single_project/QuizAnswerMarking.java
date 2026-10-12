@@ -45,6 +45,7 @@ final class QuizAnswerMarking {
     }
 
     static SingleProjectDtos.QuizView quizView(final QuestionDTO question) {
+        final List<String> correctAnswers = question.correctAnswers();
         return new SingleProjectDtos.QuizView(
             Integer.toString(question.id()),
             question.questionText(),
@@ -55,7 +56,7 @@ final class QuizAnswerMarking {
             question.hint(),
             question.programDimension() == null ? null : question.programDimension().name(),
             question.scopeOfFocus() == null ? null : question.scopeOfFocus().name(),
-            question.correctAnswers() == null ? 1 : Math.max(1, question.correctAnswers().size())
+            correctAnswers == null ? 1 : Math.max(1, correctAnswers.size())
         );
     }
 

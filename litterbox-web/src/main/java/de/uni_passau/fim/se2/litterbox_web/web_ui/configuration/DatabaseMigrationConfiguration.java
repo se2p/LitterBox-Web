@@ -40,7 +40,11 @@ public class DatabaseMigrationConfiguration {
         return Flyway.configure().dataSource(dataSource).load();
     }
 
-    /** Hibernate is mapped against whatever the migrations leave behind, so it may not be built before they run. */
+    /**
+     * Hibernate is mapped against whatever the migrations leave behind, so it may not be built before they run.
+     *
+     * @return the ordering post-processor
+     */
     @Bean
     public static EntityManagerFactoryDependsOnPostProcessor migrateBeforeMapping() {
         return new EntityManagerFactoryDependsOnPostProcessor("flyway");

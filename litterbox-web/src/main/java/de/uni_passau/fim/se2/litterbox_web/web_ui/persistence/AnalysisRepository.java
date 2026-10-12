@@ -71,13 +71,21 @@ public class AnalysisRepository {
      * That key covers only analyses marked as belonging to a submission's creation, so running the project again later
      * — under a newer LitterBox, or a different configuration — inserts a new row instead of returning the first
      * attempt's result.
+     *
+     * @param attempt requested analysis attempt
+     * @return the existing or newly created analysis
      */
     public Mono<Analysis> createAttempt(final AnalysisAttempt attempt) {
         Objects.requireNonNull(attempt, "attempt");
         return databaseWork.submit(() -> createAttemptInDatabase(attempt));
     }
 
-    /** The creation analysis a submission already has, if it got as far as making one. */
+    /**
+     * The creation analysis a submission already has, if it got as far as making one.
+     *
+     * @param submissionId submission identifier
+     * @return creation analysis, or {@code null} when none exists
+     */
     public Mono<Analysis> findCreationBySubmissionId(final long submissionId) {
         return databaseWork.submit(
             () -> withMetrics(
@@ -106,6 +114,12 @@ public class AnalysisRepository {
         }
     }
 
+    /**
+     * Returns the latest analysis for a submission.
+     *
+     * @param submissionId submission identifier
+     * @return latest analysis, if any
+     */
     public Mono<Analysis> findLatestBySubmissionId(final long submissionId) {
         return databaseWork.submit(
             () -> withMetrics(
@@ -121,6 +135,13 @@ public class AnalysisRepository {
         );
     }
 
+    /**
+     * Returns the analysis for a named project in a submission.
+     *
+     * @param submissionId submission identifier
+     * @param projectName  project name
+     * @return matching analysis, if any
+     */
     public Mono<Analysis> findBySubmissionAndProjectName(final long submissionId, final String projectName) {
         Objects.requireNonNull(projectName, "projectName");
         return databaseWork.submit(
@@ -189,6 +210,20 @@ public class AnalysisRepository {
      * <p>
      * Without that condition a worker whose lease was taken over would overwrite the result of the run that replaced
      * it.
+     *
+     * @param analysisId        analysis identifier
+     * @param submissionId      submission identifier
+     * @param failed            whether analysis failed
+     * @param reportJson        report JSON
+     * @param failureType       failure type
+     * @param failureMessage    failure message
+     * @param eventPayload      event payload
+     * @param detectorSet       detector set
+     * @param configurationJson analysis configuration
+     * @param metrics           metric values
+     * @param jobId             analysis job identifier
+     * @param workerId          worker identifier
+     * @return whether the outcome was recorded
      */
     public Mono<Boolean> completeIfOwned(
         final long analysisId, final long submissionId, final boolean failed,
@@ -272,6 +307,16 @@ public class AnalysisRepository {
         return entity;
     }
 
+    /**
+     * Updates an analysis status and stored outcome.
+     *
+     * @param analysisId     analysis identifier
+     * @param status         new status
+     * @param failureType    failure type
+     * @param failureMessage failure message
+     * @param reportJson     report JSON
+     * @return completion signal
+     */
     public Mono<Void> updateStatus(
         final long analysisId, final String status, final String failureType,
         final String failureMessage, final String reportJson
@@ -283,6 +328,14 @@ public class AnalysisRepository {
         });
     }
 
+    /**
+     * Stores detector and configuration metadata for an analysis.
+     *
+     * @param analysisId        analysis identifier
+     * @param detectorSet       detector set
+     * @param configurationJson analysis configuration
+     * @return completion signal
+     */
     public Mono<Void> setAnalysisConfiguration(
         final long analysisId, final String detectorSet, final String configurationJson
     ) {

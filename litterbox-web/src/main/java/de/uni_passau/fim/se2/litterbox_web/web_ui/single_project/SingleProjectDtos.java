@@ -202,6 +202,12 @@ public final class SingleProjectDtos {
             examples = List.copyOf(examples);
         }
 
+        /**
+         * Converts an internal catalogue entry to the public response shape.
+         *
+         * @param entry the internal catalogue entry
+         * @return the catalogue entry exposed to the web UI
+         */
         public static CatalogueView from(final PatternCatalogueEntry entry) {
             return new CatalogueView(
                 entry.finderId(), entry.name(), entry.hint(), entry.locale(), entry.fallback(),

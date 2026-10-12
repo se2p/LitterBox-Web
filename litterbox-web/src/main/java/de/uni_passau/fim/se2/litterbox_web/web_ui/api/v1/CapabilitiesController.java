@@ -29,7 +29,7 @@ import de.uni_passau.fim.se2.litterbox_web.web_ui.capabilities.AdvancedCapabilit
 
 @RestController
 @RequestMapping({ ApiV1.BASE_PATH, ApiV1.WEB_BASE_PATH })
-public class CapabilitiesController {
+public final class CapabilitiesController {
 
     private static final List<String> FOUNDATION_FEATURES = List.of(
         "single-project", "teacher-archive", "studio", "feedback", "qlc", "catalogue"

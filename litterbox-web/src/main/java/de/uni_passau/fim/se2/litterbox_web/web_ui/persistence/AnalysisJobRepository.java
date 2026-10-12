@@ -109,6 +109,13 @@ public class AnalysisJobRepository {
         return null;
     }
 
+    /**
+     * Claims the next available analysis job for a worker.
+     *
+     * @param workerId      worker identifier
+     * @param leaseDuration lease duration
+     * @return claimed job, if one is available
+     */
     public Mono<Job> claimNext(final String workerId, final Duration leaseDuration) {
         Objects.requireNonNull(workerId, "workerId");
         Objects.requireNonNull(leaseDuration, "leaseDuration");
@@ -145,6 +152,14 @@ public class AnalysisJobRepository {
         return null;
     }
 
+    /**
+     * Renews a worker's lease while it is still valid.
+     *
+     * @param jobId         job identifier
+     * @param workerId      worker identifier
+     * @param leaseDuration new lease duration
+     * @return whether the lease was renewed
+     */
     public Mono<Boolean> renew(final long jobId, final String workerId, final Duration leaseDuration) {
         if (leaseDuration.isZero() || leaseDuration.isNegative()) {
             return Mono.error(new IllegalArgumentException("leaseDuration must be positive"));
@@ -154,6 +169,13 @@ public class AnalysisJobRepository {
         );
     }
 
+    /**
+     * Checks whether a worker still owns a running lease.
+     *
+     * @param jobId    job identifier
+     * @param workerId worker identifier
+     * @return whether the lease is still owned
+     */
     public Mono<Boolean> leaseOwned(final long jobId, final String workerId) {
         Objects.requireNonNull(workerId, "workerId");
         return databaseWork.submit(
@@ -202,6 +224,7 @@ public class AnalysisJobRepository {
      * <p>
      * Handles one batch of {@value #REAP_BATCH_SIZE} per call; the caller comes back often enough for the rest.
      *
+     * @return the number of jobs settled
      * @see AnalysisJobs#findAbandoned
      */
     public Mono<Integer> reapAbandonedJobs() {
@@ -223,6 +246,12 @@ public class AnalysisJobRepository {
         return abandoned.size();
     }
 
+    /**
+     * Deletes terminal jobs older than the retention period.
+     *
+     * @param retention retention period
+     * @return number of deleted jobs
+     */
     public Mono<Integer> deleteTerminalJobsOlderThan(final Duration retention) {
         Objects.requireNonNull(retention, "retention");
         if (retention.isNegative()) {

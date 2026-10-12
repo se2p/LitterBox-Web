@@ -12,7 +12,6 @@ package de.uni_passau.fim.se2.litterbox_web.llm;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jspecify.annotations.NonNull;
@@ -97,15 +96,14 @@ public class LlmService {
                 IssueTool.getFinders(issueDto.name()).stream().findFirst().orElse(null)
             );
 
-        if (actor != null && issueDto.blockId() != null) {
-            issueBuilder = issueBuilder.withCurrentNode(
-                findNodeById(program, issueDto.blockId()).orElse(null)
-            );
+        final String blockId = issueDto.blockId();
+        if (actor != null && blockId != null) {
+            issueBuilder = issueBuilder.withCurrentNode(findNodeById(program, blockId));
         }
-        if (actor != null && issueDto.hatBlockId() != null) {
-            final Script script = findNodeById(program, issueDto.hatBlockId())
-                .map(hat -> AstNodeUtil.findParent(hat, Script.class))
-                .orElse(null);
+        final String hatBlockId = issueDto.hatBlockId();
+        if (actor != null && hatBlockId != null) {
+            final ASTNode hat = findNodeById(program, hatBlockId);
+            final Script script = hat == null ? null : AstNodeUtil.findParent(hat, Script.class);
             issueBuilder = issueBuilder.withScript(script);
         }
 
@@ -155,8 +153,9 @@ public class LlmService {
         return analyzer.analyze(program);
     }
 
-    private Optional<ASTNode> findNodeById(@NonNull final Program program, @NonNull final String blockId) {
-        return BlockIdNodeFinder.find(program, blockId).map(BlockIdNodeFinder.NodeContext::node);
+    @Nullable
+    private ASTNode findNodeById(@NonNull final Program program, @NonNull final String blockId) {
+        return BlockIdNodeFinder.find(program, blockId).map(BlockIdNodeFinder.NodeContext::node).orElse(null);
     }
 
     private CodeTarget targetFromSpriteName(@Nullable final String sprite) {

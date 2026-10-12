@@ -36,7 +36,7 @@ import reactor.core.publisher.Mono;
     name = "enabled",
     havingValue = "true"
 )
-public class AnalysisJobCoordinator {
+public final class AnalysisJobCoordinator {
 
     private static final Logger log = LoggerFactory.getLogger(AnalysisJobCoordinator.class);
     private static final String KIND_TAG = "kind";
@@ -71,6 +71,7 @@ public class AnalysisJobCoordinator {
         metrics.gauge("litterbox.jobs.in.flight", inFlight, AtomicInteger::get);
     }
 
+    /** Dispatches one available analysis job when capacity is available. */
     @Scheduled(fixedDelayString = "${litterbox.jobs.poll-millis:250}")
     public void dispatch() {
         if (!tryAcquire()) {

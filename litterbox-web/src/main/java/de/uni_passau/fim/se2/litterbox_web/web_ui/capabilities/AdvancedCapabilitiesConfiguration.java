@@ -50,6 +50,11 @@ public final class AdvancedCapabilitiesConfiguration {
         return faultInjection;
     }
 
+    /**
+     * Returns the enabled capability names in stable order.
+     *
+     * @return enabled capability names
+     */
     public Set<String> enabledFeatures() {
         final Set<String> enabled = new LinkedHashSet<>();
         addIfEnabled(enabled, METRICS_GRAPHS, metricsGraphs.isEnabled());

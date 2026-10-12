@@ -10,6 +10,8 @@
 package de.uni_passau.fim.se2.litterbox_web.qlc;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -55,8 +57,14 @@ public record QlcRequest(
         if (dimensions == null) {
             dimensions = Set.of();
         }
+        else {
+            dimensions = Collections.unmodifiableSet(new LinkedHashSet<>(dimensions));
+        }
         if (scopes == null) {
             scopes = Set.of();
+        }
+        else {
+            scopes = Collections.unmodifiableSet(new LinkedHashSet<>(scopes));
         }
     }
 

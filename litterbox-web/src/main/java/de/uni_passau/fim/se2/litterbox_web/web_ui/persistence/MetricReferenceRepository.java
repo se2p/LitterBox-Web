@@ -37,6 +37,7 @@ public class MetricReferenceRepository {
      * @param minimumSampleSize how many completed analyses must carry a measurement before it is worth comparing
      *                          against. Below it the terciles describe the handful of projects that happen to have been
      *                          submitted rather than anything recognisable as typical.
+     * @return the metric distributions, or an empty list when no metric meets the threshold
      * @see AnalysisMetrics#terciles
      */
     public Mono<List<MetricDistribution>> distributions(final int minimumSampleSize) {

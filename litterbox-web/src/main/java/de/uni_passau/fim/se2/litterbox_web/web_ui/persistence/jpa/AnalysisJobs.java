@@ -39,6 +39,10 @@ public interface AnalysisJobs extends JpaRepository<AnalysisJobEntity, Long> {
      * {@code queuePosition} must come from {@link #nextQueuePosition}. A job for an analysis that already has one is
      * refused by {@code uq_analysis_job_analysis}, not silently skipped — {@code INSERT IGNORE} would also swallow a
      * missing analysis, and a caller needs to know which happened.
+     *
+     * @param submissionId  submission identifier
+     * @param analysisId    analysis identifier
+     * @param queuePosition queue position
      */
     @Modifying(clearAutomatically = true)
     @Transactional
@@ -57,6 +61,10 @@ public interface AnalysisJobs extends JpaRepository<AnalysisJobEntity, Long> {
      * Deliberately not ask-then-insert: reading this table before inserting into it makes the statement a bulk insert,
      * and MariaDB takes a table-wide numbering lock for those, so concurrent requests could deadlock on the numbering
      * instead of being refused safely by {@code uq_analysis_job_active_ingestion}.
+     *
+     * @param submissionId    submission identifier
+     * @param jobKind         job kind
+     * @param sourceReference source reference
      */
     @Modifying(clearAutomatically = true)
     @Transactional
@@ -75,6 +83,11 @@ public interface AnalysisJobs extends JpaRepository<AnalysisJobEntity, Long> {
      * Chooses the row and stamps it in the same statement so two workers cannot both believe they hold it. The
      * submission's own state is checked too, since a job can be queued after {@code cancel_requested} is set (a batch
      * ingestion cancelled midway is still adding projects).
+     *
+     * @param leaseToken  lease token
+     * @param leaseMicros lease duration in microseconds
+     * @param maxAttempts maximum attempts
+     * @return one when a job was claimed, otherwise zero
      */
     @Modifying(clearAutomatically = true)
     @Transactional
@@ -121,6 +134,10 @@ public interface AnalysisJobs extends JpaRepository<AnalysisJobEntity, Long> {
 
     /**
      * Uses the database's clock rather than the caller's, so a slow worker cannot be refused its own completed work.
+     *
+     * @param jobId      job identifier
+     * @param leaseToken lease token
+     * @return the currently held job, if the lease is still valid
      */
     @Query(
         value = "SELECT * FROM analysis_job WHERE id = :jobId AND state = 'RUNNING' "
@@ -171,6 +188,10 @@ public interface AnalysisJobs extends JpaRepository<AnalysisJobEntity, Long> {
     /**
      * Bounded, because settling one writes to its analysis and submission too, and an unbounded backlog would make one
      * transaction of arbitrary size; the caller comes back for the next page.
+     *
+     * @param maxAttempts maximum attempts before a job is abandoned
+     * @param limit       maximum number of rows to return
+     * @return abandoned jobs ready to be settled
      */
     @Query(
         value = "SELECT * FROM analysis_job WHERE state IN ('QUEUED', 'RUNNING') "

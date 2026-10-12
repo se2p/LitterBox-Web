@@ -65,11 +65,11 @@ public class SourceArtifactEntity {
     }
 
     public byte[] getSha256() {
-        return sha256;
+        return sha256 == null ? null : sha256.clone();
     }
 
     public void setSha256(final byte[] sha256) {
-        this.sha256 = sha256;
+        this.sha256 = sha256 == null ? null : sha256.clone();
     }
 
     public String getOriginalFilename() {

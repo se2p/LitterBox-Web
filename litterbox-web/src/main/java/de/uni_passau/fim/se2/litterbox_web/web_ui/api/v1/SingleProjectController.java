@@ -61,6 +61,14 @@ public class SingleProjectController {
         this.analysisAuthorizer = analysisAuthorizer;
     }
 
+    /**
+     * Accepts a project upload and starts analysis.
+     *
+     * @param file           uploaded project
+     * @param locale         response locale
+     * @param idempotencyKey request idempotency key
+     * @return accepted submission response
+     */
     @PostMapping(
         value = "/submissions",
         consumes = MediaType.MULTIPART_FORM_DATA_VALUE
@@ -109,6 +117,14 @@ public class SingleProjectController {
         return service.submitUpload(bytes, file.filename(), ApiV1.publicLocale(locale), idempotencyKey);
     }
 
+    /**
+     * Accepts a question project upload and starts analysis.
+     *
+     * @param file           uploaded project
+     * @param locale         response locale
+     * @param idempotencyKey request idempotency key
+     * @return accepted submission response
+     */
     @PostMapping(
         value = "/question-submissions",
         consumes = MediaType.MULTIPART_FORM_DATA_VALUE
@@ -127,6 +143,14 @@ public class SingleProjectController {
             .map(this::accepted);
     }
 
+    /**
+     * Accepts a project or studio URL and starts analysis.
+     *
+     * @param request        project or studio URL
+     * @param locale         response locale
+     * @param idempotencyKey request idempotency key
+     * @return accepted submission response
+     */
     @PostMapping(
         value = "/submissions",
         consumes = MediaType.APPLICATION_JSON_VALUE
@@ -148,6 +172,14 @@ public class SingleProjectController {
             : service.submitStudio(request.studioId(), language, idempotencyKey).map(this::accepted);
     }
 
+    /**
+     * Accepts a question project URL and starts analysis.
+     *
+     * @param request        question project URL
+     * @param locale         response locale
+     * @param idempotencyKey request idempotency key
+     * @return accepted submission response
+     */
     @PostMapping(
         value = "/question-submissions",
         consumes = MediaType.APPLICATION_JSON_VALUE
@@ -171,6 +203,9 @@ public class SingleProjectController {
     /**
      * Answers what a studio holds without submitting it. Sending a studio starts a run that cannot be taken back one
      * project at a time, so its size is worth naming while the form is still on the screen.
+     *
+     * @param studioId Scratch studio identifier
+     * @return studio summary
      */
     @GetMapping("/studios/{studioId}")
     public Mono<SingleProjectDtos.StudioSummaryView> studio(@PathVariable final String studioId) {
@@ -220,6 +255,13 @@ public class SingleProjectController {
         return service.events(token, lastEventId);
     }
 
+    /**
+     * Returns an authorized submission asset.
+     *
+     * @param token  submission token
+     * @param sha256 asset digest
+     * @return asset response
+     */
     @GetMapping("/submissions/{token}/assets/{sha256}")
     public Mono<ResponseEntity<byte[]>> asset(
         @PathVariable final String token,
@@ -247,6 +289,10 @@ public class SingleProjectController {
     /**
      * The report for one analysis of a submission. A class set holds many, and the plain report above hands back the
      * submission's last one, which is not the project the reader had open.
+     *
+     * @param token      submission access token
+     * @param analysisId requested analysis
+     * @return the requested report response
      */
     @GetMapping(
         value = "/submissions/{token}/analyses/{analysisId}/report.html",

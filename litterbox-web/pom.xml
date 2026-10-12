@@ -375,6 +375,7 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
                     <consoleOutput>true</consoleOutput>
                     <linkXRef>false</linkXRef>
                     <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                    <violationSeverity>warning</violationSeverity>
                 </configuration>
                 <dependencies>
                     <dependency>
@@ -431,6 +432,34 @@ SPDX-FileCopyrightText: 2024 LitterBox-Web contributors
     </build>
 
     <profiles>
+        <!-- Keep analysis tooling out of the dependencies fetched for the offline production package. -->
+        <profile>
+            <id>static-analysis</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.github.spotbugs</groupId>
+                        <artifactId>spotbugs-maven-plugin</artifactId>
+                        <version>4.10.4.0</version>
+                        <configuration>
+                            <effort>Max</effort>
+                            <threshold>Low</threshold>
+                            <excludeFilterFile>${project.basedir}/../config/spotbugs/exclude.xml</excludeFilterFile>
+                            <failOnError>true</failOnError>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>spotbugs-check</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <!--
           Builds the site when nobody else has, so that `mvn package` on its own produces a jar that can serve one.
           Maven only copies ${frontend.dist}; without this a missing directory is skipped at INFO level and the

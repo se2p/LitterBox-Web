@@ -28,7 +28,7 @@ import reactor.core.publisher.Mono;
  * than leaving a child to guess.
  */
 @Service
-public class MetricReferenceService {
+public final class MetricReferenceService {
 
     /**
      * Below this many projects the terciles describe whoever happened to submit something rather than anything worth
@@ -56,6 +56,11 @@ public class MetricReferenceService {
         this.clock = Objects.requireNonNull(clock, "clock");
     }
 
+    /**
+     * Returns cached or freshly loaded reference bands for the supported metrics.
+     *
+     * @return the reference bands, or an empty list when the repository is unavailable
+     */
     public Mono<List<MetricBand>> bands() {
         final Instant now = clock.instant();
         final CachedBands cached = cache.get();

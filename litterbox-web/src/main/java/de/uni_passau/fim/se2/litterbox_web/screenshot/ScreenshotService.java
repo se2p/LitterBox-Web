@@ -12,7 +12,10 @@ package de.uni_passau.fim.se2.litterbox_web.screenshot;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -66,6 +69,11 @@ public class ScreenshotService {
      * @param scale       Zoom level
      */
     public record ScreenshotRequest(String projectJson, Collection<String> sprites, double scale) {
+
+        public ScreenshotRequest {
+            sprites = sprites == null ? null : Collections.unmodifiableList(new ArrayList<>(sprites));
+        }
+
     }
 
     /**
@@ -74,6 +82,11 @@ public class ScreenshotService {
      * @param screenshots Map of sprite name to SVG
      */
     public record ScreenshotResponse(Map<String, String> screenshots) {
+
+        public ScreenshotResponse {
+            screenshots = screenshots == null ? null : Collections.unmodifiableMap(new LinkedHashMap<>(screenshots));
+        }
+
     }
 
 }

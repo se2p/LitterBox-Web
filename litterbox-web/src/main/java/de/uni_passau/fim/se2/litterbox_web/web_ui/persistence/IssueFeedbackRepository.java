@@ -27,6 +27,14 @@ public class IssueFeedbackRepository {
         this.databaseWork = Objects.requireNonNull(databaseWork, "databaseWork");
     }
 
+    /**
+     * Stores or replaces a learner's reaction for one finding.
+     *
+     * @param analysisId analysis identifier
+     * @param finderName finding identifier
+     * @param reaction   learner reaction
+     * @return completion signal
+     */
     public Mono<Void> upsert(final long analysisId, final String finderName, final IssueFeedbackReaction reaction) {
         Objects.requireNonNull(finderName, "finderName");
         Objects.requireNonNull(reaction, "reaction");

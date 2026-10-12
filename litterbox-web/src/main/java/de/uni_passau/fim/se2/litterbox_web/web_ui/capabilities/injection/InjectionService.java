@@ -67,7 +67,7 @@ public final class InjectionService {
      * @return supported injector and finder identifiers
      */
     public static List<SupportedInjector> supportedInjectors() {
-        return SUPPORTED_INJECTORS;
+        return List.copyOf(SUPPORTED_INJECTORS);
     }
 
     /**

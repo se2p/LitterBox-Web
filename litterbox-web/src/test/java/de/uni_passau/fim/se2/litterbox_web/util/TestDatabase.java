@@ -57,6 +57,9 @@ public final class TestDatabase implements AutoCloseable {
      *
      * <p>
      * Each call gets its own schema, so tests sharing one server still start from nothing.
+     *
+     * @param prefix schema name prefix
+     * @return a fresh synthetic test database
      */
     public static TestDatabase freshSchema(final String prefix) {
         final Server server = Server.shared();
@@ -65,7 +68,11 @@ public final class TestDatabase implements AutoCloseable {
         return new TestDatabase(server, schema);
     }
 
-    /** Applies the checked-in Flyway migrations to this schema. */
+    /**
+     * Applies the checked-in Flyway migrations to this schema.
+     *
+     * @return this database
+     */
     public TestDatabase migrated() {
         Flyway.configure().dataSource(dataSource).locations("classpath:db/migration").load().migrate();
         return this;

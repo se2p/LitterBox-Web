@@ -10,7 +10,10 @@
 package de.uni_passau.fim.se2.litterbox_web.code_completion;
 
 import java.net.URI;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -27,11 +30,11 @@ public class CodeCompletionModelConfig {
     private Map<CodeCompletionModelType, ModelConfig> models;
 
     public void setModels(final Map<CodeCompletionModelType, ModelConfig> models) {
-        this.models = models;
+        this.models = models == null ? null : Collections.unmodifiableMap(new LinkedHashMap<>(models));
     }
 
     public Optional<ModelConfig> getModelConfig(final CodeCompletionModelType modelType) {
-        return Optional.ofNullable(models.get(modelType));
+        return Optional.ofNullable(Objects.requireNonNull(models, "models").get(modelType));
     }
 
     public record ModelConfig(URI url) {

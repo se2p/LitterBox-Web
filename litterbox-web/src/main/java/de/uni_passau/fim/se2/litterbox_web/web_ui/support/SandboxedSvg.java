@@ -86,6 +86,9 @@ public final class SandboxedSvg {
      * A {@code true} answer means only that the document parses as SVG and that nothing obviously active was found in
      * its markup. It is not a statement about the document's CSS, and it is conditional on the caller honouring the
      * containment described on this class.
+     *
+     * @param content SVG bytes to inspect
+     * @return whether the content can be safely stored as a preview
      */
     public static boolean isPreviewable(final byte[] content) {
         if (content == null || content.length == 0) {

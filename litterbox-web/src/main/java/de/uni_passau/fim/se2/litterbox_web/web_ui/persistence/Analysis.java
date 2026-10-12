@@ -9,6 +9,7 @@
  */
 package de.uni_passau.fim.se2.litterbox_web.web_ui.persistence;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -34,7 +35,7 @@ public record Analysis(
 
     public Analysis {
         inputSha256 = inputSha256 == null ? null : inputSha256.clone();
-        metrics = metrics == null ? Map.of() : java.util.Collections.unmodifiableMap(new TreeMap<>(metrics));
+        metrics = metrics == null ? Map.of() : Collections.unmodifiableMap(new TreeMap<>(metrics));
     }
 
     @Override

@@ -22,12 +22,33 @@ public interface SourceArtifactStore {
      * Whether a request may keep its bytes is not decided until the digest is known, because an idempotency key bound
      * to different bytes refuses the request, and a refused request should leave nothing behind. Staging is what lets
      * the digest be computed before anything durable is written.
+     *
+     * @param source           bytes to stage
+     * @param mediaType        declared media type
+     * @param originalFilename submitted filename, when present
+     * @return a staged artifact
+     * @throws IOException when the bytes cannot be staged
      */
     StagedSourceArtifact stage(InputStream source, String mediaType, String originalFilename) throws IOException;
 
+    /**
+     * Opens bytes previously promoted to the store.
+     *
+     * @param sha256 digest identifying the stored bytes
+     * @return a stream over the stored bytes
+     * @throws IOException when the bytes cannot be opened
+     */
     InputStream open(byte[] sha256) throws IOException;
 
-    /** Stages and keeps in one step, for content nothing is going to reconsider once it has been read. */
+    /**
+     * Stages and keeps in one step, for content nothing is going to reconsider once it has been read.
+     *
+     * @param source           bytes to store
+     * @param mediaType        declared media type
+     * @param originalFilename submitted filename, when present
+     * @return stored artifact
+     * @throws IOException when the bytes cannot be staged or promoted
+     */
     default StoredSourceArtifact put(
         final InputStream source, final String mediaType, final String originalFilename
     ) throws IOException {
@@ -47,7 +68,12 @@ public interface SourceArtifactStore {
 
         byte[] sha256();
 
-        /** Makes the staged bytes part of the store, addressed by their digest. */
+        /**
+         * Makes the staged bytes part of the store, addressed by their digest.
+         *
+         * @return metadata for the stored bytes
+         * @throws IOException when promotion fails
+         */
         StoredSourceArtifact promote() throws IOException;
 
         /** Discards the staged bytes unless they were promoted. Never throws; this is cleanup, not an outcome. */

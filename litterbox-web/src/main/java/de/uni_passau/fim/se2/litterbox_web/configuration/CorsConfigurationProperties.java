@@ -9,6 +9,7 @@
  */
 package de.uni_passau.fim.se2.litterbox_web.configuration;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -22,7 +23,9 @@ public class CorsConfigurationProperties {
     private List<String> allowedOrigins;
 
     public void setAllowedOrigins(final List<String> allowedOrigins) {
-        this.allowedOrigins = allowedOrigins;
+        this.allowedOrigins = allowedOrigins == null
+            ? null
+            : Collections.unmodifiableList(new ArrayList<>(allowedOrigins));
     }
 
     public List<String> getAllowedOrigins() {

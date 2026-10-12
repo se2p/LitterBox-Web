@@ -25,7 +25,7 @@ import reactor.core.publisher.Mono;
 /** Public, deliberately delayed and anonymised statistics. */
 @RestController
 @RequestMapping({ ApiV1.BASE_PATH, ApiV1.WEB_BASE_PATH })
-public class PublicStatisticsController {
+public final class PublicStatisticsController {
 
     private final PublicStatisticsService service;
 

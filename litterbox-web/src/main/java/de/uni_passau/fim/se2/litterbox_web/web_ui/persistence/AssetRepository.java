@@ -128,6 +128,14 @@ public class AssetRepository {
         return true;
     }
 
+    /**
+     * Links an existing asset to an analysis.
+     *
+     * @param analysisId analysis identifier
+     * @param sha256     asset digest
+     * @param role       asset role
+     * @return completion signal
+     */
     public Mono<Void> linkToAnalysis(final long analysisId, final byte[] sha256, final String role) {
         Objects.requireNonNull(sha256, SHA256_COLUMN);
         Objects.requireNonNull(role, "role");
@@ -137,6 +145,13 @@ public class AssetRepository {
         });
     }
 
+    /**
+     * Finds an asset when the submission token authorizes access to it.
+     *
+     * @param token  submission token
+     * @param sha256 asset digest
+     * @return matching asset, if any
+     */
     public Mono<Asset> findForSubmission(final String token, final byte[] sha256) {
         Objects.requireNonNull(token, "token");
         Objects.requireNonNull(sha256, SHA256_COLUMN);

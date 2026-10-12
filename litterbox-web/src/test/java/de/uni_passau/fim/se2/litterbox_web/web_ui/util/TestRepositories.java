@@ -54,7 +54,13 @@ public final class TestRepositories implements AutoCloseable {
         }
     }
 
-    /** Hands out a repository exactly as the application receives it, transactions and all. */
+    /**
+     * Hands out a repository exactly as the application receives it, transactions and all.
+     *
+     * @param <T>                 repository type
+     * @param repositoryInterface repository interface to resolve
+     * @return the configured repository
+     */
     public <T> T of(final Class<T> repositoryInterface) {
         return context.getBean(repositoryInterface);
     }
@@ -67,7 +73,11 @@ public final class TestRepositories implements AutoCloseable {
         return context.getBean(PlatformTransactionManager.class);
     }
 
-    /** The transactions the repositories run their writes in, isolated as the application isolates them. */
+    /**
+     * The transactions the repositories run their writes in, isolated as the application isolates them.
+     *
+     * @return a transaction helper
+     */
     public ReadCommittedTransactions transactions() {
         return new ReadCommittedTransactions(transactionManager());
     }

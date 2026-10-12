@@ -144,7 +144,12 @@ public class SingleProjectApplicationService {
         return intake.submitStudio(studio, locale, idempotencyKey);
     }
 
-    /** Reads a studio's own description of itself, so its size can be named before the run is started. */
+    /**
+     * Reads a studio's own description of itself, so its size can be named before the run is started.
+     *
+     * @param studioId the numeric Scratch studio identifier
+     * @return the studio summary, including whether it can be read and its project count
+     */
     public Mono<SingleProjectDtos.StudioSummaryView> studioSummary(final String studioId) {
         return scratch.studioSummary(studioId).map(
             summary -> new SingleProjectDtos.StudioSummaryView(

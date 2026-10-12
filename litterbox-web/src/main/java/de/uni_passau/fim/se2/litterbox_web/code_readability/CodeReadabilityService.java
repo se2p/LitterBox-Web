@@ -11,7 +11,9 @@ package de.uni_passau.fim.se2.litterbox_web.code_readability;
 
 import java.net.URI;
 import java.text.Normalizer;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -204,6 +206,20 @@ public class CodeReadabilityService {
 
         public CodeReadabilityRequest {
             Objects.requireNonNull(svg);
+            tokens = copyNested(tokens);
+        }
+
+        private static List<List<String>> copyNested(final List<List<String>> values) {
+            if (values == null) {
+                return null;
+            }
+            final List<List<String>> copy = new ArrayList<>(values.size());
+            for (List<String> value : values) {
+                copy.add(
+                    value == null ? null : Collections.unmodifiableList(new ArrayList<>(value))
+                );
+            }
+            return Collections.unmodifiableList(copy);
         }
     }
 

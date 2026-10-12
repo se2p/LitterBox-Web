@@ -50,7 +50,7 @@ public class IdempotencyKeyEntity {
     }
 
     public byte[] getRequestFingerprint() {
-        return requestFingerprint;
+        return requestFingerprint == null ? null : requestFingerprint.clone();
     }
 
     public long getSubmissionId() {
