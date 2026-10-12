@@ -642,7 +642,7 @@ test('brand image text and CSS fallbacks', async ({ page }) => {
     expect(unapprovedRequests).toEqual([]);
 });
 
-for (const state of ['empty', 'failed', 'partial', 'processing'] as const) {
+for (const state of ['empty', 'failed', 'processing'] as const) {
     test(`visual analysis ${state} state`, async ({ page }) => {
         const unapprovedRequests = await preparePage(page, 'desktop', {
             locale: 'en',
@@ -657,11 +657,38 @@ for (const state of ['empty', 'failed', 'partial', 'processing'] as const) {
                 page.getByText('No findings were reported for this project.'),
             ).toBeVisible();
         if (state === 'failed') await expect(page.getByRole('alert')).toBeVisible();
-        if (state === 'partial') await waitForScratchblocks(page);
         if (state === 'processing') await expect(page.locator('.status-processing')).toBeVisible();
         expect(unapprovedRequests).toEqual([]);
     });
 }
+
+test('visual analysis partial state', async ({ page }) => {
+    const unapprovedRequests = await preparePage(page, 'desktop', {
+        locale: 'en',
+        submission: 'partial',
+        features: batchCapabilities.enabledFeatures,
+    });
+    await page.goto('./submissions/synthetic-partial');
+    await expect(
+        page.getByRole('heading', { name: 'Class set analysis', level: 1, exact: true }),
+    ).toBeVisible();
+    await expect(page.locator('.status-partial')).toContainText('Analysis partly complete');
+    await expect(page.locator('#batch-project-inspector')).toHaveCount(0);
+
+    await page.locator('#batch-all-projects > summary').click();
+    await page
+        .locator('#batch-all-projects')
+        .getByRole('button', { name: /synthetic-en-project-with-a-long-name\.sb3/ })
+        .click();
+    const report = page.locator('#batch-project-inspector');
+    await expect(report.getByRole('heading', { name: 'Project report', level: 2 })).toBeVisible();
+    await expect(report).toContainText('synthetic-en-project-with-a-long-name.sb3');
+    await expect(page.locator('.scratchblocks-rendered').first()).toHaveAttribute(
+        'data-render-state',
+        'ready',
+    );
+    expect(unapprovedRequests).toEqual([]);
+});
 
 for (const [viewportName, viewport] of Object.entries(viewports) as [
     ViewportName,
