@@ -569,7 +569,6 @@ export const parseAssessmentImport = (
     text: string,
     limits: AssessmentLimits,
     projectName?: string,
-    analysisId?: number,
 ): AssessmentImportResult => {
     const bounds = assessmentBounds(limits);
     let parsed: unknown;
@@ -585,10 +584,8 @@ export const parseAssessmentImport = (
         return { ok: false, reason: 'unsupported-schema' };
     }
     if (
-        (projectName !== undefined || analysisId !== undefined) &&
-        (!isObject(parsed.source) ||
-            (projectName !== undefined && parsed.source.project !== projectName) ||
-            (analysisId !== undefined && parsed.source.analysisId !== analysisId))
+        projectName !== undefined &&
+        (!isObject(parsed.source) || parsed.source.project !== projectName)
     ) {
         return { ok: false, reason: 'wrong-project' };
     }

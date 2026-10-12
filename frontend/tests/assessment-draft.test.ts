@@ -6,6 +6,7 @@ import { DEFAULT_ASSESSMENT_LIMITS } from '../src/api/capabilities';
 import {
     draftLimitBreaches,
     exportQuestion,
+    importedDraft,
     publishQuestion,
     structurallyInvalid,
     withinLimits,
@@ -105,3 +106,24 @@ it('exports the marked count as the expected count, as the editor shows it', () 
         exportQuestion({ ...marked, correctAnswers: [], expectedAnswers: 3 }).expectedAnswers,
     ).toBe(3);
 });
+
+it.each(['question-1', 'question-from-previous-upload'])(
+    'preserves imported answers when publishing with source question %s',
+    (sourceQuestionId) => {
+        const original = draft({ source: 'generated', selected: false });
+        const saved = exportQuestion(
+            draft({ source: 'generated', correctAnswers: ['First'], answerGuide: 'Use the flag.' }),
+        );
+        const imported = importedDraft(
+            { ...saved, sourceQuestionId },
+            0,
+            new Map([[original.questionId, original]]),
+        );
+        expect(publishQuestion(imported, new Map([[original.draftId, original]]))).toMatchObject({
+            source: 'CUSTOM',
+            correctAnswers: ['First'],
+            expectedAnswers: 1,
+        });
+        expect(exportQuestion(imported).answerGuide).toBe('Use the flag.');
+    },
+);

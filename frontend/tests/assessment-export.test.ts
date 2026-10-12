@@ -623,25 +623,19 @@ describe('assessment import', () => {
         ).toEqual({ ok: false, reason: 'wrong-project' });
     });
 
-    it('rejects another analysis with the same project filename or a missing analysis ID', () => {
-        const file = assessmentJson(assessment);
-        expect(
-            parseImportWithLimits(file, DEFAULT_ASSESSMENT_LIMITS, assessment.project, 88).ok,
-        ).toBe(true);
-        expect(
-            parseImportWithLimits(file, DEFAULT_ASSESSMENT_LIMITS, assessment.project, 99),
-        ).toEqual({ ok: false, reason: 'wrong-project' });
-        const withoutAnalysis = JSON.parse(file);
-        delete withoutAnalysis.source.analysisId;
-        expect(
-            parseImportWithLimits(
-                JSON.stringify(withoutAnalysis),
+    it.each([99, undefined])(
+        'accepts the same project with source analysis ID %s',
+        (analysisId) => {
+            const saved = JSON.parse(assessmentJson(assessment));
+            saved.source.analysisId = analysisId;
+            const result = parseImportWithLimits(
+                JSON.stringify(saved),
                 DEFAULT_ASSESSMENT_LIMITS,
                 assessment.project,
-                88,
-            ),
-        ).toEqual({ ok: false, reason: 'wrong-project' });
-    });
+            );
+            expect(result.ok).toBe(true);
+        },
+    );
 
     it('rejects duplicate question IDs or generated source references', () => {
         const first = assessment.questions[0];

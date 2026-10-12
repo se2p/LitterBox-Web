@@ -2096,7 +2096,7 @@ describe('Questions workflow', () => {
             [
                 JSON.stringify({
                     ...JSON.parse(payload),
-                    source: { project: 'synthetic-question-project.sb3', analysisId: 99 },
+                    source: { project: 'other-project.sb3', analysisId: 88 },
                 }),
             ],
             'other.json',
@@ -2130,6 +2130,89 @@ describe('Questions workflow', () => {
         expect(screen.getByText('3 of 4 selected.')).toBeInTheDocument();
         expect(screen.getByRole('heading', { name: 'Question 3' })).toBeInTheDocument();
     });
+
+    it.each(['q-first', 'q-from-previous-upload'])(
+        'preserves imported answers after a reupload with source question %s',
+        async (sourceQuestionId) => {
+            const user = userEvent.setup();
+            mockFetchRoutes({
+                features: ['qlc', 'teacher-archive'],
+                routes: [
+                    {
+                        when: (url) => url.includes('/quiz-answer-key'),
+                        respond: () =>
+                            response({
+                                schemaVersion: 1,
+                                questions: [{ questionId: 'q-first', correctAnswers: ['A click'] }],
+                            }),
+                    },
+                ],
+                fallback: () =>
+                    result({
+                        quiz: [
+                            {
+                                questionId: 'q-first',
+                                question: 'What starts the script?',
+                                options: ['The flag', 'A click'],
+                                questionType: 'MULTIPLE_CHOICE',
+                                expectedAnswers: 1,
+                            },
+                        ],
+                    }),
+            });
+            const view = renderAt('/teacher/questions/question-token');
+            await screen.findByText('Build a quiz from these questions');
+            const payload = JSON.stringify({
+                kind: 'litterbox-assessment',
+                schemaVersion: 1,
+                title: 'Saved quiz',
+                instructions: 'Explain your answer.',
+                source: { project: 'synthetic-question-project.sb3', analysisId: 77 },
+                questions: [
+                    {
+                        id: 'saved-question',
+                        sourceQuestionId,
+                        source: 'generated',
+                        question: 'What starts the script?',
+                        questionType: 'MULTIPLE_CHOICE',
+                        options: ['The flag', 'A click'],
+                        correctAnswers: ['The flag'],
+                        expectedAnswers: 1,
+                        answerGuide: 'Look at the event block.',
+                    },
+                ],
+            });
+            await user.upload(
+                screen.getByLabelText('Import from JSON'),
+                new File([payload], 'saved.json', { type: 'application/json' }),
+            );
+            expect(
+                await screen.findByText(
+                    'Loaded 1 question into your quiz. The question bank is still available.',
+                ),
+            ).toBeInTheDocument();
+            view.unmount();
+            renderAt('/teacher/questions/question-token');
+            await screen.findByText('Build a quiz from these questions');
+            expect(screen.getByRole('textbox', { name: 'Quiz title' })).toHaveValue('Saved quiz');
+            const { written } = captureDownloads();
+            await user.click(screen.getByRole('button', { name: 'Download editable JSON' }));
+            await waitFor(() => expect(written).toHaveLength(1));
+            const exported = JSON.parse(written[0]!);
+            expect(exported.source.analysisId).toBe(88);
+            expect(exported.questions).toHaveLength(1);
+            expect(exported.questions[0]).toMatchObject({
+                source: sourceQuestionId === 'q-first' ? 'generated' : 'teacher',
+                correctAnswers: ['The flag'],
+                expectedAnswers: 1,
+                answerGuide: 'Look at the event block.',
+            });
+            await user.click(screen.getByRole('button', { name: 'Download teacher copy' }));
+            await waitFor(() => expect(written).toHaveLength(2));
+            expect(written[1]).toContain('<li>The flag</li>');
+            expect(written[1]).not.toContain('<li>A click</li>');
+        },
+    );
 
     it('shows a clear message and leaves the draft untouched when an imported file is not a LitterBox assessment', async () => {
         const user = userEvent.setup();
