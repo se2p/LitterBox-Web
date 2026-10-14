@@ -461,13 +461,13 @@ for (const [viewportName, viewport] of Object.entries(viewports) as [
                     }),
                 ).toBeVisible();
                 if (primaryPage.key === 'result') {
-                    await waitForScratchblocks(page);
                     const hints = page.locator('.issue-hint');
-                    expect(await hints.count()).toBeGreaterThan(0);
+                    await expect(hints).toHaveCount(3);
+                    await waitForScratchblocks(page);
                     await expect(hints.first()).not.toContainText('[b]');
                     await expect(hints.first()).not.toContainText('[sbi]');
                     const alternatives = page.locator('.code-alternative pre');
-                    expect(await alternatives.count()).toBeGreaterThan(0);
+                    await expect(alternatives.first()).toBeAttached();
                     await expect(alternatives.first()).not.toContainText('[scratchblocks]');
                 }
                 await expectVisibleFocus(page.locator('#language-select'));
