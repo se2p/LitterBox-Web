@@ -1034,51 +1034,48 @@ describe('Questions workflow', () => {
 
         const view = renderAt('/teacher/questions/question-token');
         await screen.findByText('Build a quiz from these questions');
-        await user.click(screen.getByRole('button', { name: 'Select shown questions' }));
-        await user.click(screen.getByRole('button', { name: 'Move question 2 earlier' }));
-        await user.click(screen.getByRole('button', { name: /Question 1 details/ }));
-        await user.click(screen.getByRole('button', { name: 'Edit question 1' }));
-        await user.clear(screen.getByRole('textbox', { name: 'Question text' }));
-        await user.type(
-            screen.getByRole('textbox', { name: 'Question text' }),
-            'Explain the repeat.',
-        );
-        await user.click(screen.getByRole('button', { name: 'Close editor' }));
-        await user.click(screen.getByRole('button', { name: 'Add your own question' }));
-        await user.clear(screen.getByRole('textbox', { name: 'Question text' }));
-        await user.type(
-            screen.getByRole('textbox', { name: 'Question text' }),
-            'Describe a change.',
-        );
-        await user.type(screen.getByRole('textbox', { name: 'Accepted answers' }), 'more repeats');
-        await user.tab();
-        await user.clear(screen.getByRole('textbox', { name: 'Quiz title' }));
-        await user.type(screen.getByRole('textbox', { name: 'Quiz title' }), 'My draft quiz');
-        await user.type(
-            screen.getByRole('textbox', { name: 'Instructions for learners' }),
-            'Explain each answer.',
-        );
+        let quiz = within(screen.getByRole('region', { name: 'Your quiz' }));
+        fireEvent.click(screen.getByRole('button', { name: 'Select shown questions' }));
+        fireEvent.click(quiz.getByRole('button', { name: 'Move question 2 earlier' }));
+        fireEvent.click(quiz.getByRole('button', { name: /Question 1 details/ }));
+        fireEvent.click(quiz.getByRole('button', { name: 'Edit question 1' }));
+        fireEvent.change(quiz.getByLabelText('Question text'), {
+            target: { value: 'Explain the repeat.' },
+        });
+        fireEvent.click(quiz.getByRole('button', { name: 'Close editor' }));
+        fireEvent.click(quiz.getByRole('button', { name: 'Add your own question' }));
+        fireEvent.change(quiz.getByLabelText('Question text'), {
+            target: { value: 'Describe a change.' },
+        });
+        const acceptedAnswers = quiz.getByLabelText('Accepted answers');
+        fireEvent.change(acceptedAnswers, { target: { value: 'more repeats' } });
+        fireEvent.blur(acceptedAnswers);
+        fireEvent.change(screen.getByLabelText('Quiz title'), {
+            target: { value: 'My draft quiz' },
+        });
+        fireEvent.change(screen.getByLabelText('Instructions for learners'), {
+            target: { value: 'Explain each answer.' },
+        });
 
         await user.click(screen.getByRole('link', { name: '← Back to teacher tools' }));
         await screen.findByRole('heading', { name: 'Question sets built on this device' });
         await user.click(screen.getByRole('link', { name: 'synthetic-question-project.sb3' }));
         await screen.findByText('Build a quiz from these questions');
+        quiz = within(screen.getByRole('region', { name: 'Your quiz' }));
 
         const assertDraft = () => {
             expect(screen.getByText('3 of 3 selected.')).toBeInTheDocument();
-            expect(screen.getByRole('textbox', { name: 'Quiz title' })).toHaveValue(
-                'My draft quiz',
-            );
-            expect(screen.getByRole('textbox', { name: 'Instructions for learners' })).toHaveValue(
+            expect(screen.getByLabelText('Quiz title')).toHaveValue('My draft quiz');
+            expect(screen.getByLabelText('Instructions for learners')).toHaveValue(
                 'Explain each answer.',
             );
-            expect(screen.getByRole('button', { name: /Question 1 details/ })).toHaveTextContent(
+            expect(quiz.getByRole('button', { name: /Question 1 details/ })).toHaveTextContent(
                 'Explain the repeat.',
             );
-            expect(screen.getByRole('button', { name: /Question 2 details/ })).toHaveTextContent(
+            expect(quiz.getByRole('button', { name: /Question 2 details/ })).toHaveTextContent(
                 'What starts the script?',
             );
-            expect(screen.getByRole('button', { name: /Question 3 details/ })).toHaveTextContent(
+            expect(quiz.getByRole('button', { name: /Question 3 details/ })).toHaveTextContent(
                 'Describe a change.',
             );
         };
@@ -1086,14 +1083,13 @@ describe('Questions workflow', () => {
         view.unmount();
         renderAt('/teacher/questions/question-token');
         await screen.findByText('Build a quiz from these questions');
+        quiz = within(screen.getByRole('region', { name: 'Your quiz' }));
         assertDraft();
-        await user.click(screen.getByRole('button', { name: /Question 3 details/ }));
-        await user.click(screen.getByRole('button', { name: 'Edit question 3' }));
-        expect(screen.getByRole('textbox', { name: 'Accepted answers' })).toHaveValue(
-            'more repeats',
-        );
-        await user.click(screen.getByRole('button', { name: 'Close editor' }));
-        await user.click(screen.getByRole('button', { name: 'Add your own question' }));
+        fireEvent.click(quiz.getByRole('button', { name: /Question 3 details/ }));
+        fireEvent.click(quiz.getByRole('button', { name: 'Edit question 3' }));
+        expect(quiz.getByLabelText('Accepted answers')).toHaveValue('more repeats');
+        fireEvent.click(quiz.getByRole('button', { name: 'Close editor' }));
+        fireEvent.click(quiz.getByRole('button', { name: 'Add your own question' }));
         expect(screen.getByText('4 of 4 selected.')).toBeInTheDocument();
     });
 
