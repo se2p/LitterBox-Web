@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter, useNavigate } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { App } from '../src/App';
-import { response } from './helpers';
+import { mockFetchRoutes, response } from './helpers';
 import { renderAt } from './render';
 import i18n from '../src/i18n';
 
@@ -175,30 +175,34 @@ describe('app shell', () => {
     });
 
     it('shows successful batch projects alongside per-project failures', async () => {
-        vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-            new Response(
-                JSON.stringify({
-                    status: 'partial',
-                    sourceType: 'teacher',
-                    counts: { expected: 2, completed: 1, failed: 1 },
-                    analyses: [
-                        {
-                            id: 'ok',
-                            name: 'Working project',
-                            status: 'completed',
-                            issues: [],
-                        },
-                        {
-                            id: 'bad',
-                            name: 'Broken project',
-                            status: 'failed',
-                            failureMessage: 'Malformed project.json',
-                        },
-                    ],
-                }),
-                { status: 200, headers: { 'Content-Type': 'application/json' } },
-            ),
-        );
+        mockFetchRoutes({
+            features: ['single-project', 'teacher-archive'],
+            routes: [
+                {
+                    when: (url) => url.endsWith('/submissions/synthetic-token'),
+                    respond: () =>
+                        response({
+                            status: 'partial',
+                            sourceType: 'teacher',
+                            counts: { expected: 2, completed: 1, failed: 1 },
+                            analyses: [
+                                {
+                                    id: 'ok',
+                                    name: 'Working project',
+                                    status: 'completed',
+                                    issues: [],
+                                },
+                                {
+                                    id: 'bad',
+                                    name: 'Broken project',
+                                    status: 'failed',
+                                    failureMessage: 'Malformed project.json',
+                                },
+                            ],
+                        }),
+                },
+            ],
+        });
         render(
             <MemoryRouter initialEntries={['/submissions/synthetic-token']}>
                 <App />

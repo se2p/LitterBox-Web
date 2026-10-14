@@ -11,6 +11,7 @@
  */
 module.exports = (vm) => {
     const ScratchBlocks = require("scratch-blocks");
+    ScratchBlocks.ScratchMsgs.setLocale("en");
     const jsonForMenuBlock = function (name, menuOptionsFn, colors, start) {
         return {
             message0: "%1",
@@ -25,10 +26,7 @@ module.exports = (vm) => {
             ],
             inputsInline: true,
             output: "String",
-            colour: colors.secondary,
-            colourSecondary: colors.secondary,
-            colourTertiary: colors.tertiary,
-            colourQuaternary: colors.quaternary,
+            style: colors,
             outputShape: ScratchBlocks.OUTPUT_SHAPE_ROUND,
         };
     };
@@ -51,10 +49,7 @@ module.exports = (vm) => {
                     },
                 },
             ],
-            colour: colors.primary,
-            colourSecondary: colors.secondary,
-            colourTertiary: colors.tertiary,
-            colourQuaternary: colors.quaternary,
+            style: colors,
             extensions: ["shape_hat"],
         };
     };
@@ -76,10 +71,7 @@ module.exports = (vm) => {
                 },
             ],
             output: true,
-            colour: ScratchBlocks.Colours.sensing.primary,
-            colourSecondary: ScratchBlocks.Colours.sensing.secondary,
-            colourTertiary: ScratchBlocks.Colours.sensing.tertiary,
-            colourQuaternary: ScratchBlocks.Colours.sensing.quaternary,
+            style: "sensing",
             outputShape: ScratchBlocks.OUTPUT_SHAPE_ROUND,
         };
     };
@@ -92,10 +84,6 @@ module.exports = (vm) => {
                 sound.name,
             ]);
         }
-        menu.push([
-            ScratchBlocks.ScratchMsgs.translate("SOUND_RECORD", "record..."),
-            ScratchBlocks.recordSoundCallback,
-        ]);
         return menu;
     };
 
@@ -187,17 +175,17 @@ module.exports = (vm) => {
         return [[myself, "_myself_"]].concat(spriteMenu());
     };
 
-    const soundColors = ScratchBlocks.Colours.sounds;
+    const soundColors = "sounds";
 
-    const looksColors = ScratchBlocks.Colours.looks;
+    const looksColors = "looks";
 
-    const motionColors = ScratchBlocks.Colours.motion;
+    const motionColors = "motion";
 
-    const sensingColors = ScratchBlocks.Colours.sensing;
+    const sensingColors = "sensing";
 
-    const controlColors = ScratchBlocks.Colours.control;
+    const controlColors = "control";
 
-    const eventColors = ScratchBlocks.Colours.event;
+    const eventColors = "event";
 
     ScratchBlocks.Blocks.sound_sounds_menu.init = function () {
         const json = jsonForMenuBlock(
@@ -432,20 +420,6 @@ module.exports = (vm) => {
         this.jsonInit(json);
     };
 
-    ScratchBlocks.VerticalFlyout.getCheckboxState = function (blockId) {
-        const monitoredBlock = vm.runtime.monitorBlocks._blocks[blockId];
-        return monitoredBlock ? monitoredBlock.isMonitored : false;
-    };
-
-    ScratchBlocks.FlyoutExtensionCategoryHeader.getExtensionState = function (
-        extensionId,
-    ) {
-        if (vm.getPeripheralIsConnected(extensionId)) {
-            return ScratchBlocks.StatusButtonState.READY;
-        }
-        return ScratchBlocks.StatusButtonState.NOT_READY;
-    };
-
     ScratchBlocks.FieldNote.playNote_ = function (noteNum, extensionId) {
         vm.runtime.emit("PLAY_NOTE", noteNum, extensionId);
     };
@@ -459,16 +433,6 @@ module.exports = (vm) => {
     });
     ScratchBlocks.scratchBlocksUtils.compareStrings = function (str1, str2) {
         return collator.compare(str1, str2);
-    };
-
-    // Blocks wants to know if 3D CSS transforms are supported. The cross
-    // section of browsers Scratch supports and browsers that support 3D CSS
-    // transforms will make the return always true.
-    //
-    // Shortcutting to true lets us skip an expensive style recalculation when
-    // first loading the Scratch editor.
-    ScratchBlocks.utils.is3dSupported = function () {
-        return true;
     };
 
     return ScratchBlocks;

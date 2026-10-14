@@ -11,7 +11,9 @@ import { PageMain } from './components/Page';
 import { ErrorState, LoadingState } from './components/States';
 import { InformationalPage } from './pages/InformationalPage';
 import { SubmitPage } from './pages/SubmitPage';
-import { SubmissionPage } from './pages/SubmissionPage';
+const SubmissionPage = lazy(() =>
+    import('./pages/SubmissionPage').then((module) => ({ default: module.SubmissionPage })),
+);
 const CataloguePage = lazy(() =>
     import('./pages/CataloguePage').then((module) => ({ default: module.CataloguePage })),
 );

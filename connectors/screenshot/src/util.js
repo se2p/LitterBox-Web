@@ -2,15 +2,20 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-const fs = require("node:fs");
 const { JSDOM } = require("jsdom");
 const VM = require("scratch-vm");
 const FakeAudioContext = require("./audio-context");
 const VMScratchBlocks = require("./lib/blocks");
 const defineDynamicBlock = require("./lib/define-dynamic-block");
+const createTheme = require("./theme");
+const installCanvas = require("./canvas");
+const { serializeWorkspace } = require("./svg");
 
-const { window } = new JSDOM('<div id="root"></div>');
+const { window } = new JSDOM('<div id="root"></div>', {
+    pretendToBeVisual: true,
+});
 const { document, navigator } = window;
+installCanvas(window);
 window.AudioContext ??= FakeAudioContext;
 window.webkitAudioContext ??= FakeAudioContext;
 global.AudioContext = window.AudioContext;
@@ -21,31 +26,24 @@ global.navigator = navigator;
 global.DOMParser = window.DOMParser;
 global.NodeList = window.NodeList;
 global.Element = window.Element;
-FileReader = window.FileReader;
+global.FileReader = window.FileReader;
+global.XMLSerializer = window.XMLSerializer;
+global.HTMLElement = window.HTMLElement;
+global.SVGElement = window.SVGElement;
 
 // Need to be placed here after global elements were all set.
 const AudioEngine = require("scratch-audio");
 
-const defaultSVGSize = {
-    width: 1920,
-    height: 1080,
-};
 const defaultOptions = {
     media: __dirname + "/../node_modules/scratch-blocks/media/",
     readOnly: true,
     zoom: {
-        controls: true,
-        wheel: true,
+        controls: false,
         startScale: 0.5625,
-    },
-    grid: {
-        spacing: 40,
-        length: 2,
-        colour: "#ddd",
     },
     comments: true,
     collapse: false,
-    scrollbars: true,
+    scrollbars: false,
     sounds: false,
 };
 
@@ -71,6 +69,7 @@ async function convertToSVG(projectData, spriteNames, scale) {
     const ScratchBlocks = VMScratchBlocks(vm);
     const workspaceConfig = {
         ...defaultOptions,
+        theme: createTheme(ScratchBlocks),
         zoom: {
             ...defaultOptions.zoom,
             startScale: scale || defaultOptions.zoom.startScale,
@@ -78,7 +77,10 @@ async function convertToSVG(projectData, spriteNames, scale) {
     };
     const workspace = ScratchBlocks.inject(ref, workspaceConfig);
     const extractSvg = handleWorkspaceUpdate(ScratchBlocks, workspace);
-    const extensionAddedHandler = handleExtensionAdded(ScratchBlocks);
+    const extensionAddedHandler = handleExtensionAdded(
+        ScratchBlocks,
+        workspace,
+    );
     vm.addListener("EXTENSION_ADDED", extensionAddedHandler);
 
     try {
@@ -116,74 +118,45 @@ async function convertToSVG(projectData, spriteNames, scale) {
     } finally {
         vm.removeListener("EXTENSION_ADDED", extensionAddedHandler);
         rootElement.removeChild(ref);
-        // Enforce re-inserting CSS
-        document.head.removeChild(document.head.firstElementChild);
-        ScratchBlocks.Css.styleSheet_ = null;
         try {
             workspace.dispose();
-        } catch (error) {
+        } catch {
             // This happens when there was workspace update error.
             // However, it's still safe to ignore this error.
         }
-    }
-}
-
-function applyComputedStylesRecursively(window, element) {
-    const computedStyles = window.getComputedStyle(element);
-
-    for (let i = 0; i < computedStyles.length; i++) {
-        const styleName = computedStyles[i];
-        const styleValue = computedStyles.getPropertyValue(styleName);
-        element.style.setProperty(styleName, styleValue);
-    }
-
-    for (const child of element.children) {
-        applyComputedStylesRecursively(window, child);
-    }
-}
-
-async function embedXlinkImages(svgElement) {
-    const images = svgElement.querySelectorAll("image");
-
-    for (const imgElement of images) {
-        const xlinkHref = imgElement.getAttribute("xlink:href");
-        if (
-            !xlinkHref ||
-            xlinkHref.startsWith("data:image/svg+xml;base64") ||
-            xlinkHref.startsWith("data:image/png;base64")
-        )
-            continue;
-        else {
-            const svgString = fs.readFileSync(xlinkHref, "utf8");
-            const base64Image = window.btoa(svgString);
-            imgElement.setAttribute(
-                "xlink:href",
-                `data:image/svg+xml;base64,${base64Image}`,
-            );
-        }
+        vm.quit();
     }
 }
 
 const handleWorkspaceUpdate = (ScratchBlocks, workspace) => async (data) => {
-    const dom = ScratchBlocks.Xml.textToDom(data.xml);
+    const dom = ScratchBlocks.utils.xml.textToDom(data.xml);
     try {
-        ScratchBlocks.Xml.clearWorkspaceAndLoadFromXml(dom, workspace);
+        ScratchBlocks.clearWorkspaceAndLoadFromXml(dom, workspace);
+        await ScratchBlocks.renderManagement.finishQueuedRenders();
     } catch (error) {
         if (error.message) {
             error.message = `Workspace Update Error: ${error.message}`;
         }
         throw error;
     }
-    const svgElement = workspace.getParentSvg();
-    svgElement.setAttribute("width", `${defaultSVGSize.width}px`);
-    svgElement.setAttribute("height", `${defaultSVGSize.height}px`);
-    await embedXlinkImages(svgElement);
-    applyComputedStylesRecursively(window, svgElement);
-    return svgElement.outerHTML.replaceAll("&nbsp;", " ");
+    return serializeWorkspace(ScratchBlocks, workspace);
 };
 
-const handleExtensionAdded = (ScratchBlocks) => (categoryInfo) => {
-    console.log("EXTENSION_ADDED");
+const handleExtensionAdded = (ScratchBlocks, workspace) => (categoryInfo) => {
+    const theme = workspace.getTheme();
+    const previousStyle = theme.blockStyles[categoryInfo.id];
+    theme.setBlockStyle(categoryInfo.id, {
+        colourPrimary: categoryInfo.color1,
+        colourSecondary:
+            categoryInfo.color2 ??
+            previousStyle?.colourSecondary ??
+            categoryInfo.color1,
+        colourTertiary:
+            categoryInfo.color3 ??
+            previousStyle?.colourTertiary ??
+            categoryInfo.color1,
+    });
+    workspace.setTheme(theme);
     const defineBlocks = (blockInfoArray) => {
         if (blockInfoArray && blockInfoArray.length > 0) {
             const staticBlocksJson = [];
@@ -192,12 +165,21 @@ const handleExtensionAdded = (ScratchBlocks) => (categoryInfo) => {
                 if (blockInfo.info && blockInfo.info.isDynamic) {
                     dynamicBlocksInfo.push(blockInfo);
                 } else if (blockInfo.json) {
-                    staticBlocksJson.push(blockInfo.json);
+                    const json = { ...blockInfo.json, style: categoryInfo.id };
+                    for (const key of [
+                        "colour",
+                        "colourSecondary",
+                        "colourTertiary",
+                        "colourQuaternary",
+                    ]) {
+                        delete json[key];
+                    }
+                    staticBlocksJson.push(json);
                 }
                 // otherwise it's a non-block entry such as '---'
             });
 
-            ScratchBlocks.defineBlocksWithJsonArray(staticBlocksJson);
+            ScratchBlocks.common.defineBlocksWithJsonArray(staticBlocksJson);
             dynamicBlocksInfo.forEach((blockInfo) => {
                 // This is creating the block factory / constructor -- NOT a specific instance of the block.
                 // The factory should only know static info about the block: the category info and the opcode.

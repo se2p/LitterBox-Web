@@ -16,8 +16,18 @@ const port = Number(process.env.SCREENSHOT_PORT ?? 3001);
 function screenshot(projectData, spriteNames, scale) {
     return new Promise((resolve, reject) => {
         const child = fork(path.join(__dirname, "worker.js"));
+        child.once("error", reject);
+        const onExit = (code, signal) => {
+            reject(
+                new Error(
+                    `Screenshot worker exited without a result (${signal ?? code})`,
+                ),
+            );
+        };
+        child.once("exit", onExit);
 
-        child.on("message", (result) => {
+        child.once("message", (result) => {
+            child.removeListener("exit", onExit);
             if (result.ok) {
                 resolve(result.screenshots);
             } else {
@@ -51,7 +61,9 @@ app.post("/svg", (req, res) => {
 });
 
 const server = app.listen(port, () => {
-    console.log(`Server running at http://${hostname}:${port}/`);
+    console.log(
+        `Server running at http://${hostname}:${server.address().port}/`,
+    );
 });
 
 function shutdownHandler() {
@@ -68,7 +80,7 @@ const ignoreUnhandleRejectionErrors = [
     "No Audio Context Detected",
 ];
 
-process.on("unhandledRejection", (err, _origin) => {
+process.on("unhandledRejection", (err) => {
     if (!ignoreUnhandleRejectionErrors.includes(err.message)) {
         throw err;
     }

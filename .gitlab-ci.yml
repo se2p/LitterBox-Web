@@ -307,6 +307,42 @@ js-lint:
     - npm run lint
     - npm run format:ci
 
+screenshot-test:
+  <<: *js-lint-template
+  stage: connector-test
+  variables:
+    WORKDIR: connectors/screenshot
+  script:
+    - npm test
+    - node tests/export-synthetic.js screenshots.json
+  artifacts:
+    paths:
+      - connectors/screenshot/screenshots.json
+  rules: &screenshot-contract-rules
+    - when: on_success
+      allow_failure: false
+      changes:
+        paths:
+          - connectors/screenshot/**/*
+          - connectors/code_readability/**/*
+          - .gitlab-ci.yml
+
+screenshot-readability-contract:
+  stage: connector-test
+  image: docker.io/library/python:3.14
+  tags: [bare-metal]
+  needs: [screenshot-test]
+  cache: []
+  before_script:
+    - apt-get update
+    - apt-get install -y --no-install-recommends libgl1
+    - pip install uv
+    - cd connectors/code_readability
+    - uv sync --frozen --no-dev
+  script:
+    - uv run --frozen --no-dev python tests/screenshot_contract.py ../screenshot/screenshots.json
+  rules: *screenshot-contract-rules
+
 frontend-lint:
   <<: *js-lint-template
   variables:
@@ -365,6 +401,7 @@ frontend-e2e-test:
     - npm ci
   script:
     - npm run build
+    - npm run budget
     - cd ..
     - mvn -f litterbox-web/pom.xml -DskipTests package
     - java -jar litterbox-web/target/litterbox-web-*.jar > /tmp/litterbox-web.log 2>&1 &

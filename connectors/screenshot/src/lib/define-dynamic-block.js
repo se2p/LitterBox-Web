@@ -29,10 +29,7 @@ const defineDynamicBlock = (
         const blockJson = {
             type: extendedOpcode,
             inputsInline: true,
-            category: categoryInfo.name,
-            colour: categoryInfo.color1,
-            colourSecondary: categoryInfo.color2,
-            colourTertiary: categoryInfo.color3,
+            style: categoryInfo.id,
         };
         // There is a scratch-blocks / Blockly extension called "scratch_extension" which adjusts the styling of
         // blocks to allow for an icon, a feature of Scratch extension blocks. However, Scratch "core" extension
@@ -48,8 +45,9 @@ const defineDynamicBlock = (
         // we need a block info update (through `domToMutation`) before we have a completely initialized block
         this.needsBlockInfoUpdate = true;
     },
+    getCategory: () => categoryInfo.id,
     mutationToDom: function () {
-        const container = document.createElement("mutation");
+        const container = global.document.createElement("mutation");
         container.setAttribute("blockInfo", this.blockInfoText);
         return container;
     },
@@ -67,16 +65,12 @@ const defineDynamicBlock = (
             case BlockType.COMMAND:
             case BlockType.CONDITIONAL:
             case BlockType.LOOP:
-                this.setOutputShape(ScratchBlocks.OUTPUT_SHAPE_SQUARE);
                 this.setPreviousStatement(true);
                 this.setNextStatement(!blockInfo.isTerminal);
                 break;
             case BlockType.REPORTER:
                 this.setOutput(true);
                 this.setOutputShape(ScratchBlocks.OUTPUT_SHAPE_ROUND);
-                if (!blockInfo.disableMonitor) {
-                    this.setCheckboxInFlyout(true);
-                }
                 break;
             case BlockType.BOOLEAN:
                 this.setOutput(true);
@@ -84,8 +78,7 @@ const defineDynamicBlock = (
                 break;
             case BlockType.HAT:
             case BlockType.EVENT:
-                this.setOutputShape(ScratchBlocks.OUTPUT_SHAPE_SQUARE);
-                this.setNextStatement(true);
+                ScratchBlocks.Extensions.apply("shape_hat", this);
                 break;
             default:
                 console.warn(`Unknown block type: ${blockInfo.blockType}`);
@@ -93,12 +86,16 @@ const defineDynamicBlock = (
         }
 
         if (blockInfo.color1 || blockInfo.color2 || blockInfo.color3) {
-            // `setColour` handles undefined parameters by adjusting defined colors
-            this.setColour(
-                blockInfo.color1,
-                blockInfo.color2,
-                blockInfo.color3,
-            );
+            const theme = this.workspace.getTheme();
+            const palette = theme.blockStyles[categoryInfo.id];
+            const style = `dynamic_${encodeURIComponent(this.id)}`;
+            theme.setBlockStyle(style, {
+                colourPrimary: blockInfo.color1 ?? palette.colourPrimary,
+                colourSecondary: blockInfo.color2 ?? palette.colourSecondary,
+                colourTertiary: blockInfo.color3 ?? palette.colourTertiary,
+            });
+            this.workspace.setTheme(theme);
+            this.setStyle(style);
         }
 
         // Layout block arguments
@@ -128,7 +125,7 @@ const defineDynamicBlock = (
                 return `%${++argCount}`;
             },
         );
-        this.interpolate_(scratchBlocksStyleText, args);
+        this.jsonInit({ message0: scratchBlocksStyleText, args0: args });
     },
 });
 
