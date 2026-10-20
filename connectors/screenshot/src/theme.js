@@ -17,7 +17,7 @@ module.exports = (ScratchBlocks) => {
         pen: ["#0fbd8c", "#0da57a", "#0b8e69"],
         textField: ["#ffffff", "#ffffff", "#ffffff"],
     };
-    return ScratchBlocks.Theme.defineTheme("screenshot", {
+    return ScratchBlocks.Theme.defineTheme("default", {
         blockStyles: Object.fromEntries(
             Object.entries(colours).map(([name, palette]) => [
                 name,

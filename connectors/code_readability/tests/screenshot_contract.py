@@ -8,6 +8,7 @@ import unittest
 from pathlib import Path
 
 import numpy as np
+from lxml import etree
 
 from code_readability.processing import (
     scratch_colors,
@@ -90,6 +91,31 @@ class ScreenshotContract(unittest.TestCase):
                         np.count_nonzero(np.all(raw == scratch_colors.SPACE, axis=2)),
                         raw.shape[0] * raw.shape[1] / 4,
                     )
+
+    def test_collapsed_comments_rasterize_only_headers_and_anchor_lines(self) -> None:
+        for scale, screenshots in self.screenshots.items():
+            with self.subTest(scale=scale):
+                svg = screenshots["Synthetic Clone"]
+                tree = svg_util.parse_svg_tree(svg)
+                comments = tree.xpath('//g[contains(@class, "blocklyCollapsed")]')
+                self.assertEqual(len(comments), 2)
+                for comment in comments:
+                    for child in list(comment):
+                        if (
+                            child.tag != "line"
+                            and child.get("class") != "blocklyCommentTopbar"
+                        ):
+                            comment.remove(child)
+                image = scratch_towards.take_raw_screenshot(svg)
+                self.assertGreater(
+                    np.count_nonzero(np.all(image == (150, 219, 226), axis=2)),
+                    0,
+                    "Missing collapsed comment header",
+                )
+                np.testing.assert_array_equal(
+                    image,
+                    scratch_towards.take_raw_screenshot(etree.tostring(tree).decode()),
+                )
 
 
 if __name__ == "__main__":

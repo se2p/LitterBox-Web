@@ -9,6 +9,7 @@ const VMScratchBlocks = require("./lib/blocks");
 const defineDynamicBlock = require("./lib/define-dynamic-block");
 const createTheme = require("./theme");
 const installCanvas = require("./canvas");
+const installSvgGeometry = require("./svg-geometry");
 const { serializeWorkspace } = require("./svg");
 
 const { window } = new JSDOM('<div id="root"></div>', {
@@ -16,6 +17,7 @@ const { window } = new JSDOM('<div id="root"></div>', {
 });
 const { document, navigator } = window;
 installCanvas(window);
+installSvgGeometry(window);
 window.AudioContext ??= FakeAudioContext;
 window.webkitAudioContext ??= FakeAudioContext;
 global.AudioContext = window.AudioContext;
@@ -130,9 +132,37 @@ async function convertToSVG(projectData, spriteNames, scale) {
 
 const handleWorkspaceUpdate = (ScratchBlocks, workspace) => async (data) => {
     const dom = ScratchBlocks.utils.xml.textToDom(data.xml);
+    // Render orphaned shadows as blocks; nested input shadows stay shadows.
+    for (const shadow of Array.from(dom.children)) {
+        if (shadow.localName !== "shadow") continue;
+        const block = dom.ownerDocument.createElement("block");
+        for (const { name, value } of shadow.attributes)
+            block.setAttribute(name, value);
+        block.append(...shadow.childNodes);
+        shadow.replaceWith(block);
+    }
+    // Scratch VM uses minimized; Blockly v2 uses collapsed for workspace comments
+    // and the inverse pinned flag for attached comments.
+    for (const comment of dom.querySelectorAll("comment")) {
+        const minimized = comment.getAttribute("minimized") === "true";
+        comment.setAttribute("collapsed", String(minimized));
+        comment.setAttribute("pinned", String(!minimized));
+    }
     try {
         ScratchBlocks.clearWorkspaceAndLoadFromXml(dom, workspace);
         await ScratchBlocks.renderManagement.finishQueuedRenders();
+        // Blockly defers these positions; apply them before serializing the SVG.
+        for (const comment of dom.querySelectorAll(
+            "block > comment, shadow > comment",
+        )) {
+            const x = Number.parseInt(comment.getAttribute("x"), 10);
+            const y = Number.parseInt(comment.getAttribute("y"), 10);
+            if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
+            workspace
+                .getBlockById(comment.parentElement.getAttribute("id"))
+                .getIcon(ScratchBlocks.icons.IconType.COMMENT)
+                .setBubbleLocation(new ScratchBlocks.utils.Coordinate(x, y));
+        }
     } catch (error) {
         if (error.message) {
             error.message = `Workspace Update Error: ${error.message}`;

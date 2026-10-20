@@ -62,7 +62,7 @@ const target = (name, blocks, isStage = false) => ({
           }),
 });
 
-module.exports = {
+const project = {
     targets: [
         target("Stage", {}, true),
         target("Synthetic Sprite", {
@@ -127,3 +127,47 @@ module.exports = {
     extensions: ["pen"],
     meta: { semver: "3.0.0", vm: "5.0.300", agent: "synthetic verification" },
 };
+
+const comment = (blockId, text, minimized = false, x = 250) => ({
+    blockId,
+    x,
+    y: 20,
+    width: 220,
+    height: 140,
+    minimized,
+    text,
+});
+const sprite = project.targets[1];
+sprite.blocks.start.comment = "attached-comment";
+sprite.comments = {
+    "attached-comment": comment(
+        "start",
+        "Synthetic attached comment\nSecond line <safe> & readable",
+    ),
+    "workspace-comment": {
+        ...comment(
+            null,
+            "  if x > 10:\n      say  hi\nhttps://example.invalid/abcdefghijklmnopqrstuvwxyz0123456789",
+            false,
+            550,
+        ),
+        height: 240,
+    },
+};
+const clone = project.targets[2];
+clone.blocks["clone-start"].comment = "collapsed-comment";
+clone.comments = {
+    "collapsed-comment": comment(
+        "clone-start",
+        "Collapsed synthetic comment",
+        true,
+    ),
+    "collapsed-workspace-comment": comment(
+        null,
+        "Collapsed workspace comment",
+        true,
+        550,
+    ),
+};
+
+module.exports = project;

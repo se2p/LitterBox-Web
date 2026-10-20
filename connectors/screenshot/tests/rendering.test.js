@@ -223,7 +223,7 @@ function assertRendered(svg) {
     assert.match(svg, /<image[^>]+href="data:image\/svg\+xml;base64,/);
 }
 
-test("renders stage, sprites, custom blocks, sound menus and pen extensions", async () => {
+test("renders stage, sprites, custom blocks, sound menus, pen extensions and comments", async () => {
     const response = await request(project);
     const body = await response.json();
     assert.equal(response.status, 200, JSON.stringify(body));
@@ -241,9 +241,78 @@ test("renders stage, sprites, custom blocks, sound menus and pen extensions", as
         /second sprite only/,
     );
     assert.doesNotMatch(body.screenshots.Stage, /data-id=/);
-    for (const svg of Object.values(body.screenshots)) {
+    for (const target of project.targets) {
+        const svg = body.screenshots[target.name];
         assert.doesNotMatch(svg, /NaN|Infinity/);
+        assert.doesNotMatch(svg, /var\(/);
         assert.doesNotMatch(svg, /transform="[^"]*,\s/);
+        const dom = new global.DOMParser().parseFromString(
+            svg,
+            "image/svg+xml",
+        );
+        assert.equal(dom.querySelectorAll("parsererror").length, 0);
+        assert.equal(dom.querySelectorAll("foreignObject, textarea").length, 0);
+        for (const label of dom.querySelectorAll(".blocklyText")) {
+            assert.equal(
+                label.style.fontWeight,
+                label.classList.contains("blocklyCommentPreview")
+                    ? "400"
+                    : "500",
+            );
+        }
+        assert.equal(
+            dom.querySelectorAll(".blocklyBlockCanvas .blocklyComment").length,
+            0,
+        );
+        assert.equal(
+            dom.querySelectorAll(".blocklyBubbleCanvas > .blocklyComment")
+                .length,
+            Object.keys(target.comments).length,
+        );
+        for (const [id, comment] of Object.entries(target.comments)) {
+            const root = dom.getElementById(
+                comment.blockId ? `${comment.blockId}_comment` : id,
+            );
+            assert.equal(
+                root.classList.contains("blocklyCollapsed"),
+                comment.minimized,
+            );
+            assert.equal(
+                root.getAttribute("transform"),
+                `translate(${comment.x},${comment.y})`,
+            );
+            const editor = root.querySelector(
+                "svg.blocklyCommentForeignObject",
+            );
+            if (comment.minimized) {
+                assert.equal(editor, null);
+                continue;
+            }
+            assert.equal(editor.style.overflow, "hidden");
+            const lines = Array.from(editor.querySelectorAll("text"));
+            assert.equal(
+                lines.map((node) => node.textContent).join(""),
+                comment.text.replace(/\r?\n/g, ""),
+            );
+            const context = global.document
+                .createElement("canvas")
+                .getContext("2d");
+            for (const line of lines) {
+                assert.equal(line.getAttribute("xml:space"), "preserve");
+                assert.equal(line.getAttribute("font-weight"), "400");
+                assert.equal(line.getAttribute("font-size"), "16px");
+                assert.equal(line.getAttribute("fill"), "rgb(87, 94, 117)");
+                assert.equal(line.getAttribute("x"), "12");
+                context.font = `${line.getAttribute("font-weight")} ${line.getAttribute("font-size")} ${line.getAttribute("font-family")}`;
+                assert(
+                    context.measureText(line.textContent).width <=
+                        Number(editor.getAttribute("width")) - 24,
+                );
+            }
+            if (id === "workspace-comment") {
+                assert(lines.length > comment.text.split("\n").length);
+            }
+        }
     }
 });
 
@@ -265,6 +334,32 @@ test("filters sprites and applies the requested scale", async () => {
         "Synthetic Clone",
         "Synthetic Sprite",
     ]);
+});
+
+test("renders orphaned top-level shadows while preserving nested shadows", async () => {
+    const orphaned = structuredClone(project);
+    orphaned.targets[1].blocks["orphaned-number"] = {
+        opcode: "math_number",
+        parent: null,
+        next: null,
+        inputs: {},
+        fields: { NUM: ["314159", null] },
+        shadow: true,
+        topLevel: true,
+        x: 500,
+        y: 300,
+    };
+    const screenshots = await convertToSVG(orphaned, ["Synthetic Sprite"], 1);
+    const svg = screenshots["Synthetic Sprite"];
+    assertRendered(svg);
+    assert.match(svg, /314159/);
+    const dom = new global.DOMParser().parseFromString(svg, "image/svg+xml");
+    assert.equal(
+        dom
+            .querySelector('[data-id="sound-menu"]')
+            .getAttribute("data-argument-type"),
+        "dropdown",
+    );
 });
 
 test("rejects invalid input and oversized bodies, then still renders a valid project", async () => {
