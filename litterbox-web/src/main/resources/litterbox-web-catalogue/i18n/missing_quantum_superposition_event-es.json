@@ -1,9 +1,9 @@
 {
   "finderId": "missing_quantum_superposition_event",
   "locale": "es",
-  "name": "Falta el evento de superposición",
-  "hint": "Cuando un bloque de superposición cambia el estado de un actor, ese actor necesita un controlador no vacío para el evento de inicio de la superposición. Sin él no se define ninguna respuesta al nuevo estado y el programa puede parecer inactivo.",
-  "instruction": "Añade al actor afectado un controlador no vacío de [when superposition started] y define allí su comportamiento para el estado superpuesto.",
+  "name": "Falta el controlador del evento de superposición",
+  "hint": "Una operación de superposición crea el estado superpuesto y la representación visual predeterminada incluso sin un controlador, pero no se ejecuta ningún comportamiento personalizado para el evento de inicio de la superposición.",
+  "instruction": "Añade al actor afectado un controlador no vacío de [when superposition started] para definir un comportamiento personalizado para el estado superpuesto.",
   "examples": [
     {
       "label": "Error",

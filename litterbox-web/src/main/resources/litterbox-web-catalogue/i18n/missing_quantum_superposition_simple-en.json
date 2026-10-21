@@ -1,7 +1,7 @@
 {
   "finderId": "missing_quantum_superposition_simple",
   "locale": "en",
-  "name": "Missing Superposition Handler",
+  "name": "Missing Superposition Setup",
   "hint": "A superposition-start handler can run only when a superposition operation is executed for that actor. Without such an operation, the script is unreachable and its response never occurs.",
   "instruction": "Execute a suitable superposition operation for the same actor before the event is expected, or remove the handler when that state is not needed.",
   "examples": [

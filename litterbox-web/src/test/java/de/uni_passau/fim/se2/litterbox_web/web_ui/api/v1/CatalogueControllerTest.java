@@ -31,8 +31,6 @@ class CatalogueControllerTest {
                 .filter(entry -> entry.id().equals("blocking_if_else"))
                 .findFirst()
                 .orElseThrow();
-            // The kind of finding comes from the finder itself, so the catalogue cannot contradict a report. How
-            // severe an occurrence is belongs to the occurrence and is not answered here at all.
             assertThat(curated.issueType()).isEqualTo("bug");
             assertThat(curated.examples()).isNotEmpty();
             assertThat(curated.locale()).isEqualTo(locale);
@@ -45,7 +43,6 @@ class CatalogueControllerTest {
         final var entries = new CatalogueController().catalogue("en");
 
         assertThat(entries).allMatch(entry -> entry.platform().equals("scratch") || entry.platform().equals("mblock"));
-        // Both sides have to be populated, or a filter offering the choice would lead the reader into an empty list.
         assertThat(entries).anyMatch(entry -> entry.platform().equals("mblock"));
         assertThat(entries).anyMatch(entry -> entry.platform().equals("scratch"));
         assertThat(entries).filteredOn(entry -> entry.id().equals("motor_low_power"))

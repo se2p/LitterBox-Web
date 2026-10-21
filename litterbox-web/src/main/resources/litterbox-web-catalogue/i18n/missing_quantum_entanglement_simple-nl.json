@@ -1,7 +1,7 @@
 {
   "finderId": "missing_quantum_entanglement_simple",
   "locale": "nl",
-  "name": "Ontbrekend verstrengelingsscript",
+  "name": "Ontbrekende verstrengelingsbewerking",
   "hint": "Een handler voor het starten van verstrengeling kan alleen worden uitgevoerd als de actor aan een verstrengeling deelneemt. Als geen bewerking de actor direct of via een andere deelnemer verstrengelt, is het script onbereikbaar en wordt het gedrag nooit uitgevoerd.",
   "instruction": "Plaats de handler bij een actor die door een geschikte verstrengelingsbewerking kan worden bereikt, of voeg een bewerking toe waarin deze actor betrokken is.",
   "examples": [

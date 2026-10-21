@@ -1,9 +1,9 @@
 {
   "finderId": "missing_quantum_entanglement_event",
   "locale": "de",
-  "name": "Fehlendes Verschränkungsereignis",
-  "hint": "Wenn ein Verschränkungsblock Figuren verbindet, braucht mindestens eine beteiligte Figur einen nicht leeren Handler für den Start der Verschränkung. Fehlt dieses Ereignis, bleibt das Verhalten für den verschränkten Zustand aus und das Programm reagiert möglicherweise nicht wie erwartet.",
-  "instruction": "Füge bei einer der beteiligten Figuren einen nicht leeren [when entanglement started]-Handler hinzu und lege darin die Reaktion auf den verschränkten Zustand fest.",
+  "name": "Fehlender Handler für das Verschränkungsereignis",
+  "hint": "Eine Verschränkungsoperation erzeugt den verschränkten Zustand und die Standarddarstellung auch ohne Handler, aber für das Ereignis zum Start der Verschränkung wird kein eigenes Verhalten ausgeführt.",
+  "instruction": "Füge bei einer beteiligten Figur einen nicht leeren [when entanglement started]-Handler hinzu, um ein eigenes Verhalten für den verschränkten Zustand festzulegen.",
   "examples": [
     {
       "label": "Fehler",

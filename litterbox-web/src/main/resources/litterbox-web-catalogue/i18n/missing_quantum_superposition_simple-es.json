@@ -1,7 +1,7 @@
 {
   "finderId": "missing_quantum_superposition_simple",
   "locale": "es",
-  "name": "Falta el controlador de superposición",
+  "name": "Falta la operación de superposición",
   "hint": "Un controlador de inicio de la superposición solo puede ejecutarse cuando se realiza una operación de superposición para ese actor. Sin esa operación, el script es inalcanzable y su respuesta nunca se produce.",
   "instruction": "Ejecuta una operación de superposición adecuada para el mismo actor antes de esperar el evento, o elimina el controlador si ese estado no es necesario.",
   "examples": [

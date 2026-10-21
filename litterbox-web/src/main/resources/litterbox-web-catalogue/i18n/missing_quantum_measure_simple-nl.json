@@ -1,7 +1,7 @@
 {
   "finderId": "missing_quantum_measure_simple",
   "locale": "nl",
-  "name": "Ontbrekend meetscript",
+  "name": "Ontbrekende meetbewerking",
   "hint": "Een handler voor de meetgebeurtenis kan alleen worden uitgevoerd wanneer de actor wordt gemeten. Als geen meting de actor direct of via een verstrengelde actor bereikt, is het script onbereikbaar en treedt de reactie nooit op.",
   "instruction": "Gebruik de handler bij een actor die door een geschikte meetbewerking wordt bereikt, of voeg een meting van deze actor of van een met hem verstrengelde actor toe.",
   "examples": [

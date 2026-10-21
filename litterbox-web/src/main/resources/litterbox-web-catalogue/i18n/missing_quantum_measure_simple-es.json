@@ -1,7 +1,7 @@
 {
   "finderId": "missing_quantum_measure_simple",
   "locale": "es",
-  "name": "Falta el controlador de medición",
+  "name": "Falta la operación de medición",
   "hint": "Un controlador del evento de medición solo puede ejecutarse cuando se mide el actor. Si ninguna medición llega a él directamente o mediante un actor entrelazado, el script es inalcanzable y su respuesta nunca se produce.",
   "instruction": "Usa el controlador con un actor al que llegue un bloque de medición adecuado, o añade una medición de este actor o de otro actor entrelazado con él.",
   "examples": [

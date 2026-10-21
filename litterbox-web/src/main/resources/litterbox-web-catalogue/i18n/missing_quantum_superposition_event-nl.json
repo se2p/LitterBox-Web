@@ -1,9 +1,9 @@
 {
   "finderId": "missing_quantum_superposition_event",
   "locale": "nl",
-  "name": "Ontbrekende superpositiegebeurtenis",
-  "hint": "Wanneer een superpositieblok de toestand van een actor verandert, heeft die actor een niet-lege handler voor het starten van de superpositie nodig. Zonder die gebeurtenis is er geen reactie op de nieuwe toestand en lijkt het programma mogelijk niets te doen.",
-  "instruction": "Voeg bij de betrokken actor een niet-lege handler voor [when superposition started] toe en beschrijf daar het gedrag voor de gesuperponeerde toestand.",
+  "name": "Ontbrekende handler voor superpositiegebeurtenis",
+  "hint": "Een superpositiebewerking maakt de gesuperponeerde toestand en de standaardweergave ook zonder handler, maar voor de gebeurtenis van het starten van de superpositie wordt geen aangepast gedrag uitgevoerd.",
+  "instruction": "Voeg bij de betrokken actor een niet-lege handler voor [when superposition started] toe om aangepast gedrag voor de gesuperponeerde toestand te definiëren.",
   "examples": [
     {
       "label": "Fout",

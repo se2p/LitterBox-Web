@@ -1,9 +1,9 @@
 {
   "finderId": "missing_quantum_entanglement_event",
   "locale": "es",
-  "name": "Falta el evento de entrelazamiento",
-  "hint": "Cuando un bloque de entrelazamiento conecta actores, al menos uno de ellos necesita un controlador no vacío para el evento de inicio del entrelazamiento. Sin ese evento no se define ningún comportamiento para el estado entrelazado y el programa puede no reaccionar como se espera.",
-  "instruction": "Añade a uno de los actores implicados un controlador no vacío de [when entanglement started] y define allí su respuesta al estado entrelazado.",
+  "name": "Falta el controlador del evento de entrelazamiento",
+  "hint": "Una operación de entrelazamiento crea el estado entrelazado y la representación visual predeterminada incluso sin un controlador, pero no se ejecuta ningún comportamiento personalizado para el evento de inicio del entrelazamiento.",
+  "instruction": "Añade a uno de los actores implicados un controlador no vacío de [when entanglement started] para definir un comportamiento personalizado para el estado entrelazado.",
   "examples": [
     {
       "label": "Error",

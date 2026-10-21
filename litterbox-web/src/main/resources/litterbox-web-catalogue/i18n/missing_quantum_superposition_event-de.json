@@ -1,9 +1,9 @@
 {
   "finderId": "missing_quantum_superposition_event",
   "locale": "de",
-  "name": "Fehlendes Superpositionsereignis",
-  "hint": "Wenn ein Superpositionsblock den Zustand einer Figur verändert, braucht sie einen nicht leeren Handler für den Start der Superposition. Fehlt dieses Ereignis, ist keine Reaktion auf den neuen Zustand definiert und das Programm kann scheinbar nichts tun.",
-  "instruction": "Füge bei der betroffenen Figur einen nicht leeren [when superposition started]-Handler hinzu und lege darin das Verhalten für den superponierten Zustand fest.",
+  "name": "Fehlender Handler für das Superpositionsereignis",
+  "hint": "Eine Superpositionsoperation erzeugt den superponierten Zustand und die Standarddarstellung auch ohne Handler, aber für das Ereignis zum Start der Superposition wird kein eigenes Verhalten ausgeführt.",
+  "instruction": "Füge bei der betroffenen Figur einen nicht leeren [when superposition started]-Handler hinzu, um ein eigenes Verhalten für den superponierten Zustand festzulegen.",
   "examples": [
     {
       "label": "Fehler",

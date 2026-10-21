@@ -1,9 +1,9 @@
 {
   "finderId": "missing_quantum_superposition_event",
   "locale": "en",
-  "name": "Missing Superposition Event",
-  "hint": "When a superposition block changes an actor's state, that actor needs a non-empty handler for the superposition-start event. Without it, no response to the new state is defined and the program may appear to do nothing.",
-  "instruction": "Add a non-empty [when superposition started] handler to the affected actor and define its behavior for the superposed state there.",
+  "name": "Missing Superposition Event Handler",
+  "hint": "A superposition operation creates the superposed state and default visual representation even without a handler, but no custom behavior runs for the superposition-start event.",
+  "instruction": "Add a non-empty [when superposition started] handler to the affected actor to define custom behavior for the superposed state.",
   "examples": [
     {
       "label": "Error",
