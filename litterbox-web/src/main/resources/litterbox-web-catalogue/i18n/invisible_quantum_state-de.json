@@ -1,0 +1,17 @@
+{
+  "finderId": "invisible_quantum_state",
+  "locale": "de",
+  "name": "Unsichtbarer Quantenzustand",
+  "hint": "Wenn zwischen Superpositions- oder Verschränkungs-Start und der Messung nicht gewartet wird, kannst du den Quantenzustand nie sehen.",
+  "instruction": "Füge einen warte-Block zwischen dem Superpositions- oder Verschränkungs-Start und der Messung ein.",
+  "examples": [
+    {
+      "label": "Fehler",
+      "scratchblocks": "when green flag clicked\nentangle variable: [color v] target: [Cat] possibilities: (1) list: [list] :: #5c068c\nmeasure :: #ff0000 //⇦  🐛"
+    },
+    {
+      "label": "Mögliche Lösung",
+      "scratchblocks": "when green flag clicked\nentangle variable: [color v] target: [Cat] possibilities: (1) list: [list] :: #5c068c\nwait (3) seconds\nmeasure :: #007000 //⇦  👍"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "finderId": "invisible_quantum_state",
+  "locale": "es",
+  "name": "Estado cuántico invisible",
+  "hint": "Si no hay bloques de espera entre el inicio de la superposición o el entrelazamiento y la medición, no puedes ver el estado cuántico.",
+  "instruction": "Añade un bloque de espera entre el inicio de la superposición o el entrelazamiento y la medición.",
+  "examples": [
+    {
+      "label": "Error",
+      "scratchblocks": "when green flag clicked\nentangle variable: [color v] target: [Cat] possibilities: (1) list: [list] :: #5c068c\nmeasure :: #ff0000 //⇦  🐛"
+    },
+    {
+      "label": "Solución posible",
+      "scratchblocks": "when green flag clicked\nentangle variable: [color v] target: [Cat] possibilities: (1) list: [list] :: #5c068c\nwait (3) seconds\nmeasure :: #007000 //⇦  👍"
+    }
+  ]
+}

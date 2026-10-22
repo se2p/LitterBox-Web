@@ -19,7 +19,7 @@ pkgs.maven.buildMavenPackage rec {
   ];
   src = ./.;
   buildOffline = true;
-  mvnHash = "sha256-TMzL6tBrfPCGTFIATl+iKNdkGLyEPlRmY/Idxb7OgDY=";
+  mvnHash = "sha256-hZtw5nf10BgcTHviomm8s1qSlNzLvr9ePwUj2Uztaxk=";
   mvnParameters = "-DskipTests -Dfrontend.dist=${litterbox-web-frontend}/share/litterbox-web";
   # frontend used as separate input, should not be built here
   mvnDepsParameters = "-Dfrontend.dist=unused";
