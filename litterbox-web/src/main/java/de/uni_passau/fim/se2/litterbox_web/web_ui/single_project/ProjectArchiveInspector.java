@@ -330,10 +330,16 @@ public class ProjectArchiveInspector {
 
     private String costumeIdentifier(final JsonNode costume) {
         final JsonNode md5Node = costume.get("md5ext");
-        if (md5Node == null || !md5Node.isString()) {
+        final String md5ext;
+        if (md5Node == null || md5Node.isNull()) {
+            md5ext = costumeAssetIdentifier(costume);
+        }
+        else if (md5Node.isString()) {
+            md5ext = md5Node.stringValue();
+        }
+        else {
             throw new IllegalArgumentException("Current costume has no Scratch asset identifier");
         }
-        final String md5ext = md5Node.stringValue();
         final int separator = md5ext.lastIndexOf('.');
         if (separator != 32) {
             throw new IllegalArgumentException("Current costume has an invalid Scratch asset identifier");
@@ -345,6 +351,15 @@ public class ProjectArchiveInspector {
             throw new IllegalArgumentException("Current costume has an invalid Scratch asset identifier");
         }
         return md5ext;
+    }
+
+    private String costumeAssetIdentifier(final JsonNode costume) {
+        final String assetId = costume.path("assetId").stringValue(null);
+        final String dataFormat = costume.path("dataFormat").stringValue(null);
+        if (assetId == null || dataFormat == null) {
+            throw new IllegalArgumentException("Current costume has no Scratch asset identifier");
+        }
+        return assetId + "." + dataFormat;
     }
 
     private void validateCostumeDigest(final String md5ext, final byte[] content) {

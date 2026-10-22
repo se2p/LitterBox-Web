@@ -22,12 +22,39 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class ProjectArchiveInspectorTest {
 
     private static final String PROJECT_JSON = "project.json";
 
     private final ProjectArchiveInspector inspector = new ProjectArchiveInspector();
+
+    @ParameterizedTest
+    @ValueSource(strings = { "", "\"md5ext\":null," })
+    void extractsCurrentCostumeUsingAssetIdAndDataFormat(final String md5ext) throws Exception {
+        final byte[] content = png();
+        final String name = md5(content) + ".png";
+        final byte[] project = projectWithCostume(
+            md5ext + "\"assetId\":\"" + md5(content) + "\",\"dataFormat\":\"png\""
+        );
+
+        final ProjectArchiveInspector.Inspection result = inspector.inspect(
+            archive(Map.of(PROJECT_JSON, project, name, content))
+        );
+
+        assertThat(result.projectJson()).isEqualTo(project);
+        assertThat(result.assets()).singleElement().satisfies(asset -> {
+            assertThat(asset.scratchMd5()).isEqualTo(md5(content));
+            assertThat(asset.extension()).isEqualTo("png");
+            assertThat(asset.mediaType()).isEqualTo("image/png");
+            assertThat(asset.content()).isEqualTo(content);
+            assertThat(result.thumbnailHashes()).containsEntry(
+                "Stage", HexFormat.of().formatHex(asset.sha256())
+            );
+        });
+    }
 
     @Test
     void extractsOnlyTheCurrentCostumeAndSniffsItsMediaType() throws Exception {
@@ -47,6 +74,52 @@ class ProjectArchiveInspectorTest {
                 assertThat(asset.content()).isEqualTo(content);
             }
         );
+    }
+
+    @ParameterizedTest
+    @ValueSource(
+        strings = {
+            "",
+            "\"assetId\":\"0123456789abcdef0123456789abcdef\"",
+            "\"assetId\":null,\"dataFormat\":\"png\"",
+            "\"assetId\":123,\"dataFormat\":\"png\"",
+            "\"assetId\":\"invalid\",\"dataFormat\":\"png\"",
+            "\"assetId\":\"0123456789abcdef0123456789abcdef\",\"dataFormat\":null",
+            "\"assetId\":\"0123456789abcdef0123456789abcdef\",\"dataFormat\":123",
+            "\"assetId\":\"0123456789abcdef0123456789abcdef\",\"dataFormat\":\"../png\"",
+        }
+    )
+    void rejectsMissingOrInvalidFallbackIdentifiers(final String costume) {
+        assertThatThrownBy(() -> inspector.inspect(archive(Map.of(PROJECT_JSON, projectWithCostume(costume)))))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("Scratch asset identifier");
+    }
+
+    @Test
+    void checksDigestAndToleratesMissingFallbackAsset() throws Exception {
+        final byte[] content = png();
+        final String name = md5(content) + ".png";
+        final byte[] project = projectWithCostume(
+            "\"assetId\":\"" + md5(content) + "\",\"dataFormat\":\"png\""
+        );
+
+        assertThatThrownBy(() -> inspector.inspect(archive(Map.of(PROJECT_JSON, project, name, new byte[] { 0 }))))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("does not match");
+        assertThat(inspector.inspect(archive(Map.of(PROJECT_JSON, project))).assets()).isEmpty();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "\"invalid.png\"", "123", "\"\"" })
+    void doesNotOverrideInvalidMd5extWithFallback(final String md5ext) throws Exception {
+        final byte[] content = png();
+        final byte[] project = projectWithCostume(
+            "\"md5ext\":" + md5ext + ",\"assetId\":\"" + md5(content) + "\",\"dataFormat\":\"png\""
+        );
+
+        assertThatThrownBy(() -> inspector.inspect(archive(Map.of(PROJECT_JSON, project))))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("Scratch asset identifier");
     }
 
     @Test
@@ -198,8 +271,12 @@ class ProjectArchiveInspectorTest {
     }
 
     private byte[] project(final String assetName) {
+        return projectWithCostume("\"md5ext\":\"" + assetName + "\"");
+    }
+
+    private byte[] projectWithCostume(final String costume) {
         return ("{\"targets\":[{\"name\":\"Stage\",\"isStage\":true,"
-            + "\"currentCostume\":0,\"costumes\":[{\"md5ext\":\"" + assetName + "\"}],"
+            + "\"currentCostume\":0,\"costumes\":[{" + costume + "}],"
             + "\"sounds\":[],\"blocks\":{}}]}").getBytes(StandardCharsets.UTF_8);
     }
 

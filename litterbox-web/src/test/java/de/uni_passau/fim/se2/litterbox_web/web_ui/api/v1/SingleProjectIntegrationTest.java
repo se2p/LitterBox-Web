@@ -907,6 +907,38 @@ class SingleProjectIntegrationTest {
             .expectStatus().isNotFound();
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = { "analysis", QUESTIONS })
+    void analyzesCostumesWithoutMd5ext(final String mode) throws IOException {
+        final byte[] input = archive(
+            thumbnail(), project -> {
+                final String identifier = HexFormat.of().formatHex(digest(MD5, thumbnail()));
+                final String md5ext = "\"md5ext\": \"" + identifier + ".png\",";
+                assertThat(project).contains(md5ext);
+                return project.replace(md5ext, "");
+            }
+        );
+        final SingleProjectDtos.CreatedSubmission created = QUESTIONS.equals(mode)
+            ? submitQuestions(input, "synthetic-no-md5ext-questions", ENGLISH)
+            : submit(input, "synthetic-no-md5ext-analysis", ENGLISH);
+
+        Awaitility.await().atMost(java.time.Duration.ofSeconds(15)).untilAsserted(
+            () -> assertThat(submission(created.token()).status()).isEqualTo(COMPLETED)
+        );
+        final SingleProjectDtos.AnalysisView analysis = submission(created.token()).analysis();
+        if (QUESTIONS.equals(mode)) {
+            assertThat(analysis.quiz()).isNotEmpty();
+            return;
+        }
+        assertThat(analysis.assetRefs()).hasSize(1);
+        client.get()
+            .uri(analysis.assetRefs().getFirst())
+            .exchange()
+            .expectStatus().isOk()
+            .expectHeader().contentType(MediaType.IMAGE_PNG)
+            .expectBody().consumeWith(result -> assertThat(result.getResponseBody()).isEqualTo(thumbnail()));
+    }
+
     @Test
     void keepsUntrustedProjectContentInertInDownloadedReports() throws IOException {
         final String payload = "<img src=x onerror=alert(42)>";
