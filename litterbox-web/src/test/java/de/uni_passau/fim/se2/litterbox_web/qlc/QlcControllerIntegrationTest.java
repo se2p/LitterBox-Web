@@ -145,8 +145,9 @@ class QlcControllerIntegrationTest extends LitterboxWebIntegrationTest {
             GENERATE_URL, request, QuestionDTO.class, HttpStatus.OK
         );
 
-        assertThat(questions).isEmpty();
-        assertThat(questions).allMatch(q -> ScopeOfFocus.ATOM.equals(q.scopeOfFocus()));
+        assertThat(questions)
+            .isNotEmpty()
+            .allMatch(q -> ScopeOfFocus.ATOM.equals(q.scopeOfFocus()));
     }
 
     @Test
