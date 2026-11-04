@@ -11,13 +11,15 @@ import {
     type OverviewMetric,
 } from '../../lib/overview-metrics';
 import {
-    CT_DIMENSION_ORDER,
+    CT_RUBRICS,
     PROGRAMMING_CONCEPT_ORDER,
     conceptCoverage,
     ctProfile,
     ctTotal,
     type ConceptId,
     type CtDimensionId,
+    type CtLevel,
+    type CtRubricId,
 } from '../../lib/program-concepts';
 import type { TranslationKey } from '../../i18n/locales';
 import { metricDisplayName } from '../capabilities/metrics/metric-utils';
@@ -452,24 +454,32 @@ export const cohortConceptCoverage = (rows: readonly BatchRow[]): CohortConceptC
     });
 };
 
-export const cohortCtTotal = (rows: readonly BatchRow[]): Distribution =>
-    distribution(completed(rows).map((row) => ctTotal(row.analysis.metrics).score));
+export const cohortCtTotal = (
+    rows: readonly BatchRow[],
+    rubric: CtRubricId = 'classic',
+): Distribution =>
+    distribution(completed(rows).map((row) => ctTotal(row.analysis.metrics, rubric).score));
 
 export interface CohortCtDimension {
     id: CtDimensionId;
-    levelIds: readonly [readonly string[], readonly string[], readonly string[], readonly string[]];
+    levelIds: readonly (readonly string[])[];
     unreported: number;
     total: number;
     median: number | undefined;
 }
 
-export const cohortCtProfile = (rows: readonly BatchRow[]): CohortCtDimension[] => {
+export const cohortCtProfile = (
+    rows: readonly BatchRow[],
+    rubric: CtRubricId = 'classic',
+): CohortCtDimension[] => {
+    const dimensions = CT_RUBRICS[rubric].dimensions;
+    const levelCount = CT_RUBRICS[rubric].levelMax + 1;
     const profileByRow = completed(rows).map((row) => ({
         row,
-        profile: new Map(ctProfile(row.analysis.metrics).map((entry) => [entry.id, entry])),
+        profile: new Map(ctProfile(row.analysis.metrics, rubric).map((entry) => [entry.id, entry])),
     }));
-    return CT_DIMENSION_ORDER.map((id) => {
-        const levelIds: [string[], string[], string[], string[]] = [[], [], [], []];
+    return dimensions.map(({ id }) => {
+        const levelIds: string[][] = Array.from({ length: levelCount }, () => []);
         profileByRow.forEach(({ row, profile }) => {
             const level = profile.get(id)?.level;
             if (level !== undefined) levelIds[level].push(row.id);
@@ -526,16 +536,19 @@ export const referenceConceptComparison = (
 
 export interface ReferenceCtComparison {
     id: CtDimensionId;
-    referenceLevel: 0 | 1 | 2 | 3 | undefined;
+    referenceLevel: CtLevel | undefined;
     medianLevel: number | undefined;
 }
 
 export const referenceCtComparison = (
     referenceMetrics: unknown,
     rows: readonly BatchRow[],
+    rubric: CtRubricId = 'classic',
 ): ReferenceCtComparison[] => {
-    const reference = new Map(ctProfile(referenceMetrics).map((entry) => [entry.id, entry]));
-    return cohortCtProfile(rows).map((entry) => ({
+    const reference = new Map(
+        ctProfile(referenceMetrics, rubric).map((entry) => [entry.id, entry]),
+    );
+    return cohortCtProfile(rows, rubric).map((entry) => ({
         id: entry.id,
         referenceLevel: reference.get(entry.id)?.level,
         medianLevel: entry.median,

@@ -4,20 +4,29 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatNumber } from '../../i18n';
-import { CT_DIMENSIONS } from '../../lib/program-concepts';
+import { CT_RUBRICS, type CtLevel, type CtRubricId } from '../../lib/program-concepts';
 import { MetricBoxPlot } from '../MetricBoxPlot';
 import { cohortCtProfile, cohortCtTotal, distributionBand } from './batch-analytics';
 import { BatchTableActionButton } from './ProjectSetFilterButton';
 import { useProjectSetFilter } from './project-set-filter';
 import type { BatchRow } from './batch-summary';
 
-const LEVELS = [0, 1, 2, 3] as const;
-
-export function BatchCtProfile({ rows }: { rows: readonly BatchRow[] }) {
+export function BatchCtProfile({
+    rows,
+    rubric = 'classic',
+}: {
+    rows: readonly BatchRow[];
+    rubric?: CtRubricId;
+}) {
     const { t } = useTranslation();
     const projectSetFilter = useProjectSetFilter();
-    const profile = useMemo(() => cohortCtProfile(rows), [rows]);
-    const overall = useMemo(() => cohortCtTotal(rows), [rows]);
+    const definition = CT_RUBRICS[rubric];
+    const levels = useMemo(
+        () => Array.from({ length: definition.levelMax + 1 }, (_, level) => level as CtLevel),
+        [definition.levelMax],
+    );
+    const profile = useMemo(() => cohortCtProfile(rows, rubric), [rows, rubric]);
+    const overall = useMemo(() => cohortCtTotal(rows, rubric), [rows, rubric]);
     const measured = overall.count;
     const total = overall.count + overall.missing;
     const band = distributionBand(overall);
@@ -60,7 +69,7 @@ export function BatchCtProfile({ rows }: { rows: readonly BatchRow[] }) {
                     <thead>
                         <tr>
                             <th scope="col">{t('ctProfileColumnDimension')}</th>
-                            {LEVELS.map((level) => (
+                            {levels.map((level) => (
                                 <th scope="col" key={level}>
                                     {t('batchCtLevelColumn', { level: formatNumber(level) })}
                                 </th>
@@ -73,19 +82,23 @@ export function BatchCtProfile({ rows }: { rows: readonly BatchRow[] }) {
                         {profile.map((entry) => {
                             const neverReported =
                                 entry.total > 0 && entry.unreported === entry.total;
-                            const dimensionName = t(CT_DIMENSIONS[entry.id].nameKey);
+                            const dimension = definition.dimensions.find(
+                                ({ id }) => id === entry.id,
+                            );
+                            if (!dimension) return null;
+                            const dimensionName = t(dimension.nameKey);
                             return (
                                 <tr key={entry.id}>
                                     <th scope="row">{dimensionName}</th>
                                     {neverReported ? (
-                                        <td colSpan={6} className="hint">
+                                        <td colSpan={levels.length + 2} className="hint">
                                             {t('batchNotReportedByClass')}
                                         </td>
                                     ) : (
                                         <>
-                                            {LEVELS.map((level) => {
+                                            {levels.map((level) => {
                                                 const count = entry.levelIds[level].length;
-                                                const key = `ct:${entry.id}:${level}`;
+                                                const key = `ct:${rubric}:${entry.id}:${level}`;
                                                 const levelLabel = t('batchCtLevelColumn', {
                                                     level: formatNumber(level),
                                                 });

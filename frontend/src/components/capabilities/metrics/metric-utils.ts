@@ -8,6 +8,7 @@ import {
     overviewMetricNames,
     type OverviewMetric,
 } from '../../../lib/overview-metrics';
+import { CT_RUBRICS } from '../../../lib/program-concepts';
 
 export interface MetricEntry {
     id: string;
@@ -38,6 +39,8 @@ const TRANSLATED_LABELS: Readonly<Record<string, TranslationKey>> = {
     variable_use_count: 'metricVariableUses',
     ct_score: 'metricCtScore',
     avg_line_width: 'metricAverageLineWidth',
+    ct_extended_score: 'metricCtExtendedScore',
+    ct_extended_score_average: 'metricCtExtendedScoreAverage',
 };
 
 const compareCodePointOrder = (left: string, right: string): number =>
@@ -55,6 +58,15 @@ const metricLabel = (
     id: string,
     translate: (key: TranslationKey) => string,
 ): { label: string; translated: boolean } => {
+    const extendedDimension = CT_RUBRICS.extended.dimensions.find(
+        (dimension) => dimension.metric === id,
+    );
+    if (extendedDimension) {
+        return {
+            label: `${translate(CT_RUBRICS.extended.nameKey)} — ${translate(extendedDimension.nameKey)}`,
+            translated: true,
+        };
+    }
     const translationKey = TRANSLATED_LABELS[id];
     if (translationKey) return { label: translate(translationKey), translated: true };
     return { label: readableMetricId(id), translated: false };

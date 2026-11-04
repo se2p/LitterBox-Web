@@ -9,6 +9,8 @@ import {
     CONCEPT_PALETTE_COLOUR,
     CT_DIMENSION_ORDER,
     CT_DIMENSIONS,
+    CT_RUBRICS,
+    preferredCtRubric,
     PROGRAMMING_CONCEPT_ORDER,
     conceptCoverage,
     ctProfile,
@@ -245,5 +247,64 @@ describe('ctTotalBand', () => {
         expect(ctTotalBand(14)).toBe('moderate');
         expect(ctTotalBand(15)).toBe('broad');
         expect(ctTotalBand(21)).toBe('broad');
+    });
+});
+
+describe('extended CT rubric', () => {
+    it('keeps distinct dimension sets for both rubrics', () => {
+        expect(CT_RUBRICS.extended.dimensions).toHaveLength(9);
+        expect(CT_RUBRICS.classic.dimensions).toHaveLength(7);
+        expect(new Set(CT_RUBRICS.extended.dimensions.map(({ metric }) => metric)).size).toBe(9);
+    });
+
+    it.each([0, 1, 2, 3, 4])(
+        'preserves extended level %i without reading classic metrics',
+        (level) => {
+            const metrics = { ct_extended_score_logic: level, ct_score_logic: 3 };
+            expect(ctProfile(metrics, 'extended').find(({ id }) => id === 'logic')?.level).toBe(
+                level,
+            );
+            expect(ctProfile(metrics).find(({ id }) => id === 'logic')?.level).toBe(3);
+        },
+    );
+
+    it.each([-1, 1.5, 5, NaN, Infinity, '4', null])(
+        'treats invalid extended level %s as unavailable',
+        (level) => {
+            expect(
+                ctProfile({ ct_extended_score_logic: level }, 'extended').find(
+                    ({ id }) => id === 'logic',
+                )?.level,
+            ).toBeUndefined();
+        },
+    );
+
+    it('does not fill missing extended scores from a classic report or from dimension sums', () => {
+        expect(
+            ctProfile({ ct_score_logic: 3 }, 'extended').every(({ level }) => level === undefined),
+        ).toBe(true);
+        expect(ctTotal({ ct_score: 21, ct_extended_score_logic: 4 }, 'extended')).toEqual({
+            score: undefined,
+            max: 36,
+        });
+    });
+
+    it.each([0, 36])('reads extended total %i out of 36', (score) => {
+        expect(ctTotal({ ct_extended_score: score, ct_score: 21 }, 'extended')).toEqual({
+            score,
+            max: 36,
+        });
+    });
+
+    it.each([-1, 36.5, 37, NaN, Infinity])('rejects invalid extended total %s', (score) => {
+        expect(ctTotal({ ct_extended_score: score }, 'extended').score).toBeUndefined();
+    });
+
+    it('recognizes zero and partial extended reports and keeps historical reports classic', () => {
+        expect(preferredCtRubric({ ct_extended_score: 0 })).toBe('extended');
+        expect(preferredCtRubric({ ct_extended_score_motion: 4 })).toBe('extended');
+        expect(preferredCtRubric({ ct_extended_score_average: 0 })).toBe('extended');
+        expect(preferredCtRubric({ ct_score: 21 })).toBe('classic');
+        expect(preferredCtRubric(null)).toBe('classic');
     });
 });

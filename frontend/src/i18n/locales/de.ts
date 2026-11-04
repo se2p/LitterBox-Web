@@ -1077,6 +1077,14 @@ export const pack: Partial<TranslationPack> = {
     ctDimensionUserInteractivity: 'Interaktivität',
     ctDimensionUserInteractivityDescription:
         'Wie das Projekt auf Eingaben von Menschen und Sensoren reagiert.',
+    ctDimensionMathOperators: 'Mathematik und Zeichenketten',
+    ctDimensionMathOperatorsDescription:
+        'Wie das Projekt Arithmetik, Formeln, Zeichenketten und Trigonometrie verwendet.',
+    ctDimensionMotion: 'Bewegung',
+    ctDimensionMotionDescription: 'Wie das Projekt Bewegungen erzeugt und kombiniert.',
+    ctRubricLabel: 'Rubrik für informatisches Denken',
+    ctRubricClassic: 'Klassisch (0–3, insgesamt 21)',
+    ctRubricExtended: 'Erweitert (0–4, insgesamt 36)',
     ctLevelNotShown: 'In diesem Projekt nicht gezeigt.',
     ctLevelFlowControl1: 'Führt eine Folge von Blöcken nacheinander aus.',
     ctLevelFlowControl2: 'Wiederholt Blöcke mit wiederhole fortlaufend oder wiederhole.',
@@ -1087,9 +1095,9 @@ export const pack: Partial<TranslationPack> = {
     ctLevelDataRepresentation1: 'Ändert eine Eigenschaft einer Figur, etwa Größe oder Kostüm.',
     ctLevelDataRepresentation2: 'Speichert Werte in Variablen.',
     ctLevelDataRepresentation3: 'Speichert Werte in Listen.',
-    ctLevelAbstraction1: 'Verteilt das Projekt auf mehrere Figuren mit jeweils mehreren Skripten.',
+    ctLevelAbstraction1: 'Verwendet mehr als ein Skript.',
     ctLevelAbstraction2: 'Definiert eigene Blöcke.',
-    ctLevelAbstraction3: 'Erzeugt Klone einer Figur mit dem Klon-Block.',
+    ctLevelAbstraction3: 'Verwendet ein Skript „Wenn ich als Klon entstehe“.',
     ctLevelSynchronization1: 'Verwendet warte, um ein Skript anzuhalten.',
     ctLevelSynchronization2: 'Koordiniert Skripte mit sende, wenn ich empfange oder stoppe.',
     ctLevelSynchronization3:
@@ -1102,6 +1110,29 @@ export const pack: Partial<TranslationPack> = {
     ctLevelUserInteractivity1: 'Startet über die grüne Flagge.',
     ctLevelUserInteractivity2: 'Reagiert auf Tasten, Klicks, frage und warte oder die Maus.',
     ctLevelUserInteractivity3: 'Reagiert auf Lautstärke oder Video.',
+    ctExtendedLevelAbstraction1: 'Verwendet mehr als ein Skript.',
+    ctExtendedLevelAbstraction2: 'Verwendet ein Skript „Wenn ich als Klon entstehe“.',
+    ctExtendedLevelAbstraction3: 'Definiert eigene Blöcke.',
+    ctExtendedLevelAbstraction4:
+        'Verwendet in einem Klon-Startskript eine Nachricht oder eine nicht-triviale Steuerstruktur auf der obersten Ebene.',
+    ctExtendedLevelFlowControl4: 'Verschachtelt Schleifenstrukturen.',
+    ctExtendedLevelLogic4: 'Verschachtelt Bedingungen.',
+    ctExtendedLevelDataRepresentation4: 'Verwendet boolesche Vergleiche oder logische Operatoren.',
+    ctExtendedLevelSynchronization4:
+        'Verwendet mindestens drei Nachrichten, die ein Skript mit nicht-trivialer Steuerstruktur auf oberster Ebene empfängt.',
+    ctExtendedLevelParallelism4:
+        'Synchronisiert mindestens drei Skripte über gemeinsame Ereignisse.',
+    ctExtendedLevelUserInteractivity3: 'Verwendet Lautstärke- oder Videosensorik.',
+    ctExtendedLevelUserInteractivity4: 'Verwendet eine Eingabegeräte-Erweiterung.',
+    ctExtendedLevelMathOperators1: 'Verwendet arithmetische Operatoren.',
+    ctExtendedLevelMathOperators2: 'Verbindet mathematische Operatoren zu Formeln.',
+    ctExtendedLevelMathOperators3: 'Verwendet Zeichenketten.',
+    ctExtendedLevelMathOperators4: 'Verwendet trigonometrische Funktionen.',
+    ctExtendedLevelMotion1: 'Bewegt sich entlang der x- und y-Achse.',
+    ctExtendedLevelMotion2: 'Verwendet Drehungen.',
+    ctExtendedLevelMotion3: 'Verwendet Geschwindigkeitsblöcke wie Gleiten oder x/y ändern.',
+    ctExtendedLevelMotion4:
+        'Verwendet mindestens fünf Bewegungsblöcke in einem Skript oder einer eigenen Blockdefinition.',
     ctLevelBarLabel: 'Stufe {{level}} von {{max}}',
     ctProfileLevelReachedLabel: 'Erreicht',
 
@@ -1116,6 +1147,8 @@ export const pack: Partial<TranslationPack> = {
     ctProfileColumnMeaning: 'Was diese Stufe bedeutet',
     ctProfileTotal: '{{score}} von {{max}}',
     ctProfileTotalNotReported: 'Für dieses Projekt nicht gemeldet.',
+    metricCtExtendedScore: 'Erweiterter CT-Score',
+    metricCtExtendedScoreAverage: 'Erweiterter CT-Durchschnitt',
     ctTotalBandNarrow:
         'Diese Gesamtpunktzahl liegt im Bereich 0–7: Die Aufgabe deckt derzeit nur einen schmalen Ausschnitt der sieben Dimensionen ab.',
     ctTotalBandModerate:

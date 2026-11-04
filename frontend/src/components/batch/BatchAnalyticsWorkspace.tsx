@@ -3,6 +3,7 @@
 
 import { useMemo, useState, type ReactNode } from 'react';
 import { useIdSet } from '../../lib/useIdSet';
+import { CT_RUBRICS, preferredCtRubric, type CtRubricId } from '../../lib/program-concepts';
 import { useTranslation } from 'react-i18next';
 import type { CatalogueLookup } from '../single-project/catalogue-lookup';
 import { FoldSection } from '../FoldSection';
@@ -54,6 +55,18 @@ export function BatchAnalyticsWorkspace({
     exportContent: (selectedColumns: readonly string[]) => ReactNode;
 }) {
     const { t } = useTranslation();
+    const [chosenRubric, setChosenRubric] = useState<CtRubricId>();
+    const rubric =
+        chosenRubric ??
+        (rows.some((row) => row.completed && preferredCtRubric(row.analysis.metrics) === 'extended')
+            ? 'extended'
+            : 'classic');
+    const changeRubric = (next: CtRubricId) => {
+        setChosenRubric(next);
+        if (activeProjectFilter?.startsWith('ct:')) {
+            onProjectSetFilter?.(activeProjectFilter, new Set(), '');
+        }
+    };
     const catalogueLookup: CatalogueLookup = catalogue ?? new Map();
     const projectSetFilter = useMemo<ProjectSetFilter | undefined>(
         () => onProjectSetFilter && { activeKey: activeProjectFilter, toggle: onProjectSetFilter },
@@ -107,6 +120,21 @@ export function BatchAnalyticsWorkspace({
             <section className="batch-workspace" aria-labelledby="batch-workspace-heading">
                 <h3 id="batch-workspace-heading">{t('batchWorkspaceTitle')}</h3>
                 <p className="batch-workspace-lead">{t('batchWorkspaceLead')}</p>
+                {hasCompleted && (
+                    <label className="ct-rubric-selector">
+                        {t('ctRubricLabel')}
+                        <select
+                            value={rubric}
+                            onChange={(event) => changeRubric(event.target.value as CtRubricId)}
+                        >
+                            {(['classic', 'extended'] as const).map((id) => (
+                                <option key={id} value={id}>
+                                    {t(CT_RUBRICS[id].nameKey)}
+                                </option>
+                            ))}
+                        </select>
+                    </label>
+                )}
                 {!hasCompleted ? (
                     <>
                         <p role="status">{t('batchCohortEmpty')}</p>
@@ -170,11 +198,13 @@ export function BatchAnalyticsWorkspace({
                                     {folds.concepts.open && <BatchConceptCoverage rows={rows} />}
                                 </FoldSection>
                                 <FoldSection {...folds.ctProfile}>
-                                    {folds.ctProfile.open && <BatchCtProfile rows={rows} />}
+                                    {folds.ctProfile.open && (
+                                        <BatchCtProfile rows={rows} rubric={rubric} />
+                                    )}
                                 </FoldSection>
                                 <FoldSection {...folds.reference}>
                                     {folds.reference.open && (
-                                        <BatchReferenceComparison rows={rows} />
+                                        <BatchReferenceComparison rows={rows} rubric={rubric} />
                                     )}
                                 </FoldSection>
                             </SectionCard>

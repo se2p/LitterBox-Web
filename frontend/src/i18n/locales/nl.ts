@@ -1064,6 +1064,14 @@ export const pack: Partial<TranslationPack> = {
     ctDimensionParallelismDescription: 'Hoe meerdere scripts tegelijk worden uitgevoerd.',
     ctDimensionUserInteractivity: 'Interactiviteit',
     ctDimensionUserInteractivityDescription: 'Hoe het project op mensen en sensorinvoer reageert.',
+    ctDimensionMathOperators: 'Wiskunde en tekenreeksen',
+    ctDimensionMathOperatorsDescription:
+        'Hoe het project rekenen, formules, tekenreeksen en trigonometrie gebruikt.',
+    ctDimensionMotion: 'Beweging',
+    ctDimensionMotionDescription: 'Hoe het project beweging maakt en combineert.',
+    ctRubricLabel: 'Rubriek voor computationeel denken',
+    ctRubricClassic: 'Klassiek (0–3, totaal 21)',
+    ctRubricExtended: 'Uitgebreid (0–4, totaal 36)',
     ctLevelNotShown: 'Komt niet voor in dit project.',
     ctLevelFlowControl1: 'Voert een reeks blokken na elkaar uit.',
     ctLevelFlowControl2: 'Herhaalt blokken met herhaal of herhaal steeds.',
@@ -1075,9 +1083,9 @@ export const pack: Partial<TranslationPack> = {
         'Verandert een eigenschap van een figuur, zoals grootte of uiterlijk.',
     ctLevelDataRepresentation2: 'Slaat waarden op in variabelen.',
     ctLevelDataRepresentation3: 'Slaat waarden op in lijsten.',
-    ctLevelAbstraction1: 'Verdeelt het project over meerdere figuren, elk met meerdere scripts.',
+    ctLevelAbstraction1: 'Gebruikt meer dan één script.',
     ctLevelAbstraction2: 'Definieert eigen blokken.',
-    ctLevelAbstraction3: 'Maakt klonen van een figuur met het kloon-blok.',
+    ctLevelAbstraction3: 'Gebruikt een script ‘wanneer ik als kloon start’.',
     ctLevelSynchronization1: 'Gebruikt wacht om een script tegen te houden.',
     ctLevelSynchronization2:
         'Stemt scripts op elkaar af met stuur bericht, als ik ontvang of stop.',
@@ -1090,6 +1098,29 @@ export const pack: Partial<TranslationPack> = {
     ctLevelUserInteractivity1: 'Start vanaf de groene vlag.',
     ctLevelUserInteractivity2: 'Reageert op toetsen, klikken, vraag en wacht, of de muis.',
     ctLevelUserInteractivity3: 'Reageert op geluidsniveau of video.',
+    ctExtendedLevelAbstraction1: 'Gebruikt meer dan één script.',
+    ctExtendedLevelAbstraction2: 'Gebruikt een script ‘wanneer ik als kloon start’.',
+    ctExtendedLevelAbstraction3: 'Definieert eigen blokken.',
+    ctExtendedLevelAbstraction4:
+        'Gebruikt in een kloon-startscript een bericht of een niet-triviale besturingsstructuur op het hoogste niveau.',
+    ctExtendedLevelFlowControl4: 'Nestelt herhalende structuren.',
+    ctExtendedLevelLogic4: 'Nestelt voorwaarden.',
+    ctExtendedLevelDataRepresentation4:
+        'Gebruikt booleaanse vergelijkingen of logische operatoren.',
+    ctExtendedLevelSynchronization4:
+        'Gebruikt minstens drie berichten die een script met niet-triviale besturing op het hoogste niveau ontvangt.',
+    ctExtendedLevelParallelism4: 'Synchroniseert drie of meer scripts via gedeelde gebeurtenissen.',
+    ctExtendedLevelUserInteractivity3: 'Gebruikt geluidsniveau- of videosensoren.',
+    ctExtendedLevelUserInteractivity4: 'Gebruikt een uitbreiding voor invoerapparaten.',
+    ctExtendedLevelMathOperators1: 'Gebruikt rekenkundige operatoren.',
+    ctExtendedLevelMathOperators2: 'Combineert wiskundige operatoren tot formules.',
+    ctExtendedLevelMathOperators3: 'Gebruikt tekenreeksen.',
+    ctExtendedLevelMathOperators4: 'Gebruikt trigonometrische functies.',
+    ctExtendedLevelMotion1: 'Beweegt langs de x- en y-as.',
+    ctExtendedLevelMotion2: 'Gebruikt draaiingen.',
+    ctExtendedLevelMotion3: 'Gebruikt snelheidsblokken zoals glijden of x/y veranderen.',
+    ctExtendedLevelMotion4:
+        'Gebruikt minstens vijf bewegingsblokken in één script of eigen blokdefinitie.',
     ctLevelBarLabel: 'Niveau {{level}} van {{max}}',
     ctProfileLevelReachedLabel: 'Bereikt',
 
@@ -1104,6 +1135,8 @@ export const pack: Partial<TranslationPack> = {
     ctProfileColumnMeaning: 'Wat dit niveau betekent',
     ctProfileTotal: '{{score}} van {{max}}',
     ctProfileTotalNotReported: 'Niet gerapporteerd voor dit project.',
+    metricCtExtendedScore: 'Uitgebreide CT-score',
+    metricCtExtendedScoreAverage: 'Gemiddelde uitgebreide CT-score',
     ctTotalBandNarrow:
         'Dit totaal valt in de band 0–7: de opdracht spreekt momenteel maar een smal deel van de zeven dimensies aan.',
     ctTotalBandModerate:

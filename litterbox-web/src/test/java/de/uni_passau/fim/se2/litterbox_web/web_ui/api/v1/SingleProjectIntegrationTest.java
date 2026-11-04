@@ -19,6 +19,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.HexFormat;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.UnaryOperator;
 import java.util.zip.ZipEntry;
@@ -68,7 +70,19 @@ class SingleProjectIntegrationTest {
     private static final String FAILED = "failed";
     private static final String MD5 = "MD5";
     private static final String IDEMPOTENCY_KEY = "Idempotency-Key";
-
+    private static final Set<String> EXTENDED_CT_METRICS = Set.of(
+        "ct_extended_score",
+        "ct_extended_score_average",
+        "ct_extended_score_abstraction",
+        "ct_extended_score_data_representation",
+        "ct_extended_score_flow_control",
+        "ct_extended_score_logic",
+        "ct_extended_score_math_operators",
+        "ct_extended_score_motion",
+        "ct_extended_score_parallelization",
+        "ct_extended_score_synchronization",
+        "ct_extended_score_user_interactivity"
+    );
     private static final TestDatabase DATABASE = TestDatabase.freshSchema("single_project").migrated();
     private static final MockWebServer SCRATCH = startScratchServer();
 
@@ -174,6 +188,17 @@ class SingleProjectIntegrationTest {
         assertThat(view.analysis().sourceSha256()).isEqualTo(HexFormat.of().formatHex(digest(SHA_256, archive)));
         assertThat(view.analysis().inputFormat()).isEqualTo(".sb3");
         assertThat(view.analysis().metrics()).isNotEmpty();
+        final Map<String, Double> metrics = view.analysis().metrics();
+        assertThat(metrics).containsKeys(EXTENDED_CT_METRICS.toArray(String[]::new));
+        assertThat(metrics).containsKey("ct_score");
+        assertThat(
+            jdbc.query(
+                "SELECT name, value FROM analysis_metric WHERE analysis_id = ? AND name LIKE 'ct_extended_score%'",
+                (row, index) -> Map.entry(row.getString("name"), row.getDouble("value")), view.analysis().id()
+            )
+        ).containsExactlyInAnyOrderElementsOf(
+            metrics.entrySet().stream().filter(entry -> EXTENDED_CT_METRICS.contains(entry.getKey())).toList()
+        );
         assertThat(view.analysis().issues()).isNotEmpty();
         assertThat(view.analysis().issues())
             .extracting(SingleProjectDtos.IssueView::type)

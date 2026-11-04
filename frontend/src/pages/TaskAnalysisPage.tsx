@@ -104,7 +104,9 @@ export function TaskAnalysisPage({
             navTitle: t('ctProfileNav'),
             title: t('ctProfileTitle'),
             description: t('ctProfileLead'),
-            body: <TaskThinkingProfile metrics={analysis.metrics} locale={locale} />,
+            body: (
+                <TaskThinkingProfile key={analysis.id} metrics={analysis.metrics} locale={locale} />
+            ),
         },
         {
             id: 'task-concept-coverage',

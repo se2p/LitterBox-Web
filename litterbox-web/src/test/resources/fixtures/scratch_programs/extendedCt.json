@@ -1,0 +1,169 @@
+{
+  "targets": [
+    {
+      "isStage": true,
+      "name": "Stage",
+      "variables": {},
+      "lists": {},
+      "broadcasts": {},
+      "blocks": {},
+      "comments": {},
+      "currentCostume": 0,
+      "costumes": [
+        {
+          "assetId": "e44e7ecfec99356632c13cd3eaa3e250",
+          "name": "synthetic",
+          "bitmapResolution": 1,
+          "md5ext": "e44e7ecfec99356632c13cd3eaa3e250.png",
+          "dataFormat": "png",
+          "rotationCenterX": 0,
+          "rotationCenterY": 0
+        }
+      ],
+      "sounds": [],
+      "volume": 100,
+      "layerOrder": 0,
+      "tempo": 60,
+      "videoTransparency": 50,
+      "videoState": "off",
+      "textToSpeechLanguage": null
+    },
+    {
+      "isStage": false,
+      "name": "Synthetic CT",
+      "variables": {},
+      "lists": {},
+      "broadcasts": {},
+      "blocks": {
+        "flag": {
+          "opcode": "event_whenflagclicked",
+          "next": "outer",
+          "parent": null,
+          "inputs": {},
+          "fields": {},
+          "shadow": false,
+          "topLevel": true,
+          "x": 10,
+          "y": 10
+        },
+        "outer": {
+          "opcode": "control_repeat",
+          "next": null,
+          "parent": "flag",
+          "inputs": {
+            "TIMES": [
+              1,
+              [
+                4,
+                "2"
+              ]
+            ],
+            "SUBSTACK": [
+              2,
+              "inner"
+            ]
+          },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "inner": {
+          "opcode": "control_repeat",
+          "next": null,
+          "parent": "outer",
+          "inputs": {
+            "TIMES": [
+              1,
+              [
+                4,
+                "3"
+              ]
+            ],
+            "SUBSTACK": [
+              2,
+              "move"
+            ]
+          },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "move": {
+          "opcode": "motion_movesteps",
+          "next": null,
+          "parent": "inner",
+          "inputs": {
+            "STEPS": [
+              1,
+              [
+                4,
+                "10"
+              ]
+            ]
+          },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        },
+        "clone": {
+          "opcode": "control_start_as_clone",
+          "next": "cloneMove",
+          "parent": null,
+          "inputs": {},
+          "fields": {},
+          "shadow": false,
+          "topLevel": true,
+          "x": 10,
+          "y": 10
+        },
+        "cloneMove": {
+          "opcode": "motion_movesteps",
+          "next": null,
+          "parent": "clone",
+          "inputs": {
+            "STEPS": [
+              1,
+              [
+                4,
+                "5"
+              ]
+            ]
+          },
+          "fields": {},
+          "shadow": false,
+          "topLevel": false
+        }
+      },
+      "comments": {},
+      "currentCostume": 0,
+      "costumes": [
+        {
+          "assetId": "e44e7ecfec99356632c13cd3eaa3e250",
+          "name": "synthetic",
+          "bitmapResolution": 1,
+          "md5ext": "e44e7ecfec99356632c13cd3eaa3e250.png",
+          "dataFormat": "png",
+          "rotationCenterX": 0,
+          "rotationCenterY": 0
+        }
+      ],
+      "sounds": [],
+      "volume": 100,
+      "layerOrder": 1,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "size": 100,
+      "direction": 90,
+      "draggable": false,
+      "rotationStyle": "all around"
+    }
+  ],
+  "monitors": [],
+  "extensions": [],
+  "meta": {
+    "semver": "3.0.0",
+    "vm": "0.2.0",
+    "agent": "synthetic-extended-ct"
+  }
+}

@@ -234,6 +234,24 @@
     background: var(--color-surface-finding);
 }
 
+.ct-rubric-selector {
+    display: flex;
+    flex-wrap: wrap;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    align-items: center;
+    gap: var(--space-2);
+    margin: var(--space-3) 0;
+    font-weight: 700;
+}
+
+.ct-rubric-selector select {
+    min-width: 0;
+    max-width: 100%;
+    font: inherit;
+    font-weight: 400;
+}
+
 .batch-ct-overall h6,
 .batch-ct-overall p {
     margin: 0;

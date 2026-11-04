@@ -480,7 +480,7 @@ describe('batch analytics workspace', () => {
         expect(filterButton).toHaveTextContent('2');
         await userEvent.setup().click(filterButton);
         expect(onProjectSetFilter).toHaveBeenCalledWith(
-            'ct:flowControl:2',
+            'ct:classic:flowControl:2',
             new Set(['1', '2']),
             'Flow control · Level 2',
         );

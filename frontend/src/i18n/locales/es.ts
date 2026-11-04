@@ -1061,6 +1061,14 @@ export const pack: Partial<TranslationPack> = {
     ctDimensionUserInteractivity: 'Interactividad',
     ctDimensionUserInteractivityDescription:
         'Cómo responde el proyecto a las personas y a los sensores.',
+    ctDimensionMathOperators: 'Matemáticas y cadenas',
+    ctDimensionMathOperatorsDescription:
+        'Cómo usa el proyecto la aritmética, las fórmulas, las cadenas y la trigonometría.',
+    ctDimensionMotion: 'Movimiento',
+    ctDimensionMotionDescription: 'Cómo crea y combina movimientos el proyecto.',
+    ctRubricLabel: 'Rúbrica de pensamiento computacional',
+    ctRubricClassic: 'Clásica (0–3, total 21)',
+    ctRubricExtended: 'Ampliada (0–4, total 36)',
     ctLevelNotShown: 'No aparece en este proyecto.',
     ctLevelFlowControl1: 'Ejecuta una secuencia de bloques, uno tras otro.',
     ctLevelFlowControl2: 'Repite bloques con repite o por siempre.',
@@ -1071,9 +1079,9 @@ export const pack: Partial<TranslationPack> = {
     ctLevelDataRepresentation1: 'Cambia una propiedad del objeto, como el tamaño o el disfraz.',
     ctLevelDataRepresentation2: 'Guarda valores en variables.',
     ctLevelDataRepresentation3: 'Guarda valores en listas.',
-    ctLevelAbstraction1: 'Reparte el proyecto entre varios objetos, cada uno con varios scripts.',
+    ctLevelAbstraction1: 'Usa más de un programa.',
     ctLevelAbstraction2: 'Define bloques personalizados.',
-    ctLevelAbstraction3: 'Crea clones de un objeto con el bloque de clonar.',
+    ctLevelAbstraction3: 'Usa un programa «al comenzar como clon».',
     ctLevelSynchronization1: 'Usa espera para detener un script.',
     ctLevelSynchronization2: 'Coordina scripts con enviar, al recibir o detener.',
     ctLevelSynchronization3:
@@ -1085,6 +1093,28 @@ export const pack: Partial<TranslationPack> = {
     ctLevelUserInteractivity1: 'Se inicia desde la bandera verde.',
     ctLevelUserInteractivity2: 'Responde a teclas, clics, preguntar y esperar, o el ratón.',
     ctLevelUserInteractivity3: 'Responde al volumen o al vídeo.',
+    ctExtendedLevelAbstraction1: 'Usa más de un programa.',
+    ctExtendedLevelAbstraction2: 'Usa un programa «al comenzar como clon».',
+    ctExtendedLevelAbstraction3: 'Define bloques propios.',
+    ctExtendedLevelAbstraction4:
+        'Usa un programa de clon con un mensaje o una estructura de control no trivial en su nivel superior.',
+    ctExtendedLevelFlowControl4: 'Anida estructuras iterativas.',
+    ctExtendedLevelLogic4: 'Anida condicionales.',
+    ctExtendedLevelDataRepresentation4: 'Usa comparaciones booleanas u operadores lógicos.',
+    ctExtendedLevelSynchronization4:
+        'Usa al menos tres mensajes recibidos por un programa con una estructura de control no trivial en su nivel superior.',
+    ctExtendedLevelParallelism4: 'Sincroniza tres o más programas mediante eventos compartidos.',
+    ctExtendedLevelUserInteractivity3: 'Usa sensores de volumen o vídeo.',
+    ctExtendedLevelUserInteractivity4: 'Usa una extensión para dispositivos de entrada.',
+    ctExtendedLevelMathOperators1: 'Usa operadores aritméticos.',
+    ctExtendedLevelMathOperators2: 'Combina operadores matemáticos en fórmulas.',
+    ctExtendedLevelMathOperators3: 'Usa cadenas de texto.',
+    ctExtendedLevelMathOperators4: 'Usa funciones trigonométricas.',
+    ctExtendedLevelMotion1: 'Se mueve por los ejes x e y.',
+    ctExtendedLevelMotion2: 'Usa rotación angular.',
+    ctExtendedLevelMotion3: 'Usa bloques de velocidad, como deslizar o cambiar x/y.',
+    ctExtendedLevelMotion4:
+        'Usa al menos cinco bloques de movimiento en un programa o bloque personalizado.',
     ctLevelBarLabel: 'Nivel {{level}} de {{max}}',
     ctProfileLevelReachedLabel: 'Alcanzado',
 
@@ -1099,6 +1129,8 @@ export const pack: Partial<TranslationPack> = {
     ctProfileColumnMeaning: 'Qué significa este nivel',
     ctProfileTotal: '{{score}} de {{max}}',
     ctProfileTotalNotReported: 'No indicado para este proyecto.',
+    metricCtExtendedScore: 'Puntuación CT ampliada',
+    metricCtExtendedScoreAverage: 'Media CT ampliada',
     ctTotalBandNarrow:
         'Este total está en la banda 0–7: la tarea recurre actualmente solo a una parte reducida de las siete dimensiones.',
     ctTotalBandModerate:

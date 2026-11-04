@@ -5,7 +5,7 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 import { formatNumber, formatRelativeTime } from '../../i18n';
-import { CONCEPTS, CT_DIMENSIONS } from '../../lib/program-concepts';
+import { CONCEPTS, CT_RUBRICS, type CtRubricId } from '../../lib/program-concepts';
 import { analysedProjects } from '../../lib/recent-projects';
 import { TASK_ANALYSIS_PATH, type RetainedAnalysisSelection } from '../../lib/retained-analysis';
 import { choiceKey, choiceLabel, type AnalysedChoice } from '../../pages/comparison-utils';
@@ -20,9 +20,11 @@ import type { BatchRow } from './batch-summary';
 function ReferenceResult({
     referenceMetrics,
     rows,
+    rubric,
 }: {
     referenceMetrics: unknown;
     rows: readonly BatchRow[];
+    rubric: CtRubricId;
 }) {
     const { t } = useTranslation();
     const { classLacks: gaps, taskLacks: extras } = useMemo(
@@ -30,8 +32,8 @@ function ReferenceResult({
         [referenceMetrics, rows],
     );
     const ctComparison = useMemo(
-        () => referenceCtComparison(referenceMetrics, rows),
-        [referenceMetrics, rows],
+        () => referenceCtComparison(referenceMetrics, rows, rubric),
+        [referenceMetrics, rows, rubric],
     );
     const sizeComparison = useMemo(
         () => referenceSizeComparison(referenceMetrics, rows),
@@ -108,7 +110,13 @@ function ReferenceResult({
                         <tbody>
                             {ctComparison.map((entry) => (
                                 <tr key={entry.id}>
-                                    <th scope="row">{t(CT_DIMENSIONS[entry.id].nameKey)}</th>
+                                    <th scope="row">
+                                        {t(
+                                            CT_RUBRICS[rubric].dimensions.find(
+                                                ({ id }) => id === entry.id,
+                                            )?.nameKey ?? 'ctProfileColumnDimension',
+                                        )}
+                                    </th>
                                     <td
                                         className="batch-table-numeric"
                                         data-label={t('batchReferenceCtTaskColumn')}
@@ -185,7 +193,13 @@ function ReferenceResult({
     );
 }
 
-export function BatchReferenceComparison({ rows }: { rows: readonly BatchRow[] }) {
+export function BatchReferenceComparison({
+    rows,
+    rubric = 'classic',
+}: {
+    rows: readonly BatchRow[];
+    rubric?: CtRubricId;
+}) {
     const { t } = useTranslation();
     const [candidates] = useState<AnalysedChoice[]>(() =>
         analysedProjects().map((project) => ({
@@ -241,7 +255,11 @@ export function BatchReferenceComparison({ rows }: { rows: readonly BatchRow[] }
                 </div>
             )}
             {state.status === 'ready' && (
-                <ReferenceResult referenceMetrics={state.value.analysis.metrics} rows={rows} />
+                <ReferenceResult
+                    referenceMetrics={state.value.analysis.metrics}
+                    rows={rows}
+                    rubric={rubric}
+                />
             )}
         </div>
     );

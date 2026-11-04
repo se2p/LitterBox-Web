@@ -234,26 +234,147 @@ export const CT_DIMENSIONS = {
     }
 >;
 
-export type CtDimensionId = keyof typeof CT_DIMENSIONS;
+export type ClassicCtDimensionId = keyof typeof CT_DIMENSIONS;
+export type CtDimensionId = ClassicCtDimensionId | 'mathOperators' | 'motion';
+export type CtRubricId = 'classic' | 'extended';
+export type CtLevel = 0 | 1 | 2 | 3 | 4;
 
-export const CT_DIMENSION_ORDER = Object.keys(CT_DIMENSIONS) as readonly CtDimensionId[];
+export const CT_DIMENSION_ORDER = Object.keys(CT_DIMENSIONS) as readonly ClassicCtDimensionId[];
+
+export interface CtDimensionDefinition {
+    id: CtDimensionId;
+    metric: string;
+    nameKey: TranslationKey;
+    descriptionKey: TranslationKey;
+    levelKeys: readonly TranslationKey[];
+    learnUrl?: string;
+}
+
+export interface CtRubric {
+    nameKey: TranslationKey;
+    levelMax: 3 | 4;
+    totalMax: 21 | 36;
+    totalMetric: string;
+    averageMetric: string;
+    dimensions: readonly CtDimensionDefinition[];
+}
+
+const classicDimensions = CT_DIMENSION_ORDER.map((id) => ({
+    id,
+    ...CT_DIMENSIONS[id],
+}));
+
+const extendedFourthLevelKeys: Readonly<Record<ClassicCtDimensionId, TranslationKey>> = {
+    flowControl: 'ctExtendedLevelFlowControl4',
+    logic: 'ctExtendedLevelLogic4',
+    dataRepresentation: 'ctExtendedLevelDataRepresentation4',
+    synchronization: 'ctExtendedLevelSynchronization4',
+    parallelism: 'ctExtendedLevelParallelism4',
+    userInteractivity: 'ctExtendedLevelUserInteractivity4',
+    abstraction: 'ctExtendedLevelAbstraction4',
+};
+
+const extendedDimensions: readonly CtDimensionDefinition[] = [
+    ...classicDimensions.map<CtDimensionDefinition>(({ id, metric, ...dimension }) => ({
+        ...dimension,
+        id,
+        metric: metric.replace('ct_score_', 'ct_extended_score_'),
+        learnUrl: undefined,
+        levelKeys:
+            id === 'abstraction'
+                ? [
+                      CT_NOT_SHOWN_KEY,
+                      'ctExtendedLevelAbstraction1',
+                      'ctExtendedLevelAbstraction2',
+                      'ctExtendedLevelAbstraction3',
+                      'ctExtendedLevelAbstraction4',
+                  ]
+                : [
+                      ...dimension.levelKeys.slice(0, 3),
+                      id === 'userInteractivity'
+                          ? 'ctExtendedLevelUserInteractivity3'
+                          : dimension.levelKeys[3],
+                      extendedFourthLevelKeys[id],
+                  ],
+    })),
+    {
+        id: 'mathOperators',
+        metric: 'ct_extended_score_math_operators',
+        nameKey: 'ctDimensionMathOperators',
+        descriptionKey: 'ctDimensionMathOperatorsDescription',
+        levelKeys: [
+            CT_NOT_SHOWN_KEY,
+            'ctExtendedLevelMathOperators1',
+            'ctExtendedLevelMathOperators2',
+            'ctExtendedLevelMathOperators3',
+            'ctExtendedLevelMathOperators4',
+        ],
+    },
+    {
+        id: 'motion',
+        metric: 'ct_extended_score_motion',
+        nameKey: 'ctDimensionMotion',
+        descriptionKey: 'ctDimensionMotionDescription',
+        levelKeys: [
+            CT_NOT_SHOWN_KEY,
+            'ctExtendedLevelMotion1',
+            'ctExtendedLevelMotion2',
+            'ctExtendedLevelMotion3',
+            'ctExtendedLevelMotion4',
+        ],
+    },
+];
+
+export const CT_RUBRICS: Readonly<Record<CtRubricId, CtRubric>> = {
+    classic: {
+        nameKey: 'ctRubricClassic',
+        levelMax: 3,
+        totalMax: 21,
+        totalMetric: 'ct_score',
+        averageMetric: 'ct_score_average',
+        dimensions: classicDimensions,
+    },
+    extended: {
+        nameKey: 'ctRubricExtended',
+        levelMax: 4,
+        totalMax: 36,
+        totalMetric: 'ct_extended_score',
+        averageMetric: 'ct_extended_score_average',
+        dimensions: extendedDimensions,
+    },
+};
+
+export function preferredCtRubric(metrics: unknown): CtRubricId {
+    const rubric = CT_RUBRICS.extended;
+    return [
+        rubric.totalMetric,
+        rubric.averageMetric,
+        ...rubric.dimensions.map(({ metric }) => metric),
+    ].some((metric) => metricValue(metrics, [metric]) !== undefined)
+        ? 'extended'
+        : 'classic';
+}
 
 export interface CtDimensionLevel {
     id: CtDimensionId;
-    level: 0 | 1 | 2 | 3 | undefined;
+    level: CtLevel | undefined;
 }
 
-const clampLevel = (value: number): 0 | 1 | 2 | 3 => {
-    const rounded = Math.round(value);
-    if (rounded <= 0) return 0;
-    if (rounded >= 3) return 3;
-    return rounded as 1 | 2;
-};
+const clampLevel = (value: number): CtLevel =>
+    Math.max(0, Math.min(3, Math.round(value))) as CtLevel;
 
-export function ctProfile(metrics: unknown): CtDimensionLevel[] {
-    return CT_DIMENSION_ORDER.map((id) => {
-        const raw = metricValue(metrics, [CT_DIMENSIONS[id].metric]);
-        return { id, level: raw === undefined ? undefined : clampLevel(raw) };
+export function ctProfile(metrics: unknown, rubric: CtRubricId = 'classic'): CtDimensionLevel[] {
+    return CT_RUBRICS[rubric].dimensions.map(({ id, metric }) => {
+        const raw = metricValue(metrics, [metric]);
+        const level =
+            raw === undefined
+                ? undefined
+                : rubric === 'classic'
+                  ? clampLevel(raw)
+                  : Number.isInteger(raw) && raw >= 0 && raw <= 4
+                    ? (raw as CtLevel)
+                    : undefined;
+        return { id, level };
     });
 }
 
@@ -262,8 +383,16 @@ export interface CtTotal {
     max: number;
 }
 
-export function ctTotal(metrics: unknown): CtTotal {
-    return { score: metricValue(metrics, ['ct_score']), max: 21 };
+export function ctTotal(metrics: unknown, rubric: CtRubricId = 'classic'): CtTotal {
+    const definition = CT_RUBRICS[rubric];
+    const raw = metricValue(metrics, [definition.totalMetric]);
+    const score =
+        rubric === 'classic' || raw === undefined
+            ? raw
+            : Number.isInteger(raw) && raw >= 0 && raw <= definition.totalMax
+              ? raw
+              : undefined;
+    return { score, max: definition.totalMax };
 }
 
 export type CtTotalBand = 'narrow' | 'moderate' | 'broad';
