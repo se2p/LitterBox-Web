@@ -11,6 +11,11 @@
  * Everything that exists because this service also serves a web UI.
  *
  * <p>
+ * <em>Warning:</em> This module is fully vibe-coded. It does not follow any best practices (and straight up misuses
+ * others, e.g., JPA entities). Keep your sanity and do not try to integrate new features or refactorings by hand.
+ * Let your slop-machine do it for you.
+ *
+ * <p>
  * The site's own endpoints, the storage its submissions live in, the queues it is served from, and the resources it
  * renders. Nothing outside this package may reach into it: the machinery here is shaped by what a browser session
  * needs, and the other endpoints answer machines that need none of it. {@code WebUiBoundaryTest} is where that is held,
