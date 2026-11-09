@@ -12,8 +12,8 @@
  *
  * <p>
  * <em>Warning:</em> This module is fully vibe-coded. It does not follow any best practices (and straight up misuses
- * others, e.g., JPA entities). Keep your sanity and do not try to integrate new features or refactorings by hand.
- * Let your slop-machine do it for you.
+ * others, e.g., JPA entities). Keep your sanity and do not try to integrate new features or refactorings by hand. Let
+ * your slop-machine do it for you.
  *
  * <p>
  * The site's own endpoints, the storage its submissions live in, the queues it is served from, and the resources it
